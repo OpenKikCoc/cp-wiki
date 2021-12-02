@@ -48,7 +48,23 @@ RMQ 是 Range Maximum/Minimum Query 的缩写，表示区间最大（最小）�
 > 
 > 这题的 $m\leq 10^{18}$，虽然看似恐怖，但是实际上只需要预处理出 $65$ 以内的 $i$，就可以轻松解决，比起暴力枚举快了很多。用行话讲，这个做法的 `时间复杂度` 是预处理 $\Theta(n\log m)$，查询每次 $\Theta(\log m)$。
 
-> [!TIP] **参考代码**
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
 ```cpp
-略
+TODO@binacs
 ```
+
+##### **Python**
+
+```python
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+

@@ -5,6 +5,8 @@
 
 ### 原理
 
+<details>
+<summary>详细代码</summary>
 <!-- tabs:start -->
 
 ##### **C++**
@@ -76,6 +78,9 @@ if __name__ == '__main__':
 ```
 
 <!-- tabs:end -->
+</details>
+
+<br>
 
 ### 优化思想 pivot
 
@@ -95,7 +100,7 @@ if __name__ == '__main__':
 
 三路快速排序在处理含有多个重复值的数组时，效率远高于原始快速排序。其最佳时间复杂度为 $O(n)$。
 
-#### 内省排序[^ref4]
+#### 内省排序
 
 内省排序（英语：Introsort 或 Introspective sort）是快速排序和 [堆排序](./heap-sort.md) 的结合，由 David Musser 于 1997 年发明。内省排序其实是对快速排序的一种优化，保证了最差时间复杂度为 $O(n\log n)$。
 
@@ -107,9 +112,11 @@ if __name__ == '__main__':
 
 可以证明，在期望意义下，程序的时间复杂度为 $O(n)$。
 
+<details>
+<summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **cpp**
+##### **C++**
 
 ```cpp
 int quick_sort(int q[], int l, int r, int k) {
@@ -138,7 +145,7 @@ int main() {
 }
 ```
 
-##### **python**
+##### **Python**
 
 ```python
 #本题对python不太友好，很容易超时
@@ -173,6 +180,9 @@ if __name__ == '__main__':
 ```
 
 <!-- tabs:end -->
+</details>
+
+<br>
 
 归并排序（英语：merge sort）是一种采用了 [分治](./divide-and-conquer.md) 思想的排序算法。
 
@@ -184,8 +194,8 @@ if __name__ == '__main__':
 
 归并排序的空间复杂度为 $O(n)$。
 
-### 代码实现
-
+<details>
+<summary>详细代码</summary>
 <!-- tabs:start -->
 
 ##### **C++**
@@ -245,17 +255,21 @@ if __name__=="__main__":
 ```
 
 <!-- tabs:end -->
+</details>
+
+<br>
 
 ## 逆序对
 
 
+<details>
+<summary>详细代码</summary>
 <!-- tabs:start -->
 
 ##### **C++**
 
-```c++
-LL merge_sort(int q[], int l, int r)
-{
+```cpp
+LL merge_sort(int q[], int l, int r) {
     if (l >= r) return 0;
 
     int mid = l + r >> 1;
@@ -265,8 +279,7 @@ LL merge_sort(int q[], int l, int r)
     int k = 0, i = l, j = mid + 1;
     while (i <= mid && j <= r)
         if (q[i] <= q[j]) tmp[k ++ ] = q[i ++ ];
-        else
-        {
+        else {
             res += mid - i + 1;
             tmp[k ++ ] = q[j ++ ];
         }
@@ -311,5 +324,8 @@ def merge_sort(l, r):
 ```
 
 <!-- tabs:end -->
+</details>
+
+<br>
 
 另外，逆序对也可以用 [树状数组](ds/fenwick.md)、[线段树](ds/seg.md) 等数据结构求解。这三种方法的时间复杂度都是 $O(n \log n)$。

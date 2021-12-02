@@ -1,5 +1,5 @@
 
-> [!NOTE] **更多元素的关联可以使用 tuple**
+> [!NOTE] **更多元素的关联可以使用 [tuple](lang/new#stdtuple)**
 
 ## 使用
 

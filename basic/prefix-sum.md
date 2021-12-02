@@ -4,7 +4,7 @@
 
 C++ 标准库中实现了前缀和函数 [`std::partial_sum`](https://zh.cppreference.com/w/cpp/algorithm/partial_sum)，定义于头文件 `<numeric>` 中。
 
-### 例题
+### 一维前缀和
 
 > [!NOTE] **例题**
 > 
@@ -177,10 +177,24 @@ $$
 > 
 > 需要统计每个点经过了多少次，那么就用树上差分将每一次的路径上的点加一，可以很快得到每个点经过的次数。这里采用倍增法计算 LCA，最后对 DFS 遍历整棵树，在回溯时对差分数组求和就能求得答案了。
 
-> [!TIP] **参考代码**
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
 ```cpp
-TODO@binacs
 ```
+
+##### **Python**
+
+```python
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
 
 ## 习题
 

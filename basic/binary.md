@@ -1,20 +1,64 @@
 二分查找（英语：binary search），也称折半搜索（英语：half-interval search）、对数搜索（英语：logarithmic search），是用来在一个有序数组中查找某一元素的算法。
 
-### 代码实现
+### 一般二分
 
+<details>
+<summary>详细代码</summary>
 <!-- tabs:start -->
-###### **cpp**
+###### **C++**
 
 ```cpp
+int lower_bound(vector<int>& nums, int l, int r, int target) {
+    while (l < r) {
+        int mid = l + (r - l) / 2;
+        if (nums[mid] < target)
+            l = mid + 1;
+        else
+            r = mid;
+    }
+    return l;
+}
+int uper_bound(vector<int>& nums, int l, int r, int target) {
+    while (l < r) {
+        int mid = l + (r - l) / 2;
+        if (nums[mid] <= target)
+            l = mid + 1;
+        else
+            r = mid;
+    }
+    return l - 1;
+}
 
+// 如果需在查找不到的时候返回 -1 则需要加两行check
+int lower_bound() {
+    // ...
+    // 最后要检查 l 越界的情况
+    if (l >= nums.size() || nums[l] != target) return -1;
+    return l;
+}
+
+int uper_bound() {
+    // ...
+    // 最后要检查 r 越界的情况 这里 l == r
+    if (l <= 0 || nums[l - 1] != target) return -1;  // if(l == 0 ... )
+    return l - 1;
+}
 ```
 
-###### **python**
+###### **Python**
 
 ```python
-
+def lower_bound(array, first, last, value): # 返回[first, last)内第一个不小于value的值的位置
+    while first < last: # 搜索区间[first, last)不为空
+        mid = first + (last - first) // 2  # 防溢出
+        if array[mid] < value: first = mid + 1
+        else: last = mid
+    return first  # last也行，因为[first, last)为空的时候它们重合
 ```
 <!-- tabs:end -->
+</details>
+
+<br>
 
 
 > [!NOTE]
@@ -39,6 +83,12 @@ C++ 标准库中实现了查找首个不小于给定值的元素的函数 [`std:
 
 二者均采用二分实现，所以调用前必须保证元素有序。
 
+> [!WARNING] 再次提醒: **`lower_bound` 和 `upper_bound` 的时间复杂度**
+> 
+> 在一般的数组里，这两个函数的时间复杂度均为 $O(\log n)$，但在 `set` 等关联式容器中，直接调用 `lower_bound(s.begin(),s.end(),val)` 的时间复杂度是 $O(n)$ 的。
+> 
+> `set` 等关联式容器中已经封装了 `lower_bound` 等函数（像 `s.lower_bound(val)` 这样），这样调用的时间复杂度是 $O(\log n)$ 的。
+
 ### 二分答案
 
 解题的时候往往会考虑枚举答案然后检验枚举的值是否正确。若满足单调性，则满足使用二分法的条件。把这里的枚举换成二分，就变成了“二分答案”。
@@ -56,21 +106,18 @@ C++ 标准库中实现了查找首个不小于给定值的元素的函数 [`std:
 > [!TIP] **解题思路**
 > 我们可以在 $1$ 到 $10^9$ 中枚举答案，但是这种朴素写法肯定拿不到满分，因为从 $1$ 枚举到 $10^9$ 太耗时间。我们可以在 $[1,~10^9]$ 的区间上进行二分作为答案，然后检查各个答案的可行性（一般使用贪心法）。**这就是二分答案。**
 
-> [!TIP] **参考代码**
-```cpp
-略
-```
-
 ## 三分法
-
-### 简介
 
 三分法可以用来查找凸函数的最大（小）值。
 
 - 如果 `lmid` 和 `rmid` 在最大（小）值的同一侧：由于单调性，一定是二者中较大（小）的那个离最值近一些，较远的那个点对应的区间不可能包含最值，所以可以舍弃。
 - 如果在两侧：由于最值在二者中间，我们舍弃两侧的一个区间后，也不会影响最值，所以可以舍弃。
 
-### 代码实现
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
 
 ```cpp
 lmid = left + (right - left >> 1);
@@ -80,6 +127,17 @@ if (cal(lmid) > cal(rmid))
 else
     left = lmid;
 ```
+##### **Python**
+
+```python
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+
 
 ## 分数规划
 
@@ -90,3 +148,5 @@ else
 经典的例子有最优比率环、最优比率生成树等等。
 
 分数规划可以用二分法来解决。
+
+## 习题
