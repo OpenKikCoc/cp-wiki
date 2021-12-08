@@ -46,7 +46,7 @@
 
 ## DP 求期望
 
-> [!NOTE] ** 例题 [POJ2096 Collecting Bugs](http://poj.org/problem?id=2096)**
+> [!NOTE] **例题 [POJ2096 Collecting Bugs](http://poj.org/problem?id=2096)**
 > 
 > 题目大意：一个软件有 $s$ 个子系统，会产生 $n$ 种 bug。某人一天发现一个 bug，这个 bug 属于某种 bug 分类，也属于某个子系统。每个 bug 属于某个子系统的概率是 $\frac{1}{s}$，属于某种 bug 分类的概率是 $\frac{1}{n}$。求发现 $n$ 种 bug，且 $s$ 个子系统都找到 bug 的期望天数。
 
@@ -158,7 +158,7 @@ $$
 - $2f_{i,m}-f_{i,m-1}=3+f_{i+1,m}$
 
 由于是逆序的递推，所以每一个 $f_{i+1,j}$ 是已知的。
-由于有 $m$ 列，所以右边相当于是一个 $m$ 行的列向量，那么左边就是 $m$ 行 $m$ 列的矩阵。使用增广矩阵，就变成了 m 行 m+1 列的矩阵，然后进行 [高斯消元](../math/linear-algebra/matrix.md) 即可解出答案。
+由于有 $m$ 列，所以右边相当于是一个 $m$ 行的列向量，那么左边就是 $m$ 行 $m$ 列的矩阵。使用增广矩阵，就变成了 m 行 m+1 列的矩阵，然后进行 [高斯消元](math/linear-algebra/matrix.md) 即可解出答案。
 
 
 <details>

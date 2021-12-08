@@ -376,7 +376,7 @@ REP(ii, H0->sz) {
 
 #### 例题「ZOJ 3213」Beautiful Meadow
 
-> [!NOTE] ** 例题 [「ZOJ 3213」Beautiful Meadow](https://vjudge.net/problem/ZOJ-3213)**
+> [!NOTE] **例题 [「ZOJ 3213」Beautiful Meadow](https://vjudge.net/problem/ZOJ-3213)**
 > 
 > 题目大意：一个 $N\times M$ 的方阵（$N,M\le 8$），每个格点有一个权值，求一段路径，最大化路径覆盖的格点的权值和。
 

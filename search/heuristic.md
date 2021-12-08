@@ -169,7 +169,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[k 短路](https://www.luogu.com.cn/problem/P2483)" 
+> [!NOTE] **[k 短路](https://www.luogu.com.cn/problem/P2483)**
 > 
 > 按顺序求一个有向图上从结点 $s$ 到结点 $t$ 的所有路径最小的前任意多（不妨设为 $k$）个。
 

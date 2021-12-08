@@ -1,4 +1,4 @@
-前置知识: [单调队列](../../ds/monotonous-queue.md) 及 [单调栈](../../ds/monotonous-stack.md) 部分。
+前置知识: [单调队列](ds/monotonous-queue.md) 及 [单调栈](ds/monotonous-stack.md) 部分。
 
 > [!NOTE] **例题[CF372C Watching Fireworks is Fun](http://codeforces.com/problemset/problem/372/C)**
 > 
@@ -55,7 +55,7 @@ $f_{i,j}=\max\{f_{i-1,k}+b_i-|a_i-j|\}=\max\{f_{i-1,k}-|a_i-j|\}+b_i$
 > 
 > 你有 $n$ 个物品，每个物品重量为 $w_i$，价值为 $v_i$，数量为 $k_i$。你有一个承重上限为 $m$ 的背包，现在要求你在不超过重量上限的情况下选取价值和尽可能大的物品放入背包。求最大价值。
 
-不了解背包 DP 的请先阅读 [背包 DP](../knapsack.md)。设 $f_{i,j}$ 表示前 $i$ 个物品装入承重为 $j$ 的背包的最大价值，朴素的转移方程为
+不了解背包 DP 的请先阅读 [背包 DP](knapsack.md)。设 $f_{i,j}$ 表示前 $i$ 个物品装入承重为 $j$ 的背包的最大价值，朴素的转移方程为
 
 $$
 f_{i,j}=\max_{k=0}^{k_i}(f_{i-1,j-k\times w_i}+v_i\times k)
