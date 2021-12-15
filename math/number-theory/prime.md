@@ -288,3 +288,196 @@ def millerRabin(n):
 4. [Primality test - Wikipedia](https://en.wikipedia.org/wiki/Primality_test)
 5. [桃子的算法笔记——反素数详解（acm/OI）](https://zhuanlan.zhihu.com/p/41759808)
 6. [The Rabin-Miller Primality Test](http://home.sandiego.edu/~dhoffoss/teaching/cryptography/10-Rabin-Miller.pdf)
+
+## 习题
+
+> [!NOTE] **[AcWing 866. 试除法判定质数](https://www.acwing.com/problem/content/868/)**
+> 
+> 题意: TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+bool is_prime(int x) {
+    if (x < 2) return false;
+    for (int i = 2; i <= x / i; ++ i )
+        if (x % i == 0)
+            return false;
+    return true;
+}
+
+int main() {
+    int n;
+    cin >> n;
+    while (n -- ) {
+        int x;
+        cin >> x;
+        if (is_prime(x)) cout << "Yes" << endl;
+        else cout << "No" << endl;
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 867. 分解质因数](https://github.com/OpenKikCoc/AcWing/blob/master/01_basic/867/README.md)**
+> 
+> 题意: TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+void divide(int x) {
+    for (int i = 2; i <= x / i; ++ i )
+        if (x % i == 0) {
+            int s = 0;
+            while (x % i == 0) x /= i, ++ s;
+            cout << i << ' ' << s << endl;
+        }
+    if (x > 1) cout << x << ' ' << 1 << endl;
+    cout << endl;
+}
+
+int main() {
+    int n;
+    cin >> n;
+    while (n -- ) {
+        int x;
+        cin >> x;
+        divide(x);
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 868. 筛质数](https://www.acwing.com/problem/content/870/)**
+> 
+> 题意: TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 朴素筛法**
+
+```cpp
+// 朴素筛法
+#include <algorithm>
+#include <iostream>
+
+using namespace std;
+
+const int N = 1000010;
+
+int primes[N], cnt;
+bool st[N];
+
+void get_primes(int n) {
+    for (int i = 2; i <= n; i++) {
+        if (st[i]) continue;
+        primes[cnt++] = i;
+        for (int j = i + i; j <= n; j += i) st[j] = true;
+    }
+}
+
+int main() {
+    int n;
+    cin >> n;
+
+    get_primes(n);
+
+    cout << cnt << endl;
+
+    return 0;
+}
+
+```
+
+##### **C++ 线性筛法**
+
+```cpp
+// 线性筛法
+#include <algorithm>
+#include <iostream>
+
+using namespace std;
+
+const int N = 1000010;
+
+int primes[N], cnt;
+bool st[N];
+
+void get_primes(int n) {
+    for (int i = 2; i <= n; i++) {
+        if (!st[i]) primes[cnt++] = i;
+        for (int j = 0; primes[j] <= n / i; j++) {
+            st[primes[j] * i] = true;
+            if (i % primes[j] == 0) break;
+        }
+    }
+}
+
+int main() {
+    int n;
+    cin >> n;
+
+    get_primes(n);
+
+    cout << cnt << endl;
+
+    return 0;
+}
+
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

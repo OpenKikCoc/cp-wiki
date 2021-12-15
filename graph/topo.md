@@ -87,7 +87,57 @@ bool toposort() {
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++**
+##### **C++ 1**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int n, m, u, v, t;
+
+void add(int u, int v, vector<vector<int>>& G) { G[u].push_back(v); }
+
+bool dfs(int u, vector<vector<int>>& G, vector<int>& c, vector<int>& topo) {
+    c[u] = -1;
+    for (auto v : G[u]) {
+        if (c[v] < 0)
+            return false;
+        else if (!c[v] && !dfs(v, G, c, topo))
+            return false;
+    }
+    c[u] = 1;
+    // cout <<"u="<<u<<" topo[u]="<<t-1<<endl;
+    topo[--t] = u;
+    return true;
+}
+
+int main() {
+    cin >> n >> m;
+    vector<vector<int>> G(n + 1, vector<int>());
+    while (m--) {
+        cin >> u >> v;
+        add(u, v, G);
+    }
+    t = n;
+    vector<int> topo(n + 1);
+    vector<int> c(n + 1, 0);
+    bool f = true;
+    for (int u = 1; u <= n; ++u)
+        if (!c[u]) {
+            if (!dfs(u, G, c, topo)) {
+                f = false;
+                break;
+            }
+        }
+
+    if (f)
+        for (int i = 0; i < n; ++i) cout << topo[i] << " ";
+    else
+        cout << -1 << endl;
+}
+```
+
+##### **C++ 2**
 
 ```cpp
 // C++ Version
@@ -183,3 +233,151 @@ def toposort():
 1. 离散数学及其应用。ISBN:9787111555391
 2. <https://blog.csdn.net/dm_vincent/article/details/7714519>
 3. Topological sorting,<https://en.wikipedia.org/w/index.php?title=Topological_sorting&oldid=854351542>
+
+
+## 习题
+
+> [!NOTE] **[AcWing 848. 有向图的拓扑序列](https://www.acwing.com/problem/content/850/)**
+> 
+> 题意: TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+const int N = 100010;
+
+int n, m;
+int h[N], e[N], ne[N], idx;
+int d[N];
+int q[N];
+
+void add(int a, int b) { e[idx] = b, ne[idx] = h[a], h[a] = idx++; }
+
+bool topsort() {
+    int hh = 0, tt = -1;
+
+    for (int i = 1; i <= n; i++)
+        if (!d[i]) q[++tt] = i;
+
+    while (hh <= tt) {
+        int t = q[hh++];
+
+        for (int i = h[t]; i != -1; i = ne[i]) {
+            int j = e[i];
+            if (--d[j] == 0) q[++tt] = j;
+        }
+    }
+
+    return tt == n - 1;
+}
+
+int main() {
+    scanf("%d%d", &n, &m);
+
+    memset(h, -1, sizeof h);
+
+    for (int i = 0; i < m; i++) {
+        int a, b;
+        scanf("%d%d", &a, &b);
+        add(a, b);
+
+        d[b]++;
+    }
+
+    if (!topsort())
+        puts("-1");
+    else {
+        for (int i = 0; i < n; i++) printf("%d ", q[i]);
+        puts("");
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+"""
+> 什么叫拓扑序列？ 针对有向图的才有拓扑序列（无向图没有）
+- 简而言之，拓扑序列：对于每条边 都是起点在终点前面；
+- 当把一张图按照拓扑序列排好后，所有的序列都是从前指向后的。这样就是形成了拓扑序列
+- 并不是所有有向图 都有拓扑序列，比如存在环的图 一定不是拓扑序列!!!
+
+- 可以证明：一个有向无环图，一定存在拓扑序列；有向无环图被称为拓扑图。
+  - 基本概念：
+    - 入度：对于一个节点，有多少边指向自己
+    - 出度：对于一个节点，有多少边从自己这边指出去
+- 一个无环图，一定至少存在一个入度位0的点（反证法 可以很好证明）；所有入度位0的点，都可以排在当前最前面的位置。
+
+  - 拓扑排序算法思想：
+    - 把所有入度位0的点 入队
+    - 然后就是BFS的过程：拿出队头t，枚举t的所有出边t->j ， 删掉t-> j，删掉后，那j点的入度数要减少1：d[j]-=1；如果d[j]==0, 那j前面所有的点都已经放好了，那就让j入队。
+    - 就结束了。如果 存在环的，那一定有点不会入队；如果一个图没有环的话，那所有的点都可以被突破掉，都可以入队。
+"""
+
+
+def add(a, b):
+    global idx
+    ev[idx] = b
+    ne[idx] = h[a]
+    h[a] = idx
+    idx += 1
+
+
+def topsort():
+    from collections import deque
+    q = deque()
+    for i in range(1, n + 1):
+        if d[i] == 0:
+            q.append(i)
+    while q:
+        t = q.popleft()
+        res.append(t)
+        i = h[t]
+        while i != -1:
+            j = ev[i]
+            d[j] -= 1
+            if d[j] == 0:
+                q.append(j)
+            i = ne[i]  # 踩坑：不要忘了往后遍历！！！
+    return len(res) == n
+
+
+if __name__ == '__main__':
+    N = 10 ** 5 + 10
+    h = [-1] * N
+    ev = [0] * N
+    ne = [0] * N
+    idx = 0
+    d = [0] * N
+
+    n, m = map(int, input().split())
+    for _ in range(m):
+        a, b = map(int, input().split())
+        add(a, b)
+        d[b] += 1
+    res = []
+    if topsort():
+        for i in range(n):
+            print(res[i], end=' ')
+    else:
+        print('-1')
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

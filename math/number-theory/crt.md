@@ -277,3 +277,92 @@ $$
 - [「NOI2018」屠龙勇士](https://uoj.ac/problem/396)
 - [「TJOI2009」猜数字](https://www.luogu.com.cn/problem/P3868)
 
+> [!NOTE] **[AcWing 204. 表达整数的奇怪方式](https://www.acwing.com/problem/content/206/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> TODO@binacs 非两两互质的模版
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+/*
+中国剩余定理
+    前提：所有mi互质
+    M   =   m1 * m2 * ... * mk
+    Mi  =   M / mi
+  Mi^-1 = Mi模mi的逆存在
+  
+  x = a1 * M1 * M1^-1 + a2 * M2 * M2^-1 + ... + ak * Mk * Mk^-1
+  
+  
+  对于本题 无两两互质的限制条件
+    x mod ai = mi
+*/
+#include<bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+LL exgcd(LL a, LL b, LL & x, LL & y) {
+    if (!b) {
+        x = 1, y = 0;
+        return a;
+    }
+    LL d = exgcd(b, a % b, y, x);
+    y -= a / b * x;
+    return d;
+}
+
+int main() {
+    int n;
+    cin >> n;
+    
+    LL x = 0, m1, a1;
+    cin >> m1 >> a1;
+    for (int i = 0; i < n - 1; ++ i ) {
+        LL m2, a2;
+        cin >> m2 >> a2;
+        LL k1, k2;
+        LL d = exgcd(m1, -m2, k1, k2);
+        if ((a2 - a1) % d) {
+            x = -1;
+            break;
+        }
+        
+        k1 *= (a2 - a1) / d;
+        k1 = (k1 % (m2 / d) + m2 / d) % (m2 / d);
+        
+        x = k1 * m1 + a1;
+        
+        LL m = abs(m1 / d * m2);
+        a1 = k1 * m1 + a1;
+        m1 = m;
+    }
+    
+    if (x != -1) x = (x % m1 + m1) % m1;
+    
+    cout << x << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

@@ -22,3 +22,94 @@
 |         是否支持可持久化        |                                $\times$                               | $\checkmark$ | $\checkmark$ | $\checkmark$ |   $\times$  |
 
 习惯上，不加限定提到“堆”时往往都指二叉堆。
+
+> [!NOTE] **[AcWing 839. 模拟堆](https://www.acwing.com/problem/content/841/)**
+> 
+> 题意: TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 100010;
+
+int h[N], ph[N], hp[N], cnt;
+
+void heap_swap(int a, int b) {
+    swap(ph[hp[a]], ph[hp[b]]);
+    swap(hp[a], hp[b]);
+    swap(h[a], h[b]);
+}
+
+void down(int u) {
+    int t = u;
+    if (u * 2 <= cnt && h[u * 2] < h[t]) t = u * 2;
+    if (u * 2 + 1 <= cnt && h[u * 2 + 1] < h[t]) t = u * 2 + 1;
+    if (u != t) {
+        heap_swap(u, t);
+        down(t);
+    }
+}
+
+void up(int u) {
+    while (u / 2 && h[u] < h[u / 2]) {
+        heap_swap(u, u / 2);
+        u >>= 1;
+    }
+}
+
+int main() {
+    int n, m = 0;
+    cin >> n;
+    while (n -- ) {
+        char op[5];
+        int k, x;
+        cin >> op;
+        if (op[0] == 'I') {
+            cin >> x;
+            cnt ++ ;
+            m ++ ;
+            ph[m] = cnt, hp[cnt] = m;
+            h[cnt] = x;
+            up(cnt);
+        } else if (op[0] == 'P' && op[1] == 'M') cout << h[1] << endl;
+        else if (op[0] == 'D' && op[1] == 'M') {
+            heap_swap(1, cnt);
+            cnt -- ;
+            down(1);
+        } else if (op[0] == 'D') {
+            cin >> k;
+            k = ph[k];
+            heap_swap(k, cnt);
+            cnt -- ;
+            up(k);
+            down(k);
+        } else {
+            cin >> k >> x;
+            k = ph[k];
+            h[k] = x;
+            up(k);
+            down(k);
+        }
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

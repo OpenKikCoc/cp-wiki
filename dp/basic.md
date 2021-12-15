@@ -591,3 +591,56 @@ TODO@binacs
 > **当选取的状态难以进行递推时（分解出的子问题和原问题形式不一样），考虑将问题状态分类细化，增加维度。**
 
 TODO@binacs 比如拆点
+
+
+## 习题
+
+> [!NOTE] **[LeetCode 1713. 得到子序列的最少操作次数](https://leetcode-cn.com/problems/minimum-operations-to-make-a-subsequence/)**
+> 
+> [Weekly-222](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-01-03_Weekly-222)
+> 
+> 题意: 大数据范围的 $LCS$
+
+> [!TIP] **思路**
+> 
+> 一般 $LCS$ 的复杂度为 $O(n^2)$ , 对于数据规模较大的情况无法处理。
+> 
+> 此时，**在无重复值的情况下可以转化为 $LIS$ 问题**，进而以 $O(nlogn)$ 的复杂度解决。
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int minOperations(vector<int>& target, vector<int>& arr) {
+        unordered_map<int, int> pos;
+        for (int i = 0; i < target.size(); ++ i ) pos[target[i]] = i;   // target无重复数组
+        vector<int> ve;
+        for (auto & x : arr)
+            if (pos.count(x)) ve.push_back(pos[x]);
+        
+        vector<int> f;
+        for (auto & x : ve)
+            if (f.empty() || f.back() < x) f.push_back(x);
+            else *lower_bound(f.begin(), f.end(), x) = x;
+        return target.size() - f.size();
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

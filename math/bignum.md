@@ -28,36 +28,393 @@
 
 ### 加法
 
-```cpp
 
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// 不压位写法
+vector<int> add(vector<int> & A, vector<int> & B) {
+    if (A.size() < B.size()) return add(B, A);
+    
+    vector<int> C;
+    int t = 0;
+    for (int i = 0; i < A.size(); ++ i ) {
+        t += A[i];
+        if (i < B.size()) t += B[i];
+        C.push_back(t % 10);
+        t /= 10;
+    }
+    if (t) C.push_back(t);
+    return C;
+}
+
+int main() {
+    string a, b;
+    vector<int> A, B;
+    cin >> a >> b;
+    for (int i = a.size() - 1; i >= 0; -- i ) A.push_back(a[i] - '0');
+    for (int i = b.size() - 1; i >= 0; -- i ) B.push_back(b[i] - '0');
+    
+    auto C = add(A, B);
+    
+    for (int i = C.size() - 1; i >= 0; -- i ) cout << C[i];
+    cout << endl;
+    return 0;
+}
 ```
+
+##### **C++ 压位**
+
+```c++
+#include<bits/stdc++.h>
+using namespace std;
+
+// 压位写法
+const int base = 1e9;
+
+vector<int> add(vector<int> & A, vector<int> & B) {
+    if (A.size() < B.size()) return add(B, A);
+    
+    vector<int> C;
+    int t = 0;
+    for (int i = 0; i < A.size(); ++ i ) {
+        t += A[i];
+        if (i < B.size()) t += B[i];
+        C.push_back(t % base);  //
+        t /= base;              //
+    }
+    if (t) C.push_back(t);
+    return C;
+}
+
+int main() {
+    string a, b;
+    vector<int> A, B;
+    cin >> a >> b;
+    for (int i = a.size() - 1, s = 0, j = 0, t = 1; i >= 0; -- i ) {
+        s += (a[i] - '0') * t;
+        j ++ , t *= 10;
+        if (j == 9 || i == 0) {
+            A.push_back(s);
+            s = j = 0;
+            t = 1;
+        }
+    }
+    for (int i = b.size() - 1, s = 0, j = 0, t = 1; i >= 0; -- i ) {
+        s += (b[i] - '0') * t;
+        j ++ , t *= 10;
+        if (j == 9 || i == 0) {
+            B.push_back(s);
+            s = j = 0;
+            t = 1;
+        }
+    }
+    
+    auto C = add(A, B);
+    
+    cout << C.back();
+    for (int i = C.size() - 2; i >= 0; -- i ) printf("%09d", C[i]);
+    cout << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+#1.大整数在代码里如何保存呢？把每一位存到一个数组中去，大整数的个位存在数组的第0位，以此类推。（因为有进位的原因，直接在数组后加一位就可以）
+# ===> 从前向后相加。（浮点数的计算用的很少，不需要掌握）
+
+#在python里，整数是不会溢出（python和java都有大整数），但是有的题目要求不能用；如果用的话，代码如下：
+a = input()
+b = input()
+print(a + b)
+
+#2. 整个运算的过程就是一个模拟人工加法的过程。===> 每一位的计算都需要用三个变量：A[i]+B[i]+上一位的进位t（初始值为0）
+# 如果A[i] or B[i]不存在的话，就被当作是0；如果上一位没有进位的话，t也是为0；
+
+
+def add(A,B):
+    res = []
+    i, t = 0, 0
+    while i < len(A) or i < len(B) or t:
+      #如果输入的是字符串，那这里就需要写成：a=int(A[i]) if i<len)A else 0
+        a = A[i] if i < len(A) else 0
+        b = B[i] if i < len(B) else 0
+        t, n = divmod(a + b + t, 10)
+        #注意：需要把数字类型转化为str类型
+        res.append(str(n))
+        i += 1
+    return ''.join(res[::-1])
+
+if __name__=='__main__':
+    s1 = list(map(int, input()))
+    s2 = list(map(int, input()))
+    A = s1[::-1]
+    B = s2[::-1]
+    # print(''.join(list(map(str, add(A, B)))))
+    print(add(A, B))
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 
 ### 减法
 
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
 ```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+bool cmp(vector<int> & A, vector<int> & B) {
+    if (A.size() != B.size()) return A.size() > B.size();
+    
+    for (int i = A.size() - 1; i >= 0; -- i )
+        if (A[i] != B[i])
+            return A[i] > B[i];
+    return true;
+}
+
+vector<int> sub(vector<int> & A, vector<int> & B) {
+    vector<int> C;
+    for (int i = 0, t = 0; i < A.size(); ++ i ) {
+        t = A[i] - t;
+        if (i < B.size()) t -= B[i];
+        C.push_back((t + 10) % 10);
+        if (t < 0) t = 1;
+        else t = 0;
+    }
+    while (C.size() > 1 && C.back() == 0) C.pop_back(); // 前导0
+    return C;
+}
+
+int main() {
+    string a, b;
+    vector<int> A, B;
+    cin >> a >> b;
+    for (int i = a.size() - 1; i >= 0; -- i ) A.push_back(a[i] - '0');
+    for (int i = b.size() - 1; i >= 0; -- i ) B.push_back(b[i] - '0');
+    
+    vector<int> C;
+    if (cmp(A, B)) C = sub(A, B);   // 不能用stl内置比较符号 因为比较时是下标逆序 而内置比较是正序
+    else C = sub(B, A), cout << '-';
+    
+    for (int i = C.size() - 1; i >= 0; -- i ) cout << C[i];
+    cout << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+def compare(A, B):
+    if(len(A) != len(B)): return len(A) > len(B)
+    for i in range(len(A) - 1, -1, -1):
+        if(A[i] != B[i]): return A[i] > B[i]
+    return True;
+
+def sub(A, B):
+    C = list()
+    t = 0
+    i = 0
+    while(i < len(A)):
+        t = A[i] - t
+        if(i < len(B)): t -= B[i]
+        C.append((t + 10) % 10)
+        if(t < 0): t = 1
+        else: t = 0
+        i += 1
+    i = 0
+    C = C[::-1]
+    while len(C) > 1 and C[0] == 0:
+        C.pop(0)
+    return C
+    
+if __name__=='__main__':
+    a = list(map(int, input()))
+    b = list(map(int, input()))
+    #倒序写法一利用python特性
+    A = a[::-1]
+    B = b[::-1]
+
+    if(compare(A, B)):
+        res = sub(A, B)
+        print(''.join(map(str, res)))
+    else:
+        res = sub(B, A)
+        print('-' + "".join(map(str, res)))
 
 ```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 ### 乘法
 
 #### 高精度—单精度
 
-```cpp
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
 
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+vector<int> mul(vector<int> & A, int b) {
+    vector<int> C;
+    for (int i = 0, t = 0; i < A.size() || t; ++ i ) {
+        if (i < A.size()) t += A[i] * b;
+        C.push_back(t % 10);
+        t /= 10;
+    }
+    while (C.size() > 1 && C.back() == 0) C.pop_back();
+    return C;
+}
+
+int main() {
+    string a;
+    int b;
+    cin >> a >> b;
+    
+    vector<int> A;
+    for (int i = a.size() - 1; i >= 0; -- i ) A.push_back(a[i] - '0');
+    
+    auto C = mul(A, b);
+    
+    for (int i = C.size() - 1; i >= 0; -- i ) cout << C[i];
+    cout << endl;
+    return 0;
+}
 ```
+
+##### **Python**
+
+```python
+# 把B看成一个整体 对每一个A数组中的数相乘
+if __name__ == '__main__':
+    A = list(map(int,input()))
+    A.reverse()
+    B = int(input())  #B的数据范围较小，可以直 接用int类型
+
+    res = []
+    t = i = 0
+    while i < len(A) or t:
+        if i < len(A):
+            t += A[i] * B
+        res.append(t%10)
+        t//=10
+        i+=1
+    str1 = ''.join([str(x) for x in res[::-1]])
+    s = str1[:-1].lstrip('0') + str1[-1]
+    print(s)
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 #### 高精度—高精度
 
-```cpp
+TODO@binacs
 
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
 ```
+
+##### **Python**
+
+```python
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 ### 除法
 
-```cpp
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
 
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+vector<int> div(vector<int> & A, int b, int & r) {
+    vector<int> C;
+    r = 0;
+    for (int i = A.size() - 1; i >= 0; -- i ) {
+        r = r * 10 + A[i];
+        C.push_back(r / b);
+        r %= b;
+    }
+    reverse(C.begin(), C.end());
+    while (C.size() > 1 && C.back() == 0) C.pop_back();
+    return C;
+}
+
+int main() {
+    string a;
+    vector<int> A;
+    int B;
+    cin >> a >> B;
+    for (int i = a.size() - 1; i >= 0; -- i ) A.push_back(a[i] - '0');
+    
+    int r;
+    auto C = div(A, B, r);
+    
+    for (int i = C.size() - 1; i >= 0; -- i ) cout << C[i];
+    cout << endl << r << endl;
+    return 0;
+}
 ```
+
+##### **Python**
+
+```python
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 ## 压位高精度
 

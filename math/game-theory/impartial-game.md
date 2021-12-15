@@ -133,3 +133,262 @@ SG 定理适用于 **任何公平的两人游戏**, 它常被用于决定游戏�
 [（转载）Nim 游戏博弈（收集完全版）- exponent - 博客园](http://www.cnblogs.com/exponent/articles/2141477.html)
 
 [\[组合游戏与博弈论\]【学习笔记】- Candy? - 博客园](https://www.cnblogs.com/candy99/p/6548836.html)
+
+
+## 习题
+
+> [!NOTE] **[AcWing 891. Nim游戏](https://www.acwing.com/problem/content/893/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 先手必胜状态：先手操作完，可以走到某一个必败状态
+> 
+> 先手必败状态：先手操作完，走不到任何一个必败状态
+> 
+> 先手必败状态：$a_1 ^{\wedge} a_2 ^{\wedge} a_3 ^{\wedge} ... ^{\wedge} a_n = 0$
+> 
+> 先手必胜状态：$a_1 ^{\wedge} a_2 ^{\wedge} a_3 ^{\wedge} ... ^{\wedge} a_n ≠ 0$
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int n, v;
+
+int main() {
+    cin >> n;
+    int res = 0;
+    while (n--) {
+        cin >> v;
+        res ^= v;
+    }
+    if (res == 0)
+        cout << "No" << endl;
+    else
+        cout << "Yes" << endl;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 892. 台阶-Nim游戏]()**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 台阶Nim游戏是普通的Nim博弈的进阶版，最后的输赢与奇数台阶上的石子有关。
+> 
+> 如果后手移动偶数阶的石子，那么先手将后手移动到奇数阶的石子再次移动，就可以发现偶数阶的石子对博弈是没有影响的。
+> 
+> 如果后手移动奇数阶的石子，先手同样移动奇数阶的石子。
+> 
+> 当奇数阶上没有石子时，由于先手走最后一步，所以此时后手只能移动偶数阶上的石子，先手将后手移动的石子再移动一次，就一定可以取胜。
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int n, v;
+
+int main() {
+    cin >> n;
+    int res = 0;
+    for (int i = 1; i <= n; ++i) {
+        cin >> v;
+        if (i & 1) res ^= v;
+    }
+    if (res == 0)
+        cout << "No" << endl;
+    else
+        cout << "Yes" << endl;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 893. 集合-Nim游戏](https://www.acwing.com/problem/content/895/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 定理 1：
+> 
+> $$
+> 对于集合 S , mex(S) = mex({x1, x2 ... }) = S 中没有出现的最小非负整数
+> $$
+> 
+> 定理 2.1：
+> 
+> $$
+> sg(n) = mex({sg(i1), sg(i2), sg(i3) ... })
+> 
+> n 为结点；i1, i2, i3 ... 是 n 的后继结点
+> $$
+> 
+> 定理2.2：
+> 
+> $$
+> sg(G) = sg(head). G是一个有向图, head是G的头结点。 
+> $$
+> 
+> 定理3：
+> 
+> $$
+> sg(G1) ^{\wedge} sg(G2) ^{\wedge} sg(G3) ^{\wedge} ... ^{\wedge} sg(Gn) 为 n 个有向图的异或和
+> $$
+> 
+> 对于 $n$ 个有向图游戏, 这个异或和就是它的答案（和 $nim$ 类似，这个定理感兴趣可以去证明）
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int maxn = 105;
+const int maxv = 10005;
+int n, m, x;
+int s[maxn], f[maxv];
+
+int sg(int x) {
+    if (f[x] != -1) return f[x];
+    unordered_set<int> S;
+    for (int i = 0; i < m; ++i) {
+        int sum = s[i];
+        if (x >= sum) S.insert(sg(x - sum));
+    }
+    for (int i = 0;; ++i) {
+        if (!S.count(i)) return f[x] = i;
+    }
+}
+
+int main() {
+    cin >> m;
+    for (int i = 0; i < m; ++i) cin >> s[i];  // 集合中的数
+
+    memset(f, -1, sizeof f);
+    int res = 0;
+    cin >> n;
+    for (int i = 0; i < n; ++i) {
+        cin >> x;
+        res ^= sg(x);
+    }
+    cout << (res ? "Yes" : "No") << endl;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 894. 拆分-Nim游戏](https://www.acwing.com/problem/content/896/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 相比于 $集合-Nim$ ，这里的每一堆可以变成不大于原来那堆的任意大小的两堆
+> 
+> 即 $a[i]$ 可以拆分成 $(b[i], b[j])$ , 为了避免重复规定 $b[i] >= b[j]$ , 即： $a[i] >= b[i] >= b[j]$ 相当于一个局面拆分成了两个局面
+> 
+> 由 $SG$ 函数理论，多个独立局面的 $SG$ 值，等于这些局面 $SG$ 值的异或和。 因此需要存储的状态就是 $sg(b[i]) ^{\wedge} sg(b[j])$（与 $集合-Nim$ 的唯一区别）
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int maxn = 105;
+
+int n, x;
+int f[maxn];
+
+int sg(int x) {
+    if (f[x] != -1) return f[x];
+    unordered_set<int> S;
+    for (int i = 0; i < x; ++i)
+        for (int j = 0; j <= i; ++j) S.insert(sg(i) ^ sg(j));
+    for (int i = 0;; ++i)
+        if (!S.count(i)) return f[x] = i;
+}
+
+int main() {
+    cin >> n;
+    memset(f, -1, sizeof f);
+    int res = 0;
+    while (n--) {
+        cin >> x;
+        res ^= sg(x);
+    }
+    cout << (res ? "Yes" : "No") << endl;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

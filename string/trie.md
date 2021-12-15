@@ -394,3 +394,226 @@ int main() {
 ### 可持久化字典树
 
 参见 [可持久化字典树](ds/persistent-trie.md)。
+
+
+## 习题
+
+> [!NOTE] **[AcWing 835. Trie字符串统计](https://www.acwing.com/problem/content/837/)**
+> 
+> 题意: TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <iostream>
+using namespace std;
+
+const int N = 1e5 + 10;
+int son[N][26]; // 其中存放的是：子节点对应的idx。其中son数组的第一维是：父节点对应的idx，第第二维计数是：其直接子节点('a' - '0')的值为二维下标。
+int cnt [N];    // 以“abc”字符串为例，最后一个字符---‘c’对应的idx作为cnt数组的下标。数组的值是该idx对应的个数。
+int idx;        // 将该字符串分配的一个树结构中，以下标来记录每一个字符的位置。方便之后的插入和查找。
+char str[N];
+
+void insert(char *str) {
+    int p = 0;
+    for (int i = 0; str[i]; i++) {
+        int u = str[i] - '0';
+        if (!son[p][u]) son[p][u] = ++idx;
+        p = son[p][u];
+    }
+    // 此时的p就是str中最后一个字符对应的trie树的位置idx。
+    cnt[p]++;
+}
+
+int query(char *str) {
+    int p = 0;
+    for (int i = 0; str[i]; i++) {
+        int u = str[i] - '0';
+        if (!son[p][u]) return 0;
+        p = son[p][u];
+    }
+    return cnt[p];
+}
+
+int main()
+{
+    int n;
+    scanf("%d", &n);
+    char op[2];
+    while (n--)  {
+        scanf("%s%s", op, str);
+        if (op[0] == 'I') insert(str);
+        else printf("%d\n", query(str));
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+"""
+I. 概念
+1. Trie树，又名字典树or前缀树，是一种有序树。用于保存关联数组，其中的键通常是字符串
+2. 一个节点的所有子孙都有相同的前缀，也就是这个节点对应的字符串，而根节点对应空字符串
+3. 优点：可以快速高效实现插入和查找字符串集合的操作：可以最大限度地减少无谓的字符串的比较（经常被搜索引擎系统用于文本词频统计）
+4. 缺点：trie是用空间换时间
+5. 一般算法题这类题的字符类型都比较单一，比如全部都是小写/大写字母 或者全部都是数字等		
+
+II. 理解模版代码解答
+1. 实现各种数据结构的时候比较容易用到idx变量，这个变量到底有什么用？
+    1）在链表/树/堆中，节点一般包含两个基本属性：本身的值和指向下一个结点的指针；但一般算法题用数组实现，因为快：所以用到了idx。
+    2）trie树有一个二位数组**son[N ][26]** , 表示当前结点的儿子；如果没有的话，就idx++。trie树本质上是一颗多叉树，对于一个字母而言最多有26个子结点；所以这个二位数组包含了两条信息。比如：son[1][0]=2，表示1结点的一个值为a的子结点为结点2；如果son[1][0]=0, 则意味着没有值为a子结点。
+"""
+
+
+def insert(s):
+    global idx
+    p = 0
+    for i in range(len(s)):
+        t = ord(s[i]) - ord('a')  # t=0-25，对应a-z
+        if not son[p][t]:
+            idx += 1
+            son[p][t] = idx
+        p = son[p][t]
+    cnt[p] += 1
+
+
+def query(s):
+    p = 0
+    for i in range(len(s)):
+        t = ord(s[i]) - ord('a')
+        if not son[p][t]:
+            return 0
+        p = son[p][t]
+    return cnt[p]
+
+
+if __name__ == '__main__':
+    N = int(1e5 + 10)
+    son = [[0] * 26 for i in range(N)]  # 26表示每个字母都可能有的26个子结点，son数组表示的是每个节点的儿子
+    cnt = [0] * N  # 存以当前点为结尾的单词有多少个
+    idx = 0  # 和单链表的idx一致，表示当前节点用到的哪个下标；下标为0的节点 既是根节点 又是空节点
+
+    n = int(input())
+    for i in range(n):
+        op = input().split()
+        if op[0] == 'I':
+            insert(op[1])
+        else:
+            print(query(op[1]))
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 143. 最大异或对](https://www.acwing.com/problem/content/145/)**
+> 
+> 题意: TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 100010;
+
+int son[N * 32][2], idx;     // 1. N * 32 instead of N
+
+void insert(int x) {
+    int p = 0;
+    for (int i = 30; i >= 0; -- i ) {
+        int u = x >> i & 1;
+        if (!son[p][u]) son[p][u] = ++ idx ;
+        p = son[p][u];
+    }
+}
+
+int query(int x) {
+    int p = 0, ret = 0;
+    for (int i = 30; i >= 0; -- i ) {
+        int u = x >> i & 1;
+        if (!son[p][!u]) p = son[p][u];
+        else {
+            ret |= 1 << i;
+            p = son[p][!u];
+        }
+    }
+    return ret;
+}
+
+int main() {
+    int n, res = 0;
+    cin >> n;
+    for (int i = 0; i < n; ++ i ) {
+        int x;
+        cin >> x;
+        insert(x);  // 2. 先插入 可以避免在 query 时节点不存在的判断
+        res = max(res, query(x));
+    }
+    cout << res << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+def insert(v):
+    global idx
+    p = 0
+    for i in range(30, -1, -1):  # 第一位31位 是符号位，不做处理。所以从第30位开始处理
+        u = v >> i & 1  # 取第i位数的值
+        if not son[p][u]:
+            idx += 1
+            son[p][u] = idx
+        p = son[p][u]
+
+
+def query(v):
+    p, res = 0, 0
+    for i in range(30, -1, -1):
+        u = v >> i & 1
+        w = u ^ 1  # 取第i位的 异或值
+        if son[p][w]:
+            res += 1 << i
+            p = son[p][w]
+        else:
+            p = son[p][u]
+    return res
+
+
+if __name__ == '__main__':
+    n = int(input())
+    nums = list(map(int, input().split()))
+
+    N = 3000000
+    son = [[0] * 2 for _ in range(N)]  # 子结点 要么为0，要么为1
+    idx = 0
+    res = 0
+    for v in nums:
+        insert(v)
+        res = max(query(v), res)
+    print(res)
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

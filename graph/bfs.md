@@ -85,3 +85,207 @@ while (队列不为空) {
 ## 参考
 
 <https://cp-algorithms.com/graph/breadth-first-search.html>
+
+
+## 习题
+
+> [!NOTE] **[AcWing 844. 走迷宫](https://www.acwing.com/problem/content/846/)**
+> 
+> 题意: TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+#include <queue>
+
+using namespace std;
+
+typedef pair<int, int> PII;
+
+const int N = 110;
+
+int n, m;
+int g[N][N], d[N][N];
+
+int bfs() {
+    queue<PII> q;
+
+    memset(d, -1, sizeof d);
+    d[0][0] = 0;
+    q.push({0, 0});
+
+    int dx[4] = {-1, 0, 1, 0}, dy[4] = {0, 1, 0, -1};
+
+    while (q.size()) {
+        auto t = q.front();
+        q.pop();
+
+        for (int i = 0; i < 4; i++) {
+            int x = t.first + dx[i], y = t.second + dy[i];
+
+            if (x >= 0 && x < n && y >= 0 && y < m && g[x][y] == 0 &&
+                d[x][y] == -1) {
+                d[x][y] = d[t.first][t.second] + 1;
+                q.push({x, y});
+            }
+        }
+    }
+
+    return d[n - 1][m - 1];
+}
+
+int main() {
+    cin >> n >> m;
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < m; j++) cin >> g[i][j];
+
+    cout << bfs() << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+def bfs():
+    from collections import deque
+    q = deque()
+    q.append([0, 0])
+    d[0][0] = 0  # 该点 已经被走过了。
+    idx = [-1, 1, 0, 0]
+    idy = [0, 0, -1, 1]
+    while q:
+        cur = q.popleft()
+        for i in range(4):
+            x = cur[0] + idx[i]
+            y = cur[1] + idy[i]
+            if 0 <= x < n and 0 <= y < m and not arr[x][y] and d[x][y] == -1:
+                q.append([x, y])
+                d[x][y] = d[cur[0]][cur[1]] + 1
+    return d[n - 1][m - 1]
+
+
+if __name__ == '__main__':
+    n, m = map(int, input().split())
+    arr = [list(map(int, input().split())) for _ in range(n)]
+    d = [[-1] * m for _ in range(n)]  # 所有的距离初始化为-1，表示这个点 没有走过。
+    print(bfs())
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *> [!NOTE] **[AcWing 845. 八数码](https://www.acwing.com/problem/content/847/)**
+> 
+> 题意: TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+string s;
+string tar = "12345678x";
+int dx[4] = {-1, 0, 0, 1}, dy[4] = {0, -1, 1, 0};
+
+int bfs() {
+    queue<string> q;
+    unordered_map<string, int> d;
+    q.push(s);
+    d[s] = 0;
+    while (!q.empty()) {
+        auto ss = q.front();
+        q.pop();
+        if (ss == tar) return d[ss];
+        int dis = d[ss];
+        int k = ss.find('x');
+        int x = k / 3, y = k % 3;
+        for (int i = 0; i < 4; ++i) {
+            int nx = x + dx[i], ny = y + dy[i];
+            if (nx < 0 || nx >= 3 || ny < 0 || ny >= 3) continue;
+            swap(ss[nx * 3 + ny], ss[k]);
+            if (!d.count(ss)) {
+                d[ss] = dis + 1;
+                q.push(ss);
+            }
+            swap(ss[nx * 3 + ny], ss[k]);
+        }
+    }
+    return -1;
+}
+
+int main() {
+    char c;
+    for (int i = 0; i < 9; ++i) {
+        cin >> c;
+        s.push_back(c);
+    }
+    cout << bfs() << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+# 这道题可以转化为：状态a转移到状态b,需要走一步，那最后走到终点，最少需要走多少步
+# 难点：1. 状态表示复杂（导致有两个问题，如何 把状态存入队列中）；2. 如何记录每个状态的距离 dist
+# 比较简单的存储方式是：用一个字符串表示一个状态；比如"1234x5678"
+# 如何判断一个状态 可以 转移成 哪几种状态？ 需要思考一下。1）将字符串想象成3*3的矩阵 2）进行转移 3）3*3的矩阵恢复成字符串
+
+def bfs(start):
+    end = "12345678x"
+    d = {start: 0}  # 该字典存放每个状态到初始状态的距离
+
+    from collections import deque
+    q = deque()
+    q.append(start)
+    dx, dy = [1, -1, 0, 0], [0, 0, 1, -1]
+    while q:
+        t = q.popleft()
+        distance = d[t]
+        if t == end:
+            return distance
+        k = t.index('x')  # 找到x的下标
+        x, y = k // 3, k % 3  # 将字符串的索引 转换为3*3二维数组中对应的坐标
+
+        tl = list(t)  # 由于字符串不是不可变量，因而把字符串变为数组，用于交换字符串中的字符位置
+        for i in range(4):  # 'x'上下左右移动
+            a, b = x + dx[i], y + dy[i]
+            if 0 <= a < 3 and 0 <= b < 3:
+                nk = a * 3 + b  # 将3*3矩阵的坐标转移为字符串的索引
+                tl[nk], tl[k] = tl[k], tl[nk]
+                t = ''.join(tl)
+                if t not in d:  # 如果t这个状态是新状态（之前没有出现过）
+                    q.append(t)
+                    d[t] = distance + 1
+                tl[nk], tl[k] = tl[k], tl[nk]  # 还原现场
+    return -1
+
+
+if __name__ == '__main__':
+    start = input().replace(" ", "")
+    ans = bfs(start)
+    print(ans)
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

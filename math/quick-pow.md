@@ -8,14 +8,31 @@
 
 ```cpp
 // C++ Version
-long long binpow(long long a, long long b) {
-    long long res = 1;
-    while (b > 0) {
-        if (b & 1) res = res * a;
-        a = a * a;
+#include<bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+// OlogK
+LL qmi(int a, int b, int p) {
+    LL res = 1 % p;
+    while (b) {
+        if (b & 1) res = res * a % p;
+        a = a * (LL)a % p;
         b >>= 1;
     }
     return res;
+}
+
+int main() {
+    int n;
+    cin >> n;
+    while (n -- ) {
+        int a, b, p;
+        cin >> a >> b >> p;
+        cout << qmi(a, b, p) << endl;
+    }
+    return 0;
 }
 ```
 
@@ -23,14 +40,22 @@ long long binpow(long long a, long long b) {
 
 ```python
 # Python Version
-def binpow(a, b):
-    res = 1
-    while b > 0:
-        if (b & 1):
-            res = res * a
-        a = a * a
+def fastPow(a, b, p):
+    res = 1 % p
+    while b:
+        if b & 1:
+            res = (res * a) % p
         b >>= 1
+        a = (a * a) % p
     return res
+
+
+if __name__ == "__main__":
+    n = int(input())
+    for _ in range(n):
+        a, b, p = map(int, input().split())
+        print(fastPow(a, b, p))
+
 ```
 
 <!-- tabs:end -->
@@ -317,3 +342,95 @@ int query(int pows) { return 1LL * pow1[pows & 65535] * pow2[pows >> 16]; }
 - [SPOJ - Locker](http://www.spoj.com/problems/LOCKER/)
 - [LA - 3722 Jewel-eating Monsters](https://icpcarchive.ecs.baylor.edu/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=1723)
 -   [SPOJ - Just add it](http://www.spoj.com/problems/ZSUM/)
+
+## 习题
+
+> [!NOTE] **[AcWing 876. 快速幂求逆元](https://www.acwing.com/problem/content/878/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> TODO@binacs
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+//      a / b === a * x (mod m)
+// -->  a / b === a * b^-1 (mod m)
+//      b * b^-1 === 1 (mod m)
+//      b * x === 1 (mod m)
+//      x 是 b 的逆元
+//
+//      m 为质数 则
+//      b^p-1 === 1 (mod p)
+//      b * b^p-2 === 1 (mod p)
+//      本质要求 b^p-2 mod p
+
+/*
+                a / b ≡ a * x (mod n)
+两边同乘b可得
+                a ≡ a * b * x (mod n)
+即
+                1 ≡ b * x (mod n)
+同
+                b * x ≡ 1 (mod n)
+由费马小定理可知，当n为质数时
+                b ^ (n - 1) ≡ 1 (mod n)
+拆一个b出来可得
+                b * b ^ (n - 2) ≡ 1 (mod n)
+故当n为质数时，b的乘法逆元
+                x = b ^ (n - 2)
+
+当n不是质数时，可以用扩展欧几里得算法求逆元：
+a有逆元的充要条件是a与p互质，所以gcd(a, p) = 1
+假设a的逆元为x，那么有a * x ≡ 1 (mod p)
+等价：ax + py = 1
+exgcd(a, p, x, y)
+*/
+#include<bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+LL qmi(int a, int b, int p) {
+    LL res = 1;
+    while (b) {
+        if (b & 1) res = res * a % p;
+        a = a * (LL)a % p;
+        b >>= 1;
+    }
+    return res;
+}
+
+int main() {
+    int n;
+    cin >> n;
+    while (n -- ) {
+        int a, p;
+        cin >> a >> p;
+        // 如果b是p的倍数则无解
+        int res = qmi(a, p - 2, p);
+        if (a % p) cout << res << endl;
+        else cout << "impossible" << endl;
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

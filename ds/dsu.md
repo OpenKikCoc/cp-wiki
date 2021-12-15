@@ -125,3 +125,278 @@ $A(m, n) = \begin{cases}n+1&\text{if }m=0\\A(m-1,1)&\text{if }m>0\text{ and }n=0
 - [2]Yao, A. C. (1985). On the expected performance of path compression algorithms.[SIAM Journal on Computing, 14(1), 129-133.](https://epubs.siam.org/doi/abs/10.1137/0214010?journalCode=smjcat)
 - [3][知乎回答：是否在并查集中真的有二分路径压缩优化？](<https://www.zhihu.com/question/28410263/answer/40966441>)
 - [4]Gabow, H. N., & Tarjan, R. E. (1985). A Linear-Time Algorithm for a Special Case of Disjoint Set Union. JOURNAL OF COMPUTER AND SYSTEM SCIENCES, 30, 209-221.[CORE PDF](https://core.ac.uk/download/pdf/82125836.pdf)
+
+
+## 习题
+
+> [!NOTE] **[AcWing 836. 合并集合](https://www.acwing.com/problem/content/838/)**
+> 
+> 题意: TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 100010;
+
+int p[N], n, m;
+
+int find(int x) {
+    if (p[x] != x) p[x] = find(p[x]);
+    return p[x];
+}
+
+int main() {
+    cin >> n >> m;
+    for (int i = 1; i <= n; ++ i ) p[i] = i;
+    
+    char op[2];
+    int a, b;
+    while (m -- ) {
+        cin >> op >> a >> b;
+        a = find(a), b = find(b);
+        if (op[0] == 'M') {
+            p[a] = b;
+        } else {
+            if (a == b) cout << "Yes" << endl;
+            else cout << "No" << endl;
+        }
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+"""
+I. 概念
+1. 并查集：主要用于解决一些 **元素分组** 的问题，它管理一系列不相交的集合，并支持两种操作：
+   - 合并：把两个不相交的集合合并成一个集合
+   - 查询：查询两个元素是否在同一集合中
+2. 基本原理：每个集合用一棵树来表示；树根的编号就是整个集合的编号 父节点，p[x]表示x的父节点
+
+II. 理解模版代码
+1. 如何判断树根？ if p[x]==x
+2. 如何求x的集合编号： while p(x)!=x:x=p[x]
+3. 如何合并两个集合：px是x的集合编号，py是y的集合编号：p[x]=y
+
+"""
+
+N = 100010
+p = [0] * N
+
+
+# 查询：用递归的写法实现对元素的查询：一层一层访问父节点，直到祖宗节点（根节点的标志就是父节点是本身
+# 要判断两个元素是否属于同一集合，只需要看它们的根节点是否相同即可
+
+def find(x):  # 递归回溯的条件是 p[x] == x, 即找到祖宗节点
+    if p[x] != x:  # x的父节点不是祖宗节点
+        p[x] = find(p[x])  # 找寻父节点的祖宗节点
+    return p[x]
+
+
+if __name__ == '__main__':
+    n, m = map(int, input().split())
+    for i in range(1, n + 1):  # 初始化每个元素的祖宗节点为本身
+        p[i] = i
+    for _ in range(m):
+        oper = input().split()
+        if oper[0] == 'M':
+            a, b = int(oper[1]), int(oper[2])
+            if find(a) == find(b): continue
+
+            # 合并：先找到两个集合的代表元素，然后将前者的父节点设为后者即可
+            p[find(a)] = find(b)  # 使a的祖宗节点变成b的祖宗节点
+            # 踩坑：p[find(a)] 是把b的祖宗节点 肤质给 找到的a的祖宗节点！错误写法： p[a] = find(b) !xxx 非常错！ 踩坑好几次了！！！
+        else:
+            a, b = int(oper[1]), int(oper[2])
+            if find(a) == find(b):
+                print("Yes")
+            else:
+                print("No")
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 837. 连通块中点的数量](https://www.acwing.com/problem/content/839/)**
+> 
+> 题意: TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 100010;
+
+int n, m;
+int p[N], sz[N];
+
+int find(int x) {
+    if (p[x] != x) p[x] = find(p[x]);
+    return p[x];
+}
+
+int main() {
+    cin >> n >> m;
+    for (int i = 1; i <= n; ++ i ) p[i] = i, sz[i] = 1;
+    
+    char op[3];
+    int a, b;
+    while (m -- ) {
+        cin >> op;
+        if (op[0] == 'C') {
+            cin >> a >> b;
+            a = find(a), b = find(b);
+            if (a != b) {
+                // sz 相加要放在前面，不然先修改父节点就没法算了
+                sz[b] += sz[a];
+                p[a] = b;
+            }
+        } else if (op[0] == 'Q' && op[1] == '1') {
+            cin >> a >> b;
+            a = find(a), b = find(b);
+            cout << (a == b ? "Yes" : "No") << endl;
+        } else {
+            cin >> a;
+            cout << sz[find(a)] << endl;
+        }
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+N = 100010
+p = [0] * N
+size = [1] * N  # 初始化 根节点的值为该树的节点数1
+
+
+def find(x):
+    if p[x] != x:
+        p[x] = find(p[x])
+    return p[x]
+
+
+if __name__ == '__main__':
+    n, m = map(int, input().split())
+    for i in range(1, n + 1):  # 初始化每个元素的树，让根节点等于自己。
+        p[i] = i
+
+    for _ in range(m):
+        oper = input().split()
+        if oper[0] == 'C':
+            a, b = int(oper[1]), int(oper[2])
+            if find(a) == find(b): continue  # 特判：两个点在一个集合中就跳过合并
+            size[find(b)] += size[find(a)]  # 更新新树的size，注意！！需要先将size合并才能p[a]=b; p[a]=b操作之后a的根就是b了，会出错
+            p[find(a)] = find(b)  # a插入b中
+        elif oper[0] == 'Q1':
+            a, b = int(oper[1]), int(oper[2])
+            if find(a) == find(b):
+                print("Yes")
+            else:
+                print("No")
+        else:
+            a = int(oper[1])
+            print(size[find(a)])
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 240. 食物链](https://www.acwing.com/problem/content/242/)**
+> 
+> 题意: TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+使用 0/1/2 表示同类、吃、被吃的关系
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 50010;
+
+int n, m;
+int p[N], d[N];
+
+int find(int x) {
+    if (p[x] != x) {
+        int root = find(p[x]);
+        d[x] += d[p[x]];
+        p[x] = root;
+    }
+    return p[x];
+}
+
+int main() {
+    cin >> n >> m;
+    
+    for (int i = 1; i <= n; ++ i ) p[i] = i;
+    
+    int res = 0;
+    int t, x, y;
+    while (m -- ) {
+        cin >> t >> x >> y;
+        if (x > n || y > n) ++ res ;
+        else {
+            int px = find(x), py = find(y);
+            if (t == 1) {
+                if (px == py && (d[x] - d[y]) % 3) ++ res ;
+                else if (px != py) {
+                    p[px] = py;
+                    d[px] = d[y] - d[x];
+                }
+            } else {
+                if (px == py && (d[x] - d[y] - 1) % 3) ++ res ;
+                else if (px != py) {
+                    p[px] = py;
+                    d[px] = d[y] + 1 - d[x];
+                }
+            }
+        }
+    }
+    cout << res << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

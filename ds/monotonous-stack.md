@@ -44,3 +44,239 @@ sta.push(x)
 另外，单调栈也可以用于离线解决 RMQ 问题。
 
 我们可以把所有询问按右端点排序，然后每次在序列上从左往右扫描到当前询问的右端点处，并把扫描到的元素插入到单调栈中。这样，每次回答询问时，单调栈中存储的值都是位置 $\le r$ 的、可能成为答案的决策点，并且这些元素满足单调性质。此时，单调栈上第一个位置 $\ge l$ 的元素就是当前询问的答案，这个过程可以用二分查找实现。使用单调栈解决 RMQ 问题的时间复杂度为 $O(q\log q + q\log n)$，空间复杂度为 $O(n)$。
+
+
+## 习题
+
+> [!NOTE] **[AcWing 830. 单调栈](https://www.acwing.com/problem/content/832/)**
+> 
+> 题意: TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 100010;
+
+int a[N];
+int st[N], top = 0;
+int res[N];
+
+int main() {
+    int n;
+    cin >> n;
+    for (int i = 0; i < n; ++ i ) cin >> a[i];
+    
+    memset(res, -1, sizeof res);
+    for (int i = n - 1; i >= 0; -- i ) {
+        while (top && a[st[top - 1]] > a[i]) {
+            res[st[top - 1]] = a[i];
+            top -- ;
+        }
+        st[top ++ ] = i;
+    }
+    for (int i = 0; i < n; ++ i ) cout << res[i] << ' ';
+    cout << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+"""
+逆序遍历，从 左 到 右 维护一个【单调递增栈】
+当前数 比 栈顶元素小时，那么当前数 就是栈顶元素就是 当前数的左边第一个比它小的数
+"""
+if __name__ == '__main__':
+    n = int(input())
+    res = [-1] * n
+    nums = list(map(int, input().split()))
+    stack = []
+
+    for i in range(n - 1, -1, -1):
+        while stack and nums[stack[-1]] > nums[i]:
+            res[stack[-1]] = nums[i]
+            stack.pop()
+        stack.append(i)
+    for i in range(len(res)):
+        print(res[i], end = ' ')
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1944. 队列中可以看到的人数](https://leetcode-cn.com/problems/number-of-visible-people-in-a-queue/)**
+> 
+> [biweekly-57](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-07-24_Biweekly-57/)
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思考 抽象出模型 进而使用单调栈优化操作
+> 
+> 此类题目显然先想考虑 按高度加入 or 按方向加入
+> 
+> 本题按方向先加入右侧的点 需注意找到的是当前点右侧第一个大于等于当前点的数作为右边界
+> 
+> > 部分题解使用了大于等于当前点的最后一个数，是错误的
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 1e5 + 10;
+    
+    int stk[N], top;
+    
+    vector<int> canSeePersonsCount(vector<int>& heights) {
+        int n = heights.size();
+        this->top = 0;
+        
+        vector<int> res(n);
+        for (int i = n - 1; i >= 0; -- i ) {
+            int cnt = 0;
+            while (top && heights[stk[top - 1]] < heights[i])
+                top -- , cnt ++ ;
+            if (top)
+                cnt ++ ;
+            res[i] = cnt;
+            // 等于 后面的看不到
+            while (top && heights[stk[top - 1]] == heights[i])
+                top -- ;
+            stk[top ++ ] = i;
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 数组简化栈操作**
+
+```cpp
+class Solution {
+public:
+    vector<int> canSeePersonsCount(vector<int>& heights) {
+        int n = heights.size();
+        vector<int> ans(n), v;
+        for (int i = n - 1; i >= 0; i -= 1) {
+            int j = lower_bound(v.begin(), v.end(), heights[i], greater<int>()) - v.begin();
+            ans[i] = v.size() - j + (j != 0);
+            while (not v.empty() and v.back() <= heights[i])
+                v.pop_back();
+            v.push_back(heights[i]);
+        }
+        return ans;
+    }
+};
+```
+
+##### **Python**
+
+```python
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 2030. 含特定字母的最小子序列](https://leetcode-cn.com/problems/smallest-k-length-subsequence-with-occurrences-of-a-letter/)**
+> 
+> [weekly-261](https://github.com/OpenKikCoc/LeetCode/blob/master/Contest/2021-10-03_Weekly-261/)
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 简单题：https://github.com/OpenKikCoc/LeetCode/blob/master/0401-0500/0402/README.md
+> 
+> 增加条件：其中某个字符 `letter` 至少出现 `repitition` 次
+> 
+> ==> 在出栈时的限制要求更严格 且后续删除多余字符时有严格的合理性推导
+> 
+> **本题有多种解题思路 细节看 Contest 全文**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    string smallestSubsequence(string s, int k, char letter, int repetition) {
+        int n = s.size();
+        
+        // suf 甚至可以用一个变量统计 在 for-loop 中递减来维护
+        vector<int> suf(n);
+        for (int i = n - 1; i >= 0; -- i )
+            suf[i] = (i < n - 1 ? suf[i + 1] : 0) + (s[i] == letter);
+        
+        int del = n - k, has = 0;
+        stack<int> st;
+        for (int i = 0; i < n; ++ i ) {
+            // the while-condition
+            while (st.size() && del && s[st.top()] > s[i] && 
+                  // 把当前栈顶去除letter仍然够用
+                  has - (s[st.top()] == letter) + suf[i] >= repetition) {
+                if (s[st.top()] == letter)
+                    has -- ;
+                del -- ;
+                st.pop();
+            }
+            st.push(i);
+            if (s[st.top()] == letter)
+                has ++ ;
+        }
+        
+        // 只获取前k项
+        while (st.size() > k)
+            has -= (s[st.top()] == letter), st.pop();
+        string res;
+        while (st.size())
+            res.push_back(s[st.top()]), st.pop();
+        reverse(res.begin(), res.end());
+        
+        // ATTENTION 使用letter向前挤兑其他字符的位置 以满足至少repetition次的要求
+        // 重要: 思考为什么这样是可行的? ----> 因为相当于去除其他元素并将后面的直接前移
+        for (int i = k - 1; has < repetition; -- i )
+            if (res[i] != letter)
+                res[i] = letter, has ++ ;
+        
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

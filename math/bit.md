@@ -208,3 +208,78 @@ GCC 中还有一些用于位运算的内建函数：
 [^note2]: 适用于 C++20 以前的标准。
 
 [^note3]: 这种右移方式称为算术右移。在 C++20 以前的标准中，并没有规定带符号数右移运算的实现方式，大多数平台均采用算术右移。在 C++20 标准中，规定了带符号数右移运算是算术右移。
+
+## 习题
+
+> [!NOTE] **[AcWing 801. 二进制中1的个数](https://www.acwing.com/problem/content/803/)**
+> 
+> 题意: TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int n, v;
+
+int get(int v) {
+    int cnt = 0;
+    while (v) {
+        v = v & (v - 1);
+        ++cnt;
+    }
+    return cnt;
+}
+
+int main() {
+    scanf("%d", &n);
+    for (int i = 0; i < n; ++i) {
+        scanf("%d", &v);
+        printf("%d", get(v));
+        if (i != n - 1)
+            printf(" ");
+        else
+            printf("\n");
+    }
+}
+```
+
+##### **C++ 2**
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    int n;
+    scanf("%d", &n);
+    while (n -- ) {
+        int x, s = 0;
+        scanf("%d", &x);
+
+        for (int i = x; i; i -= i & -i) s ++ ;
+
+        printf("%d ", s);
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

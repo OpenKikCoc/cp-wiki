@@ -236,3 +236,103 @@ $$
 ## 参考资料与注释
 
 [^ref1]: [金策 - 字符串算法选讲](https://wenku.baidu.com/view/850f93f4fbb069dc5022aaea998fcc22bcd1433e.html)
+
+
+## 习题
+
+> [!NOTE] **[AcWing 831. KMP字符串](https://www.acwing.com/problem/content/833/)**
+> 
+> 题意: TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 1000010;
+
+int n, m;
+char p[N], s[N];
+int f[N];
+
+void getnxt() {
+    f[0] = f[1] = 0;
+    for (int i = 1; i < n; ++ i ) {
+        int j = f[i];
+        while (j && p[j] != p[i]) j = f[j];
+        if (p[j] == p[i]) f[i + 1] = j + 1;
+        else f[i + 1] = 0;
+    }
+}
+
+int main() {
+    scanf("%d%s", &n, p);
+    
+    getnxt();
+    
+    scanf("%d%s", &m, s);
+    
+    int j = 0;
+    for (int i = 0; i < m; ++ i ) {
+        while (j && p[j] != s[i]) j = f[j];
+        if (p[j] == s[i]) ++ j ;
+        if (j == n) {
+            cout << i - n + 1 << ' ';
+            j = f[j];
+        }
+    }
+    cout << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+"""
+next数组存的是：字符串的前缀集合与后缀集合的交集中最长元素的长度
+KMP 的核心思想：在每次匹配失败时，不是把p串往后移一位，而是把p串往后移动到下一次可以和前面部分匹配的位置的最大的地方，这样就可以跳过大多数的不匹配的步骤；而每次p串移动的步数就是通过查找next数组来确定的。
+
+"""
+if __name__ == '__main__':
+    n = int(input())
+    # 加一个' ', 使得下标从1开始
+    p = ' ' + input()
+    m = int(input())
+    s = ' ' + input()
+    # 待匹配字符的next数组
+    ne = [0] * 10010
+
+    # 求next数组
+    j = 0
+    # 注意！！next数组下标从1开始，next[1]=0，所以计算next数组的时候下标从2开始循环！（踩坑）
+    for i in range(2, n + 1):
+        while j and p[i] != p[j + 1]:
+            j = ne[j]
+        if p[i] == p[j + 1]:
+            j += 1
+        ne[i] = j
+
+    # 字符串匹配
+    j = 0
+    for i in range(1, m + 1):
+        while j and s[i] != p[j + 1]:
+            j = ne[j]
+        if s[i] == p[j + 1]:
+            j += 1
+        if j == n:
+            print(i - j + 1 - 1, end=' ')
+            j = ne[j]
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

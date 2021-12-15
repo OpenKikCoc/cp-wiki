@@ -129,6 +129,194 @@ $$
 
 ### 习题
 
+> [!NOTE] **[AcWing 799. 最长连续不重复子序列](https://www.acwing.com/activity/content/11/)**
+> 
+> 题意: TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+const int N = 100010;
+
+int n;
+int q[N], s[N];
+
+int main() {
+    scanf("%d", &n);
+    for (int i = 0; i < n; i ++ ) scanf("%d", &q[i]);
+
+    int res = 0;
+    for (int i = 0, j = 0; i < n; i ++ ) {
+        s[q[i]] ++ ;
+        while (j < i && s[q[i]] > 1) s[q[j ++ ]] -- ;
+        res = max(res, i - j + 1);
+    }
+
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+if __name__=='__main__':
+    n = int(input())
+    arr = list(map(int,input().split()))
+    l = 0
+    import collections
+    res, my_dict = 0, collections.defaultdict(int)
+    for r in range(len(arr)):
+        my_dict[arr[r]] += 1
+        while my_dict[arr[r]] > 1:
+            my_dict[arr[l]] -= 1
+            l += 1 
+        res = max(res, r - l + 1)
+    print(res)
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 800. 数组元素的目标和](https://www.acwing.com/problem/content/802/)**
+> 
+> 题意: TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+const int N = 1e5 + 10;
+
+int n, m, x;
+int a[N], b[N];
+
+int main() {
+    scanf("%d%d%d", &n, &m, &x);
+    for (int i = 0; i < n; i ++ ) scanf("%d", &a[i]);
+    for (int i = 0; i < m; i ++ ) scanf("%d", &b[i]);
+
+    for (int i = 0, j = m - 1; i < n; i ++ ) {
+        while (j >= 0 && a[i] + b[j] > x) j -- ;
+        if (j >= 0 && a[i] + b[j] == x) cout << i << ' ' << j << endl;
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+if __name__=='__main__':
+    n, m, x = map(int,input().split())
+    A = list(map(int, input().split()))
+    B = list(map(int, input().split()))
+    p1, p2 = 0, m - 1
+    while p1 < n and p2 >= 0:
+        v = A[p1] + B[p2]
+        if v == x:
+            break
+        elif v < x:
+            p1 += 1
+        else:
+            p2 -= 1
+    print(p1, p2)
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 2816. 判断子序列](https://www.acwing.com/problem/content/2818/)**
+> 
+> 题意: TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+const int N = 100010;
+
+int n, m;
+int a[N], b[N];
+
+int main() {
+    scanf("%d%d", &n, &m);
+    for (int i = 0; i < n; i ++ ) scanf("%d", &a[i]);
+    for (int i = 0; i < m; i ++ ) scanf("%d", &b[i]);
+
+    int i = 0, j = 0;
+    while (i < n && j < m) {
+        if (a[i] == b[j]) i ++ ;
+        j ++ ;
+    }
+
+    if (i == n) puts("Yes");
+    else puts("No");
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+#扫描B，这样的逻辑就很轻松了
+if __name__ == '__main__':
+    n, m = map(int,input().split())
+    a = list(map(int,input().split()))
+    b = list(map(int,input().split()))
+    
+    p1, p2 = 0, 0
+    while p2 < m and p1 < n:
+        if a[p1] == b[p2]:
+            p1 += 1
+        p2 += 1
+    if p1 == n:
+        print('Yes')
+    else:
+        print('No')
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 [leetcode 15. 三数之和](https://leetcode-cn.com/problems/3sum/)
 
 [leetcode 1438. 绝对差不超过限制的最长连续子数组](https://leetcode-cn.com/problems/longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit/)

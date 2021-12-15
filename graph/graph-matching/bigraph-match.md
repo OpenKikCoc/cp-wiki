@@ -187,6 +187,157 @@ int main() {
 }
 ```
 
+> [!NOTE] **[AcWing 861. 二分图的最大匹配](https://www.acwing.com/problem/content/863/)**
+> 
+> 题意: TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+const int N = 510, M = 100010;
+
+int n1, n2, m;
+int h[N], e[M], ne[M], idx;
+int match[N];
+bool st[N];
+
+void add(int a, int b) { e[idx] = b, ne[idx] = h[a], h[a] = idx++; }
+
+bool find(int x) {
+    for (int i = h[x]; i != -1; i = ne[i]) {
+        int j = e[i];
+        if (!st[j]) {
+            st[j] = true;
+            if (match[j] == 0 || find(match[j])) {
+                match[j] = x;
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+int main() {
+    scanf("%d%d%d", &n1, &n2, &m);
+
+    memset(h, -1, sizeof h);
+
+    while (m--) {
+        int a, b;
+        scanf("%d%d", &a, &b);
+        add(a, b);
+    }
+
+    int res = 0;
+    for (int i = 1; i <= n1; i++) {
+        memset(st, false, sizeof st);
+        if (find(i)) res++;
+    }
+
+    printf("%d\n", res);
+
+    return 0;
+}
+
+```
+
+##### **Python**
+
+```python
+"""
+    /**
+     * 要了解匈牙利算法必须先理解下面的概念：
+     *     匹配：在图论中，一个「匹配」是一个边的集合，其中任意两条边都没有公共顶点。
+     *     最大匹配：一个图所有匹配中，所含匹配边数最多的匹配，称为这个图的最大匹配。
+     *
+     * 下面是一些补充概念：
+     *     完美匹配：如果一个图的某个匹配中，所有的顶点都是匹配点，那么它就是一个完美匹配。
+     *     交替路：从一个未匹配点出发，依次经过非匹配边、匹配边、非匹配边…形成的路径叫交替路。
+     *     增广路：从一个未匹配点出发，走交替路，如果途径另一个未匹配点（出发的点不算），则这条交替 路称为增广路（agumenting path）。
+     *
+     * 匈牙利算法思路：
+     *     每个点从另一个集合里挑对象，没冲突的话就先安排上，要是冲突了就用增广路径重新匹配。重复上述思路，
+     *     直到所有的点都找到对象，或者找不到对象也找不到增广路。
+     */
+
+算法流程：
+如果你想找的妹子已经有了男朋友，
+你就去问问她男朋友，你有没有备胎，把这个让给我好吧
+
+多么真实而实用的算法
+
+TIP: 因为你要去问的都是男孩子，所以存边的时候，都是由男孩子指向女孩子
+
+"""
+
+
+def add_edge(a, b):
+    global idx
+    ev[idx] = b
+    ne[idx] = h[a]
+    h[a] = idx
+    idx += 1
+
+
+def find(x):
+    i = h[x]
+    # 遍历自己的连接（自己喜欢的女孩）
+    while i != -1:
+        j = ev[i]
+        # 如果在这一轮模拟匹配中,这个点还没有被用过
+        if not st[j]:
+            # 预定这个点
+            st[j] = True
+            # 如果j没有对应的点，或者j之前的点还可以连接其他点。配对成功,更新match
+            if match[j] == 0 or find(match[j]):
+                match[j] = x
+                return True
+        i = ne[i]
+    return False
+
+
+if __name__ == '__main__':
+    N = 510
+    M = 100010  # 注意：边的范围
+    h = [-1] * N
+    ev = [0] * M
+    ne = [0] * M
+    idx = 0
+    match = [0] * N  # 右边对应的点，match[j]=a,表示右边的点j的现有配对点是a
+    st = [False] * N  # 表示 本次轮匹配中 有没有检查过该点
+    res = 0  # 匹配的数量
+
+    n1, n2, m = map(int, input().split())
+    for _ in range(m):
+        a, b = map(int, input().split())
+        # 枚举左边集合，只需要存从左边指向右边就可以了
+        add_edge(a, b)
+
+    for i in range(1, n1 + 1):
+        st = [False] * N  # clear flag
+        if find(i):
+            res += 1
+    print(res)
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[P1640 [SCOI2010]连续攻击游戏](https://www.luogu.com.cn/problem/P1640) **
 > 
 > None

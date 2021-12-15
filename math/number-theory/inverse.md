@@ -79,6 +79,73 @@ inline int qpow(long long a, int b) {
 }
 ```
 
+###### **C++ AcWing**
+
+```cpp
+// C++ Version
+//      a / b === a * x (mod m)
+// -->  a / b === a * b^-1 (mod m)
+//      b * b^-1 === 1 (mod m)
+//      b * x === 1 (mod m)
+//      x 是 b 的逆元
+//
+//      m 为质数 则
+//      b^p-1 === 1 (mod p)
+//      b * b^p-2 === 1 (mod p)
+//      本质要求 b^p-2 mod p
+
+/*
+                a / b ≡ a * x (mod n)
+两边同乘b可得
+                a ≡ a * b * x (mod n)
+即
+                1 ≡ b * x (mod n)
+同
+                b * x ≡ 1 (mod n)
+由费马小定理可知，当n为质数时
+                b ^ (n - 1) ≡ 1 (mod n)
+拆一个b出来可得
+                b * b ^ (n - 2) ≡ 1 (mod n)
+故当n为质数时，b的乘法逆元
+                x = b ^ (n - 2)
+
+当n不是质数时，可以用扩展欧几里得算法求逆元：
+a有逆元的充要条件是a与p互质，所以gcd(a, p) = 1
+假设a的逆元为x，那么有a * x ≡ 1 (mod p)
+等价：ax + py = 1
+exgcd(a, p, x, y)
+*/
+#include<bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+LL qmi(int a, int b, int p) {
+    LL res = 1;
+    while (b) {
+        if (b & 1) res = res * a % p;
+        a = a * (LL)a % p;
+        b >>= 1;
+    }
+    return res;
+}
+
+int main() {
+    int n;
+    cin >> n;
+    while (n -- ) {
+        int a, p;
+        cin >> a >> p;
+        // 如果b是p的倍数则无解
+        int res = qmi(a, p - 2, p);
+        if (a % p) cout << res << endl;
+        else cout << "impossible" << endl;
+    }
+    return 0;
+}
+```
+
+
 ###### **Python**
     
 ```python

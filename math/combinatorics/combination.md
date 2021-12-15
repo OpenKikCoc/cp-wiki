@@ -282,3 +282,402 @@ $$
 $$
 
 通过组合分析——考虑 $S={a_1, a_2, \cdots, a_{n+1}}$ 的 $k+1$ 子集数可以得证。
+
+
+## 习题
+
+> [!NOTE] **[AcWing 885. 求组合数 I](https://www.acwing.com/problem/content/887/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 2010;
+const int mod = 1e9 + 7;
+
+int c[N][N];
+
+void init() {
+    for (int i = 0; i < N; ++ i )
+        for (int j = 0; j <= i; ++ j )
+            if (!j) c[i][j] = 1;
+            else c[i][j] = (c[i - 1][j] + c[i - 1][j - 1]) % mod;
+}
+
+int main() {
+    int n;
+    init();
+    cin >> n;
+    
+    while (n -- ) {
+        int a, b;
+        cin >> a >> b;
+        cout << c[a][b] << endl;
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 886. 求组合数 II](https://www.acwing.com/problem/content/888/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> $$
+> C_{a}^{b} = a! / ((a - b)! b!)
+>   fact[i] = i! mod 1e9+7
+> infacr[i] = (i!)^-1 mod 1e9+7
+> $$
+> 
+> ==>
+> 
+> $$
+> C_{a}^{b} = fact[a] * infact[a - b] * infact[b]
+> $$
+> 
+> 核心思想 预处理阶乘以及阶乘模逆元
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+const int N = 100010, mod = 1e9 + 7;
+
+int fact[N], infact[N];
+
+int qmi(int a, int k, int p) {
+    int res = 1;
+    while (k) {
+        if (k & 1) res = (LL)res * a % p;
+        a = (LL)a * a % p;
+        k >>= 1;
+    }
+    return res;
+}
+
+void init() {
+    fact[0] = infact[0] = 1;
+    for (int i = 1; i < N; ++ i ) {
+        fact[i] = (LL)fact[i - 1] * i % mod;
+        infact[i] = (LL)infact[i - 1] * qmi(i, mod - 2, mod) % mod;
+    }
+}
+
+int main() {
+    init();
+    
+    int n;
+    cin >> n;
+    while (n -- ) {
+        int a, b;
+        cin >> a >> b;
+        cout << (LL)fact[a] * infact[b] % mod * infact[a - b] % mod << endl;
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 887. 求组合数 III](https://www.acwing.com/problem/content/889/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+>
+> 时间复杂度 接近 10^18 -> 4*10^7   $PlogNlogP$
+>
+> 基于：
+>    $$ [C_{a}^{b}] = [C_{a\bmod p}^{b\bmod p}] * [C_{a/p}^{b/p}]  (\bmod p)$$
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+int qmi(int a, int k, int p) {
+    int res = 1;
+    while (k) {
+        if (k & 1) res = (LL)res * a % p;
+        a = (LL)a * a % p;
+        k >>= 1;
+    }
+    return res;
+}
+
+// Ca b = a! / ((a- b)! * b!) = a*(a-1)*...*(a-b+1) / b!
+int C(int a, int b, int p) {
+    if (b > a) return 0;
+    int res = 1;
+    for (int i = 1, j = a; i <= b; ++ i , -- j ) {
+        // res = res * j / i = res * j * i^-1
+        res = (LL)res * j % p;
+        res = (LL)res * qmi(i, p - 2, p) % p;
+    }
+    return res;
+}
+
+int lucas(LL a, LL b, int p) {
+    if (a < p && b < p) return C(a, b, p);
+    return (LL)C(a % p, b % p, p) * lucas(a / p, b / p, p) % p;
+}
+
+int main() {
+    int n;
+    cin >> n;
+    
+    while (n -- ) {
+        LL a, b;
+        int p;
+        cin >> a >> b >> p;
+        cout << lucas(a, b, p) << endl;
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 888. 求组合数 IV](https://www.acwing.com/problem/content/890/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+>
+> $$
+> C_{a}^{b} = [a*(a-1)*...*(a-b+1)] / [b*(b-1)*...*1]
+> $$
+> 
+> 大数运算很难
+>
+> 故第一步：将 $C_{a}^{b}$ 分解质因数：$$C_{a}^{b} = p1^{a1} ... pk^{ak}$$
+>
+> 此时 $C_{a}^{b}$ 表示为 $C_{a}^{b} = a! / [b! * (a-b)!]$ 更好
+>
+> 先求分子的p 再减去分母的p即可
+>
+> 【求每个质数的次数】
+>
+> $$a! = a/p + a/p^2 + ... + a/p^k$$
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 5010;
+
+int primes[N], cnt;
+int sum[N]; // 每个质数的次数
+bool st[N];
+
+void get_primes(int n) {
+    for (int i = 2; i <= n; ++ i ) {
+        if (!st[i]) primes[cnt ++ ] = i;
+        for (int j = 0; primes[j] <= n / i; ++ j ) {
+            st[primes[j] * i] = true;
+            if (i % primes[j] == 0) break;
+        }
+    }
+}
+
+// 获取质数次数
+int get(int n, int p) {
+    int res = 0;
+    while (n) {
+        res += n / p;
+        n /= p;
+    }
+    return res;
+}
+
+vector<int> mul(vector<int> a, int b) {
+    vector<int> c;
+    int t = 0;
+    for (int i = 0; i < a.size(); ++ i ) {
+        t += a[i] * b;
+        c.push_back(t % 10);
+        t /= 10;
+    }
+    while (t) {
+        c.push_back(t % 10);
+        t /= 10;
+    }
+    return c;
+}
+
+int main() {
+    int a, b;
+    cin >> a >> b;
+    
+    get_primes(a);
+    
+    for (int i = 0; i < cnt; ++ i ) {
+        int p = primes[i];
+        sum[i] = get(a, p) - get(a - b, p) - get(b, p);
+    }
+    
+    vector<int> res;
+    res.push_back(1);
+    
+    for (int i = 0; i < cnt; ++ i )
+        for (int j = 0; j < sum[i]; ++ j )
+            res = mul(res, primes[i]);
+            
+    for (int i = res.size() - 1; i >= 0; -- i ) cout << res[i];
+    cout << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 889. 满足条件的01序列](https://www.acwing.com/problem/content/891/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+>
+> 卡特兰数
+>
+> 转化为：平面图路径 中线绿 非法线红
+>
+> 在互补的情况下 $C_{12}^{5} = C_{12}^{7}$
+>
+> 在线下方的个数等于 $C_{2n}^{n} = C_{2n}^{n} - C_{2n}^{n-1} = C_{2n}^{n} / (n+1)$ 成为卡特兰数
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+const int N = 100010, mod = 1e9 + 7;
+
+int qmi(int a, int k, int p) {
+    int res = 1;
+    while (k) {
+        if (k & 1) res = (LL)res * a % p;
+        a = (LL)a * a % p;
+        k >>= 1;
+    }
+    return res;
+}
+
+int main() {
+    int n;
+    cin >> n;
+    
+    int a = n * 2, b = n;
+    int res = 1;
+    // C2n n
+    for (int i = a; i > a - b; -- i ) res = (LL)res * i % mod;
+    
+    for (int i = 1; i <= b; ++ i ) res = (LL)res * qmi(i, mod - 2, mod) % mod;
+    
+    // 除 n + 1
+    res = (LL)res * qmi(n + 1, mod - 2, mod) % mod;
+    
+    cout << res << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

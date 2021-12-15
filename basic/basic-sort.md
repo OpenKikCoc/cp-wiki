@@ -102,7 +102,7 @@ if __name__ == '__main__':
 
 #### 内省排序
 
-内省排序（英语：Introsort 或 Introspective sort）是快速排序和 [堆排序](./heap-sort.md) 的结合，由 David Musser 于 1997 年发明。内省排序其实是对快速排序的一种优化，保证了最差时间复杂度为 $O(n\log n)$。
+内省排序（英语：Introsort 或 Introspective sort）是快速排序和 堆排序 的结合，由 David Musser 于 1997 年发明。内省排序其实是对快速排序的一种优化，保证了最差时间复杂度为 $O(n\log n)$。
 
 内省排序将快速排序的最大递归深度限制为 $\lfloor \log_2n \rfloor$，超过限制时就转换为堆排序。这样既保留了快速排序内存访问的局部性，又可以防止快速排序在某些情况下性能退化为 $O(n^2)$。
 
@@ -184,7 +184,7 @@ if __name__ == '__main__':
 
 <br>
 
-归并排序（英语：merge sort）是一种采用了 [分治](./divide-and-conquer.md) 思想的排序算法。
+归并排序（英语：merge sort）是一种采用了 [分治](basic/divide-and-conquer.md) 思想的排序算法。
 
 ## 归并排序
 
@@ -329,3 +329,95 @@ def merge_sort(l, r):
 <br>
 
 另外，逆序对也可以用 [树状数组](ds/fenwick.md)、[线段树](ds/seg.md) 等数据结构求解。这三种方法的时间复杂度都是 $O(n \log n)$。
+
+
+## 堆排序
+
+> [!NOTE] **[AcWing 838. 堆排序](https://www.acwing.com/problem/content/840/)**
+> 
+> 题意: TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 100010;
+
+int n, m;
+int h[N], cnt;
+
+void down(int u) {
+    int t = u;
+    if (u * 2 <= cnt && h[u * 2] < h[t]) t = u * 2;
+    if (u * 2 + 1 <= cnt && h[u * 2 + 1] < h[t]) t = u * 2 + 1;
+    if (u != t) {
+        swap(h[u], h[t]);
+        down(t);
+    }
+}
+
+int main() {
+    cin >> n >> m;
+    for (int i = 1; i <= n; ++ i ) cin >> h[i];
+    
+    cnt = n;
+    
+    for (int i = n / 2; i; -- i ) down(i);
+    
+    while (m -- ) {
+        cout << h[1] << ' ';
+        h[1] = h[cnt -- ];
+        down(1);
+    }
+    cout << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+def down(i):
+    min_idx = i
+    if 2 * i < len(nums) and nums[2 * i] < nums[i]:
+        min_idx = 2 * i
+    if 2 * i + 1 < len(nums) and nums[2 * i + 1] < nums[min_idx]:
+        min_idx = 2 * i + 1
+    if min_idx != i:
+        nums[i], nums[min_idx] = nums[min_idx], nums[i]
+        down(min_idx)
+
+
+def pop():
+    x = nums[1]
+    nums[1] = nums[-1]
+    nums.pop()
+    down(i)
+    return x
+
+
+if __name__ == '__main__':
+    n, m = map(int, input().split())
+    nums = [0] + list(map(int, input().split()))
+
+    for i in range(len(nums) // 2, 0, -1):
+        down(i)
+    res = []
+    for j in range(m):
+        res.append(pop())
+    print(' '.join(map(str, res)))
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

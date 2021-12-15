@@ -70,6 +70,146 @@ $$
 
 所以，$T+e-f$ 包含了 $F$，并且也是一棵最小生成树，归纳成立。
 
+> [!NOTE] **[AcWing 859. Kruskal算法求最小生成树](https://www.acwing.com/problem/content/861/)**
+> 
+> 题意: TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 100010, M = N << 1, INF = 0x3f3f3f3f;
+
+int n, m;
+int p[N];
+
+struct Edge {
+    int a, b, w;
+    
+    bool operator< (const Edge & t) const {
+        return w < t.w;
+    }
+}edges[M];
+
+int find(int x) {
+    if (p[x] != x) p[x] = find(p[x]);
+    return p[x];
+}
+
+int kruskal() {
+    sort(edges, edges + m);
+    
+    for (int i = 1; i <= n; ++ i ) p[i] = i;
+    
+    int res = 0, cnt = 0;
+    for (int i = 0; i < m; ++ i ) {
+        auto [a, b, w] = edges[i];
+        a = find(a), b = find(b);
+        if (a != b) {
+            p[a] = b;
+            res += w;
+            cnt ++ ;
+        }
+    }
+    
+    if (cnt < n - 1) return INF;
+    return res;
+}
+
+int main() {
+    cin >> n >> m;
+    for (int i = 0; i < m; ++ i ) {
+        int a, b, w;
+        cin >> a >> b >> w;
+        edges[i] = {a, b, w};
+    }
+    
+    int t = kruskal();
+    
+    if (t == INF) cout << "impossible" << endl;
+    else cout << t << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+"""
+2）克鲁斯卡尔算法（Kruskal）：**O(mlogm)**
+- 适用于稀疏图
+- 很优美的算法
+  - 算法流程：
+    1. 将所有边按权重从小到大排序（用系统默认的sort，快排 这里限制了时间复杂度）
+    2. 从小到大枚举每条边a,b 权重c:
+       if  a和b不连通：将这条边加入到集合中
+       （第2步 可以参考连通块中点的数量==> 属于并查集的应用，整个第2步的时间复杂度O(m)）
+- 不需要用复杂的数据结构，可以直接开一个结构体存储所有边就可以了。
+
+Kruskal算法：从小到大挑不多余的边。
+"""
+
+
+# 并查集模板
+def find(x):
+    if p[x] != x:
+        p[x] = find(p[x])
+    return p[x]
+
+
+def kruskal():
+    res = 0  # 存储的是 最小生成树里的所有树边的权重之和
+    cnt = 0  # 存储的是 当前加入了多少条边
+
+    edges.sort(key=lambda x: x[2])  # 1. 对所有边按照权重升序排序
+
+    # 初始化并查集
+    for i in range(1, n + 1):
+        p[i] = i
+
+    for i in range(m):  # 2. 遍历所有边，如果边的两个节点不连通，就将这两个点添加到并查集的集合中
+        a = edges[i][0]
+        b = edges[i][1]
+        w = edges[i][2]
+
+        a = find(a)
+        b = find(b)
+        if a != b:
+            p[a] = b
+            res += w
+            cnt += 1
+    if cnt < (n - 1):
+        print('impossible')  # !!!出错：不能写成if cnt>n-1，因为没有考虑不存在连通图的情况
+    else:
+        print(res)
+
+
+if __name__ == '__main__':
+    N = 1000010
+    M = 2 * N
+    edges = []
+    p = [0] * N
+
+    n, m = map(int, input().split())
+    for _ in range(m):
+        edges.append(list(map(int, input().split())))
+
+    kruskal()
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ## Prim 算法
 
 Prim 算法是另一种常见并且好写的最小生成树算法。该算法的基本思想是从一个结点开始，不断加点（而不是 Kruskal 算法的加边）。
@@ -144,6 +284,138 @@ $$
 然后，$f$ 的权值一定不大于 $e$ 的权值，否则 $T+e-f$ 就是一棵更小的生成树了。
 
 因此，$e$ 和 $f$ 的权值相等，$T+e-f$ 也是一棵最小生成树，且包含了 $F$。
+
+> [!NOTE] **[AcWing 858. Prim算法求最小生成树](https://www.acwing.com/problem/content/860/)**
+> 
+> 题意: TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+const int N = 510, INF = 0x3f3f3f3f;
+
+int n, m;
+int g[N][N];
+int dist[N];
+bool st[N];
+
+int prim() {
+    memset(dist, 0x3f, sizeof dist);
+
+    int res = 0;
+    for (int i = 0; i < n; i++) {
+        int t = -1;
+        for (int j = 1; j <= n; j++)
+            if (!st[j] && (t == -1 || dist[t] > dist[j])) t = j;
+
+        if (i && dist[t] == INF) return INF;
+
+        if (i) res += dist[t];
+        st[t] = true;
+
+        for (int j = 1; j <= n; j++) dist[j] = min(dist[j], g[t][j]);
+    }
+
+    return res;
+}
+
+int main() {
+    scanf("%d%d", &n, &m);
+
+    memset(g, 0x3f, sizeof g);
+
+    while (m--) {
+        int a, b, c;
+        scanf("%d%d%d", &a, &b, &c);
+        g[a][b] = g[b][a] = min(g[a][b], c);
+    }
+
+    int t = prim();
+
+    if (t == INF)
+        puts("impossible");
+    else
+        printf("%d\n", t);
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+"""
+1.最小生成树:就是极小连通子图；（这类问题对应的图都是无向图。）
+
+算法分类：
+- 普里姆算法（Prim）：和迪杰斯特拉算法相似。
+- 克鲁斯卡尔算法（Kruskal）
+
+1）【普里姆算法】
+> Dijkstra算法是更新到起始点的距离，Prim是更新到集合S的距离
+- 朴素Prim算法：**O(n*n)**
+  - 适用于稠密图
+  - 算法流程：
+    1. 先把所有距离初始化为正无穷
+    2. n次迭代，每次迭代找到不在集合中 距离**最小**的点 t（集合：表示已经在当前连通块里的所有点）；
+    3.接着用t更新其他点到**集合**的距离；st[t]=True
+
+Prim算法：每次挑一条与当前集合相连的最短边；
+"""
+
+
+def prime():
+    res = 0
+    for i in range(n):
+        t = -1
+        for j in range(1, n + 1):
+            if not st[j] and (t == -1 or d[j] < d[t]):
+                t = j
+        st[t] = True
+
+        if i and d[t] == float('inf'):
+            return float('inf')
+        if i:
+            res += d[t]
+        for j in range(1, n + 1):
+            d[j] = min(d[j], g[t][j])
+    return res
+
+
+if __name__ == '__main__':
+    N = 510
+    M = 100010
+    g = [[float('inf')] * N for _ in range(N)]
+    d = [float('inf')] * N
+    st = [False] * N
+
+    n, m = map(int, input().split())
+    for _ in range(m):
+        a, b, c = map(int, input().split())
+        g[a][b] = g[b][a] = min(g[a][b], c)
+    res = prime()
+    if res == float('inf'):
+        print('impossible')
+    else:
+        print(res)
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 ## Boruvka 算法
 

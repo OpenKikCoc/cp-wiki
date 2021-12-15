@@ -182,3 +182,100 @@ $$
 </details>
 
 <br>
+
+
+## 习题
+
+> [!NOTE] **[AcWing 829. 模拟队列](https://www.acwing.com/problem/content/831/)**
+> 
+> 题意: TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+const int maxn = 1e5+5;
+
+int st[maxn], s, t;
+
+void init() {
+    s = t = 0;  // 首部为s+1 即 (s, t]
+}
+
+void push(int x) {
+    st[++t] = x;
+}
+
+void pop() {
+    if(s < t) ++s;  // 保险
+}
+
+bool empty() {
+    return s == t;
+}
+
+int query() {
+    return st[s+1]; // 忽略队列长度校验和空校验。。。
+}
+
+int main() {
+    init();
+    int m, x;
+    string c;
+    cin >>m;
+    while(m--) {
+        cin >> c;
+        if(c == "push") {
+            cin >> x;
+            push(x);
+        } else if(c == "pop") {
+            pop();
+        } else if(c == "empty") {
+            if(empty()) cout <<"YES"<<endl;
+            else cout <<"NO"<<endl;
+        } else if(c == "query") {
+            cout <<query()<<endl;
+        }
+    }
+}
+```
+
+##### **Python**
+
+```python
+if __name__ == '__main__':
+    N = 100010
+    q = [0] * N
+    # 定义 队头 和 队尾
+    hh = 0
+    tt = -1
+
+    n = int(input())
+    for i in range(n):
+        op = input().split()
+        if op[0] == 'push':
+            tt += 1
+            q[tt] = int(op[1])
+        elif op[0] == 'pop':
+            hh += 1
+        elif op[0] == 'empty':
+            if hh <= tt:
+                print('NO')
+            else:
+                print('YES')
+        else:
+            print(q[hh])
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

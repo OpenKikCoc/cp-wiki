@@ -302,3 +302,408 @@ int exgcd(int a, int b, int &x, int &y) {
 - [10104 - Euclid Problem](https://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=1045)
 - [GYM - (J) once upon a time](http://codeforces.com/gym/100963)
 - [UVA - 12775 - Gift Dilemma](https://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=4628)
+
+
+## 习题
+
+> [!NOTE] **[AcWing 869. 试除法求约数](https://www.acwing.com/problem/content/871/)**
+> 
+> 题意: TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+vector<int> get_divisor(int x) {
+    vector<int> res;
+    for (int i = 1; i <= x / i; ++ i )
+        if (x % i == 0) {
+            res.push_back(i);
+            if (i != x / i) res.push_back(x / i);
+        }
+    sort(res.begin(), res.end());
+    return res;
+}
+
+int main() {
+    int n;
+    cin >> n;
+    
+    while (n -- ) {
+        int x;
+        cin >> x;
+        auto res = get_divisor(x);
+        
+        for (auto x : res) cout << x << ' ';
+        cout << endl;
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 870. 约数个数](https://www.acwing.com/problem/content/872/)**
+> 
+> 题意: TODO
+
+
+> [!TIP] **思路**
+> 
+> 分解质因子
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// 求一系列数的乘积的约数个数
+#include<bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+const int mod = 1e9 + 7;
+
+int main() {
+    int n;
+    cin >> n;
+    
+    unordered_map<int, int> primes;
+    
+    while (n -- ) {
+        int x;
+        cin >> x;
+        
+        for (int i = 2; i <= x / i; ++ i )
+            while (x % i == 0)
+                x /= i, ++ primes[i];
+        if (x > 1) ++ primes[x];
+    }
+    LL res = 1;
+    for (auto [v, c] : primes) res = res * (c + 1) % mod;
+    cout << res << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 871. 约数之和](https://www.acwing.com/problem/content/873/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> $f(n)=(p_1^0+p_1^1+…p_1^a1)(p_2^0+p_2^1+…p_2^a2)…(p_k^0+p_k^1+…p_k^ak)$
+> 
+> 可以乘法逆元加速求积运算
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+const int mod = 1e9 + 7;
+
+int main() {
+    int n;
+    cin >> n;
+    unordered_map<int, int> primes;
+    
+    while (n -- ) {
+        int x;
+        cin >> x;
+        for (int i = 2; i <= x / i; ++ i )
+            while (x % i == 0)
+                x /= i, ++ primes[i];
+        if (x > 1) ++ primes[x];
+    }
+    LL res = 1;
+    for (auto [v, c] : primes) {
+        LL t = 1;
+        // p1^0 + p1^1 + .. + p1^c     [共c+1项之和]
+        while (c -- ) t = (t * v + 1) % mod;
+        // 累乘积
+        res = res * t % mod;
+    }
+    cout << res << endl;
+    return 0;
+}
+```
+
+##### **C++ 乘法逆元加速**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const int MOD = 1e9 + 7;
+
+int n;
+
+int qpow(int a, int b) {
+    int ret = 1;
+    while (b) {
+        if (b & 1)
+            ret = (LL)ret * a % MOD;
+        a = (LL)a * a % MOD;
+        b >>= 1;
+    }
+    return ret;
+}
+
+int main() {
+    cin >> n;
+    
+    unordered_map<int, int> prime;
+    while (n -- ) {
+        int x;
+        cin >> x;
+        for (int i = 2; i <= x / i; ++ i )
+            while (x % i == 0) {
+                x /= i;
+                prime[i] ++ ;
+            }
+        if (x > 1)
+            prime[x] ++ ;
+    }
+    
+    LL res = 1;
+    for (auto [p, c] : prime) {
+        // 使用乘法逆元加速计算
+        // s = a0 * (1 - q^n) / (1 - q)
+        // n = c + 1;
+        // 除q-1等于乘q-1的逆元
+        LL t = (LL)(qpow(p, c + 1) - 1 + MOD) % MOD * qpow(p - 1, MOD - 2) % MOD;
+        res = res * t % MOD;
+    }
+    cout << res << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 872. 最大公约数](https://www.acwing.com/problem/content/874/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+int gcd(int a, int b) {
+    return b ? gcd(b, a % b) : a;
+}
+
+int main() {
+    int n;
+    cin >> n;
+    while (n -- ) {
+        int a, b;
+        cin >> a >> b;
+        cout << gcd(a, b) << endl;
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 877. 扩展欧几里得算法](https://www.acwing.com/problem/content/879/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+/*
+ax + by = d
+求出一组可行解 x0 y0后  k为任意整数
+x = x0 - b / d * k;
+y = y0 + a / d * k
+*/
+#include<bits/stdc++.h>
+using namespace std;
+
+int exgcd(int a, int b, int & x, int & y) {
+    if (!b) {
+        x = 1, y = 0;
+        return a;
+    }
+    int d = exgcd(b, a % b, y, x);
+    y -= a / b * x;
+    return d;
+}
+
+int main() {
+    int n;
+    cin >> n;
+    while (n -- ) {
+        int a, b;
+        cin >> a >> b;
+        int x, y;
+        exgcd(a, b, x, y);
+        cout << x << " " << y << endl;
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 878. 线性同余方程](https://www.acwing.com/problem/content/880/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+/*
+         a * x === b % m
+     ==> ax = my + b
+     ==> ax - my = b
+     ==> ax + my'= b
+         gcd(a, m) | b 则有解
+      x = x0 * b / d % m        相当于倍增
+*/
+#include<bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+int exgcd(int a, int b, int & x, int & y) {
+    if (!b) {
+        x = 1, y = 0;
+        return a;
+    }
+    int d = exgcd(b, a % b, y, x);
+    y -= a / b * x;
+    return d;
+}
+
+int main() {
+    int n;
+    cin >> n;
+    while (n -- ) {
+        int a, b, m;
+        cin >> a >> b >> m;
+        int x, y;
+        int d = exgcd(a, m, x, y);
+        if (b % d) cout << "impossible" << endl;
+        else cout << (LL)b / d * x % m << endl;
+    }
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

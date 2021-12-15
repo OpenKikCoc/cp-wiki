@@ -59,31 +59,31 @@ Hash 的核心思想在于，将输入映射到一个值域较小、可以方便
 
 
 > ```cpp
->     int count_unique_substrings(string const& s) {
->       int n = s.size();
+>    int count_unique_substrings(string const& s) {
+>        int n = s.size();
 >     
->       const int b = 31;
->       const int m = 1e9 + 9;
->       vector<long long> b_pow(n);
->       b_pow[0] = 1;
->       for (int i = 1; i < n; i++) b_pow[i] = (b_pow[i - 1] * b) % m;
+>        const int b = 31;
+>        const int m = 1e9 + 9;
+>        vector<long long> b_pow(n);
+>        b_pow[0] = 1;
+>        for (int i = 1; i < n; i++) b_pow[i] = (b_pow[i - 1] * b) % m;
 >     
->       vector<long long> h(n + 1, 0);
->       for (int i = 0; i < n; i++)
->         h[i + 1] = (h[i] + (s[i] - 'a' + 1) * b_pow[i]) % m;
+>        vector<long long> h(n + 1, 0);
+>        for (int i = 0; i < n; i++)
+>            h[i + 1] = (h[i] + (s[i] - 'a' + 1) * b_pow[i]) % m;
 >     
->       int cnt = 0;
->       for (int l = 1; l <= n; l++) {
->         set<long long> hs;
->         for (int i = 0; i <= n - l; i++) {
->           long long cur_h = (h[i + l] + m - h[i]) % m;
->           cur_h = (cur_h * b_pow[n - i - 1]) % m;
->           hs.insert(cur_h);
->         }
->         cnt += hs.size();
->       }
->       return cnt;
->     }
+>        int cnt = 0;
+>        for (int l = 1; l <= n; l++) {
+>            set<long long> hs;
+>            for (int i = 0; i <= n - l; i++) {
+>                long long cur_h = (h[i + l] + m - h[i]) % m;
+>                cur_h = (cur_h * b_pow[n - i - 1]) % m;
+>                hs.insert(cur_h);
+>            }
+>            cnt += hs.size();
+>        }
+>        return cnt;
+>    }
 > ```
 
 ### 例题
@@ -93,11 +93,11 @@ Hash 的核心思想在于，将输入映射到一个值域较小、可以方便
 >   给你若干个字符串，答案串初始为空。第 $i$ 步将第 $i$ 个字符串加到答案串的后面，但是尽量地去掉重复部分（即去掉一个最长的、是原答案串的后缀、也是第 $i$ 个串的前缀的字符串），求最后得到的字符串。
 >    
 >   字符串个数不超过 $10^5$，总长不超过 $10^6$。
-    
+
 > [!TIP]  **题解**
 > 
 >  每次需要求最长的、是原答案串的后缀、也是第 $i$ 个串的前缀的字符串。枚举这个串的长度，哈希比较即可。
-        
+
 
  当然，这道题也可以使用 [KMP 算法](string/kmp.md) 解决。
     
@@ -121,3 +121,95 @@ Hash 的核心思想在于，将输入映射到一个值域较小、可以方便
 </details>
 
 <br>
+
+
+## 习题
+
+> [!NOTE] **[AcWing 841. 字符串哈希](https://www.acwing.com/problem/content/843/)**
+> 
+> 题意: TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ULL = unsigned long long;
+
+const int N = 100010, P = 131;
+
+int n, m;
+char str[N];
+ULL h[N], p[N];
+
+ULL get(int l, int r) {
+    return h[r] - h[l - 1] * p[r - l + 1];
+}
+
+int main() {
+    scanf("%d%d", &n, &m);
+    scanf("%s", str + 1);
+    
+    p[0] = 1;   // h[0] = 0;
+    for (int i = 1; i <= n; ++ i ) {
+        h[i] = h[i - 1] * P + str[i];
+        p[i] = p[i - 1] * P;
+    }
+    
+    while (m -- ) {
+        int l1, r1, l2, r2;a
+        cin >> l1 >> r1 >> l2 >> r2;
+        
+        if (get(l1, r1) == get(l2, r2)) cout << "Yes" << endl;
+        else cout << "No" << endl;
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+import sys
+
+def sub(l, r):
+    return (h[r] - h[l - 1] * p[r - l + 1]) % Q
+
+
+if __name__ == '__main__':
+
+    n, m = map(int, input().split())
+    s = input()
+    N = 100010
+    P = 131
+    Q=2**64
+
+    h = [0] * N
+    p = [0] * N
+    p[0] = 1
+    for i in range(len(s)):
+        #！！结果需要mod一个Q
+        # c++里用的h[N]和p[N]都是unsigned long long类型的 
+        h[i+1] = (h[i] * P + ord(s[i])) % Q
+        p[i+1] = (p[i] * P) % (1<<64)
+
+    for _ in range(m):
+        l1, r1, l2, r2 = map(int, sys.stdin.readline().strip().split())
+        if sub(l1, r1) == sub(l2, r2):
+            print('Yes')
+        else:
+            print('No')
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

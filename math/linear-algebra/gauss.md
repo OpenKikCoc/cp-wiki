@@ -348,7 +348,7 @@ struct matrix {
         cout << **MATRIX ** << n << ' ' << m << endl;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
-                cout << mat[i][j] << **\t";
+                cout << mat[i][j] << "\t";
             }
             cout << endl;
         }   
@@ -458,3 +458,212 @@ std::vector<bool> GaussElimination(
 
 - [Codeforces - 巫师和赌注](http://codeforces.com/contest/167/problem/E)
 - [luogu - SDOI2010 外星千足虫](https://www.luogu.com.cn/problem/P2447)
+
+## 习题
+
+> [!NOTE] **[AcWing 883. 高斯消元解线性方程组](https://www.acwing.com/problem/content/885/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+>
+> $n^3$ 复杂度内 求解多元一次方程组
+>
+> 解：
+>
+> 1. 无解
+> 2. 无穷多解
+> 3. 唯一解
+>
+>     $n * (n + 1)$ 的矩阵 可以做行列变换
+>     1. 某行乘一个非零的数
+>     2. 交换某两行
+>     3. 把某行的若干倍加到另一行
+>
+> 高斯消元将其变为一个上三角的形式
+>     
+> **代码流程：**
+>
+> 枚举每一列 c
+>
+> 1. 找到绝对值最大的一行
+> 2. 把这一行换到最上面去（未定的行的最上面）
+> 3. 将该行第一个数变为 1 （本行都除去第一个数）
+> 4. 把下面所有行的第c列变为0
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 110;
+const double eps = 1e-6;
+
+int n;
+double a[N][N];
+
+// 0 无穷多解   1 唯一解   2 无解
+int gauss() {
+    // 列 行
+    int c, r;
+    for (c = 0, r = 0; c < n; ++ c ) {
+        // 1. 找到绝对值最大的一行
+        int t = r;
+        for (int i = r; i < n; ++ i )
+            if (fabs(a[i][c]) > fabs(a[t][c]))
+                t = i;
+        
+        // 认为是 0
+        if (fabs(a[t][c]) < eps) continue;
+        
+        // 2. 这一行换到最上面
+        for (int i = c; i < n + 1; ++ i ) swap(a[t][i], a[r][i]);
+        // 3. 该行第一个数变为1
+        for (int i = n; i >= c; -- i ) a[r][i] /= a[r][c];
+        
+        // 4. 下面所有行的c列变0
+        for (int i = r + 1; i < n; ++ i )
+            if (fabs(a[i][c]) > eps)
+                for (int j = n; j >= c; -- j )
+                    a[i][j] -= a[r][j] * a[i][c];
+                    
+        ++ r;
+    }
+    
+    if (r < n) {
+        // 非唯一解
+        for (int i = r; i < n; ++ i )
+            if (fabs(a[i][n]) > eps)    // 0 = [fabs(a[i][n]) != 0] 非法 无解
+                return 2;
+        // 有无穷多解
+        return 1;
+    }
+    for (int i = n - 1; i >= 0; -- i )
+        for (int j = i + 1; j < n; ++ j )
+            a[i][n] -= a[j][n] * a[i][j];
+    return 0;   // 唯一解
+}
+
+int main() {
+    cin >> n;
+    // n * (n + 1) 的矩阵 可以做行列变换
+    for (int i = 0; i < n; ++ i )
+        for (int j = 0; j < n + 1; ++ j )
+            cin >> a[i][j];     // 最后一列是值
+    
+    int t = gauss();
+    
+    if (t == 0) {
+        for (int i = 0; i < n; ++ i )
+            printf("%.2lf\n", a[i][n]);
+    } else if (t == 1) cout << "Infinite group solutions" << endl;
+    else cout << "No solution" << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 884. 高斯消元解异或线性方程组](https://www.acwing.com/problem/content/886/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 110;
+
+int n;
+int a[N][N];
+
+int gauss() {
+    int c, r;
+    for (c = 0, r = 0; c < n; ++ c ) {
+        int t = r;
+        for (int i = r; i < n; ++ i )
+            if (a[i][c])
+                t = i;
+        
+        if (!a[t][c]) continue;
+        
+        for (int i = c; i < n + 1; ++ i ) swap(a[r][i], a[t][i]);
+        for (int i = r + 1; i < n; ++ i )
+            if (a[i][c])
+                for (int j = n; j >= c; -- j )
+                    a[i][j] ^= a[r][j];
+        
+        ++ r;
+    }
+    if (r < n) {
+        for (int i = r; i < n; ++ i )
+            if (a[i][n])
+                return 2;
+        return 1;
+    }
+    
+    for (int i = n - 1; i >= 0; -- i )
+        for (int j = i + 1; j < n; ++ j )
+            a[i][n] ^= a[i][j] * a[j][n];
+    
+    return 0;
+}
+
+int main() {
+    cin >> n;
+    
+    for (int i = 0; i < n; ++ i )
+        for (int j = 0; j < n + 1; ++ j )
+            cin >> a[i][j];
+    
+    int t = gauss();
+    
+    if (t == 0) {
+        for (int i = 0; i < n; ++ i )
+            cout << a[i][n] << endl;
+    } else if (t == 1) cout << "Multiple sets of solutions" << endl;
+    else cout << "No solution" << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

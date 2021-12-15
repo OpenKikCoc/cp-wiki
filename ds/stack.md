@@ -25,35 +25,105 @@
 
 我们可以方便的使用数组来模拟一个栈，如下：
 
+> [!NOTE] **[AcWing ]()**
+> 
+> 题意: TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
 ```cpp
-// C++ Version
-int stk[N];
-// 这里使用 stk[0]( 即 *stk ) 代表栈中元素数量，同时也是栈顶下标
-// 压栈 ：
-stk[++*stk] = var1;
-// 取栈顶 ：
-int u = stk[*stk];
-// 弹栈 ：注意越界问题, *stk == 0 时不能继续弹出
-if (*stk) --*stk;
-// 清空栈
-*stk = 0;
+#include<bits/stdc++.h>
+using namespace std;
+const int maxn = 1e5+5;
+
+int st[maxn], tot;
+
+void init() {
+    tot = 0;
+}
+
+void push(int x) {
+    st[++tot] = x;
+}
+
+void pop() {
+    if(tot) --tot;  // 保险
+}
+
+bool empty() {
+    return !tot;
+}
+
+int query() {
+    return st[tot];
+}
+
+int main() {
+    init();
+    int m, x;
+    string c;
+    cin >>m;
+    while(m--) {
+        cin >> c;
+        if(c == "push") {
+            cin >> x;
+            push(x);
+        } else if(c == "pop") {
+            pop();
+        } else if(c == "empty") {
+            if(empty()) cout <<"YES"<<endl;
+            else cout <<"NO"<<endl;
+        } else if(c == "query") {
+            cout <<query()<<endl;
+        }
+    }
+}
 ```
 
+##### **Python**
+
 ```python
-# Python Version
-stk = [0] * N
-# 这里使用 stk[0] 代表栈中元素数量，同时也是栈顶下标
-# 压栈 ：
-stk[stk[0]] = var1
-stk[0] = stk[0] + 1
-# 取栈顶 ：
-u = stk[stk[0]]
-# 弹栈 ：注意越界问题, *stk == 0 时不能继续弹出
-if stk[0]:
-    stk[0] = stk[0] - 1
-# 清空栈
-stk[0] = 0
+if __name__ == '__main__':
+    N = 100010
+    # 初始化栈 和 栈顶的下标；注意 是栈顶的下标！！！
+    stk = [0] * N
+    tt = 0
+
+    n = int(input())
+
+    for i in range(n):
+        op = input().split()
+        # 插入操作
+        if op[0] == 'push':
+            x = int(op[1])
+            tt += 1
+            stk[tt] = x
+        # pop操作
+        elif op[0] == 'pop':
+            tt -= 1
+        # 查询是否为空
+        elif op[0] == 'empty':
+            if tt:
+                print('NO')
+            else:
+                print('YES')
+        # 取出栈顶元素
+        else:
+            print(stk[tt])
+
 ```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 
 同时 STL 也提供了一个方法 `std::stack`
 

@@ -162,3 +162,140 @@ a^{b\bmod\varphi(p)+\varphi(p)},&\gcd(a,\,p)\ne1,\,b\ge\varphi(p)
 $$
 
 证明和 **习题** 详见 [欧拉定理](math/fermat.md)
+
+
+## 习题
+
+> [!NOTE] **[AcWing 873. 欧拉函数](https://www.acwing.com/problem/content/875/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+>
+> 1.  **质数 $i$ 的欧拉函数即为 $phi[i] = i - 1$** ：$[1,i−1]$ 均与 $i$ 互质，共 $i−1$ 个。
+>
+> 2.  **$phi[primes[j] * i]$ 分为两种情况**：
+>
+>     ① $ i \bmod primes[j] = 0 $ ：
+>
+>     $primes[j]$ 是 $i$ 的最小质因子，也是 $primes[j] * i$ 的最小质因子，因此 $1 - 1 / primes[j]$ 这一项在 $phi[i]$ 中计算过了，只需将基数 $N$ 修正为 $primes[j]$ 倍，最终结果为 $phi[i] * primes[j]$ 。
+>
+>     ② $ i \bmod primes[j] \neq 0 $ ：
+>
+>     $primes[j]$ 不是 $i$ 的质因子，只是 $primes[j] * i$ 的最小质因子，因此不仅需要将基数 $N$ 修正为 $primes[j]$ 倍，还需要补上 $1 - 1 / primes[j]$ 这一项，因此最终结果 $phi[i] * (primes[j] - 1)$ 。
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// 记得要先写除法，再写乘法； res = res / j * (j - 1)  避免溢出
+#include<bits/stdc++.h>
+using namespace std;
+
+int phi(int x) {
+    int res = x;
+    for (int i = 2; i <= x / i; ++ i )
+        if (x % i == 0) {
+            // i 为其中一个质因子
+            res = res / i * (i - 1);
+            while (x % i == 0) x /= i;
+        }
+    if (x > 1) res = res / x * (x - 1);
+    return res;
+}
+
+int main() {
+    int n;
+    cin >> n;
+    while (n -- ) {
+        int x;
+        cin >> x;
+        cout << phi(x) << endl;
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 874. 筛法求欧拉函数](https://www.acwing.com/problem/content/876/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+const int N = 1000010;
+
+int primes[N], cnt;
+int euler[N];
+bool st[N];
+
+void get_eulers(int n) {
+    euler[1] = 1;
+    for (int i = 2; i <= n; ++ i ) {
+        if (!st[i]) primes[cnt ++ ] = i, euler[i] = i - 1;
+        for (int j = 0; primes[j] <= n / i; ++ j ) {
+            int t = primes[j] * i;
+            st[t] = true;
+            if (i % primes[j] == 0) {
+                euler[t] = euler[i] * primes[j];
+                break;
+            }
+            euler[t] = euler[i] * (primes[j] - 1);
+        }
+    }
+}
+
+int main() {
+    int n;
+    cin >> n;
+    
+    get_eulers(n);
+    
+    LL res = 0;
+    for (int i = 1; i <= n; ++ i ) res += euler[i];
+    cout << res << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

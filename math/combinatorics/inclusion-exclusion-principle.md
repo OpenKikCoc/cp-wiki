@@ -638,3 +638,86 @@ $$
 [Cyhlnj《有标号的 DAG 计数系列问题》](https://blog.csdn.net/oi_konnyaku/article/details/84862271)
 
 [Wikipedia - 全序关系](https://en.wikipedia.org/wiki/Total_order)
+
+## 习题
+
+> [!NOTE] **[AcWing 890. 能被整除的数](https://www.acwing.com/problem/content/892/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> $$
+> C_{n}^{0} + C_{n}^{1} + ... + C_{n}^{n} = 2^n
+> $$
+> 
+> ==>
+> 
+> $$
+> C_{n}^{1} + ... + C_{n}^{n} = 2^n - C_{n}^{0} = 2^n - 1
+> $$
+> 
+> $$
+> C_{k}^{1} - C_{k}^{2} + C_{k}^{3} - ....  = 1
+> $$
+> 
+> 组合恒等式
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+const int N = 20;
+
+int p[N];
+
+int main() {
+    int n, m;
+    cin >> n >> m;
+    for (int i = 0; i < m; ++ i ) cin >> p[i];
+    
+    int res = 0;
+    // 所有能被集合i整除的数
+    for (int i = 1; i < 1 << m; ++ i ) {
+        int t = 1, s = 0;
+        for (int j = 0; j < m; ++ j )
+            if (i >> j & 1) {
+                if ((LL)t * p[j] > n) {
+                    t = -1;
+                    break;
+                }
+                t *= p[j];
+                s ++ ;
+            }
+        
+        if (t != -1) {
+            // 容斥原理 奇数个数量的集合 就是正 偶数个数量的集合 就是减
+            if (s % 2) res += n / t;
+            else res -= n / t;
+        }
+    }
+    cout << res << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
