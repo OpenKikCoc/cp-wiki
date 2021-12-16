@@ -595,6 +595,726 @@ TODO@binacs 比如拆点
 
 ## 习题
 
+### 数字三角形模型
+
+> [!NOTE] **[AcWing 1015. 摘花生](https://www.acwing.com/problem/content/1017/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <iostream>
+
+using namespace std;
+
+const int N = 110;
+
+int n, m;
+int w[N][N];
+int f[N][N];
+
+int main() {
+    int T;
+    scanf("%d", &T);
+    while (T--) {
+        scanf("%d%d", &n, &m);
+        for (int i = 1; i <= n; i++)
+            for (int j = 1; j <= m; j++) scanf("%d", &w[i][j]);
+
+        for (int i = 1; i <= n; i++)
+            for (int j = 1; j <= m; j++)
+                f[i][j] = max(f[i - 1][j], f[i][j - 1]) + w[i][j];
+
+        printf("%d\n", f[n][m]);
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+# 本题求最大值。本题题意 所有位置都是非负数，所以 f的状态全部初始化为0 也不会影响后面的转移（因为正数都比0大）
+# 如果此题的花生有负数，那就需要把f初始化为float('-inf')
+
+N = 110
+a = [[0] * N for _ in range(N)]
+f = [[0] * N for _ in range(N)]
+
+if __name__ == '__main__':
+    T = int(input())
+    while T:
+        R, C = map(int, input().split())
+        for i in range(1, R + 1):
+            nums = list(map(int, input().split()))
+            for j, val in enumerate(nums):
+                a[i][j + 1] = val
+        # f[1][0], f[0][1] = 0, 0 # 初始化（如果存在负数的数，就需要初始化负无穷）
+        for i in range(1, R + 1):
+            for j in range(1, C + 1):
+                f[i][j] = max(f[i][j - 1], f[i - 1][j]) + a[i][j]
+        print(f[R][C])
+        T -= 1
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1018. 最低通行费](https://www.acwing.com/problem/content/1020/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <iostream>
+
+using namespace std;
+
+const int N = 110, INF = 1e9;
+
+int n;
+int w[N][N];
+int f[N][N];
+
+int main() {
+    scanf("%d", &n);
+
+    for (int i = 1; i <= n; i++)
+        for (int j = 1; j <= n; j++) scanf("%d", &w[i][j]);
+
+    for (int i = 1; i <= n; i++)
+        for (int j = 1; j <= n; j++)
+            if (i == 1 && j == 1)
+                f[i][j] = w[i][j];  // 特判左上角
+            else {
+                f[i][j] = INF;
+                if (i > 1)
+                    f[i][j] = min(
+                        f[i][j],
+                        f[i - 1][j] +
+                            w[i][j]);  // 只有不在第一行的时候，才可以从上面过来
+                if (j > 1)
+                    f[i][j] = min(
+                        f[i][j],
+                        f[i][j - 1] +
+                            w[i][j]);  // 只有不在第一列的时候，才可以从左边过来
+            }
+
+    printf("%d\n", f[n][n]);
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+# 时间限制 不能走回头路。只能向下 或者 向左 走。
+# ！注意：和 种花生的区别：求最小！！
+# 如果不想写边界值的判断，就需要如下定义f数组 以及 初始化
+N = 110
+a = [[0] * N for _ in range(N)]
+f = [[float('inf')] * N for _ in range(N)]  # 这道题 求最小值，初始化为最大值
+# 求最大，全部初始化为最小值（特别的初始值设为0）；求最小，全部初始化为最大值（特别的初始值设为0）
+# 求方案数，全部初始化为0（特别的初始值设为1）
+
+if __name__ == '__main__':
+    n = int(input())
+    for i in range(1, n + 1):
+        nums = list(map(int, input().split()))
+        for j, val in enumerate(nums):
+            a[i][j + 1] = val 
+    f[1][0], f[0][1] = 0, 0 # 初始化很重要！后面需要从哪里转移过来，就初始化哪里。
+    for i in range(1, n + 1):
+        for j in range(1, n + 1):
+            f[i][j] = min(f[i - 1][j], f[i][j - 1]) + a[i][j]
+    print(f[n][n])
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1027. 方格取数](https://www.acwing.com/problem/content/1029/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <iostream>
+
+using namespace std;
+
+const int N = 15;
+
+int n;
+int w[N][N];
+int f[N * 2][N][N];
+
+int main() {
+    scanf("%d", &n);
+
+    int a, b, c;
+    while (cin >> a >> b >> c, a || b || c) w[a][b] = c;
+
+    for (int k = 2; k <= n + n; k++)
+        for (int i1 = 1; i1 <= n; i1++)
+            for (int i2 = 1; i2 <= n; i2++) {
+                int j1 = k - i1, j2 = k - i2;
+                if (j1 >= 1 && j1 <= n && j2 >= 1 && j2 <= n) {
+                    int t = w[i1][j1];
+                    if (i1 != i2) t += w[i2][j2];
+                    int &x = f[k][i1][i2];
+                    x = max(x, f[k - 1][i1 - 1][i2 - 1] + t);
+                    x = max(x, f[k - 1][i1 - 1][i2] + t);
+                    x = max(x, f[k - 1][i1][i2 - 1] + t);
+                    x = max(x, f[k - 1][i1][i2] + t);
+                }
+            }
+
+    printf("%d\n", f[n + n][n][n]);
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+# 这里是走两次，但是每个方格的数字只能被取一次！但是两个可以走到同一个方格上。
+# 1）假设两次同时走的思路：类推到 走两次：f[i1, j1, i2, j2]表示所有从(1,1)，(1,1)分别走到(i1, j1)和(i2, j2)的路径的最大值。（两条路同时走，那么每个时刻，他们的横纵坐标之和 一定相等）
+# 2）如何处理 同一个格子不能被重复选择的问题？
+#    ==> 什么时候两个格子可能会有交集？ 充分条件：i1 + j1 == i2 + j2（由于存在这个等价关系，所以可把状态优化成三个状态）
+# 状态表示： f[k, i1, i2]： 表示所有从(1,1)，(1,1)分别走到(i1, k - i1)和(i2, k - i2)的路径的最大值。（k表示当前格子的横纵坐标之和）
+#             k = i1 + j1 = i2 + j2
+# 状态转移：根据两条路线最后一步从哪里走过来：1）第一条 向下 + 第二条 向下；2）第一条 向下 + 第二条 向右； 1）第一条 向右 + 第二条 向下； 4） 第一条 向右 + 第二条 向右
+# 对于第一种情况：(1, 1) -> (i1 - 1, j1) -> （向下走到）(i1, j1) ； (1, 1) -> (i2 - 1, j2) -> (向下走到) (i2, j2)
+# 第一种情况即为：f[k - 1, i1 - 1, i2 - 1]; 第二部分需要判断 (i1, j1)和(i2, j2)是否重合；如果重合了，只需要加一次，如果不重复 两个都需要加。
+# 其他的三种情况同理可得出。最后的最大值 是每类的最大值 取一个max 
+
+N = 11
+f = [[[0] * N for _ in range(N)] for _ in range(2 * N)]
+w = [[0]*N for _ in range(N)]
+
+if __name__ == '__main__':
+    n = int(input())
+    while True:
+        a, b, c = map(int,input().split(' '))
+        if a == 0 and b == 0 and c == 0:
+            break 
+        else:
+            w[a][b] = c
+    for k in range(2, 2 * n + 1):
+        for i1 in range(1, n + 1):
+            for i2 in range(1, n + 1):
+                j1, j2 = k - i1, k - i2
+                if 1 <= j1 <= n and 1 <= j2 <= n:
+                    t = w[i1][j1]
+                    if i1 != i2:
+                        t += w[i2][j2]
+                    f[k][i1][i2] = max(f[k - 1][i1 - 1][i2 - 1],f[k - 1][i1 - 1][i2],f[k - 1][i1][i2 - 1],f[k - 1][i1][i2]) + t
+    print(f[n + n][n][n])
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 275. 传纸条](https://www.acwing.com/problem/content/description/277/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstdio>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+const int N = 55;
+
+int n, m;
+int g[N][N];
+int f[N * 2][N][N];
+
+int main() {
+    scanf("%d%d", &n, &m);
+    for (int i = 1; i <= n; i++)
+        for (int j = 1; j <= m; j++) scanf("%d", &g[i][j]);
+
+    for (int k = 2; k <= n + m; k++)
+        for (int i = max(1, k - m); i <= n && i < k; i++)
+            for (int j = max(1, k - m); j <= n && j < k; j++)
+                for (int a = 0; a <= 1; a++)
+                    for (int b = 0; b <= 1; b++) {
+                        int t = g[i][k - i];
+                        if (i != j || k == 2 ||
+                            k ==
+                                n + m)  // 除了起点和终点之外，其余每个格子只能走一次
+                        {
+                            t += g[j][k - j];
+                            f[k][i][j] =
+                                max(f[k][i][j], f[k - 1][i - a][j - b] + t);
+                        }
+                    }
+
+    printf("%d\n", f[n + m][n][n]);
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+# 目标：集合：所有从左上走到右下，走两遍的方案；属性Max
+# 状态表示：走两遍 可以看成是同时走。但是不能走到一个格子上。f(x1, y1, x2, y2)：表示所有从左上（1，1）第一条走走到（x1, y1), 第二条走到（x2, y2)的这样的两条路线总和的集合。
+# 这两条路线什么情况下 会相互影响到？==> 重叠时，能分析清楚就可以。
+# 当x1 + y1 == x2 + y2时，可能会重合。（两条路线 如果有重合的部分，一定是坐标之和相等） k：表示横纵坐标之和。
+# 状态表示：f(k,x1,x2): 所有第一条路径从（1，1）走到（x1,k-x1)，第二条路线从（1，1）走到（x2, k-x2）的路线组合的集合； 属性：max
+# 状态计算：把集合划分为若干个子集，求子集的max：一共有四种方案
+
+
+# 只有当权值都为非负数时，才可以复用方格取数的代码（题解区有证明）
+# 两次路线经过同一个点，但格子里的数只能算一次，这样一来，其中一条路线从旁边格子绕路，可以多加绕路格子的数值，因为所有权值非负，这样绕路得到的总和不会比路径相交时更小（可以把路径相交理解为多走了一个权值为0的格子，而绕路也是多走一个格子，并且权值>=0）
+N = 110
+f = [[[0] * N for _ in range(N)] for _ in range(N)]
+w = [[0] * N for _ in range(N)]
+
+if __name__ == '__main__':
+    n, m = map(int, input().split())
+    for i in range(1, n + 1):
+        nums = list(map(int, input().split()))
+        for j, val in enumerate(nums):
+            w[i][j + 1] = val
+    for k in range(2, n + m + 1):
+        for i1 in range(1, n + 1):
+            for i2 in range(1, n + 1):
+                j1, j2 = k - i1, k - i2
+                if 1 <= j1 <= m and 1 <= j2 <= m:
+                    t = w[i1][j1]
+                    if i1 != i2:
+                        t += w[i2][j2]
+                    f[k][i1][i2] = max(f[k - 1][i1 - 1][i2 - 1], f[k - 1][i1 - 1][i2], f[k - 1][i1][i2],
+                                       f[k - 1][i1][i2 - 1]) + t
+    print(f[n + m][n][n])
+
+# 当权值存在负数时， 如果用以上的代码，那么 走同一个格子得到的结果 可能要优于 “每个格子只能走一次”的结果，所以在进行状态转移的时候，需要做判断。
+N = 110
+f = [[[0] * N for _ in range(N)] for _ in range(N)]
+w = [[0] * N for _ in range(N)]
+
+if __name__ == '__main__':
+    n, m = map(int, input().split())
+    for i in range(1, n + 1):
+        nums = list(map(int, input().split()))
+        for j, val in enumerate(nums):
+            w[i][j + 1] = val
+    for k in range(2, n + m + 1):
+        for i1 in range(1, n + 1):
+            for i2 in range(1, n + 1):
+                j1, j2 = k - i1, k - i2
+                if 1 <= j1 <= m and 1 <= j2 <= m:
+                    t = w[i1][j1]
+                    if i1 != i2 or k == 2 or k == n + m:  # 这里需要判断 才能进入转移
+                        t += w[i2][j2]
+                        f[k][i1][i2] = max(f[k - 1][i1 - 1][i2 - 1], f[k - 1][i1 - 1][i2], f[k - 1][i1][i2],
+                                           f[k - 1][i1][i2 - 1]) + t
+    print(f[n + m][n][n])
+
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### LIS 模型
+
+> [!NOTE] **[AcWing 482. 合唱队形](https://www.acwing.com/problem/content/484/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <iostream>
+
+using namespace std;
+
+const int N = 1010;
+
+int n;
+int h[N];
+int f[N], g[N];
+
+int main() {
+    scanf("%d", &n);
+    for (int i = 0; i < n; i++) scanf("%d", &h[i]);
+
+    for (int i = 0; i < n; i++) {
+        f[i] = 1;
+        for (int j = 0; j < i; j++)
+            if (h[i] > h[j]) f[i] = max(f[i], f[j] + 1);
+    }
+
+    for (int i = n - 1; i >= 0; i--) {
+        g[i] = 1;
+        for (int j = n - 1; j > i; j--)
+            if (h[i] > h[j]) g[i] = max(g[i], g[j] + 1);
+    }
+
+    int res = 0;
+    for (int i = 0; i < n; i++) res = max(res, f[i] + g[i] - 1);
+
+    printf("%d\n", n - res);
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+# 最优化的问题 从“集合”的角度进行考虑
+# 在原序列中，满足“先递增再递减的子序列”里找到长度最长的子序列
+
+N = 1010
+a = [0]*N
+f1 = [1]*N
+f2 = [1]*N
+
+if __name__ == '__main__':
+    n = int(input())
+    a[1:] = list(map(int,input().split()))
+    for i in range(1, n + 1):
+        for j in range(1, i):
+            if a[j] < a[i]:
+                f1[i] = max(f1[i], f1[j] + 1)
+    for i in range(n, 0, -1):
+        for j in range(n, i - 1, -1):
+            if a[j] < a[i]:
+                f2[i] = max(f2[i], f2[j] + 1)
+    res = []
+    for i in range(1, n + 1):
+        res.append(f1[i] + f2[i] - 1)
+    print(n - max(res))
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1012. 友好城市](https://www.acwing.com/problem/content/1014/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <iostream>
+
+using namespace std;
+
+typedef pair<int, int> PII;
+
+const int N = 5010;
+
+int n;
+PII city[N];
+int f[N];
+
+int main() {
+    scanf("%d", &n);
+    for (int i = 0; i < n; i++) scanf("%d%d", &city[i].first, &city[i].second);
+    sort(city, city + n);
+
+    int res = 0;
+    for (int i = 0; i < n; i++) {
+        f[i] = 1;
+        for (int j = 0; j < i; j++)
+            if (city[i].second > city[j].second) f[i] = max(f[i], f[j] + 1);
+        res = max(res, f[i]);
+    }
+
+    printf("%d\n", res);
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+# 所有合法的建桥方式； 上升子序列 ； 航道交叉也就是a1 >= a2 && b1 <= b2(其中a, b表示两岸)
+# 方法：1. 通过排序，固定自变量的顺序； 2.找到因变量的最大上升子序列
+
+N = 5010
+f = [1] * N
+
+if __name__=='__main__':
+    n = int(input())
+    nums = [[0] * 2 for _ in range(n + 1)]
+    for i in range(1, n + 1):
+        nums[i][0], nums[i][1] = map(int,input().split())
+    nums.sort(key = lambda x : x[0])
+    for i in range(1, n + 1):
+        for j in range(1, i):
+            if nums[i][1] > nums[j][1]:
+                f[i] = max(f[i], f[j] + 1)
+    print(max(f))
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1010. 拦截导弹](https://www.acwing.com/problem/content/description/1012/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <sstream>
+
+using namespace std;
+
+const int N = 1010;
+
+int n;
+int h[N], f[N], q[N];
+
+int main() {
+    string line;
+    getline(cin, line);
+    stringstream ssin(line);
+    while (ssin >> h[n]) n++;
+
+    int res = 0, cnt = 0;
+    for (int i = 0; i < n; i++) {
+        f[i] = 1;
+        for (int j = 0; j < i; j++)
+            if (h[i] <= h[j]) f[i] = max(f[i], f[j] + 1);
+        res = max(res, f[i]);
+
+        int k = 0;
+        while (k < cnt && q[k] < h[i]) k++;
+        if (k == cnt)
+            q[cnt++] = h[i];
+        else
+            q[k] = h[i];
+    }
+
+    printf("%d\n", res);
+    printf("%d\n", cnt);
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+# LS + 贪心问题
+N = 1010
+f = [1] * N
+a = [0] * N
+
+if __name__ == '__main__':
+    a[1:] = list(map(int, input().split()))
+    for i in range(1, len(a)):
+        for j in range(1, i):
+            if a[i] <= a[j]:
+                f[i] = max(f[i], f[j] + 1)
+    print(max(f))
+
+    # 逆向思维：（最长上升子序列。可以用贪心解法 来做）
+    # 一个序列最少用多少个非下降子序列覆盖完的方案数 == 最长上升子序列的方案数
+    f = [1] * N
+    for i in range(1, len(a)):
+        for j in range(1, i):
+            if a[i] > a[j]:
+                f[i] = max(f[i], f[j] + 1)
+    print(max(f))
+
+# 第二问 也可以用正常的贪心思想来做：
+# 第一个导弹加入到系统1，第二个导弹 有两种选择：1. 接在现有的某个子序列之后；2. 创建一个新系统
+# 贪心流程：
+# 从前往后扫描每个数，对于每个数：
+# 情况1:如果现有的子序列的结尾都小于当前数，则创建子序列；情况2:将当前数放在结尾大于等于它的最小的子序列后面；
+# 需要证明 这个贪心算法的正确性：常用方式：
+# 如果证明两个数相等? 只需要证明：A>=B,A<=B 【A:表示贪心算法得到的序列个数；B表示最优解】
+# B<=A:很容易得到；；；A <=B , 用调整法证明：
+# 假设最优解对应的方案和当前贪心方案不同，找到第一个不同的数。交换后，还是合法解，并且不会增加新的方案数。
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 187. 导弹防御系统]()**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int n, res;
+vector<int> c, up, down;
+
+void dfs(int u, int d, int t) {
+    if (u + d >= res) return;
+    if (t == n) {
+        res = min(res, u + d);
+        return;
+    }
+    int i;
+    for (i = 1; i <= u; ++i)
+        if (up[i] < c[t]) break;
+    int tmp = up[i];
+    up[i] = c[t];
+    dfs(max(u, i), d, t + 1);
+    up[i] = tmp;
+
+    for (i = 1; i <= d; ++i)
+        if (down[i] > c[t]) break;
+    tmp = down[i];
+    down[i] = c[t];
+    dfs(u, max(d, i), t + 1);
+    down[i] = tmp;
+};
+
+int main() {
+    while (cin >> n, n) {
+        // up 存储所有单调上升子序列的末尾元素 down下降末尾元素
+        // 加速判断当前数能否放到某一个子序列后面
+        // 放的时候贪心：比当前元素小的最大的元素
+        c.clear(), up.clear(), down.clear();
+        c.resize(n + 1), up.resize(n + 1), down.resize(n + 1);
+        for (int i = 1; i <= n; ++i) cin >> c[i];
+        res = INT_MAX / 2;
+
+        dfs(0, 0, 1);
+        cout << res << endl;
+    }
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[LeetCode 1713. 得到子序列的最少操作次数](https://leetcode-cn.com/problems/minimum-operations-to-make-a-subsequence/)**
 > 
 > [Weekly-222](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-01-03_Weekly-222)
@@ -636,6 +1356,155 @@ public:
 
 ```python
 
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 272. 最长公共上升子序列](https://www.acwing.com/problem/content/description/274/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 注意状态定义：
+> 
+> $f[i][j]$ 表示以j为结尾 $a[1~i]$ , $b[1~j]$ 都出现过的公共上升子序列集合
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 正解TLE**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    vector<int> a(n + 1), b(n + 1);
+    for (int i = 1; i <= n; ++i) cin >> a[i];
+    for (int i = 1; i <= n; ++i) cin >> b[i];
+    vector<vector<int>> f(n + 1, vector<int>(n + 1));
+    for (int i = 1; i <= n; ++i) {
+        for (int j = 1; j <= n; ++j) {
+            // not a[i]
+            f[i][j] = f[i - 1][j];
+            // has a[i]
+            if (a[i] == b[j]) {
+                int maxv = 1;
+                for (int k = 1; k < j; ++k) {
+                    // cause a[i] = b[j];
+                    if (a[i] > b[k]) maxv = max(maxv, f[i - 1][k] + 1);
+                }
+                f[i][j] = max(f[i][j], maxv);
+            }
+        }
+    }
+    int res = 0;
+    for (int i = 1; i <= n; ++i) res = max(res, f[n][i]);
+    cout << res << endl;
+}
+```
+
+##### **C++ 正解优化n^2**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    vector<int> a(n + 1), b(n + 1);
+    for (int i = 1; i <= n; ++i) cin >> a[i];
+    for (int i = 1; i <= n; ++i) cin >> b[i];
+    vector<vector<int>> f(n + 1, vector<int>(n + 1));
+    for (int i = 1; i <= n; ++i) {
+        int maxv = 1;
+        // j 从小到大 所以每次更新一次即可
+        for (int j = 1; j <= n; ++j) {
+            // not a[i]
+            f[i][j] = f[i - 1][j];
+            // has a[i]
+            if (a[i] == b[j]) f[i][j] = max(f[i][j], maxv);
+            // update maxv
+            if (a[i] > b[j])
+                maxv = max(maxv, f[i - 1][j] + 1);  // 【注意 这里是 f[i-1][j]】
+        }
+    }
+    int res = 0;
+    for (int i = 1; i <= n; ++i) res = max(res, f[n][i]);
+    cout << res << endl;
+}
+```
+
+##### **Python TLE**
+
+```python
+# 状态表示：f[i,j]表示的是所有在A[1..i]和B[1...j]中都出现过，并且以B[j]为结尾的所有的公共上升子序列的集合（需要把上一个数 即B[j] 存下来）; 属性：Max
+# 状态计算：1）a[i]不包含在公共子序列中  ===> 根据定义：f[i][j] = f[i-1,j]
+#         2）a[i]出现在公共子序列中：那肯定是基于a[i] == b[j]前提下, 以倒数第二个数来继续划分以下下子集：   ==> 1. 不存在倒数第二个数：长度就是1； 2. 倒数第二个数是a[1]: f[i - 1, 1] + 1； 3. 倒数第二个数是a[2]: f[i - 1, 2] + 1 ... 倒数第二个数是a[i - k]: f[i - 1, k] + 1...
+
+# 朴素写法，TLE
+N = 3010
+a = [0] * N
+b = [0] * N
+f = [[0] * N for _ in range(N)]
+
+if __name__ == '__main__':
+    n = int(input())
+    a[1:] = list(map(int, input().split()))
+    b[1:] = list(map(int, input().split()))
+    for i in range(1, n + 1):
+        for j in range(1, n + 1):
+            f[i][j] = f[i - 1][j]
+            if a[i] == b[j]:
+                maxv = 1
+                for k in range(1, j):
+                    if a[i] > b[k]:
+                        maxv = max(maxv, f[i - 1][k] + 1)
+                f[i][j] = max(f[i][j], maxv)
+    res = 0
+    for i in range(len(f)):
+        for j in range(len(f[0])):
+            res = max(res, f[i][j])
+    print(res)
+```
+
+##### **Python 优化**
+
+```python
+# 优化
+N = 3010
+a = [0] * N
+b = [0] * N
+f = [[0] * N for _ in range(N)]
+
+if __name__=='__main__':
+    n = int(input())
+    a[1:] = list(map(int,input().split()))
+    b[1:] = list(map(int,input().split()))
+    for i in range(1, n + 1):
+        maxv = 1
+        for j in range(1, n + 1):
+            f[i][j] = f[i-1][j]
+            if a[i] == b[j]:
+                f[i][j] = max(f[i][j], maxv)
+            if a[i] > b[j]:
+                maxv = max(maxv, f[i - 1][j] + 1)
+                
+    res=0
+    for i in range(len(f)):
+        for j in range(len(f[0])):
+            res = max(res, f[i][j])
+    print(res)
 ```
 
 <!-- tabs:end -->
