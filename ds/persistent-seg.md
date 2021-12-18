@@ -111,3 +111,140 @@ int main() {
 <https://en.wikipedia.org/wiki/Persistent_data_structure>
 
 <https://www.cnblogs.com/zinthos/p/3899565.html>
+
+
+## 习题
+
+> [!NOTE] **[AcWing 255. 第K小数](https://www.acwing.com/problem/content/257/)**
+> 
+> 题意: TODO
+
+> [!TIP] **插播**
+> 
+> https://www.acwing.com/solution/content/4224/
+> 
+> 指路学习笔记：可持久化线段树（主席树）：静态 + 动态
+> 
+> 建立一颗权值线段树，每个点存储的信息为该值域区间存在的数的个数。
+
+> [!TIP] **思路**
+>
+> 可持久化线段树 = 主席树
+>
+> 线段树 每次操作最多修改 4*logn个区间
+> 同时不能再类似堆的方式存 而是指针方式
+> ===> l r 表示左右子节点的下标 cnt表示当前区间中一共有多少个数
+>
+> 可持久化线段树难以进行区间修改操作 个别懒标记永久化
+>
+> 本题：
+> 特点1.静态问题 过程中无变化
+>     对于静态问题：  1.1 划分树 求区间最小       nlogn
+>                     1.2 树套树 线段树套平衡树   nlog^2 n 【支持修改】
+>                     1.3 可持久化线段树          nlogn 不支持修改 完整包含划分树
+>
+> 1. 离散化：数值比较大 10^9
+> 2. 在数值上建线段树 维护每个数值区间中一共有多少个数
+>
+> 【线段树二叉树本身是可以做二分的】
+>
+> 考虑只有R限制 显然是可持久化线段树
+> 加上L限制 上题是存在性 本题是求一个值故做法不同 但对于线段树结构是是一样的
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 100010, M = 10010;
+
+int n, m;
+int a[N];
+vector<int> nums;
+struct Node{
+    int l, r;
+    int cnt;
+}tr[N * 4 + N * 17];    // logn = 17
+
+int root[N], idx;
+
+int find(int x) {
+    return lower_bound(nums.begin(), nums.end(), x) - nums.begin();
+}
+
+// 要返回idx
+int build(int l, int r) {
+    int p = ++ idx;
+    if (l == r) return p;
+    else {
+        int mid = l + r >> 1;
+        tr[p].l = build(l, mid), tr[p].r = build(mid + 1, r);
+        return p;
+    }
+}
+
+int insert(int p, int l, int r, int x) {
+    int q = ++ idx;
+    tr[q] = tr[p];
+    if (l == r) {
+        tr[q].cnt ++ ;
+        return q;
+    } else {
+        int mid = l + r >> 1;
+        if (x <= mid) tr[q].l = insert(tr[p].l, l, mid, x);
+        else tr[q].r = insert(tr[p].r, mid + 1, r, x);
+        tr[q].cnt = tr[tr[q].l].cnt + tr[tr[q].r].cnt;
+        return q;
+    }
+}
+
+int query(int q, int p, int l, int r, int k) {
+    if (l == r) return r;
+    else {
+        int cnt = tr[tr[q].l].cnt - tr[tr[p].l].cnt;
+        int mid = l + r >> 1;
+        if (k <= cnt) return query(tr[q].l, tr[p].l, l, mid, k);
+        else return query(tr[q].r, tr[p].r, mid + 1, r, k - cnt);
+    }
+}
+
+int main() {
+    scanf("%d%d", &n, &m);
+    
+    for (int i = 1; i <= n; ++ i ) {
+        scanf("%d", &a[i]);
+        nums.push_back(a[i]);
+    }
+    sort(nums.begin(), nums.end());
+    nums.erase(unique(nums.begin(), nums.end()), nums.end());
+    
+    root[0] = build(0, nums.size() - 1);
+    
+    for (int i = 1; i <= n; ++ i )
+        root[i] = insert(root[i - 1], 0, nums.size() - 1, find(a[i]));
+    
+    while (m -- ) {
+        int l, r, k;
+        scanf("%d%d%d", &l, &r, &k);
+        printf("%d\n", nums[query(root[r], root[l - 1], 0, nums.size() - 1, k)]);
+    }
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

@@ -206,3 +206,104 @@ for i in range(0, n):
 - [「国家集训队」最长双回文串](https://www.luogu.com.cn/problem/P4555)
 
 * * *
+
+## 习题
+
+### 进阶
+
+> [!NOTE] **[LeetCode 1960. 两个回文子字符串长度的最大乘积](https://leetcode-cn.com/problems/maximum-product-of-the-length-of-two-palindromic-substrings/)**
+> 
+> [Biweekly-58]()
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+>  【本题只需要求奇数长度的回文串 所以不用填充字符】
+> 
+> ```cpp
+> p[0] = 1;	// 本题特殊处理
+> ...
+> while (i >= p[i] ...) // 需要加的特判
+> ```
+> 
+> 结合【前缀和后缀分解】的思路 + 【双指针优化】
+> 
+> 算法实现来源于 yxc **学习并背过这种写法**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 1e5 + 10;
+    
+    char b[N];
+    int p[N];
+    
+    void manacher(int n) {
+        p[0] = 1;
+        int id = 0, mx = 0;
+        for (int i = 1; i < n; ++ i ) {
+            p[i] = mx > i ? min(p[2 * id - i], mx - i) : 1;
+            while (i >= p[i] && b[i - p[i]] == b[i + p[i]])
+                p[i] ++ ;
+            if (i + p[i] > mx)
+                id = i, mx = i + p[i];
+        }
+    }
+    
+    long long maxProduct(string s) {
+        int n = s.size();
+        for (int i = 0; i < n; ++ i )
+            b[i] = s[i];
+        b[n] = 0;
+        
+        manacher(n);
+        
+        vector<int> f(n), g(n);
+        // i 指前缀下标
+        // j 指当前扫到的中心
+        // 非常巧妙的双指针优化
+        for (int i = 0, j = 0, mx = 0; i < n; ++ i ) {
+            while (j + p[j] - 1 < i) {
+                mx = max(mx, p[j]);
+                j ++ ;
+            }
+            mx = max(mx, i - j + 1);
+            f[i] = mx;
+        }
+        for (int i = n - 1, j = n - 1, mx = 0; i >= 0; -- i ) {
+            while (j - p[j] + 1 > i) {
+                mx = max(mx, p[j]);
+                j -- ;
+            }
+            mx = max(mx, j - i + 1);
+            g[i] = mx;
+        }
+        
+        LL res = 0;
+        for (int i = 0; i < n - 1; ++ i )
+            res = max(res, (LL)(f[i] * 2 - 1) * (g[i + 1] * 2 - 1));
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

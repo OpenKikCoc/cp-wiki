@@ -283,3 +283,67 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[AcWing 90. 64位整数乘法](https://www.acwing.com/problem/content/92/)**
+> 
+> 题意: 慢速乘
+
+> [!TIP] **思路**
+> 
+> 核心思想 不能用乘法 考虑加法
+> 
+> a * b % p  ----> (a + a + a + ... + a) % p 【b个a】
+> 
+> ```text
+> 计算    a  p
+>       2*a % p
+>       4*a % p
+>       ...
+>    2^62*a % p
+> ```
+> 
+> $logb$ 位 最多加 $logb$ 次
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+LL a, b, p;
+
+LL qadd(LL a, LL b, LL p) {
+    LL res = 0;
+    while (b) {
+        if (b & 1) res = (res + a) % p;
+        a = (a + a) % p;
+        b >>= 1;
+    }
+    return res;
+}
+
+int main() {
+    scanf("%lld%lld%lld", &a, &b, &p);
+    printf("%lld\n", qadd(a, b, p));
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

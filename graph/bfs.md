@@ -289,3 +289,97 @@ if __name__ == '__main__':
 <br>
 
 * * *
+
+### 01 bfs
+
+> [!NOTE] **[AcWing 175. 电路维修](https://www.acwing.com/problem/content/177/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int inf = 0x3f3f3f3f;
+const int N = 510, M = N * N;
+int n, m;
+char g[N][N];
+int d[N][N];
+bool vis[N][N];
+
+int bfs() {
+    memset(d, 0x3f, sizeof d);
+    memset(vis, false, sizeof vis);
+
+    char cs[] = "\\/\\/";  // 包含两个转义字符
+    int dx[4] = {-1, -1, 1, 1}, dy[4] = {-1, 1, 1, -1};
+    int ix[4] = {-1, -1, 0, 0},
+        iy[4] = {-1, 0, 0, -1};  // 获取某个点对应方向位置保存的字符
+
+    deque<pair<int, int>> dq;
+    d[0][0] = 0;
+    dq.push_back({0, 0});
+
+    while (!dq.empty()) {
+        auto t = dq.front();
+        dq.pop_front();
+        int x = t.first, y = t.second;
+        if (vis[x][y]) continue;
+        vis[x][y] = true;
+        for (int i = 0; i < 4; ++i) {
+            int nx = x + dx[i], ny = y + dy[i];
+            if (nx < 0 || nx > n || ny < 0 || ny > m)
+                continue;  // 注意 这里比n m 大 1
+
+            int cx = x + ix[i], cy = y + iy[i];
+            int dis = d[x][y] + (g[cx][cy] != cs[i]);
+            if (dis < d[nx][ny]) {
+                d[nx][ny] = dis;
+
+                if (g[cx][cy] != cs[i])
+                    dq.push_back({nx, ny});
+                else
+                    dq.push_front({nx, ny});
+            }
+        }
+    }
+    return d[n][m];
+}
+
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        cin >> n >> m;
+        for (int i = 0; i < n; ++i) cin >> g[i];
+        int t = bfs();
+        if (t == inf)
+            cout << "NO SOLUTION" << endl;
+        else
+            cout << t << endl;
+    }
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

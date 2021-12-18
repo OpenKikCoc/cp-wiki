@@ -688,6 +688,84 @@ if __name__ == '__main__':
 
 * * *
 
+> [!NOTE] **[AcWing 105. 七夕祭](https://www.acwing.com/problem/content/107/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 货仓选址进阶
+> 
+> 操作行和列互不影响
+> 
+> 则总体最小 为 操作行最+操作列最小
+> 
+> 模型：环形纸牌 邮递员问题 视频关于n-1个等式的转化和分解 ==> 取中位数
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+const int N = 100010;
+
+int row[N], col[N], s[N], c[N];
+
+LL work(int n, int a[]) {
+    for (int i = 1; i <= n; ++ i ) s[i] = s[i - 1] + a[i];
+    if (s[n] % n) return -1;
+    
+    int avg = s[n] / n;
+    // 求Ci
+    c[1] = 0;
+    for (int i = 2; i <= n; ++ i ) c[i] = s[i - 1] - (i - 1) * avg;
+    
+    sort(c + 1, c + n + 1);
+    LL res = 0;
+    for (int i = 1; i <= n; ++ i ) res += abs(c[i] - c[(n + 1) / 2]);
+    return res;
+}
+
+int main() {
+    int n, m, cnt;
+    cin >> n>> m >> cnt;
+    while (cnt -- ) {
+        int x, y;
+        cin >> x >> y;
+        ++ row[x], ++ col[y];
+    }
+    LL r = work(n, row);
+    LL c = work(m, col);
+    
+    if (r != -1 && c != -1) cout << "both "<< r + c << endl;
+    else if (r != -1) cout << "row " << r << endl;
+    else if (c != -1) cout << "column " << c << endl;
+    else cout << "impossible" << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[AcWing 125. 耍杂技的牛](https://www.acwing.com/problem/content/description/127/)**
 > 
 > 题意: TODO

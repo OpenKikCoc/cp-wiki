@@ -121,3 +121,315 @@ $\text{CDQ}(l,r)$ 代表计算 $f_i,i\in [l,r]$。考虑 $\text{CDQ}(1,n)$：
 - [「NOI2019」回家路线](https://loj.ac/problem/3156)
 - [「NOI2016」国王饮水记](https://uoj.ac/problem/223)
 - [「NOI2014」购票](https://uoj.ac/problem/7)
+
+> [!NOTE] **[AcWing 300. 任务安排1](https://www.acwing.com/problem/content/302/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 线性dp似乎就可以
+> 
+> **重要思想：分段对后续有影响的直接累加到本段计算**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+const int N = 5010;
+
+int n, s;
+int sc[N], st[N];
+int f[N];
+
+int main() {
+    scanf("%d%d", &n, &s);
+    for (int i = 1; i <= n; i++) {
+        scanf("%d%d", &st[i], &sc[i]);
+        st[i] += st[i - 1];
+        sc[i] += sc[i - 1];
+    }
+
+    memset(f, 0x3f, sizeof f);
+    f[0] = 0;
+
+    for (int i = 1; i <= n; i++)
+        for (int j = 0; j < i; j++)
+            f[i] =
+                min(f[i], f[j] + (sc[i] - sc[j]) * st[i] + s * (sc[n] - sc[j]));
+
+    printf("%d\n", f[n]);
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 301. 任务安排2](https://www.acwing.com/problem/content/303/)**
+> 
+> 题意: 比上题数据范围更大
+
+> [!TIP] **思路**
+> 
+> 斜率优化（凸包） 依据方程转移得新表达式
+> 
+> 对于从前至后的每一个点 i ，找到它前方的某固定斜率的最低 j ，随着节点加入凸包形成的斜率逐步增加。
+> 
+> 单调队列维护凸包，同时因为斜率单调递增，可以从队头删除。
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+typedef long long LL;
+
+const int N = 300010;
+
+int n, s;
+LL c[N], t[N];
+LL f[N];
+int q[N];
+
+int main() {
+    scanf("%d%d", &n, &s);
+    for (int i = 1; i <= n; i++) {
+        scanf("%lld%lld", &t[i], &c[i]);
+        t[i] += t[i - 1];
+        c[i] += c[i - 1];
+    }
+
+    int hh = 0, tt = 0;
+    q[0] = 0;
+
+    for (int i = 1; i <= n; i++) {
+        // head < tail 至少两个元素时
+        while (hh < tt && (f[q[hh + 1]] - f[q[hh]]) <=
+                              (t[i] + s) * (c[q[hh + 1]] - c[q[hh]]))
+            hh++;
+        int j = q[hh];
+        f[i] = f[j] - (t[i] + s) * c[j] + t[i] * c[i] + s * c[n];
+        while (hh < tt &&
+               (__int128)(f[q[tt]] - f[q[tt - 1]]) * (c[i] - c[q[tt - 1]]) >=
+                   (__int128)(f[i] - f[q[tt - 1]]) * (c[q[tt]] - c[q[tt - 1]]))
+            tt--;
+        q[++tt] = i;
+    }
+
+    printf("%lld\n", f[n]);
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 302. 任务安排3](https://www.acwing.com/problem/content/304/)**
+> 
+> 题意: 比上题出现负数
+
+> [!TIP] **思路**
+> 
+> 单调队列维护凸包；但因为斜率并非单调递增，所以需要二分查找 j 。
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+typedef long long LL;
+
+const int N = 300010;
+
+int n, s;
+LL t[N], c[N];
+LL f[N];
+int q[N];
+
+int main() {
+    scanf("%d%d", &n, &s);
+    for (int i = 1; i <= n; i++) {
+        scanf("%lld%lld", &t[i], &c[i]);
+        t[i] += t[i - 1];
+        c[i] += c[i - 1];
+    }
+
+    int hh = 0, tt = 0;
+    q[0] = 0;
+
+    for (int i = 1; i <= n; i++) {
+        int l = hh, r = tt;
+        while (l < r) {
+            int mid = l + r >> 1;
+            if (f[q[mid + 1]] - f[q[mid]] >
+                (t[i] + s) * (c[q[mid + 1]] - c[q[mid]]))
+                r = mid;
+            else
+                l = mid + 1;
+        }
+
+        int j = q[r];
+        f[i] = f[j] - (t[i] + s) * c[j] + t[i] * c[i] + s * c[n];
+        while (hh < tt &&
+               (double)(f[q[tt]] - f[q[tt - 1]]) * (c[i] - c[q[tt - 1]]) >=
+                   (double)(f[i] - f[q[tt - 1]]) * (c[q[tt]] - c[q[tt - 1]]))
+            tt--;
+        q[++tt] = i;
+    }
+
+    printf("%lld\n", f[n]);
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 303. 运输小猫](https://www.acwing.com/problem/content/305/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 有点复杂 重复做
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+typedef long long LL;
+
+const int N = 100010, M = 100010, P = 110;
+
+int n, m, p;
+LL d[N], t[N], a[N], s[N];
+LL f[P][M];
+int q[M];
+
+LL get_y(int k, int j) { return f[j - 1][k] + s[k]; }
+
+int main() {
+    scanf("%d%d%d", &n, &m, &p);
+
+    for (int i = 2; i <= n; i++) {
+        scanf("%lld", &d[i]);
+        d[i] += d[i - 1];
+    }
+
+    for (int i = 1; i <= m; i++) {
+        int h;
+        scanf("%d%lld", &h, &t[i]);
+        a[i] = t[i] - d[h];
+    }
+
+    sort(a + 1, a + m + 1);
+
+    for (int i = 1; i <= m; i++) s[i] = s[i - 1] + a[i];
+
+    memset(f, 0x3f, sizeof f);
+    for (int i = 0; i <= p; i++) f[i][0] = 0;
+
+    for (int j = 1; j <= p; j++) {
+        int hh = 0, tt = 0;
+        q[0] = 0;
+
+        for (int i = 1; i <= m; i++) {
+            while (hh < tt && (get_y(q[hh + 1], j) - get_y(q[hh], j)) <=
+                                  a[i] * (q[hh + 1] - q[hh]))
+                hh++;
+            int k = q[hh];
+            f[j][i] = f[j - 1][k] - a[i] * k + s[k] + a[i] * i - s[i];
+            while (hh < tt &&
+                   (get_y(q[tt], j) - get_y(q[tt - 1], j)) * (i - q[tt]) >=
+                       (get_y(i, j) - get_y(q[tt], j)) * (q[tt] - q[tt - 1]))
+                tt--;
+            q[++tt] = i;
+        }
+    }
+
+    printf("%lld\n", f[p][m]);
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

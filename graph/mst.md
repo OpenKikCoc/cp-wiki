@@ -797,3 +797,395 @@ int main() {
 > 询问的根节点可以使用 Kruskal 重构树上倍增的方式求出。
 > 
 > 时间复杂度 $O((n+m+Q) \log n)$
+
+
+## 习题
+
+> [!TIP] **简单总结**
+> 
+> 个别有需要
+> 
+> - 建立虚拟源点
+> - 某些边必选
+> - 求联通树的最大边（推理可知即最小生成树）
+> - 考验建图
+
+> [!NOTE] **[AcWing 1144. 连接格点](https://www.acwing.com/problem/content/1146/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 比较核心的思想还是：把二维坐标转一维点
+> 
+> 本题较特殊 建图可以稍简单 直接遍历横纵加边即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+const int N = 1010, M = N * N, K = 2 * N * N;
+
+int n, m, k;
+int ids[N][N];
+struct Edge {
+    int a, b, w;
+} e[K];
+int p[M];
+
+int find(int x) {
+    if (p[x] != x) p[x] = find(p[x]);
+    return p[x];
+}
+
+void get_edges() {
+    int dx[4] = {-1, 0, 1, 0}, dy[4] = {0, 1, 0, -1}, dw[4] = {1, 2, 1, 2};
+
+    for (int z = 0; z < 2; z++)
+        for (int i = 1; i <= n; i++)
+            for (int j = 1; j <= m; j++)
+                for (int u = 0; u < 4; u++)
+                    if (u % 2 == z) {
+                        int x = i + dx[u], y = j + dy[u], w = dw[u];
+                        if (x && x <= n && y && y <= m) {
+                            int a = ids[i][j], b = ids[x][y];
+                            if (a < b) e[k++] = {a, b, w};
+                        }
+                    }
+}
+
+int main() {
+    cin >> n >> m;
+
+    for (int i = 1, t = 1; i <= n; i++)
+        for (int j = 1; j <= m; j++, t++) ids[i][j] = t;
+
+    for (int i = 1; i <= n * m; i++) p[i] = i;
+
+    int x1, y1, x2, y2;
+    while (cin >> x1 >> y1 >> x2 >> y2) {
+        int a = ids[x1][y1], b = ids[x2][y2];
+        p[find(a)] = find(b);
+    }
+
+    get_edges();
+
+    int res = 0;
+    for (int i = 0; i < k; i++) {
+        int a = find(e[i].a), b = find(e[i].b), w = e[i].w;
+        if (a != b) {
+            p[a] = b;
+            res += w;
+        }
+    }
+
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### MST 拓展
+
+> [!NOTE] **[AcWing 1146. 新的开始](https://www.acwing.com/problem/content/1148/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 虚拟一个超级起点 0 ，
+> 
+> 每一个矿井修建发电站就相当于是从超级发电站向其连一条权值为 $v[i]$ 的边.
+> 
+> 再构造最小生成树
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstdio>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+const int N = 310;
+
+int n;
+int w[N][N];
+int dist[N];
+bool st[N];
+
+int prim() {
+    memset(dist, 0x3f, sizeof dist);
+    dist[0] = 0;
+
+    int res = 0;
+    for (int i = 0; i < n + 1; i++) {
+        int t = -1;
+        for (int j = 0; j <= n; j++)
+            if (!st[j] && (t == -1 || dist[t] > dist[j])) t = j;
+        st[t] = true;
+        res += dist[t];
+
+        for (int j = 0; j <= n; j++) dist[j] = min(dist[j], w[t][j]);
+    }
+
+    return res;
+}
+
+int main() {
+    scanf("%d", &n);
+    for (int i = 1; i <= n; i++) {
+        scanf("%d", &w[0][i]);
+        w[i][0] = w[0][i];
+    }
+
+    for (int i = 1; i <= n; i++)
+        for (int j = 1; j <= n; j++) scanf("%d", &w[i][j]);
+
+    printf("%d\n", prim());
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 346. 走廊泼水节](https://www.acwing.com/problem/content/348/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 推导 变形
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+const int N = 6010;
+
+int n;
+struct Edge {
+    int a, b, w;
+    bool operator<(const Edge &t) const { return w < t.w; }
+} e[N];
+int p[N], size[N];
+
+int find(int x) {
+    if (p[x] != x) p[x] = find(p[x]);
+    return p[x];
+}
+
+int main() {
+    int T;
+    cin >> T;
+    while (T--) {
+        cin >> n;
+        for (int i = 0; i < n - 1; i++) {
+            int a, b, w;
+            cin >> a >> b >> w;
+            e[i] = {a, b, w};
+        }
+
+        sort(e, e + n - 1);
+        for (int i = 1; i <= n; i++) p[i] = i, size[i] = 1;
+
+        int res = 0;
+        for (int i = 0; i < n - 1; i++) {
+            int a = find(e[i].a), b = find(e[i].b), w = e[i].w;
+            if (a != b) {
+                res += (size[a] * size[b] - 1) * (w + 1);
+                size[b] += size[a];
+                p[a] = b;
+            }
+        }
+
+        cout << res << endl;
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1148. 秘密的牛奶运输](https://www.acwing.com/problem/content/1150/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 次小生成树 朴素算法
+> 
+> 1. 求最小生成树 统计标记每条边是树边还是非树边 同时建立最小生成树
+> 2. 预处理任意两点间的边权最大值 $dis[a][b]$
+> 3. 依次枚举所有非树边 求 $min(sum + w - dis[a][b])$
+>    对于严格次小生成树 需满足 $w > dis[a][b]$
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstdio>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+typedef long long LL;
+
+const int N = 510, M = 10010;
+
+int n, m;
+struct Edge {
+    int a, b, w;
+    bool f;
+    bool operator<(const Edge &t) const { return w < t.w; }
+} edge[M];
+int p[N];
+int dist1[N][N], dist2[N][N];
+int h[N], e[N * 2], w[N * 2], ne[N * 2], idx;
+
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx++;
+}
+
+int find(int x) {
+    if (p[x] != x) p[x] = find(p[x]);
+    return p[x];
+}
+
+void dfs(int u, int fa, int maxd1, int maxd2, int d1[], int d2[]) {
+    d1[u] = maxd1, d2[u] = maxd2;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (j != fa) {
+            int td1 = maxd1, td2 = maxd2;
+            if (w[i] > td1)
+                td2 = td1, td1 = w[i];
+            else if (w[i] < td1 && w[i] > td2)
+                td2 = w[i];
+            dfs(j, u, td1, td2, d1, d2);
+        }
+    }
+}
+
+int main() {
+    scanf("%d%d", &n, &m);
+    memset(h, -1, sizeof h);
+    for (int i = 0; i < m; i++) {
+        int a, b, w;
+        scanf("%d%d%d", &a, &b, &w);
+        edge[i] = {a, b, w};
+    }
+
+    sort(edge, edge + m);
+    for (int i = 1; i <= n; i++) p[i] = i;
+
+    LL sum = 0;
+    for (int i = 0; i < m; i++) {
+        int a = edge[i].a, b = edge[i].b, w = edge[i].w;
+        int pa = find(a), pb = find(b);
+        if (pa != pb) {
+            p[pa] = pb;
+            sum += w;
+            add(a, b, w), add(b, a, w);
+            edge[i].f = true;
+        }
+    }
+
+    for (int i = 1; i <= n; i++) dfs(i, -1, -1e9, -1e9, dist1[i], dist2[i]);
+
+    LL res = 1e18;
+    for (int i = 0; i < m; i++)
+        if (!edge[i].f) {
+            int a = edge[i].a, b = edge[i].b, w = edge[i].w;
+            LL t;
+            if (w > dist1[a][b])
+                t = sum + w - dist1[a][b];
+            else if (w > dist2[a][b])
+                t = sum + w - dist2[a][b];
+            res = min(res, t);
+        }
+
+    printf("%lld\n", res);
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

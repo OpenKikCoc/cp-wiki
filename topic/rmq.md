@@ -246,3 +246,84 @@ int main() {
 ### 习题
 
 [\[BJOI 2020\]封印](https://loj.ac/problem/3298)：SAM+RMQ
+
+> [!NOTE] **[AcWing 1273. 天才的记忆](https://www.acwing.com/problem/content/1275/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> RMQ 区间最大值问题 也叫跳表 ST表 本质是动态规划
+> 
+> 思想是倍增预处理+快速查询   【原数组不能变化】
+> 
+> $f[i, j]$ 从i开始长度是 $2^j$ 的区间当中 最大值是多少
+> 
+> init:
+> $$
+>   f[i, j] = max{f[i, j - 1], f[i + 2^(j-1), j - 1]}
+> $$
+> query:
+> $$
+>   f[l, k], f[r - 2^k + 1, k]; 【显然中间有部分交差】
+> $$
+> 
+>  [易知 x + 2^k - 1 = r ==> x = r - 2^k + 1]
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 200010, M = 18;   // 2*10e5 取lg2 = 17
+
+int n, m;
+int w[N];
+int f[N][M];
+
+void init() {
+    for (int j = 0; j < M; ++ j )
+        for (int i = 1; i + (1 << j) - 1 <= n; ++ i)    // 当前区间不能超过终点n
+            if (!j) f[i][j] = w[i];
+            else f[i][j] = max(f[i][j - 1], f[i + (1 << j - 1)][j - 1]);
+}
+
+int query(int l, int r) {
+    int len = r - l + 1;
+    int k = log(len) / log(2);
+    return max(f[l][k], f[r - (1 << k) + 1][k]);
+}
+
+int main() {
+    cin >> n;
+    for (int i = 1; i <= n; ++ i ) cin >> w[i];
+    
+    init();
+    
+    cin >> m;
+    while (m -- ) {
+        int l, r;
+        cin >> l >> r;
+        cout << query(l, r) << endl;
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

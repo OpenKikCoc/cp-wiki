@@ -18,6 +18,7 @@
   * [倍增](basic/binary-lifting.md)
   * [构造](basic/construction.md)
 * [搜索](search/README.md)
+  * [基础搜索](search/basic.md)
   * [双向搜索](search/bidirectional.md)
   * [启发式搜索 与 A*](search/heuristic.md)
   * [迭代加深搜索](search/iterative.md)

@@ -381,3 +381,378 @@ if __name__ == '__main__':
 <br>
 
 * * *
+
+## 习题
+
+> [!NOTE] **[AcWing 1192. 奖金](https://www.acwing.com/problem/content/1194/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思考建边方向
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 10010, M = 20010;
+
+int n, m;
+int h[N], e[M], ne[M], idx;
+int q[N], d[N];
+int dist[N];
+
+void add(int a, int b) {
+    e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+bool topsort() {
+    int hh = 0, tt = -1;
+    for (int i = 1; i <= n; ++ i )
+        if (!d[i]) q[ ++ tt] = i;
+    while (hh <= tt) {
+        int t = q[hh ++ ];
+        for (int i = h[t]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (-- d[j] == 0) q[ ++ tt] = j;
+        }
+    }
+    return tt == n - 1;
+}
+
+int main() {
+    memset(h, -1, sizeof h);
+    
+    cin >> n >> m;
+    while (m -- ) {
+        int a, b;
+        cin >> a >> b;
+        // b -> a 而不是 a -> b
+        add(b, a);
+        ++ d[a];
+    }
+    if (topsort()) {
+        for (int i = 1; i <= n; ++ i ) dist[i] = 100;
+        for (int i = 0; i < n; ++ i ) {
+            int j = q[i];
+            for (int k = h[j]; ~k; k = ne[k])
+                dist[e[k]] = max(dist[e[k]], dist[j] + 1);
+        }
+        int res = 0;
+        for (int i = 1; i <= n; ++ i ) res += dist[i];
+        cout << res << endl;
+    } else cout << "Poor Xed" << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 164. 可达性统计](https://www.acwing.com/problem/content/166/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思路
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 30010, M = 30010;
+
+int n, m;
+int h[N], e[M], ne[M], idx;
+int d[N], q[N];
+// f[i] 所有从点i可以到达的点的集合 拓扑排序逆序求一遍集合并即可
+bitset<N> f[N];
+
+void add(int a, int b) {
+    e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+void topsort() {
+    int hh = 0, tt = -1;
+    for (int i = 1; i <= n; ++ i )
+        if (!d[i]) q[ ++ tt] = i;
+    while (hh <= tt) {
+        int t = q[hh ++ ];
+        for (int i = h[t]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (-- d[j] == 0) q[ ++ tt] = j;
+        }
+    }
+}
+
+int main() {
+    memset(h, -1, sizeof h);
+    
+    cin >> n >> m;
+    while (m -- ) {
+        int a, b;
+        cin >> a >> b;
+        add(a, b);
+        ++ d[b];
+    }
+    topsort();
+    
+    // 注意 逆序才能这样遍历K
+    for (int i = n - 1; i >= 0; -- i ) {
+        int j = q[i];
+        f[j][i] = 1;
+        for (int k = h[j]; ~k; k = ne[k])
+            f[j] |= f[e[k]];
+    }
+    for (int i = 1; i <= n; ++ i ) cout << f[i].count() << endl;    // 1的个数
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 456. 车站分级](https://www.acwing.com/problem/content/458/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+>
+> 某趟车如果停了某个车站，必然要在区间内部所有大于该车站值的位置停靠
+> 区间内：所有大于等于某值的全停 小于的全不停 【某值即停靠站的最小值】
+>
+> 如 1 3 5 6是停靠站 且合法 则其最小等级必然大于 2 4 的等级
+> ==> 可以由未停靠的位置向所有停靠位置连边 表示小于停靠位置
+>     【但这样建边 数量太大 且复杂度过高 故考虑虚拟点】
+> ------------------------ 虚拟点 ------------------------
+> 如果左右两个集合：
+> 每个【左侧集合的每个点】都需要建立连接【右侧每一个点】的边
+> 也即 N^2 图
+> ==> 则在集合中间创建一个虚拟节点即可
+>     左侧全连虚拟节点【对于本题 权重0】 虚拟节点连右侧【对于本题 权重1】
+>     【N^2 图转变为 n+m】
+> -------------------------- end -------------------------
+> 
+> **核心：1.建图思路 2.虚拟节点优化边数**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 2010, M = 1000010;
+
+int n, m;
+int h[N], e[M], ne[M], w[M], idx;
+int q[N], d[N];
+int dist[N];
+bool st[N];
+
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+    d[b] ++ ;
+}
+
+void topsort() {
+    int hh = 0, tt = -1;
+    for (int i = 1; i <= n + m; ++ i )
+        if (!d[i]) q[ ++ tt] = i;
+    while (hh <= tt) {
+        int t = q[hh ++ ];
+        for (int i = h[t]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (-- d[j] == 0) q[ ++ tt] = j;
+        }
+    }
+}
+
+int main() {
+    memset(h, -1, sizeof h);
+    
+    cin >> n >> m;
+    for (int i = 1; i <= m; ++ i ) {
+        memset(st, 0, sizeof st);
+        int cnt;
+        cin >> cnt;
+        int start = n, end = 1;
+        while (cnt -- ) {
+            int stop;
+            cin >> stop;
+            start = min(start, stop);
+            end = max(end, stop);
+            st[stop] = true;
+        }
+        
+        // ver 虚拟源点
+        int ver = n + i;
+        for (int j = start; j <= end; ++ j )
+            if (!st[j]) add(j, ver, 0);
+            else add(ver, j, 1);
+    }
+    topsort();
+    
+    // 随后求最长路【题目所求结果】
+    
+    // 初始化一个点 等价于dist最小为1
+    for (int i = 1; i <= n; ++ i ) dist[i] = 1;
+    // 注意 遍历顺序与所求结果有关 内部更新顺序与边定义有关
+    //      求到起点的最长距离 故从前向后遍历
+    for (int i = 0; i < n + m; ++ i ) {
+        int j = q[i];
+        for (int k = h[j]; ~k; k = ne[k])
+            dist[e[k]] = max(dist[e[k]], dist[j] + w[k]);
+    }
+    int res = 0;
+    for (int i = 1; i <= n; ++ i ) res = max(res, dist[i]);
+    cout << res << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 拓扑排序方案数（可重集排序问题）
+
+> [!NOTE] **[LeetCode 1916. 统计为蚁群构筑房间的不同顺序](https://leetcode-cn.com/problems/count-ways-to-build-rooms-in-an-ant-colony/)**
+> 
+> [weekly-247](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-06-27_Weekly-247)
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 1e5 + 10, MOD = 1e9 + 7;
+    int h[N], e[N], ne[N], idx;
+    int f[N], g[N];
+    int s[N], sz[N];
+    int n;
+    
+    int qmi(int a, int k) {
+        int ret = 1;
+        while (k) {
+            if (k & 1)
+                ret = (LL)ret * a % MOD;
+            a = (LL)a * a % MOD;
+            k >>= 1;
+        }
+        return ret;
+    }
+    
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+        f[0] = g[0] = 1;
+        for (int i = 1; i <= n; ++ i ) {
+            f[i] = f[i - 1] * (LL)i % MOD;
+            g[i] = g[i - 1] * (LL)qmi(i, MOD - 2) % MOD;
+        }
+    }
+    
+    void add(int a, int b) {
+        e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    // 单向边 不需要记录fa
+    int dfs(int u) {
+        sz[u] = 0;  // 初始时不包括跟节点
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i];
+            dfs(j);
+            sz[u] += sz[j];
+        }
+        // 所有子树的和的阶乘
+        s[u] = f[sz[u]];
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i];
+            // 子树数量逆元 子树方案数
+            s[u] = (LL)s[u] * g[sz[j]] % MOD;
+            s[u] = (LL)s[u] * s[j] % MOD;
+        }
+        sz[u] ++ ;
+        return s[u];
+    }
+    
+    int waysToBuildRooms(vector<int>& prevRoom) {
+        this->n = prevRoom.size();
+        init();
+        for (int i = 1; i < n; ++ i )
+            add(prevRoom[i], i);
+        return dfs(0);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

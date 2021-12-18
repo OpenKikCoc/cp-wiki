@@ -4,7 +4,11 @@
 
 搜索是一些高级算法的基础。在 OI 中，纯粹的搜索往往也是得到部分分的手段，但可以通过纯粹的搜索拿到满分的题目非常少。
 
-## 习题
+习题
 
 - [「kuangbin 带你飞」专题一 简单搜索](https://vjudge.net/contest/65959)
 - [「kuangbin 带你飞」专题二 搜索进阶](https://vjudge.net/contest/65997)
+
+总结
+
+github.com/OpenKikCoc/AcWing 搜索部分

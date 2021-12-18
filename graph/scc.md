@@ -293,3 +293,475 @@ def find_scc(n):
 [USACO Fall/HAOI 2006 受欢迎的牛](https://loj.ac/problem/10091)
 
 [POJ1236 Network of Schools](http://poj.org/problem?id=1236)
+
+> [!NOTE] **[AcWing 1174. 受欢迎的牛](https://www.acwing.com/problem/content/1176/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+> 树枝边 前向边 后向边 横叉边(只指向已访问过的点 否则就是树枝边了)
+> 
+> 存在SCC：
+> 
+> 1. 存在后向边指向祖先节点
+> 2. 走到横叉边 经过横叉边走向祖先借点
+> 
+> --------------->
+> 
+>  Tarjan 求SCC
+> 
+>  引入时间戳概念 对每个点定义两个时间戳
+> 
+> 
+> $dfn[u]$ 遍历到u的时间戳
+> 
+> $low[u]$ 从u开始走所能遍历的最小时间戳
+> 
+> $u$ 是其所在的SCC的最高点 等价于 $dfn[u] == low[u]$
+> 
+> 
+> **tarjan结束后 联通编号递减序一定已经是拓扑序**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 10010, M = 50010;
+
+int n, m;
+int h[N], e[M], ne[M], idx;
+int dfn[N], low[N], timestamp;
+int stk[N], top;
+bool in_stk[N];
+int id[N], scc_cnt, Size[N];
+int dout[N];
+
+void add(int a, int b) {
+    e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+void tarjan(int u) {
+    dfn[u] = low[u] = ++ timestamp;
+    stk[ ++ top] = u, in_stk[u] = true;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (!dfn[j]) {
+            tarjan(j);
+            low[u] = min(low[u], low[j]);
+        } else if (in_stk[j]) low[u] = min(low[u], dfn[j]);
+    }
+    
+    if (dfn[u] == low[u]) {
+        ++ scc_cnt;
+        int y;
+        do {
+            y = stk[top -- ];
+            in_stk[y] = false;
+            id[y] = scc_cnt;
+            Size[scc_cnt] ++ ;
+        } while (y != u);
+    }
+}
+
+int main() {
+    memset(h, -1, sizeof h);
+    
+    cin >> n >> m;
+    for (int i = 0; i < m; ++ i ) {
+        int a, b;
+        cin >> a >> b;
+        add(a, b);
+    }
+    
+    for (int i = 1; i <= n; ++ i )
+        if (!dfn[i])
+            tarjan(i);
+    
+    // 统计出度 原图中所有的边
+    for (int i = 1; i <= n; ++ i )
+        for (int j = h[i]; ~j; j = ne[j]) {
+            int k = e[j];
+            int a = id[i], b = id[k];
+            if (a != b) ++ dout[a];
+        }
+    
+    // 多少个点的出度为0 sum保存所有出度为0的SCC的点的数量之和
+    int zeros = 0, sum = 0;
+    for (int i = 1; i <= scc_cnt; ++ i )
+        if (!dout[i]) {
+            ++ zeros;
+            sum += Size[i];
+            // 只要多余一个点的出度为0 就有牛不会被所有牛欢迎
+            if (zeros > 1) {
+                sum = 0;
+                break;
+            }
+        }
+    cout << sum << endl;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 367. 学校网络](https://www.acwing.com/problem/content/369/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 110, M = 10010;
+
+int n;
+int h[N], e[M], ne[M], idx;
+int dfn[N], low[N], timestamp;
+int stk[N], top;
+bool in_stk[N];
+int id[N], scc_cnt;
+int din[N], dout[N];
+
+void add(int a, int b) {
+    e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+void tarjan(int u) {
+    dfn[u] = low[u] = ++ timestamp;
+    stk[ ++ top] = u, in_stk[u] = true;
+    
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (!dfn[j]) {
+            tarjan(j);
+            low[u] = min(low[u], low[j]);
+        } else if (in_stk[j]) low[u] = min(low[u], dfn[j]);
+    }
+    
+    if (dfn[u] == low[u]) {
+        ++ scc_cnt;
+        int y;
+        do {
+            y = stk[top -- ];
+            in_stk[y] = false;
+            id[y] = scc_cnt;
+        } while (y != u);
+    }
+}
+
+int main() {
+    cin >> n;
+    memset(h, -1, sizeof h);
+    for (int i = 1; i <= n; ++ i ) {
+        int t;
+        while (cin >> t, t) add(i, t);
+    }
+    
+    for (int i = 1; i <= n; ++ i )
+        if (!dfn[i])
+            tarjan(i);
+            
+    for (int i = 1; i <= n; ++ i )
+        for (int j = h[i]; ~j; j = ne[j]) {
+            int k = e[j];
+            int a = id[i], b = id[k];
+            if (a != b) {
+                dout[a] ++ ;
+                din[b] ++ ;
+            }
+        }
+    int a = 0, b = 0;
+    for (int i = 1; i <= scc_cnt; ++ i ) {
+        if (!din[i]) ++ a ;
+        if (!dout[i]) ++ b ;
+    }
+    // 入度0
+    cout << a << endl;
+    if (scc_cnt == 1) cout << 0 << endl;
+    else cout << max(a, b) << endl;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1175. 最大半连通子图](https://www.acwing.com/problem/content/1177/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 先缩点变为DAG
+> 
+> 最大半连通子图就是求个最长链
+> 
+> 第二问统计最长链方案数
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+const int N = 100010, M = 2000010;  // h + hs
+int n, m, mod;
+int h[N], hs[N], e[M], ne[M], idx;
+int dfn[N], low[N], timestamp;
+int stk[N], top;
+bool in_stk[N];
+int id[N], scc_cnt, scc_size[N];
+int f[N], g[N];
+
+void add(int h[], int a, int b) {
+    e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+void tarjan(int u) {
+    dfn[u] = low[u] = ++ timestamp;
+    stk[ ++ top] = u, in_stk[u] = true;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (!dfn[j]) {
+            tarjan(j);
+            low[u] = min(low[u], low[j]);
+        } else if (in_stk[j]) low[u] = min(low[u], dfn[j]);
+    }
+    if (dfn[u] == low[u]) {
+        ++ scc_cnt;
+        int y;
+        do {
+            y = stk[top -- ];
+            in_stk[y] = false;
+            id[y] = scc_cnt;
+            scc_size[scc_cnt] ++ ;
+        } while (y != u);
+    }
+}
+
+int main() {
+    memset(h, -1, sizeof h);
+    memset(hs, -1, sizeof hs);
+    
+    cin >> n >> m >> mod;
+    for (int i = 0; i < m; ++ i ) {
+        int a, b;
+        cin >> a >> b;
+        add(h, a, b);
+    }
+    
+    for (int i = 1; i <= n; ++ i )
+        if (!dfn[i])
+            tarjan(i);
+            
+    unordered_set<LL> S;    //  (u, v) -> u * 1000000 + v
+    for (int i = 1; i <= n; ++ i )
+        for (int j = h[i]; ~j; j = ne[j]) {
+            int k = e[j];
+            int a = id[i], b = id[k];
+            LL hash = a * 1000000ll + b;
+            if (a != b && !S.count(hash)) {
+                add(hs, a, b);
+                S.insert(hash);
+            }
+        }
+    for (int i = scc_cnt; i; -- i ) {
+        if (!f[i]) {
+            f[i] = scc_size[i];
+            g[i] = 1;
+        }
+        for (int j = hs[i]; ~j; j = ne[j]) {
+            int k = e[j];
+            if (f[k] < f[i] + scc_size[k]) {
+                f[k] = f[i] + scc_size[k];
+                g[k] = g[i];
+            } else if (f[k] == f[i] + scc_size[k])
+                g[k] = (g[k] + g[i]) % mod;
+        }
+    }
+    int maxf = 0, sum = 0;
+    for (int i = 1; i <= scc_cnt; ++ i )
+        if (f[i] > maxf) maxf = f[i], sum = g[i];
+        else if (f[i] == maxf) sum = (sum + g[i]) % mod;
+    cout << maxf << endl << sum << endl;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 368. 银河](https://www.acwing.com/problem/content/370/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 可以差分约束做 这里做强连通分量[本题所有边权都大于0]
+> 
+> 用强连通分量可以保证稳定线性复杂度
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+const int N = 100010, M = 600010;
+
+int n, m;
+int h[N], hs[N], e[M], ne[M], w[M], idx;
+int dfn[N], low[N], timestamp;
+int stk[N], top;
+bool in_stk[N];
+int id[N], scc_cnt, scc_size[N];
+int dist[N];
+
+
+void add(int h[], int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+void tarjan(int u) {
+    dfn[u] = low[u] = ++ timestamp;
+    stk[ ++ top] = u, in_stk[u] = true;
+    
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (!dfn[j]) {
+            tarjan(j);
+            low[u] = min(low[u], low[j]);
+        } else if (in_stk[j]) low[u] = min(low[u], dfn[j]);
+    }
+    
+    if (dfn[u] == low[u]) {
+        ++ scc_cnt;
+        int y;
+        do {
+            y = stk[top -- ];
+            in_stk[y] = false;
+            id[y] = scc_cnt;
+            scc_size[scc_cnt] ++ ;
+        } while (y != u);
+    }
+}
+
+
+int main() {
+    memset(h, -1, sizeof h);
+    memset(hs, -1, sizeof hs);
+    
+    cin >> n >> m;
+    
+    for (int i = 1; i <= n; ++ i ) add(h, 0, i, 1);
+    
+    while (m -- ) {
+        int t, a, b;
+        cin >> t >> a >> b;
+        if (t == 1) add(h, b, a, 0), add(h, a, b, 0);
+        else if (t == 2) add(h, a, b, 1);
+        else if (t == 3) add(h, b, a, 0);
+        else if (t == 4) add(h, b, a, 1);
+        else add(h, a, b, 0);
+    }
+    
+    tarjan(0);
+    
+    bool success = true;
+    for (int i = 0; i <= n; ++ i ) {
+        for (int j = h[i]; ~j; j = ne[j]) {
+            int k = e[j];
+            int a= id[i], b = id[k];
+            if (a == b) {
+                if (w[j] > 0) {
+                    success = false;
+                    break;
+                }
+            } else add(hs, a, b, w[j]);
+        }
+        if (!success) break;
+    }
+    if (!success) cout << -1 << endl;
+    else {
+        for (int i = scc_cnt; i; -- i )
+            for (int j = hs[i]; ~j; j = ne[j]) {
+                int k = e[j];
+                dist[k] = max(dist[k], dist[i] + w[j]);
+            }
+        LL res = 0;
+        for (int i = 1; i <= scc_cnt; ++ i ) res += (LL)dist[i] * scc_size[i];
+        cout << res << endl;
+    }
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

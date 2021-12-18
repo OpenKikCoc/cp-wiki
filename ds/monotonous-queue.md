@@ -230,3 +230,134 @@ if __name__ == '__main__':
 <br>
 
 * * *
+
+### 结合前后缀分解
+
+> [!NOTE] **[LeetCode 1888. 使二进制字符串字符交替的最少反转次数](https://leetcode-cn.com/problems/minimum-number-of-flips-to-make-the-binary-string-alternating/)**
+> 
+> [weekly-244](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-06-06_Weekly-244) 详细看左侧链接
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 可以滑动窗口也可以前后缀分解 更优的做法是滑动窗口
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 1**
+
+```cpp
+class Solution {
+public:
+    int minFlips(string s) {
+        int n = s.size(), cnt = 0;
+        // 将字符串变成 01 串需要反转的次数
+        string tar = "01";
+        for (int i = 0; i < n; ++ i )
+            cnt += (s[i] != tar[i % 2]);
+        
+        int res = min(cnt, n - cnt);
+        s += s;
+        for (int i = 0; i < n; ++ i ) {
+            cnt -= (s[i] != tar[i % 2]);
+            cnt += (s[i + n] != tar[(i + n) % 2]);
+            res = min(res, min(cnt, n - cnt));
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 2**
+
+```cpp
+class Solution {
+public:
+    int minFlips(string s) {
+        int n = s.size();
+        s = s + s;
+        
+        string a, b;    // a = "0101...", b = "1010..."
+        for (int i = 0; i < 2 * n; ++ i )
+            a.push_back('0' + i % 2), b.push_back('0' + (i + 1) % 2);
+        
+        int res = n, da = 0, db = 0;
+        for (int i = 0; i < 2 * n; ++ i ) {
+            if (s[i] != a[i])
+                da ++ ;
+            if (s[i] != b[i])
+                db ++ ;
+            
+            // 维护窗口的实现
+            if (i >= n) {
+                if (s[i - n] != a[i - n])
+                    da -- ;
+                if (s[i - n] != b[i - n])
+                    db -- ;
+            }
+            if (i >= n - 1)
+                res = min(res, min(da, db));
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 3 常见形式**
+
+```cpp
+// 转化为常见方式
+class Solution {
+public:
+    int minFlips(string s) {
+        int n = s.size();
+        s = s + s;
+        
+        string a, b;    // a = "0101...", b = "1010..."
+        for (int i = 0; i < 2 * n; ++ i )
+            a.push_back('0' + i % 2), b.push_back('0' + (i + 1) % 2);
+        
+        int res = n, da = 0, db = 0;
+        for (int i = 0; i < n; ++ i ) {
+            if (s[i] != a[i])
+                da ++ ;
+            if (s[i] != b[i])
+                db ++ ;
+        }
+        
+        res = min(res, min(da, db));
+        
+        for (int i = n; i < 2 * n; ++ i ) {
+            if (s[i] != a[i])
+                da ++ ;
+            if (s[i] != b[i])
+                db ++ ;
+            
+            {
+                if (s[i - n] != a[i - n])
+                    da -- ;
+                if (s[i - n] != b[i - n])
+                    db -- ;
+            }
+            
+            res = min(res, min(da, db));
+        }
+        return res;
+    }
+};
+```
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

@@ -1443,3 +1443,1803 @@ if __name__ == '__main__':
 <br>
 
 * * *
+
+### dijkstra 进阶
+
+> [!NOTE] **[AcWing 920. 最优乘车](https://www.acwing.com/problem/content/922/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **学习STL处理输入流**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using PII = pair<int, int>;
+
+const int N = 510, M = N * N, INF = 0x3f3f3f3f;
+
+int m, n;
+int h[N], e[M], w[M], ne[M], idx;
+int d[N];
+bool st[N];
+
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+void dijkstra() {
+    memset(d, 0x3f, sizeof d);
+    memset(st, 0, sizeof st);
+    
+    priority_queue<PII, vector<PII>, greater<PII>> heap;
+    heap.push({0, 1});
+    d[1] = 0;
+    
+    while (heap.size()) {
+        auto [dis, ver] = heap.top(); heap.pop();
+        if (st[ver]) continue;
+        st[ver] = true;
+        
+        for (int i = h[ver]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (d[j] > dis + w[i]) {
+                d[j] = dis + w[i];
+                heap.push({d[j], j});
+            }
+        }
+    }
+}
+
+int main() {
+    memset(h, -1, sizeof h);
+    
+    cin >> m >> n;
+    
+    string line;
+    getline(cin, line);  // \r
+    while (m -- ) {
+        getline(cin, line);
+        stringstream ss(line);
+        int p, cnt;
+        vector<int> stop;
+        while (ss >> p) stop.push_back(p);
+        cnt = stop.size();
+        
+        for (int i = 0; i < cnt; ++ i )
+            for (int j = i + 1; j < cnt; ++ j )
+                add(stop[i], stop[j], 1);
+    }
+    
+    dijkstra();
+    
+    if (d[n] == INF) cout << "NO" << endl;
+    else cout << max(d[n] - 1, 0) << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 903. 昂贵的聘礼](https://www.acwing.com/problem/content/description/905/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> WA 好几次因为没有在 dijkstra 内部初始化
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using PII = pair<int, int>;
+
+const int N = 110, INF = 0x3f3f3f3f;
+
+int n, m;
+int w[N][N], l[N];
+int d[N];
+bool st[N];
+
+int dijkstra(int down, int up) {
+    memset(d, 0x3f, sizeof d);
+    memset(st, 0, sizeof st);
+    
+    priority_queue<PII, vector<PII>, greater<PII>> heap;
+    d[0] = 0;
+    heap.push({0, 0});
+    while (!heap.empty()) {
+        auto [dis, ver] = heap.top(); heap.pop();
+        if (st[ver]) continue;
+        st[ver] = true;
+        
+        for (int v = 1; v <= n; ++ v )
+            if (l[v] >= down && l[v] <= up && d[v] > dis + w[ver][v]) {
+                d[v] = dis + w[ver][v];
+                heap.push({d[v], v});
+            }
+    }
+    return d[1];
+}
+
+int main() {
+    cin >> m >> n;
+    
+    memset(w, 0x3f, sizeof w);
+    for (int i = 1; i <= n; ++ i ) w[i][i] = 0;
+    
+    for (int i = 1; i <= n; ++ i ) {
+        int price, cnt;
+        cin >> price >> l[i] >> cnt;
+        w[0][i] = min(price, w[0][i]);
+        while (cnt -- ) {
+            int id, cost;
+            cin >> id >> cost;
+            w[id][i] = min(w[id][i], cost);
+        }
+    }
+    
+    int res = INF;
+    for (int i = l[1] - m; i <= l[1]; ++ i )
+        res = min(res, dijkstra(i, i + m));
+        
+    cout << res << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 单源最短路综合应用
+
+> [!NOTE] **[AcWing 1135. 新年好](https://www.acwing.com/problem/content/1137/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 从 5 个亲戚起点各自跑最短路 然后 dfs 所有先后顺序排列组合
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstdio>
+#include <cstring>
+#include <iostream>
+#include <queue>
+
+using namespace std;
+
+typedef pair<int, int> PII;
+
+const int N = 50010, M = 200010, INF = 0x3f3f3f3f;
+
+int n, m;
+int h[N], e[M], w[M], ne[M], idx;
+int q[N], dist[6][N];
+int source[6];
+bool st[N];
+
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx++;
+}
+
+void dijkstra(int start, int dist[]) {
+    memset(dist, 0x3f, N * 4);
+    dist[start] = 0;
+    memset(st, 0, sizeof st);
+
+    priority_queue<PII, vector<PII>, greater<PII>> heap;
+    heap.push({0, start});
+
+    while (heap.size()) {
+        auto t = heap.top();
+        heap.pop();
+
+        int ver = t.second;
+        if (st[ver]) continue;
+        st[ver] = true;
+
+        for (int i = h[ver]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (dist[j] > dist[ver] + w[i]) {
+                dist[j] = dist[ver] + w[i];
+                heap.push({dist[j], j});
+            }
+        }
+    }
+}
+
+int dfs(int u, int start, int distance) {
+    if (u > 5) return distance;
+
+    int res = INF;
+    for (int i = 1; i <= 5; i++)
+        if (!st[i]) {
+            int next = source[i];
+            st[i] = true;
+            res = min(res, dfs(u + 1, i, distance + dist[start][next]));
+            st[i] = false;
+        }
+
+    return res;
+}
+
+int main() {
+    scanf("%d%d", &n, &m);
+    source[0] = 1;
+    for (int i = 1; i <= 5; i++) scanf("%d", &source[i]);
+
+    memset(h, -1, sizeof h);
+    while (m--) {
+        int a, b, c;
+        scanf("%d%d%d", &a, &b, &c);
+        add(a, b, c), add(b, a, c);
+    }
+
+    for (int i = 0; i < 6; i++) dijkstra(source[i], dist[i]);
+
+    memset(st, 0, sizeof st);
+    printf("%d\n", dfs(1, 0, 0));
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 340. 通信线路](https://www.acwing.com/problem/content/342/)**
+> 
+> 题意: 使线路上的最长边最小
+
+> [!TIP] **思路**
+> 
+> 1. 最大值最小 可以用二分做
+> 
+>  ====> 如果线路上有大于它的，就需要消耗掉一条免费的，只要最后消耗的小于k就行了。
+> 
+> 2. 分层最短路 TODO
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <deque>
+#include <iostream>
+
+using namespace std;
+
+const int N = 1010, M = 20010;
+
+int n, m, k;
+int h[N], e[M], w[M], ne[M], idx;
+int dist[N];
+deque<int> q;
+bool st[N];
+
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx++;
+}
+
+bool check(int bound) {
+    memset(dist, 0x3f, sizeof dist);
+    memset(st, 0, sizeof st);
+
+    q.push_back(1);
+    dist[1] = 0;
+
+    while (q.size()) {
+        int t = q.front();
+        q.pop_front();
+
+        if (st[t]) continue;
+        st[t] = true;
+
+        for (int i = h[t]; ~i; i = ne[i]) {
+            int j = e[i], x = w[i] > bound;
+            if (dist[j] > dist[t] + x) {
+                dist[j] = dist[t] + x;
+                if (!x)
+                    q.push_front(j);
+                else
+                    q.push_back(j);
+            }
+        }
+    }
+
+    return dist[n] <= k;
+}
+
+int main() {
+    cin >> n >> m >> k;
+    memset(h, -1, sizeof h);
+    while (m--) {
+        int a, b, c;
+        cin >> a >> b >> c;
+        add(a, b, c), add(b, a, c);
+    }
+
+    int l = 0, r = 1e6 + 1;
+    while (l < r) {
+        int mid = l + r >> 1;
+        if (check(mid))
+            r = mid;
+        else
+            l = mid + 1;
+    }
+
+    if (r == 1e6 + 1)
+        cout << -1 << endl;
+    else
+        cout << r << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 342. 道路与航线](https://www.acwing.com/problem/content/344/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 团内部dijkstra 团与团直接topo
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using PII = pair<int, int>;
+
+const int N = 25010, M = 150010, INF = 0x3f3f3f3f;
+
+int n, r, p, s;
+int id[N];  //
+int bcnt, din[N];
+vector<int> block[N];
+queue<int> q;
+
+int h[N], e[M], w[M], ne[M], idx;
+int d[N];
+bool st[N];
+
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+void dfs(int u, int bid) {
+    id[u] = bid, block[bid].push_back(u);
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (!id[j])
+            dfs(j, bid);
+    }
+}
+
+void dijkstra(int bid) {
+    priority_queue<PII, vector<PII>, greater<PII>> heap;
+    
+    for (auto u : block[bid])
+        heap.push({d[u], u});
+        
+    while (heap.size()) {
+        auto [dis, ver] = heap.top(); heap.pop();
+        if (st[ver]) continue;
+        st[ver] = true;
+        
+        for (int i = h[ver]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (id[j] != id[ver] && -- din[id[j]] == 0) q.push(id[j]);
+            if (d[j] > dis + w[i]) {
+                d[j] = dis + w[i];
+                if (id[j] == id[ver]) heap.push({d[j], j});
+            }
+        }
+    }
+}
+
+void toposort() {
+    memset(d, 0x3f, sizeof d);
+    memset(st, 0, sizeof st);
+    d[s] = 0;
+    
+    for (int i = 1; i <= bcnt; ++ i )
+        if (!din[i])
+            q.push(i);
+
+    while (q.size()) {
+        int t = q.front(); q.pop();
+        dijkstra(t);
+    }
+}
+
+int main() {
+    memset(h, -1, sizeof h);
+    
+    cin >> n >> r >> p >> s;
+    
+    int a, b, c;
+    while (r -- ) {
+        cin >> a >> b >> c;
+        add(a, b, c), add(b, a, c);
+    }
+    
+    for (int i = 1; i <= n; ++ i )
+        if (!id[i]) {
+            bcnt ++ ;
+            dfs(i, bcnt);
+        }
+    
+    
+    while (p -- ) {
+        cin >> a >> b >> c;
+        din[id[b]] ++ ;
+        add(a, b, c);
+    }
+    
+    toposort();
+    
+    for (int i = 1; i <= n; ++ i )
+        if (d[i] > INF / 2) cout << "NO PATH" << endl;
+        else cout << d[i] << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 341. 最优贸易](https://www.acwing.com/problem/content/343/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 先求出：
+> 
+> - 从 1 走到 i 的过程中，买入水晶球的最低价格 dmin[i]；
+> 
+> - 从 i 走到 n 的过程中，卖出水晶球的最高价格 dmax[i]；
+> 
+> 然后枚举每个城市作为买卖的中间城市，求出 dmax[i] - dmin[i] 的最大值即可。
+> 
+> ==> 因此 需要反向边
+> 
+> **可能有环 所以只能 spfa**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 100010, M = 2000010, INF = 0x3f3f3f3f;
+
+int n, m;
+int w[N];
+int hs[N], ht[N], e[M], ne[M], idx;
+int dmin[N], dmax[N];
+bool st[N];
+
+int q[N];
+
+void add(int h[], int a, int b) {
+    e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+void spfa(int h[], int d[], int type) {
+    int hh = 0, tt = 0;                 // ATTENTION 1 : 循环队列
+    if (type == 0) {
+        memset(d, 0x3f, sizeof dmin);   // ATTENTION 2 : 不能用 sizeof d    可以用 memset(d, 0x3f, N * 4)
+        q[tt ++ ] = 1;
+        d[1] = w[1];
+    } else {
+        memset(d, 0xcf, sizeof dmax);
+        q[tt ++ ] = n;
+        d[n] = w[n];
+    }
+    
+    while (hh != tt) {
+        int t = q[hh ++ ];
+        if (hh == N) hh = 0;
+        
+        st[t] = false;
+        
+        for (int i = h[t]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (type == 0 && d[j] > min(d[t], w[j]) ||
+                type == 1 && d[j] < max(d[t], w[j])
+            ) {
+                if (type == 0) d[j] = min(d[t], w[j]);
+                else d[j] = max(d[t], w[j]);
+                
+                if (!st[j]) {
+                    q[tt ++ ] = j;
+                    if (tt == N) tt = 0;
+                    st[j] = true;
+                }
+            }
+        }
+    }
+}
+
+int main() {
+    memset(hs, -1, sizeof hs);
+    memset(ht, -1, sizeof ht);
+    
+    cin >> n >> m;
+    for (int i = 1; i <= n; ++ i ) cin >> w[i];
+    
+    while (m -- ) {
+        int a, b, c;
+        cin >> a >> b >> c;
+        add(hs, a, b), add(ht, b, a);
+        if (c == 2) add(hs, b, a), add(ht, a, b);
+    }
+    
+    spfa(hs, dmin, 0);
+    spfa(ht, dmax, 1);
+    
+    int res = 0;
+    for (int i = 1; i <= n; ++ i )
+        res = max(res, dmax[i] - dmin[i]);
+    cout << res << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
+### 单元最短路扩展(计数)
+
+> [!NOTE] **[AcWing 1134. 最短路计数](https://www.acwing.com/problem/content/1136/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 最短路有多少个
+> 
+> **数学推导**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using PII = pair<int, int>;
+
+const int N = 100010, M = 400010, mod = 100003;
+
+int n, m;
+int h[N], e[M], ne[M], idx;
+int d[N], cnt[N];
+bool st[N];
+
+void add(int a, int b) {
+    e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+void dijkstra() {
+    memset(d, 0x3f, sizeof d);
+    memset(cnt, 0, sizeof cnt);
+    memset(st, 0, sizeof st);
+    
+    priority_queue<PII, vector<PII>, greater<PII>> heap;
+    heap.push({0, 1});
+    d[1] = 0, cnt[1] = 1;
+    
+    while (heap.size()) {
+        auto [dis, ver] = heap.top(); heap.pop();
+        if (st[ver]) continue;
+        st[ver] = true;
+        
+        for (int i = h[ver]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (d[j] > dis + 1) {
+                d[j] = dis + 1;
+                cnt[j] = cnt[ver];
+                heap.push({d[j], j});
+            } else if (d[j] == dis + 1) {
+                cnt[j] = (cnt[j] + cnt[ver]) % mod;
+            }
+        }
+    }
+}
+
+int main() {
+    memset(h, -1, sizeof h);
+    
+    cin >> n >> m;
+    
+    while (m -- ) {
+        int a, b;
+        cin >> a >> b;
+        add(a, b), add(b, a);
+    }
+
+    dijkstra();
+    
+    for (int i = 1; i <= n; ++ i )
+        cout << cnt[i] << endl;
+        
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 383. 观光](https://www.acwing.com/problem/content/385/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 最短路 + (最短路+1) 个数统计
+> 
+> 注意写法
+> 
+> **后面周赛遇到过变形 加强理解**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using TIII = tuple<int, int, int>;
+
+const int N = 1010, M = 20010;
+
+int n, m, s, t;
+int h[N], e[M], w[M], ne[M], idx;
+int d[N][2], cnt[N][2];
+bool st[N][2];
+
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+int dijkstra() {
+    memset(d, 0x3f, sizeof d);
+    memset(st, 0, sizeof st);
+    memset(cnt, 0, sizeof cnt);
+    
+    priority_queue<TIII, vector<TIII>, greater<TIII>> heap;
+    heap.push({0, s, 0});
+    d[s][0] = 0, cnt[s][0] = 1;
+    
+    while (heap.size()) {
+        auto [dis, ver, type] = heap.top(); heap.pop();
+        if (st[ver][type]) continue;
+        st[ver][type] = true;
+        
+        for (int i = h[ver]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (d[j][0] > dis + w[i]) {
+                d[j][1] = d[j][0], cnt[j][1] = cnt[j][0];
+                heap.push({d[j][1], j, 1});
+                d[j][0] = dis + w[i], cnt[j][0] = cnt[ver][type];
+                heap.push({d[j][0], j, 0});
+            } else if (d[j][0] == dis + w[i])
+                cnt[j][0] += cnt[ver][type];
+            else if (d[j][1] > dis + w[i]) {
+                d[j][1] = dis + w[i], cnt[j][1] = cnt[ver][type];
+                heap.push({d[j][1], j, 1});
+            } else if (d[j][1] == dis + w[i])
+                cnt[j][1] += cnt[ver][type];
+        }
+    }
+    
+    int res = cnt[t][0];
+    if (d[t][0] + 1 == d[t][1]) res += cnt[t][1];
+    return res;
+}
+
+int main() {
+    int T;
+    cin >> T;
+    while (T -- ) {
+        memset(h, -1, sizeof h); idx = 0;
+        
+        cin >> n >> m;
+        
+        while (m -- ) {
+            int a, b, c;
+            cin >> a >> b >> c;
+            add(a, b, c);
+        }
+        
+        cin >> s >> t;
+        cout << dijkstra() << endl;
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### floyd
+
+> [!NOTE] **[AcWing 343. 排序](https://www.acwing.com/problem/content/345/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 传递闭包**
+
+```cpp
+// 传递闭包 O(mn3)
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+const int N = 26;
+
+int n, m;
+bool g[N][N], d[N][N];
+bool st[N];
+
+void floyd() {
+    memcpy(d, g, sizeof d);
+
+    for (int k = 0; k < n; k++)
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++) d[i][j] |= d[i][k] && d[k][j];
+}
+
+int check() {
+    for (int i = 0; i < n; i++)
+        if (d[i][i]) return 2;
+
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < i; j++)
+            if (!d[i][j] && !d[j][i]) return 0;
+
+    return 1;
+}
+
+char get_min() {
+    for (int i = 0; i < n; i++)
+        if (!st[i]) {
+            bool flag = true;
+            for (int j = 0; j < n; j++)
+                if (!st[j] && d[j][i]) {
+                    flag = false;
+                    break;
+                }
+            if (flag) {
+                st[i] = true;
+                return 'A' + i;
+            }
+        }
+}
+
+int main() {
+    while (cin >> n >> m, n || m) {
+        memset(g, 0, sizeof g);
+        int type = 0, t;
+        for (int i = 1; i <= m; i++) {
+            char str[5];
+            cin >> str;
+            int a = str[0] - 'A', b = str[2] - 'A';
+
+            if (!type) {
+                g[a][b] = 1;
+                floyd();
+                type = check();
+                if (type) t = i;
+            }
+        }
+
+        if (!type)
+            puts("Sorted sequence cannot be determined.");
+        else if (type == 2)
+            printf("Inconsistency found after %d relations.\n", t);
+        else {
+            memset(st, 0, sizeof st);
+            printf("Sorted sequence determined after %d relations: ", t);
+            for (int i = 0; i < n; i++) printf("%c", get_min());
+            printf(".\n");
+        }
+    }
+
+    return 0;
+}
+```
+
+##### **C++ 增量算法**
+
+```cpp
+// 增量算法 O(mn2)
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+const int N = 26;
+
+int n, m;
+bool d[N][N];
+bool st[N];
+
+int check() {
+    for (int i = 0; i < n; i++)
+        if (d[i][i]) return 2;
+
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < i; j++)
+            if (!d[i][j] && !d[j][i]) return 0;
+
+    return 1;
+}
+
+char get_min() {
+    for (int i = 0; i < n; i++)
+        if (!st[i]) {
+            bool flag = true;
+            for (int j = 0; j < n; j++)
+                if (!st[j] && d[j][i]) {
+                    flag = false;
+                    break;
+                }
+            if (flag) {
+                st[i] = true;
+                return 'A' + i;
+            }
+        }
+}
+
+int main() {
+    while (cin >> n >> m, n || m) {
+        memset(d, 0, sizeof d);
+
+        int type = 0, t;
+        for (int i = 1; i <= m; i++) {
+            char str[5];
+            cin >> str;
+            int a = str[0] - 'A', b = str[2] - 'A';
+
+            if (!type) {
+                d[a][b] = 1;
+                for (int x = 0; x < n; x++) {
+                    if (d[x][a]) d[x][b] = 1;
+                    if (d[b][x]) d[a][x] = 1;
+                    for (int y = 0; y < n; y++)
+                        if (d[x][a] && d[b][y]) d[x][y] = 1;
+                }
+                type = check();
+                if (type) t = i;
+            }
+        }
+
+        if (!type)
+            puts("Sorted sequence cannot be determined.");
+        else if (type == 2)
+            printf("Inconsistency found after %d relations.\n", t);
+        else {
+            memset(st, 0, sizeof st);
+            printf("Sorted sequence determined after %d relations: ", t);
+            for (int i = 0; i < n; i++) printf("%c", get_min());
+            printf(".\n");
+        }
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 344. 观光之旅](https://www.acwing.com/problem/content/346/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 模版 **无向图最小环**
+> 
+> > 对于有向图直接 floyd 即可
+> > 直接一遍floyd；然后求自己到自己的最短距离，注意初始化 inf
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+floyd是典型的插点算法，每次插入点k，为此，在点k被[插入前]可计算i-j-k这个环
+即此时中间节点为：1~k-1，即我们已经算出了任意i<->j的最短道路，中间经过的节点可以为 (1,2,3,…,k-1)
+我们只需枚举所有以k为环中最大节点的环即可。
+
+设一个环中的最大结点为k(编号最大), 与他相连的两个点为i, j, 这个环的最短长度
+为g[i][k]+g[k][j]+i到j的路径中所有结点编号都小于k的最短路径长度。
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+const int N = 110, INF = 0x3f3f3f3f;
+
+int n, m;
+int d[N][N], g[N][N];
+int pos[N][N];
+int path[N], cnt;
+
+void get_path(int i, int j) {
+    if (pos[i][j] == 0) return;
+
+    int k = pos[i][j];
+    get_path(i, k);
+    path[cnt++] = k;
+    get_path(k, j);
+}
+
+int main() {
+    cin >> n >> m;
+
+    memset(g, 0x3f, sizeof g);
+    for (int i = 1; i <= n; i++) g[i][i] = 0;
+
+    while (m--) {
+        int a, b, c;
+        cin >> a >> b >> c;
+        g[a][b] = g[b][a] = min(g[a][b], c);
+    }
+
+    int res = INF;
+    memcpy(d, g, sizeof d);
+    // 至少包含三个点的环经过的点的最大编号是k
+    for (int k = 1; k <= n; k++) {
+        for (int i = 1; i < k; i++)
+            for (int j = i + 1; j < k; j++)
+                if ((long long)d[i][j] + g[j][k] + g[k][i] < res) {
+                    res = d[i][j] + g[j][k] + g[k][i];
+                    cnt = 0;
+                    path[cnt++] = k;
+                    path[cnt++] = i;
+                    get_path(i, j);
+                    path[cnt++] = j;
+                }
+        // 学习如何记录路径
+        for (int i = 1; i <= n; i++)
+            for (int j = 1; j <= n; j++)
+                if (d[i][j] > d[i][k] + d[k][j]) {
+                    d[i][j] = d[i][k] + d[k][j];
+                    pos[i][j] = k;
+                }
+    }
+
+    if (res == INF)
+        puts("No solution.");
+    else {
+        for (int i = 0; i < cnt; i++) cout << path[i] << ' ';
+        cout << endl;
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 345. 牛站](https://www.acwing.com/problem/content/347/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 从 s 到 e 恰好 k 条边的最短路:
+> 
+> 矩阵快速幂
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+#include <map>
+
+using namespace std;
+
+const int N = 210;
+
+int k, n, m, S, E;
+int g[N][N];
+int res[N][N];
+
+void mul(int c[][N], int a[][N], int b[][N]) {
+    static int temp[N][N];
+    memset(temp, 0x3f, sizeof temp);
+    for (int k = 1; k <= n; k++)
+        for (int i = 1; i <= n; i++)
+            for (int j = 1; j <= n; j++)
+                temp[i][j] = min(temp[i][j], a[i][k] + b[k][j]);
+    memcpy(c, temp, sizeof temp);
+}
+
+void qmi() {
+    memset(res, 0x3f, sizeof res);
+    for (int i = 1; i <= n; i++) res[i][i] = 0;
+
+    while (k) {
+        if (k & 1) mul(res, res, g);  // res = res * g
+        mul(g, g, g);                 // g = g * g
+        k >>= 1;
+    }
+}
+
+int main() {
+    cin >> k >> m >> S >> E;
+
+    memset(g, 0x3f, sizeof g);
+    map<int, int> ids;
+    if (!ids.count(S)) ids[S] = ++n;
+    if (!ids.count(E)) ids[E] = ++n;
+    S = ids[S], E = ids[E];
+
+    while (m--) {
+        int a, b, c;
+        cin >> c >> a >> b;
+        if (!ids.count(a)) ids[a] = ++n;
+        if (!ids.count(b)) ids[b] = ++n;
+        a = ids[a], b = ids[b];
+
+        g[a][b] = g[b][a] = min(g[a][b], c);
+    }
+
+    qmi();
+
+    cout << res[S][E] << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### spfa
+
+> [!NOTE] **[AcWing 361. 观光奶牛](https://www.acwing.com/problem/content/363/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 推导 二分 转化为负环判定
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const double eps = 1e-6;
+const int N = 1010, M = 5010;
+
+int n, m;
+int wf[N];
+int h[N], e[M], w[M], ne[M], idx;
+double dist[N];
+int cnt[N];
+
+int q[N];
+bool st[N];
+
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+bool check(double mid) {
+    memset(dist, 0, sizeof dist);
+    memset(cnt, 0, sizeof cnt);
+    memset(st, 0, sizeof st);
+    
+    int hh = 0, tt = 0;
+    for (int i = 1; i <= n; ++ i )
+        q[tt ++ ] = i, st[i] = true;
+    
+    while (hh != tt) {
+        int t = q[hh ++ ];
+        if (hh == N) hh = 0;
+        st[t] = false;
+        
+        for (int i = h[t]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (dist[j] < dist[t] + wf[t] - mid * w[i]) {
+                dist[j] = dist[t] + wf[t] - mid * w[i];
+                cnt[j] = cnt[t] + 1;
+                if (cnt[j] >= n) return true;
+                if (!st[j]) {
+                    q[tt ++ ] = j;
+                    if (tt == N) tt = 0;
+                    st[j] = true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+int main() {
+    memset(h, -1, sizeof h);
+    
+    cin >> n >> m;
+    for (int i = 1; i <= n; ++ i ) cin >> wf[i];
+    
+    while (m -- ) {
+        int a, b, c;
+        cin >> a >> b >> c;
+        add(a, b, c);
+    }
+    
+    double l = 0, r = 1e6;
+    while (r - l > eps) {
+        double mid = (l + r) / 2;
+        if (check(mid)) l = mid;
+        else r = mid;
+    }
+    printf("%.2lf\n", l);
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1165. 单词环](https://www.acwing.com/problem/content/1167/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> STL超时 学习加边方法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 700, M = 100010;
+
+int n;
+int h[N], e[M], w[M], ne[M], idx;
+double dist[N];
+int q[N], cnt[N];
+bool st[N];
+
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+bool check(double mid) {
+    memset(st, 0, sizeof st);
+    memset(cnt, 0, sizeof cnt);
+
+    int hh = 0, tt = 0;
+    for(int i = 0; i < 676; ++i) {
+        q[tt++] = i;
+        st[i] = true;
+    }
+
+    int count = 0;
+    while(hh != tt) {
+        int t = q[hh++];
+        if(hh == N) hh = 0;
+        st[t] = false;
+
+        for(int i = h[t]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (dist[j] < dist[t] + w[i] - mid) {
+                dist[j] = dist[t] + w[i] - mid;
+                cnt[j] = cnt[t] + 1;
+                if(++count > 10000) return true; // 经验上的trick
+                if(cnt[j] >= N) return true;
+                if(!st[j]) {
+                    q[tt++] = j;
+                    if(tt == N) tt = 0;
+                    st[j] = true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+int main() {
+    string str;
+    while(cin >> n, n) {
+        memset(h, -1, sizeof h);
+        for(int i = 0; i < n; ++i) {
+            cin >> str;
+            int len = str.size();
+            if(len > 1) {
+                int l = (str[0]-'a')*26 + str[1]-'a', r = (str[len-2]-'a')*26 + str[len-1]-'a';
+                add(l, r, len);
+            }
+        }
+        if(!check(0)) cout << "No solution" << endl;
+        else {
+            double l = 0, r = 1000;
+            while(r-l > 1e-4) {
+                double mid = l + (r-l)/2;
+                if(check(mid)) l = mid;
+                else r = mid;
+            }
+            cout << l << endl;
+        }
+    }
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 拆点最短路
+
+> [!NOTE] **[LeetCode 1928. 规定时间内到达终点的最小花费](https://leetcode-cn.com/problems/minimum-cost-to-reach-destination-in-time/)**
+> 
+> [biweekly 56](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-07-10_Biweekly-56)
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 无向连通图（有无自环无所谓），二维最短路问题
+> 
+> ===> 拆点，每个点在每个时间下的状态单独作为一个点
+> 
+> 对于本题共计 1e6 个点，直接拆点跑最短路即可
+> 
+> **对于二维费用的最短路进行拆点再跑最短路**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 拆点最短路**
+
+```cpp
+class Solution {
+public:
+    using PII = pair<int, int>;
+    const static int N = 1010, M = N << 1;
+    const int INF = 0x3f3f3f3f;
+    
+    vector<int> c;
+    int n, mt;
+    int h[N], e[M], w[M], ne[M], idx;
+    bool st[N][N];
+    int d[N][N];
+    
+    void init() {
+        memset(h, -1, sizeof h);
+        memset(st, 0, sizeof st);//
+        memset(d, 0x3f, sizeof d);
+        idx = 0;
+    }
+    void add(int a, int b, int c) {
+        e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    int minCost(int maxTime, vector<vector<int>>& edges, vector<int>& passingFees) {
+        init();
+        
+        this->c = passingFees;
+        this->n = c.size();
+        this->mt = maxTime;
+        for (auto & eg : edges) {
+            int a = eg[0], b = eg[1], c = eg[2];
+            add(a, b, c), add(b, a, c);
+        }
+        
+        d[0][0] = c[0];
+        queue<PII> q;
+        q.push({0, 0});
+        
+        while (q.size()) {
+            auto [x, y] = q.front(); q.pop();
+            st[x][y] = false;
+            
+            for (int i = h[x]; ~i; i = ne[i]) {
+                int nx = e[i], ny = y + w[i];
+                if (ny > mt)
+                    continue;
+                if (d[nx][ny] > d[x][y] + c[nx]) {
+                    d[nx][ny] = d[x][y] + c[nx];
+                    if (!st[nx][ny])
+                        st[nx][ny] = true, q.push({nx, ny});
+                }
+            }
+        }
+        
+        int res = INF;
+        for (int i = 0; i <= mt; ++ i )
+            res = min(res, d[n - 1][i]);
+        return res == INF ? -1 : res;
+    }
+};
+```
+
+##### **C++ 拆点dp 学习**
+
+```cpp
+class Solution {
+    const int INF = 0x3f3f3f3f;
+
+public:
+    int minCost(int T, vector<vector<int>>& edges, vector<int> a) {
+        int n = a.size();
+        std::vector<std::vector<std::pair<int, int>>> E(n);
+        for (int i = 0; i < (int)edges.size(); ++i) {
+            int u = edges[i][0], v = edges[i][1], w = edges[i][2];
+            E[u].emplace_back(v, w);
+            E[v].emplace_back(u, w);
+        }
+        std::vector<std::vector<int>> f(T + 1, std::vector<int>(n, INF));
+        f[0][0] = a[0];
+        int ans = INF;
+        for (int i = 1; i <= T; ++i) {
+            for (int u = 0; u < n; ++u) {
+                for (auto [v, w] : E[u]) {
+                    if (i >= w) {
+                        f[i][u] = std::min(f[i][u], f[i - w][v] + a[u]);
+                    }
+                }
+            }
+            ans = std::min(ans, f[i][n - 1]);
+        }
+        return ans == INF ? -1 : ans;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 次短路等
+
+> [!NOTE] **[AcWing 2045. 到达目的地的第二短时间](https://leetcode-cn.com/problems/second-minimum-time-to-reach-destination/)**
+> 
+> [weekly-263](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-10-17_Weekly-263)
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 标准次短路：对于 n 较大的情况使用 astar 复杂度较高易超时，所以还是用标准次短路写法较好
+> 
+> 经典求次短路
+> 
+> $2 <= n <= 10^4$
+> 
+> $n - 1 <= edges.length <= min(2 \* 104, n \* (n - 1) / 2)$
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // using LL = long long;
+    using PII = pair<int, int>;
+    using PIII = tuple<int, int, int>;
+    const static int N = 1e4 + 10, M = 4e4 + 10; // M = 2e4 * 2
+    
+    int fix_time(int x, int l) {
+        int d = x / ch;
+        // red
+        if (d & 1)
+            return (d + 1) * ch + l;
+        return x + l;
+    }
+    
+    int n, ch;
+    int h[N], e[M], w[M], ne[M], idx;
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+    }
+    void add(int a, int b, int c) {
+        e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    int dist[N], t_dist[N];
+    // bool st[N];
+    int dijkstra() {
+        memset(dist, 0x3f, sizeof dist);
+        memset(t_dist, 0x3f, sizeof t_dist);
+        // memset(st, 0, sizeof st);
+        priority_queue<PII, vector<PII>, greater<PII>> heap;
+        heap.push({0, 1});  // ATTENTION from 1 to n
+        dist[1] = 0;    // from 1 to n
+        
+        while (heap.size()) {
+            auto [dis, ver] = heap.top();
+            heap.pop();
+            // if (st[ver])
+            //     continue;
+            // st[ver] = true;
+            
+            // 剪枝
+            // ATTENTION 必须是 <   因为等于也可能会更新
+            //
+            // 在这里只需要求次短 所以我们直接使用 t_dist[ver]
+            // 如果所求为倒数第k短 我们可以使用dist[][]
+            // 随后记录当前是第x短 通过dist[ver][x]<dis来进行剪枝判断
+            if (t_dist[ver] < dis)
+                continue;
+            
+            for (int i = h[ver]; ~i; i = ne[i]) {
+                int j = e[i];
+                int new_dis = fix_time(dis, w[i]);
+                if (dist[j] > new_dis) {
+                    t_dist[j] = dist[j];
+                    dist[j] = new_dis;
+                    heap.push({dist[j], j});
+                    heap.push({t_dist[j], j});
+                } else if (dist[j] != new_dis && t_dist[j] > new_dis) {
+                    // dist[j] != new_dis 严格小于
+                    t_dist[j] = new_dis;
+                    heap.push({t_dist[j], j});
+                }
+            }
+        }
+        return t_dist[n];
+    }
+    
+    int secondMinimum(int n, vector<vector<int>>& edges, int time, int change) {
+        this->n = n, this->ch = change;
+        init();
+        
+        for (auto & e : edges)
+            add(e[0], e[1], time), add(e[1], e[0], time);
+        
+        return dijkstra();;
+    }
+};
+```
+
+##### **C++ A* TLE**
+
+```cpp
+// TLE 52 / 76
+class Solution {
+public:
+    // using LL = long long;
+    using PII = pair<int, int>;
+    using PIII = tuple<int, int, int>;
+    const static int N = 1e4 + 10, M = 4e4 + 10; // M = 2e4 * 2
+    
+    int fix_time(int x, int l) {
+        int d = x / ch;
+        // red
+        if (d & 1)
+            return (d + 1) * ch + l;
+        return x + l;
+    }
+    
+    int n, ch;
+    int h[N], e[M], w[M], ne[M], idx;
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+    }
+    void add(int a, int b, int c) {
+        e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    int dist[N];
+    bool st[N];
+    void dijkstra() {
+        priority_queue<PII, vector<PII>, greater<PII>> heap;
+        heap.push({0, 1});  // ATTENTION from 1 to n
+        memset(dist, 0x3f, sizeof dist);
+        memset(st, 0, sizeof st);
+        dist[1] = 0;    // from 1 to n
+        
+        while (heap.size()) {
+            auto [dis, ver] = heap.top();
+            heap.pop();
+            if (st[ver])
+                continue;
+            st[ver] = true;
+            
+            for (int i = h[ver]; ~i; i = ne[i]) {
+                int j = e[i];
+                int new_dis = fix_time(dis, w[i]);
+                if (dist[j] > new_dis) {
+                    dist[j] = new_dis;
+                    heap.push({dist[j], j});
+                }
+            }
+        }
+    }
+    
+    int cnt[N];
+    int astar(int k) {
+        // 估价-真实值-点
+        priority_queue<PIII, vector<PIII>, greater<PIII>> heap;
+        heap.push({dist[1], 0, 1});
+        memset(cnt, 0, sizeof cnt);
+        
+        while (heap.size()) {
+            auto [_, dis, ver] = heap.top();
+            heap.pop();
+            
+            cnt[ver] ++ ;
+            // ATTENTION: 重要 dis 还必须是大于最短值 否则会wa 23/76
+            // 因为题目要求 【严格大于】
+            // dis > dist[n]
+            if (cnt[n] >= k && dis > dist[n])
+                return dis;
+            
+            for (int i = h[ver]; ~i; i = ne[i]) {
+                int j = e[i];
+                int new_dis = fix_time(dis, w[i]);
+                if (cnt[j] < k) // ATTENTION TLE 35/76
+                    heap.push({new_dis + dist[j], new_dis, j}); // ATTENTION
+            }
+        }
+        return -1;
+    }
+    
+    int secondMinimum(int n, vector<vector<int>>& edges, int time, int change) {
+        this->n = n, this->ch = change;
+        init();
+        
+        for (auto & e : edges)
+            add(e[0], e[1], time), add(e[1], e[0], time);
+        
+        dijkstra();
+        
+        // 次短路
+        return astar(2);
+    }
+};
+```
+
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

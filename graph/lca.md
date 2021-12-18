@@ -331,3 +331,528 @@ LCA 为两个游标跳转到同一条重链上时深度较小的那个游标所�
 - [祖孙询问](https://loj.ac/problem/10135)
 - [货车运输](https://loj.ac/problem/2610)
 - [点的距离](https://loj.ac/problem/10130)
+
+> [!NOTE] **[AcWing 1172. 祖孙询问](https://www.acwing.com/problem/content/1174/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 最近公共祖先
+> 
+> **倍增LCA**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 40010, M = N * 2;
+
+int n, m;
+int h[N], e[M], ne[M], idx;
+int depth[N], fa[N][16];
+int q[N];
+
+void add(int a, int b) {
+    e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+void bfs(int root) {
+    memset(depth, 0x3f, sizeof depth);
+    depth[0] = 0, depth[root] = 1;
+    int hh = 0, tt = 0;
+    q[0] = root;
+    while (hh <= tt) {
+        int t = q[hh ++ ];
+        for (int i = h[t]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (depth[j] > depth[t] + 1) {
+                depth[j] = depth[t] + 1;
+                q[ ++ tt] = j;
+                
+                fa[j][0] = t;
+                for (int k = 1; k <= 15; ++ k )
+                    fa[j][k] = fa[fa[j][k - 1]][k - 1];
+            }
+        }
+    }
+}
+
+int lca(int a, int b) {
+    if (depth[a] < depth[b])
+        swap(a, b);
+    for (int k = 15; k >= 0; -- k )
+        if (depth[fa[a][k]] >= depth[b])
+            a = fa[a][k];
+    if (a == b)
+        return a;
+    for (int k = 15; k >= 0; -- k )
+        if (fa[a][k] != fa[b][k])
+            a = fa[a][k], b = fa[b][k];
+    return fa[a][0];
+}
+
+int main() {
+    memset(h, -1, sizeof h);
+    
+    cin >> n;
+    int root = 0;
+    
+    for (int i = 0; i < n; ++ i ) {
+        int a, b;
+        cin >> a >> b;
+        if (b == -1)
+            root = a;
+        else
+            add(a, b), add(b, a);
+    }
+    
+    bfs(root);
+    
+    cin >> m;
+    while (m -- ) {
+        int a, b;
+        cin >> a >> b;
+        int p = lca(a, b);
+        if (p == a)
+            cout << 1 << endl;
+        else if (p == b)
+            cout << 2 << endl;
+        else
+            cout << 0 << endl;
+    }
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1171. 距离](https://www.acwing.com/problem/content/1173/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> tarjan
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using PII = pair<int, int>;
+const int N = 10010, M = 20010;
+
+int n, m;
+int h[N], e[M], w[M], ne[M], idx;
+int dist[N];
+int p[N];
+int res[M];
+int st[N];
+vector<PII> query[N];
+
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+int find(int x) {
+    if (p[x] != x)
+        p[x] = find(p[x]);
+    return p[x];
+}
+
+void dfs(int u, int fa) {
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (j == fa)
+            continue;
+        dist[j] = dist[u] + w[i];
+        dfs(j, u);
+    }
+}
+
+void tarjan(int u) {
+    st[u] = 1;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (!st[j]) {
+            tarjan(j);
+            p[j] = u;
+        }
+    }
+    
+    for (auto [oth, id] : query[u])
+        if (st[oth] == 2) {
+            int anc = find(oth);
+            res[id] = dist[u] + dist[oth] - dist[anc] * 2;
+        }
+    
+    st[u] = 2;
+}
+
+int main() {
+    memset(h, -1, sizeof h);
+    
+    cin >> n >> m;
+    
+    for (int i = 0; i < n - 1; ++ i ) {
+        int a, b, c;
+        cin >> a >> b >> c;
+        add(a, b, c), add(b, a, c);
+    }
+    
+    for (int i = 0; i < m; ++ i ) {
+        int a, b;
+        cin >> a >> b;
+        if (a != b)
+            query[a].push_back({b, i}), query[b].push_back({a, i});
+    }
+    
+    for (int i = 1; i <= n; ++ i )
+        p[i] = i;
+    
+    dfs(1, -1);
+    tarjan(1);
+    
+    for (int i = 0; i < m; ++ i )
+        cout << res[i] << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+* * *
+
+> [!NOTE] **[AcWing 356. 次小生成树](https://www.acwing.com/problem/content/description/358/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **次小生成树 倍增LCA优化**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const int N = 100010, M = 300010, INF = 0x3f3f3f3f;
+
+int n, m;
+struct Edge {
+    int a, b, w;
+    bool used;
+    bool operator< (const Edge & t) const {
+        return w < t.w;
+    }
+}edge[M];
+int p[N];
+int h[N], e[M], w[M], ne[M], idx;
+int depth[N], fa[N][17], d1[N][17], d2[N][17];
+int q[N];
+
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+int find(int x) {
+    if (p[x] != x)
+        p[x] = find(p[x]);
+    return p[x];
+}
+
+LL kruskal() {
+    for (int i = 1; i <= n; ++ i )
+        p[i] = i;
+    sort(edge, edge + m);
+    
+    LL res = 0;
+    for (int i = 0; i < m; ++ i ) {
+        int a = find(edge[i].a), b = find(edge[i].b), w = edge[i].w;
+        if (a != b) {
+            p[a] = b;
+            res += w;
+            edge[i].used = true;
+        }
+    }
+    return res;
+}
+
+void build() {
+    memset(h, -1, sizeof h);
+
+    for (int i = 0; i < m; ++ i )
+        if (edge[i].used) {
+            int a = edge[i].a, b = edge[i].b, w = edge[i].w;
+            add(a, b, w), add(b, a, w);
+        }
+}
+
+void bfs() {
+    memset(depth, 0x3f, sizeof depth);
+    depth[0] = 0, depth[1] = 1;
+    int hh = 0, tt = 0;
+    q[0] = 1;   // ATTENTION
+    while (hh <= tt) {
+        int t = q[hh ++ ];
+        for (int i = h[t]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (depth[j] > depth[t] + 1) {
+                depth[j] = depth[t] + 1;
+                q[ ++ tt] = j;
+                
+                fa[j][0] = t;
+                d1[j][0] = w[i], d2[j][0] = -INF;
+                for (int k = 1; k <= 16; ++ k ) {
+                    int anc = fa[j][k - 1];
+                    fa[j][k] = fa[anc][k - 1];
+                    
+                    int distance[4] = {d1[j][k - 1], d2[j][k - 1], d1[anc][k - 1], d2[anc][k - 1]};
+                    d1[j][k] = d2[j][k] = -INF;
+                    for (int u = 0; u < 4; ++ u ) {
+                        int d = distance[u];
+                        if (d > d1[j][k])
+                            d2[j][k] = d1[j][k], d1[j][k] = d;
+                        else if (d != d1[j][k] && d > d2[j][k])
+                            d2[j][k] = d;
+                    }
+                }
+            }
+        }
+    }
+}
+
+int lca(int a, int b, int w) {
+    static int distance[N * 2];
+    int cnt = 0;
+    
+    if (depth[a] < depth[b])
+        swap(a, b);
+    for (int k = 16; k >= 0; -- k )
+        if (depth[fa[a][k]] >= depth[b]) {
+            distance[cnt ++ ] = d1[a][k];
+            distance[cnt ++ ] = d2[a][k];
+            a = fa[a][k];
+        }
+    if (a != b) {
+        for (int k = 16; k >= 0; -- k )
+            if (fa[a][k] != fa[b][k]) {
+                distance[cnt ++ ] = d1[a][k];
+                distance[cnt ++ ] = d2[a][k];
+                distance[cnt ++ ] = d1[b][k];
+                distance[cnt ++ ] = d2[b][k];
+                a = fa[a][k], b = fa[b][k];
+            }
+        distance[cnt ++ ] = d1[a][0];
+        distance[cnt ++ ] = d1[b][0];
+    }
+    
+    int dist1 = -INF, dist2 = -INF;
+    for (int i = 0; i < cnt; ++ i ) {
+        int d = distance[i];
+        if (d > dist1)
+            dist2 = dist1, dist1 = d;
+        else if (d != dist1 && d > dist2)
+            dist2 = d;
+    }
+    if (w > dist1)
+        return w - dist1;
+    if (w > dist2)
+        return w - dist2;
+    return INF;
+}
+
+int main() {
+    cin >> n >> m;
+    for (int i = 0; i < m; ++ i ) {
+        int a, b, c;
+        cin >> a >> b >> c;
+        edge[i] = {a, b, c};
+    }
+    
+    LL sum = kruskal();
+    build();
+    bfs();
+    
+    LL res = 1e18;
+    for (int i = 0; i < m; ++ i )
+        if (!edge[i].used) {
+            int a = edge[i].a, b = edge[i].b, w = edge[i].w;
+            res = min(res, sum + lca(a, b, w));
+        }
+    cout << res << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 352. 闇の連鎖](https://www.acwing.com/problem/content/description/354/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 切两刀 需要为边增权
+> 
+> **树差分**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 100010, M = N * 2;
+
+int n, m;
+int h[N], e[M], ne[M], idx;
+int depth[N], fa[N][17];
+int d[N];
+int q[N];
+int ans;
+
+void add(int a, int b) {
+    e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+void bfs() {
+    memset(depth, 0x3f, sizeof depth);
+    depth[0] = 0, depth[1] = 1;
+    int hh = 0, tt = 0;
+    q[0] = 1;
+    while (hh <= tt) {
+        int t = q[hh ++ ];
+        for (int i = h[t]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (depth[j] > depth[t] + 1) {
+                depth[j] = depth[t] + 1;
+                q[ ++ tt] = j;
+                fa[j][0] = t;
+                for (int k = 1; k <= 16; ++ k )
+                    fa[j][k] = fa[fa[j][k - 1]][k - 1];
+            }
+        }
+    }
+}
+
+int lca(int a, int b) {
+    if (depth[a] < depth[b]) swap(a, b);
+    for (int k = 16; k >= 0; -- k )
+        if (depth[fa[a][k]] >= depth[b])
+            a = fa[a][k];
+    if (a == b) return a;
+    for (int k = 16; k >= 0; -- k )
+        if (fa[a][k] != fa[b][k]) {
+            a = fa[a][k];
+            b = fa[b][k];
+        }
+    return fa[a][0];
+}
+
+int dfs(int u, int father) {
+    int res = d[u];
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (j != father) {
+            int s = dfs(j, u);
+            if (s == 0) ans += m;
+            else if (s == 1) ans ++ ;
+            res += s;
+        }
+    }
+    return res;
+}
+
+int main() {
+    cin >> n >> m;
+    memset(h, -1, sizeof h);
+    for (int i = 0; i < n - 1; ++ i ) {
+        int a, b;
+        cin >> a >> b;
+        add(a, b), add(b, a);
+    }
+    bfs();
+    
+    for (int i = 0; i < m; ++ i ) {
+        int a, b;
+        cin >> a >> b;
+        int p = lca(a, b);
+        d[a] ++ , d[b] ++ , d[p] -= 2;
+    }
+    dfs(1, -1);
+    cout << ans << endl;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+<br>
+
+* * *
+

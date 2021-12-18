@@ -617,3 +617,337 @@ if __name__ == '__main__':
 <br>
 
 * * *
+
+
+### 离线 trie
+
+> [!NOTE] **[LeetCode 1707. 与数组中元素的最大异或值](https://leetcode-cn.com/problems/maximum-xor-with-an-element-from-array/)**
+> 
+> [Weekly-210](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2020-12-27_Weekly-221)
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 在线 Trie 做法贪心选择前面为 1 的时候结果会错，形如：
+> 
+> [536870912,0,534710168,330218644,142254206] [[558240772,1000000000],[307628050,1000000000],[3319300,1000000000],[2751604,683297522],[214004,404207941]] WRONG: [1050219420,844498962,540190212,539622516,-1] CORRECT: [1050219420,844498962,540190212,539622516,330170208]
+> 
+> 正确做法，离线 Trie
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+struct Node {
+    int x, m, k;
+    bool operator< (const Node& t) const {
+        return m < t.m;
+    }
+}q[100010];
+
+int son[3100000][2];
+
+class Solution {
+public:
+    int idx = 0;
+    void insert(int v) {
+        int p = 0;
+        for (int i = 30; i >= 0; -- i ) {
+            int u = (v >> i) & 1;
+            if (!son[p][u]) son[p][u] = ++ idx;
+            p = son[p][u];
+        }
+    }
+    int query(int v) {
+        if (!idx) return -1;
+        int p = 0, ret = 0;
+        for (int i = 30; i >= 0; -- i ) {
+            int u = (v >> i) & 1;
+            if(!son[p][!u]) {
+                // 相反的不存在 走相同的 当前这一位不产生异或增益
+                p = son[p][u];
+            } else {
+                // 相反的存在 该位异或值为1
+                p = son[p][!u];
+                ret |= 1 << i;
+            }
+        }
+        return ret;
+    }
+    vector<int> maximizeXor(vector<int>& nums, vector<vector<int>>& queries) {
+        idx = 0;
+        memset(son, 0, sizeof son);
+        
+        int n = nums.size(), m = queries.size();
+        for (int i = 0; i < m; ++ i )
+            q[i] = {queries[i][0], queries[i][1], i};
+        sort(q, q + m);
+        sort(nums.begin(), nums.end());
+        vector<int> res(m);
+        for (int i = 0, j = 0; j < m; ++ j ) {
+            while (i < n && nums[i] <= q[j].m) insert(nums[i ++ ]);
+            res[q[j].k] = query(q[j].x);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1938. 查询最大基因差](https://leetcode-cn.com/problems/maximum-genetic-difference-query/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **Trie + 删除操作 + 离线处理**：
+> 
+> 另开一个 cnt 数组计数累计出现过的数量，为 0 时即便 son 数组非 0 也无效。
+> 
+> 结合 dfs 回溯离线处理答案
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using PII = pair<int, int>;
+    const static int N = 1e5 + 10, M = 2e5 * 18 + 10;
+    
+    int n, m, root;
+    
+    // ------------------ es ------------------
+    int h[N], e[N], ne[N], idx;
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+        tot = 0;    // trie
+    }
+    void add(int a, int b) {
+        e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    // ------------------ trie ------------------
+    int son[M][2], cnt[M], tot; // cnt for count
+    void insert(int x) {
+        int p = 0;
+        for (int i = 30; i >= 0; -- i ) {
+            int t = x >> i & 1;
+            if (!son[p][t])
+                son[p][t] = ++ tot ;
+            p = son[p][t];
+            cnt[p] ++ ; // ATTENTION
+        }
+    }
+    void remove(int x) {
+        int p = 0;
+        for (int i = 30; i >= 0; -- i ) {
+            int t = x >> i & 1;
+            p = son[p][t];
+            cnt[p] -- ;
+        }
+    }
+    int query(int x) {
+        int p = 0, res = 0;
+        for (int i = 30; i >= 0; -- i ) {
+            int t = x >> i & 1;
+            // ATTENTION
+            if (son[p][!t] && cnt[son[p][!t]]) {
+                res |= 1 << i;
+                p = son[p][!t];
+            } else
+                p = son[p][t];
+        }
+        return res;
+    }
+    
+    // ------------------ dfs ------------------
+    unordered_map<int, vector<PII>> qs;
+    vector<int> res;
+    void dfs(int u, int pa) {
+        insert(u);
+        
+        for (auto [val, id] : qs[u])
+            res[id] = query(val);
+        
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (j == pa)
+                continue;
+            dfs(j, u);
+        }
+        remove(u);
+    }
+    
+    vector<int> maxGeneticDifference(vector<int>& parents, vector<vector<int>>& queries) {
+        init();
+        
+        this->n = parents.size();
+        for (int i = 0; i < n; ++ i ) {
+            if (parents[i] == -1)
+                root = i;
+            else
+                add(parents[i], i);
+        }
+        
+        this->m = queries.size();
+        for (int i = 0; i < m; ++ i ) {
+            int node = queries[i][0], val = queries[i][1];
+            qs[node].push_back({val, i});
+        }
+        
+        res = vector<int>(m);
+        
+        dfs(root, -1);
+        
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### trie 动态拓展 + 树 hash
+
+> [!NOTE] **[LeetCode 1948. 删除系统中的重复文件夹](https://leetcode-cn.com/problems/delete-duplicate-folders-in-system/)**
+> 
+> [weekly-251](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-07-25_Weekly-251)
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然树Hash 之前题意理解有问题
+> 
+> 需要注意题意并没有要求返回的结果必须是输入的子集，所以可以直接回溯构造
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using ULL = unsigned long long;
+    const static ULL P = 131;
+    
+    // hash
+    ULL shash(string & s) {
+        ULL ret = 0;
+        for (auto c : s)
+            ret = ret * P + c;
+        return ret;
+    }
+    
+    // Node
+    struct Node {
+        string name;
+        unordered_map<string, Node*> sons;
+        ULL hash = 0;
+        bool del = false;
+        Node(string name) : name(name) {}
+    };
+    Node * root;
+    unordered_map<ULL, vector<Node*>> mp;
+    void insert(vector<string> & pth) {
+        auto p = root;
+        for (auto & x : pth) {
+            if (!p->sons.count(x))
+                p->sons[x] = new Node(x);
+            p = p->sons[x];
+        }
+        // Nothing
+    }
+    
+    // dfs
+    void dfs(Node * p) {
+        string s;
+        for (auto [name, node] : p->sons) {
+            dfs(node);
+            // 不加 node->name 就会多删   即加了hash才有区分度
+            s += "[" + node->name + to_string(node->hash) + "]";
+        }
+        p->hash = shash(s);
+        // 根据题意解释 必然是非空集合
+        if (p->sons.size())
+            mp[p->hash].push_back(p);
+    }
+    vector<string> t;
+    vector<vector<string>> res;
+    // 直接回溯建立答案列表
+    // ATTENTION 题意并没有说输入有漏掉某个可能路径OR输出必须包含于输入 so直接构造所有的可能路径
+    void get_res(Node * p) {
+        if (p->del)
+            return
+        if (p->name != "/") {
+            t.push_back(p->name);
+            res.push_back(t);
+        }
+        for (auto [name, node] : p->sons)
+            get_res(node);
+        if (p->name != "/")
+            t.pop_back();
+    }
+    
+    vector<vector<string>> deleteDuplicateFolder(vector<vector<string>>& paths) {
+        root = new Node("/");
+        for (auto & pth : paths)
+            insert(pth);
+        
+        dfs(root);
+        for (auto [hash, nodes] : mp)
+            if (nodes.size() > 1)
+                for (auto node : nodes)
+                    node->del = true;
+        
+        get_res(root);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

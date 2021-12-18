@@ -259,3 +259,1376 @@ if __name__=='__main__':
 <br>
 
 * * *
+
+> [!NOTE] **[AcWing 1064. 小国王](https://www.acwing.com/problem/content/description/1066/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **记录写法**
+> 
+> 提前处理合法的所有状态和状态转移路径，定义三维状态。**四维状态转移写法**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+typedef long long LL;
+
+const int N = 12, M = 1 << 10, K = 110;
+
+int n, m;
+vector<int> state;
+int cnt[M];
+vector<int> head[M];
+LL f[N][K][M];
+
+// 同一行内的状态 是否合法
+bool check(int state) {
+    // O(1) 检查是否有相邻的两个 1
+    // return !(x & x >> 1);
+    for (int i = 0; i < n; i++)
+        if ((state >> i & 1) && (state >> i + 1 & 1)) return false;
+    return true;
+}
+
+int count(int state) {
+    int res = 0;
+    for (int i = 0; i < n; i++) res += state >> i & 1;
+    // while (state) x = x & (x - 1), c ++ ;    // 非负数
+    return res;
+}
+
+int main() {
+    cin >> n >> m;
+
+    for (int i = 0; i < 1 << n; i++)
+        if (check(i)) {
+            state.push_back(i);
+            cnt[i] = count(i);
+        }
+
+    // 这里全部遍历 其实可以利用矩阵对称只计算一半
+    for (int i = 0; i < state.size(); i++)
+        for (int j = 0; j < state.size(); j++) {
+            int a = state[i], b = state[j];
+            if ((a & b) == 0 && check(a | b)) head[i].push_back(j);
+        }
+
+    // f[i][j][s] 为所有只摆在前i行，目前摆了j个国王，而且第i行的摆放状态为s
+    // f[n + 1] 仅仅是为了好统计答案
+    f[0][0][0] = 1;
+    for (int i = 1; i <= n + 1; i++)
+        for (int j = 0; j <= m; j++)
+            for (int a = 0; a < state.size(); a++)
+                for (int b : head[a]) {
+                    int c = cnt[state[a]];
+                    if (j >= c) f[i][j][a] += f[i - 1][j - c][b];
+                    // 上面本质计算时使用的是合法状态的下标，也可以像下面用状态本身
+                    // if (j >= c) f[i][j][st[si]] += f[i - 1][j - c][st[ti]];
+                }
+
+    cout << f[n + 1][m][0] << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+# # 状态压缩dp分为两个类：1. 棋盘式的dp（基于连通性的dp) 2. 集合式的dp
+# # 状态压缩dp 直接算时间复杂度会很高，但是符合要求 可以并入计算的合法状态少，所以实际上时间复杂度要低一些
+
+# # 状态表示：f[i, j, s]: 所有只摆在前i行，已经摆正了j个国王，并且第i行摆放的状态是s的所有方案的集合；属性：Count
+# # 状态计算：分析发现，第i行能摆的状态 只和 第i-1行相关；
+# # 已经摆完前i排，并且第i排的状态是a, 第i-1排的状态是b, 并且已经摆放了j个国王的所有方案；==> f[i, j, a]
+# # 已经摆完前i-1行，并且第i-1排的状态是b, 并且已经摆了j-count(a)个国王的所有方案；==> f[i - 1, j - count(a), b]
+
+# # 如何判断方案是否合法？直接枚举第i-1行和第i行的所有状态所需循环次数太多，所以这里进行预处理，需要满足以下条件：
+# # 1. 第i-1行内部不能有两个1相邻；2. 第i-1行和第i行之间也不能相互攻击到：1）(a & b) ==0 2) (a|b)不能有两个相邻的1。
+# # 用state数组来存储不存在连续个1的合法方案数,用head数组来存储与合法方案数进行’|’和’&’运算后的合法方案数
+
+
+N = 12
+M = 1 << 10
+K = 110
+
+f = [[[0] * M for _ in range(K)] for _ in range(N)]
+state = []
+cnt = [0] * M
+
+
+def check(st):
+    for i in range(n):
+        if (st >> i & 1) and (st >> i + 1 & 1):
+            return False
+    return True
+
+
+def count(st):
+    res = 0
+    for i in range(n):
+        res += st >> i & 1
+    return res
+
+
+if __name__ == '__main__':
+    n, m = map(int, input().split())
+    for i in range(1 << n):  # 预处理，遍历所有状态，先筛选出来所有合法的
+        if (check(i)):
+            state.append(i)
+            cnt[i] = count(i)
+
+            # head = collections.defaultdict(list)
+    head = [[] for _ in range(1 << n)]
+    for a in state:  # 找出所有可以相邻的状态对，并进行存储
+        for b in state:
+            if (a & b) == 0 and check(a | b):
+                head[a].append(b)  # 将合法方案的下标存储到数组中,这样可以简化状态的表示
+
+    # 开始进行dp，先初始化: 前0行，只有0个国王的状态的方案数是1
+    f[0][0][0] = 1
+    for i in range(1, n + 2):  # 枚举行数
+        for j in range(m + 1):  # 枚举国王的数量
+            for a in state:  # 枚举合法的方案(st数组中的下标)
+                for b in head[a]:
+                    c = cnt[a]
+                    if j >= c:
+                        f[i][j][a] += f[i - 1][j - c][b]
+    print(f[n + 1][m][0])  # 在第n+1行中,摆放了m个国王,并且第n+1行的状态为0000时的状态即为总方案数,因为此时m个国王在1~i中
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 327. 玉米田](https://www.acwing.com/problem/content/description/329/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+const int N = 14, M = 1 << 12, mod = 1e8;
+
+int n, m;
+int w[N];
+vector<int> state;
+vector<int> head[M];
+int f[N][M];
+
+bool check(int state) {
+    for (int i = 0; i + 1 < m; i++)
+        if ((state >> i & 1) && (state >> i + 1 & 1)) return false;
+    return true;
+}
+
+int main() {
+    cin >> n >> m;
+    for (int i = 1; i <= n; i++)
+        for (int j = 0; j < m; j++) {
+            int t;
+            cin >> t;
+            w[i] += !t * (1 << j);
+        }
+
+    // 所有单行合法状态列表（不相邻）
+    for (int i = 0; i < 1 << m; i++)
+        if (check(i)) state.push_back(i); // 后面用n+1的重要原因：0状态必然合法 会加进去
+    // n 列  处理上一列和本列合法的状态转移
+    for (int i = 0; i < state.size(); i++)
+        for (int j = 0; j < state.size(); j++) {
+            int a = state[i], b = state[j];
+            if (!(a & b)) head[i].push_back(j);
+        }
+
+    // f[i][j] 到第i行，种植状态为j的所有方案数
+    // 本来第二维是 1<<n 这里也可以用sz+1 只要后面对应 类似小国王那题
+    f[0][0] = 1;
+    for (int i = 1; i <= n + 1; i++)
+        for (int j = 0; j < state.size(); j++)
+            if (!(state[j] & w[i]))
+                for (int k : head[j]) f[i][j] = (f[i][j] + f[i - 1][k]) % mod;
+
+    cout << f[n + 1][0] << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+N = 14
+M = 1 << 12
+mod = int(1e8)
+f = [[0] * M for _ in range(N)]
+state = []
+head = [[] for _ in range(M)]
+w = [0] * N
+
+
+def check(st):
+    for i in range(m):
+        if (st >> i & 1) and (st >> i + 1 & 1):
+            return False
+    return True
+
+
+# def check(x):
+#     return x & (x >> 1) == 0 
+
+
+if __name__ == '__main__':
+    n, m = map(int, input().split())
+    # mod = int(1e8)
+    # M = 1 << m 
+    # state = []
+    # w = [0] * (n + 2)
+
+    # head = [[] for _ in range(M)]
+    # f = [[0] * M for _ in range(n+2)]
+
+    for i in range(1, n + 1):  # 用二进制表示当前行的土地是否具备种植条件：当前位为1表示可以种植，0表示没有办法种植
+        a = list(map(int, input().split()))
+        for j in range(m):
+            w[i] += (1 if a[m - 1 - j] == 0 else 0) << j
+
+    for i in range(1 << m):
+        if check(i):
+            state.append(i)
+
+    for a in state:  # 只要没有交集，i就是转移到j(a就可以转移到b)
+        for b in state:
+            if (a & b) == 0:
+                head[a].append(b)
+
+    f[0][0] = 1  # 初始化，表示一行都没有的情况下，一根玉米都不能种，方案数是1
+    for i in range(1, n + 2):  # 小技巧，枚举到n+1 行，这样s输出的时候就不需要枚举最后一行的状态
+        for j in state:
+            if not (j & w[i]):
+                for k in head[j]:
+                    f[i][j] = (f[i][j] + f[i - 1][k]) % mod
+    print(f[n + 1][0])
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 292. 炮兵阵地](https://www.acwing.com/problem/content/description/294/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 进阶: 第 i 行与 i-1 and i-2 行状态都相关。
+> 
+> 重点在状态定义：f[i][j][k] 表示第i行状态k第i-1行状态j的最大摆放数量
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+const int N = 10, M = 1 << 10;
+
+int n, m;
+int g[1010];
+int f[2][M][M];
+vector<int> state;
+int cnt[M];
+
+bool check(int state) {
+    for (int i = 0; i < m; i++)
+        if ((state >> i & 1) && ((state >> i + 1 & 1) || (state >> i + 2 & 1)))
+            return false;
+    return true;
+}
+
+int count(int state) {
+    int res = 0;
+    for (int i = 0; i < m; i++)
+        if (state >> i & 1) res++;
+    return res;
+}
+
+int main() {
+    cin >> n >> m;
+    for (int i = 1; i <= n; i++)
+        for (int j = 0; j < m; j++) {
+            char c;
+            cin >> c;
+            g[i] += (c == 'H') << j;
+        }
+
+    for (int i = 0; i < 1 << m; i++)
+        if (check(i)) {
+            state.push_back(i);
+            cnt[i] = count(i);
+        }
+
+    for (int i = 1; i <= n; i++)
+        for (int j = 0; j < state.size(); j++)
+            for (int k = 0; k < state.size(); k++)
+                for (int u = 0; u < state.size(); u++) {
+                    int a = state[j], b = state[k], c = state[u];
+                    if (a & b | a & c | b & c) continue;
+                    if (g[i] & b | g[i - 1] & a) continue;
+                    f[i & 1][j][k] =
+                        max(f[i & 1][j][k], f[i - 1 & 1][u][j] + cnt[b]);
+                }
+
+    int res = 0;
+    for (int i = 0; i < state.size(); i++)
+        for (int j = 0; j < state.size(); j++) res = max(res, f[n & 1][i][j]);
+
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 524. 愤怒的小鸟](https://www.acwing.com/problem/content/526/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 状压AC**
+
+```cpp
+// 状态压缩做法，AC
+#include <algorithm>
+#include <cmath>
+#include <cstring>
+#include <iostream>
+
+#define x first
+#define y second
+
+using namespace std;
+
+typedef pair<double, double> PDD;
+
+const int N = 18, M = 1 << 18;
+const double eps = 1e-8;
+
+int n, m;
+PDD q[N];
+int path[N][N];
+int f[M];
+
+int cmp(double x, double y) {
+    if (fabs(x - y) < eps) return 0;
+    if (x < y) return -1;
+    return 1;
+}
+
+int main() {
+    int T;
+    cin >> T;
+    while (T--) {
+        cin >> n >> m;
+        for (int i = 0; i < n; i++) cin >> q[i].x >> q[i].y;
+
+        memset(path, 0, sizeof path);
+        for (int i = 0; i < n; i++) {
+            path[i][i] = 1 << i;
+            for (int j = 0; j < n; j++) {
+                double x1 = q[i].x, y1 = q[i].y;
+                double x2 = q[j].x, y2 = q[j].y;
+                if (!cmp(x1, x2)) continue;
+                double a = (y1 / x1 - y2 / x2) / (x1 - x2);
+                double b = y1 / x1 - a * x1;
+
+                if (cmp(a, 0) >= 0) continue;
+                int state = 0;
+                for (int k = 0; k < n; k++) {
+                    double x = q[k].x, y = q[k].y;
+                    if (!cmp(a * x * x + b * x, y)) state += 1 << k;
+                }
+                path[i][j] = state;
+            }
+        }
+
+        memset(f, 0x3f, sizeof f);
+        f[0] = 0;
+        for (int i = 0; i + 1 < 1 << n; i++) {
+            int x = 0;
+            for (int j = 0; j < n; j++)
+                if (!(i >> j & 1)) {
+                    x = j;
+                    break;
+                }
+
+            for (int j = 0; j < n; j++)
+                f[i | path[x][j]] = min(f[i | path[x][j]], f[i] + 1);
+        }
+
+        cout << f[(1 << n) - 1] << endl;
+    }
+
+    return 0;
+}
+```
+
+##### **C++ 跳舞链TLE**
+
+```cpp
+// Dancing Links，TLE，能过(20/21)
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+#include <set>
+#include <vector>
+
+#define x first
+#define y second
+
+using namespace std;
+
+typedef pair<double, double> PDD;
+const int N = 10000;
+const double eps = 1e-8;
+
+int n, m;
+int l[N], r[N], u[N], d[N], col[N], row[N], s[N], idx;
+bool st[20];
+int path[20][20];
+PDD q[20];
+
+int cmp(double x) {
+    if (abs(x) < eps) return 0;
+    if (x > 0) return 1;
+    return -1;
+}
+
+void init() {
+    for (int i = 0; i <= m; i++) {
+        l[i] = i - 1, r[i] = i + 1;
+        col[i] = u[i] = d[i] = i;
+        s[i] = 0;
+    }
+    l[0] = m, r[m] = 0;
+    idx = m + 1;
+}
+
+void add(int& hh, int& tt, int x, int y) {
+    row[idx] = x, col[idx] = y, s[y]++;
+    u[idx] = y, d[idx] = d[y], u[d[y]] = idx, d[y] = idx;
+    r[hh] = l[tt] = idx, r[idx] = tt, l[idx] = hh;
+    tt = idx++;
+}
+
+int h() {
+    int res = 0;
+    memset(st, 0, sizeof st);
+    for (int i = r[0]; i; i = r[i]) {
+        if (st[i]) continue;
+        st[i] = true;
+        res++;
+        for (int j = d[i]; j != i; j = d[j])
+            for (int k = r[j]; k != j; k = r[k]) st[col[k]] = true;
+    }
+    return res;
+}
+
+void remove(int p) {
+    for (int i = d[p]; i != p; i = d[i]) {
+        r[l[i]] = r[i];
+        l[r[i]] = l[i];
+    }
+}
+
+void resume(int p) {
+    for (int i = u[p]; i != p; i = u[i]) {
+        r[l[i]] = i;
+        l[r[i]] = i;
+    }
+}
+
+bool dfs(int k, int depth) {
+    if (k + h() > depth) return false;
+    if (!r[0]) return true;
+    int p = r[0];
+    for (int i = r[0]; i; i = r[i])
+        if (s[p] > s[i]) p = i;
+
+    for (int i = d[p]; i != p; i = d[i]) {
+        remove(i);
+        for (int j = r[i]; j != i; j = r[j]) remove(j);
+        if (dfs(k + 1, depth)) return true;
+        for (int j = l[i]; j != i; j = l[j]) resume(j);
+        resume(i);
+    }
+    return false;
+}
+
+int main() {
+    int T;
+    scanf("%d", &T);
+    while (T--) {
+        scanf("%d%*d", &n);
+        for (int i = 0; i < n; i++) scanf("%lf%lf", &q[i].x, &q[i].y);
+        memset(path, 0, sizeof path);
+        for (int i = 0; i < n; i++) {
+            path[i][i] = 1 << i;
+            for (int j = i + 1; j < n; j++) {
+                double x1 = q[i].x, y1 = q[i].y;
+                double x2 = q[j].x, y2 = q[j].y;
+                if (!cmp(x1 - x2)) continue;
+                double a = (y1 / x1 - y2 / x2) / (x1 - x2);
+                if (cmp(a) >= 0) continue;
+                double b = y1 / x1 - a * x1;
+                for (int k = 0; k < n; k++) {
+                    double x = q[k].x, y = q[k].y;
+                    if (!cmp(a * x * x + b * x - y)) path[i][j] += 1 << k;
+                }
+            }
+        }
+
+        m = n;
+        init();
+
+        vector<int> S;
+        for (int i = 0; i < n; i++)
+            for (int j = i; j < n; j++) S.push_back(path[i][j]);
+
+        for (int i = 0; i < S.size(); i++)
+            for (int j = 0; j < S.size(); j++)
+                if (i != j && S[i] != -1 && S[j] != -1 &&
+                    (S[i] & S[j]) == S[i]) {
+                    S[i] = -1;
+                    break;
+                }
+
+        int k = 0;
+        for (auto x : S)
+            if (x != -1) S[k++] = x;
+        S.erase(S.begin() + k, S.end());
+
+        sort(S.begin(), S.end());
+
+        for (auto x : S) {
+            int hh = idx, tt = idx;
+            for (int i = 0; i < n; i++)
+                if (x >> i & 1) add(hh, tt, 0, i + 1);
+        }
+
+        int depth = 0;
+        while (!dfs(0, depth)) depth++;
+        printf("%d\n", depth);
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 529. 宝藏](https://www.acwing.com/problem/content/531/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstdio>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+const int N = 12, M = 1 << 12, INF = 0x3f3f3f3f;
+
+int n, m;
+int d[N][N];
+int f[M][N], g[M];
+
+int main() {
+    scanf("%d%d", &n, &m);
+
+    memset(d, 0x3f, sizeof d);
+    for (int i = 0; i < n; i++) d[i][i] = 0;
+
+    while (m--) {
+        int a, b, c;
+        scanf("%d%d%d", &a, &b, &c);
+        a--, b--;
+        d[a][b] = d[b][a] = min(d[a][b], c);
+    }
+
+    for (int i = 1; i < 1 << n; i++)
+        for (int j = 0; j < n; j++)
+            if (i >> j & 1) {
+                for (int k = 0; k < n; k++)
+                    if (d[j][k] != INF) g[i] |= 1 << k;
+            }
+
+    memset(f, 0x3f, sizeof f);
+    for (int i = 0; i < n; i++) f[1 << i][0] = 0;
+
+    for (int i = 1; i < 1 << n; i++)
+        for (int j = (i - 1); j; j = (j - 1) & i)
+            if ((g[j] & i) == i) {
+                int remain = i ^ j;
+                int cost = 0;
+                for (int k = 0; k < n; k++)
+                    if (remain >> k & 1) {
+                        int t = INF;
+                        for (int u = 0; u < n; u++)
+                            if (j >> u & 1) t = min(t, d[k][u]);
+                        cost += t;
+                    }
+
+                for (int k = 1; k < n; k++)
+                    f[i][k] = min(f[i][k], f[j][k - 1] + cost * k);
+            }
+
+    int res = INF;
+    for (int i = 0; i < n; i++) res = min(res, f[(1 << n) - 1][i]);
+
+    printf("%d\n", res);
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
+### 三进制状压
+
+对于三进制的状态压缩题目，可以考虑使用 `limit << 1` 的形式也可以使用 `pow(3, M)` 的形式
+
+> [!NOTE] **[LeetCode 1659. 最大化网格幸福感](https://leetcode-cn.com/problems/maximize-grid-happiness/)**
+> 
+> [weekly-215](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2020-11-15_Weekly-215)
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> m 行 n 列的网格，选一部分人放进去。n 列的状态可用三进制枚举表述。pow 随后计算递推即可。
+> 
+> 经典题，类似于下面的不同颜色涂色
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// newhar
+class Solution {
+public:
+    int getMaxGridHappiness(int m, int n, int a, int b) {
+        // 0- 不放人 1-放内向 2-放外向 3^n
+        int cases = pow(3, n);
+        
+        int f[cases][5];
+        memset(f, 0, sizeof(f));
+        for(int i = 0; i < cases; ++i) {
+            for(int t = i, p = 0; t; t /= 3, p++) {
+                f[i][n-1-p] = t % 3;
+            }
+        }
+        
+        int M = cases - 1;
+        int dp[m+1][n][a+1][b+1][cases];
+        memset(dp, 0, sizeof(dp));
+        
+        for(int i = m-1; i >= 0; --i) {
+            for(int j = n-1; j >= 0; --j) {
+                int nei = i, nej = j + 1;
+                if(j == n) {
+                    nei = i + 1, nej = 0;
+                }
+                for(int x = 0; x <= a; ++x) {
+                    for(int y = 0; y <= b; ++y) {
+                        for(int pre = 0; pre < cases; ++pre) {
+                            int nem = (pre * 3) % cases;
+                            if(x > 0) {
+                                int diff = 120;
+                                if(j != 0 && f[pre][n-1] == 1) {
+                                    diff -= 30;
+                                    diff -= 30;
+                                }
+                                if(j != 0 && f[pre][n-1] == 2) {
+                                    diff += 20;
+                                    diff -= 30;
+                                }
+                                if(f[pre][0] == 1) {
+                                    diff -= 30;
+                                    diff -= 30;
+                                }
+                                if(f[pre][0] == 2) {
+                                    diff += 20;
+                                    diff -= 30;
+                                }
+                                //cout << "1:" << i << ',' << j << ',' << x << ',' << y << ',' << f[pre][0] << ',' << f[pre][1] << ',' << diff << endl;
+                                dp[i][j][x][y][pre] = max(dp[i][j][x][y][pre], diff + dp[nei][nej][x-1][y][nem + 1]);
+                            }
+                            if(y > 0) {
+                                int diff = 40;
+                                if(j != 0 && f[pre][n-1] == 1) {
+                                    diff -= 30;
+                                    diff += 20;
+                                }
+                                if(j != 0 && f[pre][n-1] == 2) {
+                                    diff += 20;
+                                    diff += 20;
+                                }
+                                if(f[pre][0] == 1) {
+                                    diff -= 30;
+                                    diff += 20;
+                                }
+                                if(f[pre][0] == 2) {
+                                    diff += 20;
+                                    diff += 20;
+                                }
+                                //cout << "2:" << i << ',' << j << ',' << x << ',' << y << ',' << pre << ',' << diff << endl;
+                                dp[i][j][x][y][pre] = max(dp[i][j][x][y][pre], diff + dp[nei][nej][x][y-1][nem + 2]);
+                            }
+                            dp[i][j][x][y][pre] = max(dp[i][j][x][y][pre], dp[nei][nej][x][y][nem]);
+                        }
+                    }
+                }
+            }
+        }
+        return dp[0][0][a][b][0];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1774. 最接近目标价格的甜点成本](https://leetcode-cn.com/problems/closest-dessert-cost/)**
+> 
+> [weekly-230](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-02-28_Weekly-230)
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 每种基料必选，配料最多选两个，用四进制来表示三进制 00 / 01 / 10，四进制枚举时 11 为不合法状态
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int closestCost(vector<int>& a, vector<int>& b, int T) {
+        int res = INT_MAX;
+        int n = a.size(), m = b.size();
+        for (int i = 0; i < n; ++ i ) {
+            int s = a[i];
+            // 四进制来表示三进制
+            for (int j = 0; j < 1 << m * 2; ++ j ) {
+                int r = s;
+                bool flag = false;
+                for (int k = 0; k < m; ++ k ) {
+                    int t = j >> k * 2 & 3;
+                    if (t == 3) {
+                        flag = true;
+                        break;
+                    }
+                    r += b[k] * t;
+                }
+                if (flag) continue;
+                if (abs(r - T) < abs(res - T) || abs(r - T) == abs(res - T) && r < res)
+                    res = r;
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 转化01背包**
+
+```cpp
+class Solution {
+public:
+    int closestCost(vector<int>& baseCosts, vector<int>& toppingCosts, int target) {
+        int tt = 20000;
+        vector<bool> f(tt + 1, false);
+        for (int x: baseCosts)
+            f[x] = true;
+        for (int x: toppingCosts)
+            for (int j = tt; j >= x; --j)
+                if (f[j - x])
+                    f[j] = true;
+        for (int x: toppingCosts)
+            for (int j = tt; j >= x; --j)
+                if (f[j - x])
+                    f[j] = true;
+        int ans = tt;
+        for (int i = 0; i <= tt; ++i)
+            if (f[i])
+                if (abs(i - target) < abs(ans - target))
+                    ans = i;
+        return ans;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1931. 用三种不同颜色为网格涂色](https://leetcode-cn.com/problems/painting-a-grid-with-three-different-colors/)**
+> 
+> [weekly-249](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-07-11_Weekly-249)
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> dp思路简单版 [1411. 给 N x 3 网格图涂色的方案数](https://leetcode-cn.com/problems/number-of-ways-to-paint-n-3-grid/)
+> 
+> 之前想用 01 10 11 表示三进制状态，但实现起来非常麻烦
+> 
+> 直接用 pow(3, k) 来处理此类三进制经典问题
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 1010, M = 250;
+    const int MOD = 1e9 + 7;
+
+    int n, m;
+    vector<int> st;
+    unordered_map<int, vector<int>> g;
+    LL f[N][M];
+
+    bool check(int x) {
+        int last = -1;
+        for (int i = 0; i < m; ++ i ) {
+            if (x % 3 == last)
+                return false;
+            last = x % 3;
+            x /= 3;
+        }
+        return true;
+    }
+
+    bool match(int a, int b) {
+        for (int i = 0; i < m; ++ i ) {
+            if (a % 3 == b % 3)
+                return false;
+            a /= 3, b /= 3;
+        }
+        return true;
+    }
+
+    int colorTheGrid(int m, int n) {
+        this->n = n, this->m = m;
+
+        int lim = pow(3, m);
+
+        for (int i = 0; i < lim; ++ i )
+            if (check(i))
+                st.push_back(i);
+        for (auto a : st)
+            for (auto b : st)
+                if (match(a, b))
+                    g[a].push_back(b);
+
+        for (auto v : st)
+            f[1][v] = 1;
+        for (int i = 2; i <= n; ++ i )
+            for (auto j : st)
+                for (auto k : g[j])
+                    f[i][j] = (f[i][j] + f[i - 1][k]) % MOD;
+
+        int res = 0;
+        for (auto v : st)
+            res = (res + f[n][v]) % MOD;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 状压 +  记忆化搜索
+
+> [!NOTE] **[LeetCode 1900. 最佳运动员的比拼回合](https://leetcode-cn.com/problems/the-earliest-and-latest-rounds-where-players-compete/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 二进制枚举状态类似博弈
+> 
+> 显然二进制枚举搜索即可
+> 
+> 比赛时忘了加记忆化 TLE 数次... 加行记忆化就过...
+> 
+> 加强搜索敏感度
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int n, p1, p2;
+    int minr, maxr;
+    
+    unordered_set<int> S;
+    
+    void dfs(int st, int d) {
+        if (S.count(st))
+            return;
+        S.insert(st);
+        
+        int sz = __builtin_popcount(st);
+        if (sz < 2)
+            return;
+        
+        int cp = sz / 2;
+        
+        vector<int> ve;
+        for (int i = 0; i < n; ++ i )
+            if (st >> i & 1)
+                ve.emplace_back(i);
+        
+        for (int i = 0; i < cp; ++ i )
+            if (ve[i] + 1 == p1 && ve[sz - i - 1] + 1 == p2 || ve[i] + 1 == p2 && ve[sz - i - 1] + 1 == p1) {
+                minr = min(minr, d), maxr = max(maxr, d);
+                return;
+            }
+        
+        // 某位为1则对应前半部分被淘汰
+        for (int i = 0; i < 1 << cp; ++ i ) {
+            int t = st;
+            for (int j = 0; j < cp; ++ j )
+                if (i >> j & 1)
+                    t ^= 1 << ve[j];
+                else
+                    t ^= 1 << ve[sz - j - 1];
+            if ((t >> (p1 - 1) & 1) == 0 || (t >> (p2 - 1) & 1) == 0)
+                continue;
+            
+            dfs(t, d + 1);
+        }
+    }
+    
+    vector<int> earliestAndLatest(int n, int firstPlayer, int secondPlayer) {
+        this->n = n, this->p1 = firstPlayer, this->p2 = secondPlayer;
+        minr = 2e9, maxr = -2e9;
+        
+        dfs((1 << n) - 1, 1);
+        
+        return {minr, maxr};
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 状压 + 枚举子集 + 组合计数
+
+> [!NOTE] **[LeetCode 1994. 好子集的数目](https://leetcode-cn.com/problems/the-number-of-good-subsets/)**
+> 
+> [biweekly-60](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-09-04_Biweekly-60)
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **枚举子集时依靠某位bit位将所有子集分为两类，从而实现去重计数**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 1**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 10;
+    const int MOD = 1e9 + 7;
+    
+    vector<int> ps = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29};
+    
+    int numberOfGoodSubsets(vector<int>& nums) {
+        vector<int> cnt(1 << N), sum(1 << N);
+        // 1. 求每个数分解得到全素数集合，该全素数集合对应的原始数的个数
+        // 本质上是将原始数组中合法的部分重新统计一遍
+        for (auto x : nums) {
+            int t = 0;
+            for (int i = 0; i < N; ++ i )
+                if (x % ps[i] == 0) {
+                    t |= 1 << i;
+                    // ATTENTION: 如果x包含两个p[i]，必然无效
+                    if (x / ps[i] % ps[i] == 0) {
+                        t = -1;
+                        break;
+                    }
+                }
+        
+            if (t != -1)
+                cnt[t] ++ ;
+        }
+        
+        // 2. 遍历统计
+        // 为什么可以遍历到 1 << N ? 因为按照合法性规则，最多包含ps中所有的元素 即2^10
+        int res = 0;
+        for (int i = 1; i < 1 << N; ++ i ) {
+            // 该集合本身作为一个数
+            sum[i] = cnt[i];
+            // 集合拆分
+            // ATTENTION 思考细节：【为什么实现需找第一个存在位来划分】
+            // 【目的：去重】如果直接用子集去算会有重合部分
+            for (int j = 0; j < N; ++ j )
+                if (i >> j & 1) {
+                    int k = i ^ (1 << j);
+                    // 枚举k的子集（必然包含j的子集）作为第一部分【cnt[(1 << j) | x]】
+                    // 其补集作为第二部分【sum[k ^ x]】
+                    for (int x = (k - 1) & k; true; x = (x - 1) & k) {
+                        sum[i] = (sum[i] + (LL)cnt[(1 << j) | x] * sum[k ^ x]) % MOD;
+                        if (x == 0) // 注意 x 可以为空集，即第一部分只包含一个j
+                            break;
+                    }
+                    // ATTENTION 能够根据一位不同去划分为两类即可
+                    break;
+                }
+            // 统计
+            res = (res + (LL)sum[i]) % MOD;
+        }
+        // 1的数量 任意选 2^cnt[0]
+        for (int i = 0; i < cnt[0]; ++ i )
+            res = (res + (LL)res) % MOD;
+        return res;
+    }
+};
+```
+##### **C++ 2**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 10;
+    const int MOD = 1e9 + 7;
+    
+    vector<int> ps = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29};
+    
+    int qpow(int a, int b) {
+        LL res = 1;
+        while (b) {
+            if (b & 1)
+                res = res * a % MOD;
+            a = (LL)a * a % MOD;
+            b >>= 1;
+        }
+        return res;
+    }
+    
+    int numberOfGoodSubsets(vector<int>& nums) {
+        vector<int> cnt(1 << N), sum(1 << N);
+        // 1. 求每个数分解得到全素数集合，该全素数集合对应的原始数的个数
+        // 本质上是将原始数组中合法的部分重新统计一遍
+        for (auto x : nums) {
+            int t = 0;
+            for (int i = 0; i < N; ++ i )
+                if (x % ps[i] == 0) {
+                    t |= 1 << i;
+                    // ATTENTION: 如果x包含两个p[i]，必然无效
+                    if (x / ps[i] % ps[i] == 0) {
+                        t = -1;
+                        break;
+                    }
+                }
+        
+            if (t != -1)
+                cnt[t] ++ ;
+        }
+        
+        // 2. 遍历统计
+        sum[0] = qpow(2, cnt[0]);
+        
+        for (int i = 1; i < 1 << N; ++ i ) {
+            // ATTENTION 1: 只用sum不用nxt也可以过，因为是从小到大计算的
+            auto nxt = sum;
+            for (int j = 0; j < 1 << N; ++ j )
+                if (!(i & j)) {
+                    // i 与 j 无交叉
+                    nxt[j | i] = (nxt[j | i] + (LL)sum[j] * cnt[i]) % MOD;
+                }
+            sum = nxt;
+        }
+        
+        // ATTENTION 2: 这样res统计必须放在最后，因为前面for-loop未将当前结果统计完成
+        int res = 0;
+        for (int i = 1; i < 1 << N; ++ i )
+            res = (res + (LL)sum[i]) % MOD;
+        
+        return res;
+    }
+};
+```
+
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 状压 + meet in the middle
+
+> [!NOTE] **[LeetCode 2035. 将数组分成两个数组并最小化数组和的差](https://leetcode-cn.com/problems/partition-array-into-two-arrays-to-minimize-sum-difference/)**
+> 
+> [weekly-262](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-10-10_Weekly-262)
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典的数据范围较大 如果直接对全局状压TLE 故【拆分成两个部分】再【扫描一半并二分另一半】
+> 
+> 理应想到 折半枚举（形如折半双向搜索） 的做法
+> 
+> - 增强对 meet in the middle 的敏感度
+> - 学习优雅的 STL 用法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 16;
+    vector<vector<int>> s1, s2;
+    
+    void work(vector<int> & t, vector<vector<int>> & r) {
+        int n = t.size();
+        for (int i = 0; i < 1 << n; ++ i ) {
+            int c = 0, s = 0;
+            for (int j = 0; j < n; ++ j )
+                if (i >> j & 1)
+                    c ++ , s += t[j];
+                // else
+                else
+                    s -= t[j];
+            r[c].push_back(s);
+        }
+        for (int i = 0; i < N; ++ i )
+            sort(r[i].begin(), r[i].end());
+    }
+    
+    // 折半拆分的思想!
+    int minimumDifference(vector<int>& nums) {
+        s1.resize(N), s2.resize(N);
+        int n = nums.size() / 2;
+        {
+            vector<int> t;
+            for (int i = 0; i < n; ++ i )
+                t.push_back(nums[i]);
+            work(t, s1);
+        }
+        {
+            vector<int> t;
+            for (int i = n; i < n << 1; ++ i )
+                t.push_back(nums[i]);
+            work(t, s2);
+        }
+        
+        int res = 2e9;
+        for (int i = 0; i < n; ++ i ) {
+            // ls rs 分别 i n-i 个元素的所有集合
+            auto ls = s1[i];
+            auto rs = s2[n - i];
+            for (auto v : ls) {
+                auto it = lower_bound(rs.begin(), rs.end(), -v);
+                // ATTENTION 学习这种STL用法
+                if (it != rs.end())
+                    res = min(res, abs(v + *it));
+                if (it != rs.begin())
+                    res = min(res, abs(v + *prev(it)));
+            }
+        }
+        
+        
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

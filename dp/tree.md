@@ -389,3 +389,603 @@ TODO@binacs
 - [\[USACO10MAR\]Great Cow Gathering G](https://www.luogu.com.cn/problem/P2986)
 
 - [CodeForce 708C Centroids](http://codeforces.com/problemset/problem/708/C)
+
+## 习题
+
+> [!NOTE] **[AcWing 1072. 树的最长路径](https://www.acwing.com/problem/content/description/1074/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+const int N = 10010, M = N * 2;
+
+int n;
+int h[N], e[M], w[M], ne[M], idx;
+int ans;
+
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx++;
+}
+
+int dfs(int u, int father) {
+    int dist = 0;  // 表示从当前点往下走的最大长度
+    int d1 = 0, d2 = 0;
+
+    for (int i = h[u]; i != -1; i = ne[i]) {
+        int j = e[i];
+        if (j == father) continue;
+        int d = dfs(j, u) + w[i];
+        dist = max(dist, d);
+
+        if (d >= d1)
+            d2 = d1, d1 = d;
+        else if (d > d2)
+            d2 = d;
+    }
+
+    ans = max(ans, d1 + d2);
+
+    return dist;
+}
+
+int main() {
+    cin >> n;
+
+    memset(h, -1, sizeof h);
+    for (int i = 0; i < n - 1; i++) {
+        int a, b, c;
+        cin >> a >> b >> c;
+        add(a, b, c), add(b, a, c);
+    }
+
+    dfs(1, -1);
+
+    cout << ans << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+# 也被称为 一般情况下的 树的直径；
+# （还有一种树的直径是：没有边权的 树的直径：1. 任取一点作为起点，找到距离改点最远的一个点u （DFS，BFS） 2. 再找到距离u最远的距离v.那么u和v之间的路径就是一条直径（DFS，BFS））
+# 证明：图论的证明：第一步中找到的u一定是某一条直径的一个端点。反证法：如果A的找到的u不是某条直径的端点的话，找到另外一条直径，分情况讨论：1 该直径和Au相交；2. 该直径和Au不相交
+# 扩展后的做法：就是每条边都有自己的边权，不再都是1；那就需要用树形dp的方法：想办法把所有的路径枚举一遍，在其中找到边权最大的路径即可。
+# 任意选一个点为根节点，然后把所有直径进行分类：在每条直径上 找到高度最高的点，把这条直径的值放到这个高度最高的点上。
+# 以每个点把所有直径进行分类，每个点代表的类是：所有路径最高的点 就是这个点的所有路径（每条路径上都有一个唯一的最高点）
+# 问题转移为：当固定完一个点后，如何求挂到这个点上的长度的最大值呢？
+# 首先 先求出这个点上 所有子节点往下走的最大长度，1）挂在这个点下的最大值 2）经过这个点然后找到最长 和 第二长的 长度 相加 就是经过这个点的最大值
+
+# 状态表示：（集合）：
+# 状态转移：
+
+N = 10010
+M = 2 * N
+h = [-1] * N
+ne = [0] * M
+ev = [0] * M
+w = [0] * M
+idx = 0
+
+
+def dfs(u, father):  # father表示当前点的father节点，避免子树往上走（子树方向只能向下走）
+    global ans
+    dist = 0  # 表示 从当前点往下走的最大长度
+    d1, d2 = 0, 0  # 如果是负数，就是不存在，那就是0
+
+    i = h[u]  # 开始遍历当前点的所有子节点
+    while i != -1:
+        j = ev[i]
+        if j == father:
+            i = ne[i]  # 踩坑：不要忘了 把i往后移动！
+            continue  # 不能从子节点 走到 father节点上去
+        d = dfs(j, u) + w[i]  # 返回值 就是j点 往下走的最大长度
+        dist = max(dist, d)
+
+        if d >= d1:
+            d2 = d1
+            d1 = d
+        elif d > d2:
+            d2 = d
+        i = ne[i]
+    ans = max(ans, d1 + d2)
+    return dist
+
+
+def add_edge(a, b, c):
+    global idx
+    ev[idx] = b
+    w[idx] = c
+    ne[idx] = h[a]
+    h[a] = idx
+    idx += 1
+
+
+if __name__ == '__main__':
+    n = int(input())
+    for _ in range(n - 1):
+        a, b, c = map(int, input().split())
+        add_edge(a, b, c)
+        add_edge(b, a, c)
+    ans = 0
+    dfs(1, -1)  # 任取一个点作为起点（其实就是作为根节点），根节点没有father节点，所以传入-1即可
+    print(ans)
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1073. 树的中心](https://www.acwing.com/problem/content/description/1075/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 两次树dp
+> 
+> 1. 根据子树更新当前节点
+> 
+> 2. 根据当前节点更新当前并递归更新子树
+> 
+> 记录最长和次长的思想
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+const int N = 10010, M = N * 2, INF = 0x3f3f3f3f;
+
+int n;
+int h[N], e[M], w[M], ne[M], idx;
+int d1[N], d2[N], p1[N], up[N];
+bool is_leaf[N];
+
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx++;
+}
+
+int dfs_d(int u, int father) {
+    d1[u] = d2[u] = -INF;   // 考虑负权边
+    for (int i = h[u]; i != -1; i = ne[i]) {
+        int j = e[i];
+        if (j == father) continue;
+        int d = dfs_d(j, u) + w[i];
+        if (d >= d1[u]) {
+            d2[u] = d1[u], d1[u] = d;
+            p1[u] = j;
+        } else if (d > d2[u])
+            d2[u] = d;
+    }
+
+    if (d1[u] == -INF) {
+        d1[u] = d2[u] = 0;
+        is_leaf[u] = true;
+    }
+
+    return d1[u];
+}
+
+void dfs_u(int u, int father) {
+    for (int i = h[u]; i != -1; i = ne[i]) {
+        int j = e[i];
+        if (j == father) continue;
+
+        if (p1[u] == j)
+            up[j] = max(up[u], d2[u]) + w[i];
+        else
+            up[j] = max(up[u], d1[u]) + w[i];
+
+        dfs_u(j, u);
+    }
+}
+
+int main() {
+    cin >> n;
+    memset(h, -1, sizeof h);
+    for (int i = 0; i < n - 1; i++) {
+        int a, b, c;
+        cin >> a >> b >> c;
+        add(a, b, c), add(b, a, c);
+    }
+
+    dfs_d(1, -1);
+    dfs_u(1, -1);
+
+    int res = d1[1];
+    for (int i = 2; i <= n; i++)
+        if (is_leaf[i])
+            res = min(res, up[i]);
+        else
+            res = min(res, max(d1[i], up[i]));
+
+    printf("%d\n", res);
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1075. 数字转换](https://www.acwing.com/problem/content/description/1077/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 相当于求树中的最长路径
+> 
+> 问题在于如何快速求出 5e4范围内的数的约数和 ====> 筛法
+> 
+> 对于数据规模较大的情况 要想到筛法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+const int N = 50010, M = N;
+
+int n;
+int h[N], e[M], w[M], ne[M], idx;
+int sum[N];
+bool st[N];
+int ans;
+
+void add(int a, int b) { e[idx] = b, ne[idx] = h[a], h[a] = idx++; }
+
+int dfs(int u) {
+    st[u] = true;
+
+    int dist = 0;
+    int d1 = 0, d2 = 0;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (!st[j]) {
+            int d = dfs(j);
+            dist = max(dist, d);
+            if (d >= d1)
+                d2 = d1, d1 = d;
+            else if (d > d2)
+                d2 = d;
+        }
+    }
+
+    ans = max(ans, d1 + d2);
+
+    return dist + 1;
+}
+
+int main() {
+    cin >> n;
+    memset(h, -1, sizeof h);
+
+    for (int i = 1; i <= n; i++)
+        for (int j = 2; j <= n / i; j++) sum[i * j] += i;
+
+    for (int i = 2; i <= n; i++)
+        if (sum[i] < i) add(sum[i], i);
+
+    for (int i = 1; i <= n; i++)
+        if (!st[i]) dfs(i);
+
+    cout << ans << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1074. 二叉苹果树](https://www.acwing.com/problem/content/description/1076/)**
+> 
+> 题意: 必须从根节点开始 一个路径
+
+> [!TIP] **思路**
+> 
+> 分组背包 每个边的值当做从父节点到该点的值
+> 
+> 标准树dp写法
+> 
+> 先递归子树，再更新当前
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+const int N = 110, M = N * 2;
+
+int n, m;
+int h[N], e[M], w[M], ne[M], idx;
+int f[N][N];
+
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx++;
+}
+
+void dfs(int u, int father) {
+    for (int i = h[u]; ~i; i = ne[i]) {
+        if (e[i] == father) continue;
+        dfs(e[i], u);
+        for (int j = m; j; j--)
+            for (int k = 0; k + 1 <= j; k++)
+                f[u][j] = max(f[u][j], f[u][j - k - 1] + f[e[i]][k] + w[i]);
+    }
+}
+
+int main() {
+    cin >> n >> m;
+    memset(h, -1, sizeof h);
+    for (int i = 0; i < n - 1; i++) {
+        int a, b, c;
+        scanf("%d%d%d", &a, &b, &c);
+        add(a, b, c), add(b, a, c);
+    }
+
+    dfs(1, -1);
+
+    printf("%d\n", f[1][m]);
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 323. 战略游戏](https://www.acwing.com/problem/content/description/325/)**
+> 
+> 题意: 树上放，监控边
+
+> [!TIP] **思路**
+> 与leetcode看守题不同之处在于：这个是看边 leetcode是看节点
+> 
+> https://leetcode-cn.com/problems/binary-tree-cameras/
+> 
+> - f[i] 没有放置也没有被覆盖的不考虑
+> - f[i][0] i节点没有放置 覆盖全部边
+> - f[i][1] i节点放置 覆盖全部边
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+const int N = 1510;
+
+int n;
+int h[N], e[N], ne[N], idx;
+int f[N][2];
+bool st[N];
+
+void add(int a, int b) { e[idx] = b, ne[idx] = h[a], h[a] = idx++; }
+
+void dfs(int u) {
+    f[u][0] = 0, f[u][1] = 1;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        dfs(j);
+        f[u][0] += f[j][1];
+        f[u][1] += min(f[j][0], f[j][1]);
+    }
+}
+
+int main() {
+    while (cin >> n) {
+        memset(h, -1, sizeof h);
+        idx = 0;
+
+        memset(st, 0, sizeof st);
+        for (int i = 0; i < n; i++) {
+            int id, cnt;
+            scanf("%d:(%d)", &id, &cnt);
+            while (cnt--) {
+                int ver;
+                cin >> ver;
+                add(id, ver);
+                st[ver] = true;
+            }
+        }
+
+        int root = 0;
+        while (st[root]) root++;
+        dfs(root);
+
+        printf("%d\n", min(f[root][0], f[root][1]));
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1077. 皇宫看守](https://www.acwing.com/problem/content/description/1079/)**
+> 
+> 题意: 树上放，监控点 思想
+
+> [!TIP] **思路**
+> 
+> 
+> - f[i][0]  // 第i个结点的父结点被选
+> - f[i][1]  // 第i个结点有一个子节点被选
+> - f[i][2]  // 第i个节点本身被选
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+const int N = 1510;
+
+int n;
+int h[N], w[N], e[N], ne[N], idx;
+int f[N][3];
+bool st[N];
+
+void add(int a, int b) { e[idx] = b, ne[idx] = h[a], h[a] = idx++; }
+
+void dfs(int u) {
+    f[u][2] = w[u];
+
+    int sum = 0;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        dfs(j);
+        f[u][0] += min(f[j][1], f[j][2]);
+        f[u][2] += min(min(f[j][0], f[j][1]), f[j][2]);
+        sum += min(f[j][1], f[j][2]);
+    }
+
+    f[u][1] = 1e9;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        f[u][1] = min(f[u][1], sum - min(f[j][1], f[j][2]) + f[j][2]);
+    }
+}
+
+int main() {
+    cin >> n;
+
+    memset(h, -1, sizeof h);
+    for (int i = 1; i <= n; i++) {
+        int id, cost, cnt;
+        cin >> id >> cost >> cnt;
+        w[id] = cost;
+        while (cnt--) {
+            int ver;
+            cin >> ver;
+            add(id, ver);
+            st[ver] = true;
+        }
+    }
+
+    int root = 1;
+    while (st[root]) root++;
+
+    dfs(root);
+
+    cout << min(f[root][1], f[root][2]) << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

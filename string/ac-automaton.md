@@ -306,3 +306,242 @@ $$
 时间和空间复杂度：$O(m|\Sigma|)$。
 
 对比之下，AC 自动机其实就是 Trie 上的自动机。（虽然一开始丢给你这句话可能不知所措）
+
+## 习题
+
+
+> [!NOTE] **[AcWing 1282. 搜索关键词](https://www.acwing.com/problem/content/1284/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+> AC自动机 = Trie + KMP
+>     |
+>     |
+>     可优化为 Trie图
+>     
+> AC自动机每个点都保存了一个next 记录以这个点为结尾的最长后缀【需对应存在前缀】的尾端点
+> 
+> 在Trie中 0既是0号点也做根节点
+> 
+> 依据KMP 在计算next时本质上 while(j && p[i] != p[j + 1]) 这里的j就是next[i-1]
+> 
+> 也即 每次都是依据next[0] ~ next[i - 1] 来计算next[i]
+> 
+> 同理 拓展至AC自动机 使用宽搜建立Trie的next数组
+
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 10010, S = 55, M = 1000010;
+
+int n;
+int tr[N * S][26], cnt[N * S], idx; // cnt节点代表的串出现的个数
+char str[M];
+int q[N * S], ne[N * S];
+
+void insert() {
+    int p = 0;
+    for (int i = 0; str[i]; ++ i ) {
+        int t = str[i] - 'a';
+        if (!tr[p][t]) tr[p][t] = ++ idx;
+        p = tr[p][t];
+    }
+    cnt[p] ++ ;
+}
+
+void build() {
+    int hh = 0, tt = -1;
+    // 直接把根节点0的儿子们加入队列
+    for (int i = 0; i < 26; ++ i )
+        if (tr[0][i])
+            q[ ++ tt] = tr[0][i];
+    
+    while (hh <= tt) {
+        int t = q[hh ++ ];
+        // t 对应KMP求next的 i - 1
+        for (int i = 0; i < 26; ++ i ) {
+            // p 对应的就是 i    ne[t]对应j
+            int p = tr[t][i];
+            
+            // ------------------------- AC自动机 -------------------------
+            if (!p) continue;
+            int j = ne[t];
+            while (j && !tr[j][i]) j = ne[j];
+            if (tr[j][i]) j = tr[j][i];
+            ne[p] = j;
+            q[ ++ tt] = p;
+            
+            /* ------------------------- Trie 图常数优化 -------------------------
+            // !p 可以理解为 p[i]不存在，j = ne[j]
+            if (!p) tr[t][i] = tr[ne[t]][i];    // 跳父节点的ne
+            else {
+                ne[p] = tr[ne[t]][i];
+                q[ ++ tt] = p;
+            }
+            */
+        }
+    }
+}
+
+int main() {
+    int T;
+    scanf("%d", &T);
+    while (T -- ) {
+        memset(tr, 0, sizeof tr);
+        memset(cnt, 0, sizeof cnt);
+        memset(ne, 0, sizeof ne);
+        idx = 0;
+        
+        scanf("%d", &n);
+        for (int i = 0; i < n; ++ i ) {
+            scanf("%s", str);
+            insert();
+        }
+        
+        build();
+        
+        scanf("%s", str);
+        int res = 0;
+        for (int i = 0, j = 0; str[i]; ++ i ) {
+            int t = str[i] - 'a';
+            
+            // ------------------------- AC自动机 -------------------------
+            while (j && !tr[j][t]) j = ne[j];
+            if (tr[j][t]) j = tr[j][t];
+            
+            /* ------------------------- Trie 图常数优化 -------------------------
+            j = tr[j][t];
+            */
+            
+            int p = j;
+            while (p) {
+                res += cnt[p];
+                cnt[p] = 0;
+                p = ne[p];
+            }
+        }
+        printf("%d\n", res);
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1285. 单词](https://www.acwing.com/problem/content/1287/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 一个字符串出现的次数 = 所有满足要求的前缀个数 【要求是后缀=原串】
+> 
+> 如果计算每一个串，在别处出现多少次 这样算太多了不好算
+> 
+> 逆向：算当前位置会使得哪一个串“出现”
+> 
+> 要找所有单词中某个单词出现的次数，其实就是看在所有的前缀的后缀中
+> 
+> 某个单词出现的次数，就是ne数组的定义
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 1000010;
+
+int n;
+int tr[N][26], f[N], idx;
+int q[N], ne[N];
+char str[N];
+int id[210];
+
+void insert(int x) {
+    int p = 0;
+    for (int i = 0; str[i]; ++ i ) {
+        int t = str[i] - 'a';
+        if (!tr[p][t]) tr[p][t] = ++ idx;
+        p = tr[p][t];
+        f[p] ++ ;   // 频次 当前位置p代表的前缀个数+1
+    }
+    id[x] = p;
+}
+
+void build() {
+    int hh = 0, tt = -1;
+    for (int i = 0; i < 26; ++ i )
+        if (tr[0][i])
+            q[ ++ tt] = tr[0][i];
+    while (hh <= tt) {
+        int t = q[hh ++ ];
+        for (int i = 0; i < 26; ++ i ) {
+            int &p = tr[t][i];
+            if (!p) p = tr[ne[t]][i];
+            else {
+                ne[p] = tr[ne[t]][i];
+                q[ ++ tt] = p;
+            }
+        }
+    }
+}
+
+int main() {
+    scanf("%d", &n);
+    for (int i = 0; i < n; ++ i ) {
+        scanf("%s", str);
+        insert(i);
+    }
+    
+    build();
+    
+    // 倒序相加，使得前驱节点的值累加到后继节点 【拓扑序】
+    // 把f[i]出现的次数累加到f[nx[i]上去
+    // i 即 q[i]
+    for (int i = idx - 1; i >= 0; -- i ) f[ne[q[i]]] += f[q[i]];
+    
+    for (int i = 0; i < n; ++ i ) printf("%d\n", f[id[i]]);
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

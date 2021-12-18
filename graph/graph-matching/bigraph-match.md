@@ -345,3 +345,388 @@ if __name__ == '__main__':
 > [!NOTE] **[Codeforces 1139E - Maximize Mex](https://codeforces.com/problemset/problem/1139/E) **
 > 
 > None
+
+
+## 习题
+
+> [!NOTE] **[AcWing 257. 关押罪犯](https://www.acwing.com/problem/content/259/)**
+> 
+> 题意: 最大匹配
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 20010, M = 200010;
+
+int n, m;
+int h[N], e[M], ne[M], w[M], idx;
+int color[N];
+
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+bool dfs(int u, int c, int mid) {
+    color[u] = c;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        if (w[i] <= mid) continue;
+        int j = e[i];
+        if (color[j] == c) return false;
+        if (!color[j] && !dfs(j, 3 - c, mid)) return false;
+    }
+    return true;
+}
+
+bool check(int mid) {
+    memset(color, 0, sizeof color);
+    for (int i = 1; i <= n; ++ i )
+        if (!color[i])
+            if (!dfs(i, 1, mid)) return false;
+    return true;
+}
+
+int main() {
+    memset(h, -1, sizeof h);
+    
+    cin >> n >> m ;
+    for (int i = 0; i < m; ++ i ) {
+        int a, b, c;
+        cin >> a >> b >> c;
+        add(a, b, c), add(b, a, c);
+    }
+    int l = 0, r = 1e9;
+    while (l < r) {
+        int mid = l + (r - l) / 2;
+        if (check(mid)) r = mid;
+        else l = mid + 1;
+    }
+    cout << l << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 372. 棋盘覆盖](https://www.acwing.com/problem/content/374/)**
+> 
+> 题意: 最大匹配 建图
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+using PII = pair<int, int>;
+
+const int N = 110;
+
+int n, m;
+PII match[N][N];
+bool g[N][N], st[N][N];
+int dx[4] = {-1, 0, 0, 1}, dy[4] = {0, -1, 1, 0};
+
+bool find(int x, int y) {
+    for (int i = 0; i < 4; ++ i ) {
+        int nx = x + dx[i], ny = y + dy[i];
+        if (nx < 1 || nx > n || ny < 1 || ny > n || g[nx][ny] || st[nx][ny]) continue;
+        st[nx][ny] = true;
+        PII t = match[nx][ny];
+        if (t.first == -1 || find(t.first, t.second)) {
+            match[nx][ny] = {x, y};
+            return true;
+        }
+    }
+    return false;
+}
+
+int main() {
+    cin >> n >> m;
+    
+    while (m -- ) {
+        int x, y;
+        cin >> x >> y;
+        g[x][y] = true;
+    }
+    
+    memset(match, -1, sizeof match);
+    
+    int res = 0;
+    for (int i = 1; i <= n; ++ i )
+        for (int j = 1; j <= n; ++ j )
+            if ((i + j) % 2 && !g[i][j]) {
+                memset(st, 0, sizeof st);
+                if (find(i, j)) ++ res;
+            }
+    cout << res << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 376. 机器任务](https://www.acwing.com/problem/content/378/)**
+> 
+> 题意: 最大匹配 建图
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+// 每个物品是一条边 求的最小点覆盖 每个点是左右两侧的模式
+
+const int N = 110;
+int n, m, k;
+int match[N];
+// N 比较小所以可以用矩阵存
+bool g[N][N], st[N];
+
+bool find(int x) {
+    for (int i = 0; i < m; ++ i )
+        // 左侧x能否去右侧i
+        if (!st[i] && g[x][i]) {
+            st[i] = true;
+            if (match[i] == -1 || find(match[i])) {
+                match[i] = x;
+                return true;
+            }
+        }
+    return false;
+}
+
+int main() {
+    while (cin >> n, n) {
+        cin >> m >> k;
+        memset(g, 0, sizeof g);
+        memset(match, -1, sizeof match);
+        
+        while (k -- ) {
+            int t, a, b;
+            cin >> t >> a >> b;
+            if (!a || !b) continue;
+            // 单向边即可 左->右
+            g[a][b] = true;
+        }
+        int res = 0;
+        for (int i = 0; i < n; ++ i ) {
+            memset(st, 0, sizeof st);
+            // 枚举左侧 查左侧能否连
+            if (find(i)) ++ res;
+        }
+        cout << res << endl;
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 378. 骑士放置](https://www.acwing.com/problem/content/380/)**
+> 
+> 题意: 最大独立集
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+using PII = pair<int, int>;
+
+const int N = 110;
+
+int n, m, k;
+PII match[N][N];
+bool g[N][N], st[N][N];
+
+int dx[8] = {-1, -2, -2, -1, 1, 2, 2, 1}, dy[8] = {-2, -1, 1, 2, 2, 1, -1, -2};
+
+bool find(int x, int y) {
+    for (int i = 0; i < 8; ++ i ) {
+        int nx = x + dx[i], ny = y + dy[i];
+        if (nx < 1 || nx > n || ny < 1 || ny > m || g[nx][ny] || st[nx][ny]) continue;
+        st[nx][ny] = true;
+        PII t = match[nx][ny];
+        // 或者不初始化 直接使用t.first=0
+        if (t.first == -1 || find(t.first, t.second)) {
+            match[nx][ny] = {x, y};
+            return true;
+        }
+    }
+    return false;
+}
+
+int main() {
+    memset(match, -1, sizeof match);
+    
+    cin >> n >> m >> k;
+    for (int i = 0; i < k; ++ i ) {
+        int x, y;
+        cin >> x >> y;
+        g[x][y] = true;
+    }
+    int res = 0;
+    for (int i = 1; i <= n; ++ i )
+        for (int j = 1; j <= m; ++ j ) {
+            // 可以跳到的位置总是和当前位置的行列和差3 故可以划为二分图 只考虑行列和为偶数的情况
+            if (g[i][j] || (i + j) & 1) continue;
+            memset(st, 0, sizeof st);
+            if (find(i, j)) ++ res;
+        }
+    cout << n * m - k - res << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 379. 捉迷藏](https://www.acwing.com/problem/content/381/)**
+> 
+> 题意: 最小重复路径点覆盖
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 210;
+
+int n, m;
+bool g[N][N], st[N];
+int match[N];
+
+bool find(int x) {
+    for (int i = 1; i <= n; ++ i )
+        if (!st[i] && g[x][i]) {
+            st[i] = true;
+            if (!match[i] || find(match[i])) {
+                match[i] = x;
+                return true;
+            }
+        }
+    return false;
+}
+
+int main() {
+    cin >> n >> m;
+    while (m -- ) {
+        int a, b;
+        cin >> a >> b;
+        g[a][b] = true;
+    }
+    for (int k = 1; k <= n; ++ k )
+        for (int i = 1; i <= n; ++ i )
+            for (int j = 1; j <= n; ++ j )
+                g[i][j] |= g[i][k] & g[k][j];
+    int res = 0;
+    for (int i = 1; i <= n; ++ i ) {
+        memset(st, 0, sizeof st);
+        if (find(i)) ++ res;
+    }
+    cout << n - res << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

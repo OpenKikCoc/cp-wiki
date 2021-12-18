@@ -175,3 +175,69 @@ $$
 
 - 双倍经验：[SP15376 RMID - Running Median](https://www.luogu.com.cn/problem/SP15376)
 - 典型习题：[P1801 黑匣子](https://www.luogu.com.cn/problem/P1801)
+
+
+## 习题
+
+> [!NOTE] **[AcWing 106. 动态中位数](https://www.acwing.com/problem/content/108/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int T;
+    cin >> T;
+    while (T -- ) {
+        int n, m;
+        cin >> m >> n;
+        cout << m << ' ' << (n + 1) / 2 << endl;
+        
+        // 保证down 比up多一
+        priority_queue<int> down;
+        priority_queue<int, vector<int>, greater<int>> up;
+        int cnt = 0;
+        for (int i = 1; i <= n; ++ i ) {
+            int x;
+            cin >> x;
+            if (down.empty() || x < down.top()) down.push(x);
+            else up.push(x);
+            
+            if (down.size() > up.size() + 1) up.push(down.top()), down.pop();
+            if (up.size() > down.size()) down.push(up.top()), up.pop();
+            
+            if (i % 2) {
+                cout << down.top() << ' ';
+                if ( ++ cnt % 10 == 0) cout << endl;
+            }
+        }
+        if (cnt % 10) cout << endl;
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

@@ -1513,3 +1513,457 @@ if __name__=='__main__':
 <br>
 
 * * *
+
+### 状态机模型
+
+> [!NOTE] **[AcWing 1057. 股票买卖 IV](https://www.acwing.com/problem/content/description/1059/)**
+> 
+> 题意: k 次买卖
+
+> [!TIP] **思路**
+> 
+> 注意 j 循环从 1 到 k，而非从 1 到 i
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+const int N = 100010, M = 110, INF = 0x3f3f3f3f;
+
+int n, m;
+int w[N];
+int f[N][M][2];
+
+int main() {
+    scanf("%d%d", &n, &m);
+    for (int i = 1; i <= n; i++) scanf("%d", &w[i]);
+
+    memset(f, -0x3f, sizeof f);
+    for (int i = 0; i <= n; i++) f[i][0][0] = 0;
+
+    for (int i = 1; i <= n; i++)
+        for (int j = 1; j <= m; j++) {
+            f[i][j][0] = max(f[i - 1][j][0], f[i - 1][j][1] + w[i]);
+            f[i][j][1] = max(f[i - 1][j][1], f[i - 1][j - 1][0] - w[i]);
+        }
+
+    int res = 0;
+    for (int i = 0; i <= m; i++) res = max(res, f[n][i][0]);
+
+    printf("%d\n", res);
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+# 如何把交易状态描述清楚
+# 第一个状态：手中有货； ==> 1）可以持有；2）卖出
+# 第二个状态：手中没有货； ==> 1) 不买，就继续是没货；2）第二天买入，就是持有状态
+# 状态转移的时候 是有权重的，+ w[i], - w[1]
+
+# 状态表示：f[i, j, 0] : 前i天，已经做完j次交易，并且手中无货的购买方式的集合
+#           f[i, j, 1] : 前i天，已经做完前j-1次交易，并且正在进行第j次交易，并且手中有货的购买方式的集合 ！ 注意：这里是正在进行第j次交易
+# 状态机的状态表示，实质上是把i的状态进行了，方便后续状态计算； 属性：最大值
+# 状态计算：就是状态机的转移
+
+# 注意：
+# 1. 初始化的问题：f[i,0,0]表示进行0次交易 手中无货的情况，那就是0，表示这个状态合法，可以从这个状态转移过来；状态不合法的时候，就要初始化无穷大
+#    求最大，就初始化为负无穷；求最小，就初始化为最大，表示为：状态不合法，没办法从这个状态转移过来
+# 2. 最后的结果输出问题：最后一定是进行了若干次完整的交易，手中无货才是完整交易（买了不卖，不是最优解，买要花钱）
+
+# N = 100010
+# f = [[[float('-inf') * 2] for _ in range(N)] for _ in range(N)]
+# w = [0] * N
+
+# if __name__ =='__main__':
+#     n, m = map(int, input().split())
+#     w[1:] = list(map(int, input().split()))
+#     for i in range(1, n+1):  # 初始化很重要
+#         f[i][0][0] = 0 
+
+#     for i in range(1, n + 1):
+#         for j in range(1, m + 1):
+#             f[i][j][0] = max(f[i - 1][j][0], f[i - 1][j][1] + w[i])  #上一次有货，需要卖出，并不需要开启新的交易；所以上一次无货就处于第j次交易中
+#             f[i][j][1] = max(f[i - 1][j][1], f[i - 1][j - 1][0] - w[i]) # 上一次无货，需要买入，那么就会开启一个新的交易；所以上一次无货处于第j-1次交易
+
+#     res = 0 
+#     for i in range(m + 1):
+#         res = max(res, f[n][i][0])
+#     print(res)
+
+
+# 空间压缩，由于第i项完全依赖于i-1项，所以j从大到小 or 从小到大 遍历都是可以的
+# 当第i项 依赖于i-1和i项时，j的遍历方向才有影响
+N = 100010
+f = [[float('-inf')] * 2 for _ in range(N)]
+w = [0] * N
+
+if __name__ == '__main__':
+    n, m = map(int, input().split())
+    w[1:] = list(map(int, input().split()))
+    f[0][0] = 0
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            f[j][0] = max(f[j][0], f[j][1] + w[i])
+            f[j][1] = max(f[j][1], f[j - 1][0] - w[i])
+    res = 0
+    for i in range(1, m + 1):
+        res = max(res, f[i][0])
+    print(res)
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1058. 股票买卖 V](https://www.acwing.com/problem/content/description/1060/)**
+> 
+> 题意: 无限买卖含冷冻期
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+const int N = 100010, INF = 0x3f3f3f3f;
+
+int n;
+int w[N];
+int f[N][3];
+
+int main() {
+    scanf("%d", &n);
+
+    for (int i = 1; i <= n; i++) scanf("%d", &w[i]);
+
+    f[0][0] = f[0][1] = -INF, f[0][2] = 0;
+    for (int i = 1; i <= n; i++) {
+        f[i][0] = max(f[i - 1][0], f[i - 1][2] - w[i]);
+        f[i][1] = f[i - 1][0] + w[i];
+        f[i][2] = max(f[i - 1][2], f[i - 1][1]);
+    }
+
+    printf("%d\n", max(f[n][1], f[n][2]));
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+N = 100010
+f = [[float('-inf')] * 3 for _ in range(N)]
+w = [0] * N
+
+if __name__ == '__main__':
+    n = int(input())
+    w[1:] = map(int, input().split())
+    f[0][2] = 0  # 初始化，入口很重要
+
+    for i in range(1, n + 1):
+        f[i][0] = max(f[i - 1][0], f[i - 1][2] - w[i])
+        f[i][1] = f[i - 1][0] + w[i]
+        f[i][2] = max(f[i - 1][1], f[i - 1][2])
+    print(max(f[n][1], f[n][2]))
+    # 2的状态可以由1转移过来，不会增加w值；但存在极端情况，如数列递减
+    # 这时不交易才是最大收益，就是f[n][2]，所以出口需要加上f[n][2]
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1052. 设计密码](https://www.acwing.com/problem/content/description/1054/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> KMP【两种KMP写法】+复杂状态机
+> 
+> 在状态机中走 走n步不能始终不会走到状态m的数量
+> 
+> $ f[i][j] 表示 i 长度 状态为 j 的合法数量，i 最多 n， j 最多 m+1 $
+> 
+> **重复做**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+const int N = 55, mod = 1e9 + 7;
+
+int n, m;
+char str[N];
+int nxt[N];
+int f[N][N];
+
+int main() {
+    cin >> n >> str + 1;
+
+    m = strlen(str + 1);
+
+    for (int i = 2, j = 0; i <= m; i++) {
+        while (j && str[i] != str[j + 1]) j = nxt[j];
+        if (str[i] == str[j + 1]) j++;
+        nxt[i] = j;
+    }
+
+    f[0][0] = 1;
+    // 最好用下面这种定义写
+    // i 状态定义表示已有的长度 不包括当前枚举的字母
+    for (int i = 0; i < n; i++)
+        // 枚举子串中的位置
+        for (int j = 0; j < m; j++)
+            // 枚举i处的字符
+            for (char k = 'a'; k <= 'z'; k++) {
+                int u = j;
+                while (u && k != str[u + 1]) u = nxt[u];
+                if (k == str[u + 1]) u++;
+                // 没有出现完整子串
+                if (u < m) f[i + 1][u] = (f[i + 1][u] + f[i][j]) % mod;
+            }
+
+    int res = 0;
+    for (int i = 0; i < m; i++) res = (res + f[n][i]) % mod;
+
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1053. 修复DNA](https://www.acwing.com/problem/content/description/1055/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> AC自动机 
+> 
+> 状态定义类似上一道题
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstdio>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+const int N = 1010;
+
+int n, m;
+int tr[N][4], dar[N], idx;
+int q[N], ne[N];
+char str[N];
+
+int f[N][N];
+
+int get(char c) {
+    if (c == 'A') return 0;
+    if (c == 'T') return 1;
+    if (c == 'G') return 2;
+    return 3;
+}
+
+void insert() {
+    int p = 0;
+    for (int i = 0; str[i]; i++) {
+        int t = get(str[i]);
+        if (tr[p][t] == 0) tr[p][t] = ++idx;
+        p = tr[p][t];
+    }
+    dar[p] = 1;
+}
+
+void build() {
+    int hh = 0, tt = -1;
+    for (int i = 0; i < 4; i++)
+        if (tr[0][i]) q[++tt] = tr[0][i];
+
+    while (hh <= tt) {
+        int t = q[hh++];
+        for (int i = 0; i < 4; i++) {
+            int p = tr[t][i];
+            if (!p)
+                tr[t][i] = tr[ne[t]][i];
+            else {
+                ne[p] = tr[ne[t]][i];
+                q[++tt] = p;
+                dar[p] |= dar[ne[p]];
+            }
+        }
+    }
+}
+
+int main() {
+    int T = 1;
+    while (scanf("%d", &n), n) {
+        memset(tr, 0, sizeof tr);
+        memset(dar, 0, sizeof dar);
+        memset(ne, 0, sizeof ne);
+        idx = 0;
+
+        for (int i = 0; i < n; i++) {
+            scanf("%s", str);
+            insert();
+        }
+
+        build();
+
+        scanf("%s", str + 1);
+        m = strlen(str + 1);
+
+        memset(f, 0x3f, sizeof f);
+        f[0][0] = 0;
+        for (int i = 0; i < m; i++)
+            for (int j = 0; j <= idx; j++)
+                for (int k = 0; k < 4; k++) {
+                    int t = get(str[i + 1]) != k;
+                    int p = tr[j][k];
+                    if (!dar[p]) f[i + 1][p] = min(f[i + 1][p], f[i][j] + t);
+                }
+
+        int res = 0x3f3f3f3f;
+        for (int i = 0; i <= idx; i++) res = min(res, f[m][i]);
+
+        if (res == 0x3f3f3f3f) res = -1;
+        printf("Case %d: %d\n", T++, res);
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1955. 统计特殊子序列的数目](https://leetcode-cn.com/problems/count-number-of-special-subsequences/)**
+> 
+> [weekly-252](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-08-01_Weekly-252)
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 线性 DP 求方案数，首先明确状态定义和状态转移
+> 
+> 经典求方案，定义及转移、滚动数字压缩空间
+> 
+> 核心在于 状态定义 和 转移
+> 
+> 前 i 个位置分别构成 0 / 01 / 012 形式序列的方案数
+
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const int MOD = 1e9 + 7;
+    
+    int countSpecialSubsequences(vector<int>& nums) {
+        LL a = 0, b = 0, c = 0;
+        for (auto x : nums) {
+            if (x == 0)
+                // 不选本个 a
+                // 选本个 则可以与前面连也可以不连 共a+1
+                // 合计 a*2+1
+                a = (a * 2 + 1) % MOD;
+            if (x == 1)
+                b = (b * 2 + a) % MOD;
+            if (x == 2)
+                c = (c * 2 + b) % MOD;
+        }
+        return c;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

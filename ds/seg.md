@@ -479,3 +479,654 @@ def getsum(l, r, s, t, p):
 - [immortalCO 大爷的博客](https://immortalco.blog.uoj.ac/blog/2102)
 - [\[Kle77\]](http://ieeexplore.ieee.org/document/1675628/) V. Klee,“Can the Measure of be Computed in Less than O (n log n) Steps?,”Am. Math. Mon., vol. 84, no. 4, pp. 284–285, Apr. 1977.
 - [\[BeW80\]](https://www.tandfonline.com/doi/full/10.1080/00029890.1977.11994336) Bentley and Wood,“An Optimal Worst Case Algorithm for Reporting Intersections of Rectangles,”IEEE Trans. Comput., vol. C–29, no. 7, pp. 571–577, Jul. 1980.
+
+
+## 习题
+
+> [!NOTE] **[AcWing 245. 你能回答这些问题吗](https://www.acwing.com/problem/content/246/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 查询某个区间的最大子段和 原来想的是求最大值再求左侧最小值 但是显然先确定右端点这样的贪心不对
+> 
+> 查询某个区间时 本质也需要对子区间进行合并 故创建新的node并依据子区间pushup流程更新
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 500010, M = N << 2;
+
+int n, m;
+int w[N];
+
+struct Node{
+    int l, r;
+    // 最大连续子段和 只依赖tmax不足以从子节点更新当前节点
+    // 对于横跨两个区间的区块 总要记录一个横跨左右的 最大前缀 和 最大后缀
+    // 即 父区间的最大值可能是横跨左右子区间 则其值为左的最大后缀加右的最大前缀
+    // tmax 最大连续子段和 lmax最大前缀和 rmax最大后缀和
+    // ATTENTION: 对于包含整个左子的情况 还需要左侧区间和 故sum记录区间总和
+    int tmax, lmax, rmax, sum;
+}tr[M];
+
+void pushup(Node & u, Node & l, Node & r) {
+    u.sum = l.sum + r.sum;
+    u.lmax = max(l.lmax, l.sum + r.lmax);
+    u.rmax = max(r.rmax, l.rmax + r.sum);
+    u.tmax = max(max(l.tmax, r.tmax), l.rmax + r.lmax);
+}
+
+void pushup(int u) {
+    pushup(tr[u], tr[u << 1], tr[u << 1 | 1]);
+}
+
+void build(int u, int l, int r) {
+    if (l == r) tr[u] = {l, r, w[r], w[r], w[r], w[r]};
+    else {
+        tr[u] = {l, r};
+        int mid = l + (r - l) / 2;
+        build(u << 1, l, mid), build(u << 1 | 1, mid + 1, r);
+        pushup(u);
+    }
+}
+
+void modify(int u, int x, int v) {
+    if (tr[u].l == x && tr[u].r == x) tr[u] = {x, x, v, v, v, v};
+    else {
+        int mid = tr[u].l + (tr[u].r - tr[u].l) / 2;
+        if (x <= mid) modify(u << 1, x, v);
+        else modify(u << 1 | 1, x, v);
+        pushup(u);
+    }
+}
+
+Node query(int u, int l, int r) {
+    if (tr[u].l >= l && tr[u].r <= r) return tr[u];
+    else {
+        int mid = tr[u].l + (tr[u].r - tr[u].l) / 2;
+        if (r <= mid) return query(u << 1, l, r);
+        else if (l > mid) return query(u << 1 | 1, l, r);
+        else {
+            auto left = query(u << 1, l, r);
+            auto right = query(u << 1 | 1, l, r);
+            // 思路
+            Node res;
+            pushup(res, left, right);
+            return res;
+        }
+    }
+}
+
+int main() {
+    scanf("%d%d", &n, &m);
+    for (int i = 1; i <= n; ++ i ) scanf("%d", &w[i]);
+    build(1, 1, n);
+    
+    int k, x, y;
+    while (m -- ) {
+        scanf("%d%d%d", &k, &x, &y);
+        if (k == 1) {
+            if (x > y) swap(x, y);
+            printf("%d\n", query(1, x, y).tmax);
+        } else modify(1, x, y);
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 246. 区间最大公约数](https://www.acwing.com/problem/content/247/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 做到这题 其实写俩pushup函数就是为了query的时候方便合并左右区间的查询结果
+> 
+> 区间增加 看似可以直接差分 但要求gcd 就不行了
+> 
+> 考虑区间内维护哪些信息：
+> 
+> - 首先gcd显然要存，但是在区间修改的情况下存这个没啥意义
+> 
+> - 因为gcd更相减损 考虑转化为维护差的形式
+> 
+> 修改区间改为修改单点 则差分
+> 原理：
+> $$
+> d = gcd(x, y, z) = gcd(x, y - x, z - y)
+> d = gcd(a1, a2, a3, ... , an) = gcd(a1, a2-a1, a3-a2, ... , an-an-1)
+> $$
+> 
+> 则题目变为 单点修改&区间查询
+> 
+> 考虑：能否只用一个BIT？【不能 因为BIT求的是前缀和 这里求的是区间 只是维护sum的值类似BIT差分】
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+const int N = 500010, M = N << 2;
+
+int n, m;
+LL w[N];
+struct Node{
+    int l, r;
+    LL sum, d;
+}tr[M];
+
+LL gcd(LL a, LL b) {
+    return b ? gcd(b, a % b) : a;
+}
+
+void pushup(Node & u, Node & l, Node & r) {
+    u.sum = l.sum + r.sum;
+    u.d = gcd(l.d, r.d);
+}
+
+void pushup(int u) {
+    pushup(tr[u], tr[u << 1], tr[u << 1 | 1]);
+}
+
+void build(int u, int l, int r) {
+    if (l == r) {
+        LL b = w[r] - w[r - 1];
+        tr[u] = {l, r, b, b};
+    } else {
+        tr[u] = {l, r};
+        int mid = l + (r - l) / 2;
+        build(u << 1, l, mid), build(u << 1 | 1, mid + 1, r);
+        pushup(u);
+    }
+}
+
+void modify(int u, int x, LL v) {
+    if (tr[u].l == x && tr[u].r == x) {
+        LL b = tr[u].sum + v;
+        tr[u] = {x, x, b, b};
+    } else {
+        int mid = tr[u].l + (tr[u].r - tr[u].l) / 2;
+        if (x <= mid) modify(u << 1, x, v);
+        else modify(u << 1 | 1, x, v);
+        pushup(u);
+    }
+}
+
+Node query(int u, int l, int r) {
+    if (tr[u].l >= l && tr[u].r <= r) return tr[u];
+    else {
+        int mid = tr[u].l + (tr[u].r - tr[u].l) / 2;
+        if (r <= mid) return query(u << 1, l, r);
+        else if (l > mid) return query(u << 1 | 1, l, r);
+        else {
+            auto left = query(u << 1, l, r);
+            auto right = query(u << 1 | 1, l, r);
+            Node res;
+            pushup(res, left, right);
+            return res;
+        }
+    }
+}
+
+int main() {
+    scanf("%d%d", &n, &m);
+    for (int i = 1; i <= n; ++ i ) scanf("%lld", &w[i]);
+    build(1, 1, n);
+    
+    char op[2];
+    int l, r;
+    LL d;
+    while (m -- ) {
+        scanf("%s%d%d", op, &l, &r);
+        if (*op == 'Q') {
+            // 获取l值
+            auto left = query(1, 1, l);
+            // 处理 l = r 的特例 只要r.d为0即可
+            Node right({0, 0, 0, 0});
+            if (l + 1 <= r) right = query(1, l + 1, r);
+            printf("%lld\n", abs(gcd(left.sum, right.d)));
+        } else {
+            scanf("%lld", &d);
+            modify(1, l, d);
+            if (r + 1 <= n) modify(1, r + 1, -d);
+        }
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 243. 一个简单的整数问题2](https://www.acwing.com/problem/content/244/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 懒标记 处理区间变化
+> 
+> 本题 sum 为当前区间的总和
+> 
+> add 懒标记：
+> 
+> 给【以当前节点为根的子树中的每一个节点加上一个值】，【不含根节点】这样方便在当前区间被包括时直接返回 而不用再计算add
+> 
+> 从上至下时为了累计所积累的add 每次都pushdown
+> 
+> 不统一的区间 一定要裂开
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+const int N = 100010, M = N << 2;
+
+int n, m;
+int w[N];
+struct Node{
+    int l, r;
+    // 
+    LL sum, add;
+}tr[M];
+
+void pushup(int u) {
+    tr[u].sum = tr[u << 1].sum + tr[u << 1 | 1].sum;
+}
+
+void pushdown(int u) {
+    auto &root = tr[u], &left = tr[u << 1], &right = tr[u << 1 | 1];
+    if (root.add) {
+        left.add += root.add, left.sum += (LL)(left.r - left.l + 1) * root.add;
+        right.add += root.add, right.sum += (LL)(right.r - right.l + 1) * root.add;
+        root.add = 0;
+    }
+}
+
+void build(int u, int l, int r) {
+    if (l == r) tr[u] = {l, r, w[r], 0};
+    else {
+        tr[u] = {l, r};
+        int mid = l + (r - l) / 2;
+        build(u << 1, l, mid), build(u << 1 | 1, mid + 1, r);
+        pushup(u);
+    }
+}
+
+void modify(int u, int l, int r, int d) {
+    if (tr[u].l >= l && tr[u].r <= r) {
+        tr[u].sum += (LL)(tr[u].r - tr[u].l + 1) * d;
+        tr[u].add += d;
+    } else {
+        // 不统一的 一定要分裂
+        pushdown(u);
+        int mid = tr[u].l + (tr[u].r - tr[u].l) / 2;
+        if (l <= mid) modify(u << 1, l, r, d);
+        if (r > mid) modify(u << 1 | 1, l, r, d);
+        pushup(u);
+    }
+}
+
+LL query(int u, int l, int r) {
+    if (tr[u].l >= l && tr[u].r <= r) return tr[u].sum;
+    else {
+        pushdown(u);
+        int mid = tr[u].l + (tr[u].r - tr[u].l) / 2;
+        LL sum = 0;
+        if (l <= mid) sum += query(u << 1, l, r);
+        if (r > mid) sum += query(u << 1 | 1, l, r);
+        return sum;
+    }
+}
+
+int main() {
+    scanf("%d%d", &n, &m);
+    for (int i = 1; i <= n; ++ i ) scanf("%d", &w[i]);
+    
+    build(1, 1, n);
+    
+    char op[2];
+    int l, r, d;
+    while (m -- ) {
+        scanf("%s%d%d", op, &l, &r);
+        if (*op == 'C') {
+            scanf("%d", &d);
+            modify(1, l, r, d);
+        } else printf("%lld\n", query(1, l, r));
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 247. 亚特兰蒂斯](https://www.acwing.com/problem/content/249/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 线段树 扫描线
+> 
+> 求所有长方形覆盖的总面积
+> 
+> 本题做法很难拓展 不需要和传统扫描线板子一致
+> 
+> 注意：
+> 
+>     扫描线中间的矩阵面积是不变的（参见视频）
+> 
+> 在扫描线方向切割 在垂直方向做线段树 矩形加入段+1 离开段-1 则高度为区间内多少个位置值>0
+> 
+> 
+> 故线段树维护：
+> 
+> - 多少个值大于0 也即 当前区间整个被覆盖次数cnt
+> - len 不考虑祖先节点cnt的前提下 cnt > 0 的区间总长
+> - 【统计信息时线段树节点永远只往下看】
+>  
+> 因为扫描线特殊的性质，本题可以不写pushdown
+> 
+> 【求矩形面积并的扫描线可以，其他图形不一定】
+> 
+> 【对于查询：因为每次都是在求根节点1 所以不需要pushdown】
+> 
+> 【对于修改：每次操作都是成对出现的，且先加后减 不管cnt>0还是=0都不需要 故不需要pushdown】、
+> 
+> 如果题目给的是 平行四边形 梯形 ..... 等等非矩形。那么这个方法就不可用了。需要lazy标记。
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 100010;
+
+int n;
+struct Segment{
+    double x, y1, y2;
+    int k;
+    bool operator< (const Segment &t) const {
+        return x < t.x;
+    }
+}seg[N << 1];
+
+struct Node{
+    int l, r;
+    int cnt;
+    double len;
+}tr[N << 3];
+
+vector<double> ys;
+
+int find(double y) {
+    return lower_bound(ys.begin(), ys.end(), y) - ys.begin();
+}
+
+void pushup(int u) {
+    // tr[u].r + 1 获得的是下标
+    if (tr[u].cnt) tr[u].len = ys[tr[u].r + 1] - ys[tr[u].l];
+    else if (tr[u].l == tr[u].r) tr[u].len = 0;
+    else tr[u].len = tr[u << 1].len + tr[u << 1 | 1].len;
+}
+
+void build(int u, int l, int r) {
+    if (l == r) tr[u] = {l, r, 0, 0};
+    else {
+        // 注意
+        tr[u] = {l, r, 0, 0};
+        int mid = l + (r - l) / 2;
+        build(u << 1, l, mid), build(u << 1 | 1, mid + 1, r);
+    }
+}
+
+void modify(int u, int l, int r, int k) {
+    if (tr[u].l >= l && tr[u].r <= r) {
+        tr[u].cnt += k;
+        pushup(u);
+    } else {
+        int mid = tr[u].l + (tr[u].r - tr[u].l) / 2;
+        if (l <= mid) modify(u << 1, l, r, k);
+        if (r > mid) modify(u << 1 | 1, l, r, k);
+        pushup(u);
+    }
+}
+
+int main() {
+    int t = 0;
+    while (scanf("%d", &n), n) {
+        ys.clear();
+        for (int i = 0, j = 0; i < n; ++ i ) {
+            double x1, y1, x2, y2;
+            scanf("%lf%lf%lf%lf", &x1, &y1, &x2, &y2);
+            seg[j ++ ] = {x1, y1, y2, 1};
+            seg[j ++ ] = {x2, y1, y2, -1};
+            ys.push_back(y1), ys.push_back(y2);
+        }
+        
+        sort(ys.begin(), ys.end());
+        ys.erase(unique(ys.begin(), ys.end()), ys.end());
+        
+        // 保存的区间 比点数size-1还要小1
+        // 结合题面图去理解
+        build(1, 0, ys.size() - 2);
+        
+        sort(seg, seg + 2 * n);
+        
+        double res = 0;
+        for (int i = 0; i < 2 * n; ++ i ) {
+            // 从第二条线开始累计答案
+            // 累计时计算所有区间的总覆盖长度 tr[1].len * x间的宽度
+            if (i > 0) res += tr[1].len * (seg[i].x - seg[i - 1].x);
+            // 加入/消除一个线段
+            // y 表示区间 故 yl yr-1
+            modify(1, find(seg[i].y1), find(seg[i].y2) - 1, seg[i].k);
+        }
+        
+        // POJ %lf 要换成 %f
+        printf("Test case #%d\nTotal explored area: %.2lf\n\n", ++ t, res);
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1277. 维护序列](https://www.acwing.com/problem/content/1279/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 区间修改和区间查询 考虑懒标记
+> 
+> 考虑需要记录哪些信息:
+> 
+>     l, r        以及 sum add mul
+> 
+>     考虑是先加再乘还是先乘再加  前者很难维护 故先乘再加
+>     
+> **重要小技巧【代数表达式】 把乘和加统一**
+> 
+>     1. *c :  x * c + d == x * c + 0
+> 
+>     2. +d :  x * c + d == x * 1 + d
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+const int N = 100010;
+
+int n, p, m;
+int w[N];
+struct Node {
+    int l, r;
+    int sum, add, mul;
+}tr[N * 4];
+
+void pushup(int u) {
+    tr[u].sum = (tr[u << 1].sum + tr[u << 1 | 1].sum) % p;
+}
+
+// 先乘再加
+void eval(Node & t, int add, int mul) {
+    t.sum = ((LL)t.sum * mul + (LL)(t.r - t.l + 1) * add) % p;
+    t.mul = (LL)t.mul * mul % p;
+    t.add = ((LL)t.add * mul + add) % p;
+}
+
+void pushdown(int u) {
+    eval(tr[u << 1], tr[u].add, tr[u].mul);
+    eval(tr[u << 1 | 1], tr[u].add, tr[u].mul);
+    tr[u].add = 0, tr[u].mul = 1;
+}
+
+void build(int u, int l, int r) {
+    if (l == r) tr[u] = {l, r, w[r], 0, 1};
+    else {
+        tr[u] = {l, r, 0, 0, 1};
+        int mid = l + (r - l) / 2;
+        build(u << 1, l, mid), build(u << 1 | 1, mid + 1, r);
+        pushup(u);
+    }
+}
+
+void modify(int u, int l, int r, int add, int mul) {
+    if (tr[u].l >= l && tr[u].r <= r) eval(tr[u], add, mul);
+    else {
+        pushdown(u);
+        int mid = tr[u].l + (tr[u].r - tr[u].l) / 2;
+        if (l <= mid) modify(u << 1, l, r, add, mul);
+        if (r > mid) modify(u << 1 | 1, l, r, add, mul);
+        pushup(u);
+    }
+}
+
+int query(int u, int l, int r) {
+    if (tr[u].l >= l && tr[u].r <= r) return tr[u].sum;
+    else {
+        pushdown(u);
+        int mid = tr[u].l + (tr[u].r - tr[u].l) / 2;
+        int sum = 0;
+        if (l <= mid) sum += query(u << 1, l, r) % p;
+        if (r > mid) sum += query(u << 1 | 1, l, r) % p;
+        return sum % p;
+    }
+}
+
+int main() {
+    scanf("%d%d", &n, &p);
+    for (int i = 1; i <= n; ++ i ) scanf("%d", &w[i]);
+    build(1, 1, n);
+    
+    scanf("%d", &m);
+    while (m -- ) {
+        int t, l, r, d;
+        scanf("%d%d%d", &t, &l, &r);
+        if (t == 1) {
+            scanf("%d", &d);
+            modify(1, l, r, 0, d);
+        } else if (t == 2) {
+            scanf("%d", &d);
+            modify(1, l, r, d, 1);
+        } else printf("%d\n", query(1, l, r));
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

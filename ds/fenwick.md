@@ -301,3 +301,363 @@ def getsum(k):
 - [树状数组 3：区间修改，区间查询](https://loj.ac/problem/132)
 - [二维树状数组 1：单点修改，区间查询](https://loj.ac/problem/133)
 - [二维树状数组 3：区间修改，区间查询](https://loj.ac/problem/135)
+
+## 习题
+
+> [!NOTE] **[AcWing 241. 楼兰图腾](https://www.acwing.com/problem/content/243/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 统计某个点左右侧各有多少个比它大的数字
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+const int N = 200010;
+
+int n;
+int a[N];   // 原数组
+int tr[N];
+int Greater[N], lower[N];   // 1 ~ k-1 中多少个大于y[k]   再逆序 k + 1 ~ n 中有多少大于y[k]
+
+int lowbit(int x) {
+    return x & -x;
+}
+
+void add(int x, int c) {
+    for (int i = x; i <= n; i += lowbit(i)) tr[i] += c;
+}
+
+int sum(int x) {
+    int res = 0;
+    for (int i = x; i; i -= lowbit(i)) res += tr[i];
+    return res;
+}
+
+int main() {
+    cin >> n;
+    for (int i = 1; i <= n; ++ i ) cin >> a[i];
+    for (int i = 1; i <= n; ++ i ) {
+        int y = a[i];
+        Greater[i] = sum(n) - sum(y);
+        lower[i] = sum(y - 1);
+        add(y, 1);
+    }
+    // 再逆序统计一遍
+    memset(tr, 0, sizeof tr);
+    LL res1 = 0, res2 = 0;
+    for (int i = n; i; -- i ) {
+        int y = a[i];
+        res1 += Greater[i] * (LL)(sum(n) - sum(y));
+        res2 += lower[i] * (LL)(sum(y - 1));
+        add(y, 1);
+    }
+    cout << res1 << " " << res2 << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 242. 一个简单的整数问题](https://www.acwing.com/problem/content/248/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+const int N = 100010;
+
+int n, m;
+int a[N];
+LL tr[N];
+
+int lowbit(int x) {
+    return x & -x;
+}
+
+void add(int x, int c) {
+    for (int i = x; i <= n; i += lowbit(i)) tr[i] += c;
+}
+
+LL sum(int x) {
+    LL res = 0;
+    for (int i = x; i; i -= lowbit(i)) res += tr[i];
+    return res;
+}
+
+int main() {
+    cin >> n >> m;
+    for (int i = 1; i <= n; ++ i ) cin >> a[i];
+    for (int i = 1; i <= n; ++ i ) add(i, a[i] - a[i - 1]); // 转化为查分数组存在树中
+    while (m -- ) {
+        // 用%s读入可以解决制表符 无需后续其他操作
+        char op[2];
+        int l, r, d;
+        scanf("%s%d", op, &l);
+        if (*op == 'C') {
+            scanf("%d%d", &r, &d);
+            add(l, d), add(r + 1, -d);
+        } else cout << sum(l) << endl;
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 243. 一个简单的整数问题2]()**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+>
+> **转化**
+>
+> 区间加 和 区间求和
+>
+> 对于区间加 仍然想上题那样记录差分
+>
+> a[i] 原数组 b[i]差分数组
+> 
+> 对于区间求和 先将原数值补上集合 得到
+> 
+> $$
+> psum[x] = (b1 + b2 + ... + bx) * (x + 1) - (b1 + 2*b2 + ... + x*bx)
+>         = bi的前缀和 - x*bi的前缀和
+> $$
+>   
+>   故通过树状数组维护两个前缀和
+>     
+> > 认真思考【为何维护tr2时一个加 l*d 一个减 (r+1)*d】
+> > 
+> > tr2维护的是i * b[i]的前缀和，而b[i] = a[i] - a[i - 1]，
+> > 
+> > 所以当我们给a[L] ~ a[R]加上d时，对i * b[i]的影响只有两处：
+> > 
+> > 1. L * b[L]，此时由于b[L]增加了d，所以L * b[L]就应该增加L * d；
+> > 2. (R + 1) * b[R + 1]由于b[R + 1]减少了d，所以它应该减去(R + 1) * d。
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+const int N = 100010;
+
+int n, m;
+int a[N];
+LL tr1[N];  // 维护b[i]的前缀和
+LL tr2[N];  // 维护b[i]*i的前缀和
+
+int lowbit(int x) {
+    return x & -x;
+}
+
+void add(LL tr[], int x, LL c) {
+    for (int i = x; i <= n; i += lowbit(i)) tr[i] += c;
+}
+
+LL sum(LL tr[], int x) {
+    LL res = 0;
+    for (int i = x; i; i -= lowbit(i)) res += tr[i];
+    return res;
+}
+
+LL prefix_sum(int x) {
+    return sum(tr1, x) * (x + 1) - sum(tr2, x);
+}
+
+int main() {
+    cin >> n >> m;
+    for (int i = 1; i <= n; ++ i ) cin >> a[i];
+    
+    // 差分
+    for (int i = 1; i <= n; ++ i ) {
+        int b = a[i] - a[i - 1];
+        add(tr1, i, b);
+        add(tr2, i, (LL)b * i);
+    }
+    
+    while (m -- ) {
+        char op[2];
+        int l, r, d;
+        scanf("%s%d%d", op, &l, &r);
+        if (*op == 'C') {
+            scanf("%d", &d);
+            // a[l] += d
+            add(tr1, l, d), add(tr2, l, l * d);
+            // a[r + 1] -= d
+            add(tr1, r + 1, -d), add(tr2, r + 1, (r + 1) * -d);
+        } else {
+            cout << prefix_sum(r) - prefix_sum(l - 1) << endl;
+        }
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 244. 谜一样的牛](https://www.acwing.com/problem/content/245/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 1. 在剩下的数里面找到 第ai + 1小的数 作为当前身高
+> 
+> 2. 删除该数
+> 
+> 显然无法爆搜On^2 平衡树也可以但难写 考虑BIT
+> 
+> 维护 a[i] 的前缀和 删除比较好做 考虑如何求第k小 显然可以二分
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 100010;
+
+int n;
+int h[N];
+int ans[N];
+int tr[N];
+
+int lowbit(int x) {
+    return x & -x;
+}
+
+void add(int x, int c) {
+    for (int i = x; i <= n; i += lowbit(i)) tr[i] += c;
+}
+
+int sum(int x) {
+    int res = 0;
+    for (int i = x; i; i -= lowbit(i)) res += tr[i];
+    return res;
+}
+
+int main() {
+    cin >> n;
+    for (int i = 2; i <= n; ++ i ) cin >> h[i];
+    
+    // 初始化 每一个位置都有1 与add等价
+    // for (int i = 1; i <= n; ++ i ) add(i, 1);
+    for (int i = 1; i <= n; ++ i ) tr[i] = lowbit(i);
+    
+    for (int i = n; i; -- i ) {
+        int k = h[i] + 1;
+        int l = 1, r = n;
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+            if (sum(mid) < k) l = mid + 1;
+            else r = mid;
+        }
+        ans[i] = r;
+        add(r, -1);
+    }
+    for (int i = 1; i <= n; ++ i ) cout << ans[i] << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 特殊初始化方式
+
+BIT 的另一种初始化方式：
+
+传统初始化 $O(nlogn)$ 存在一种 $O(n)$ 的初始化方式 核心在于理解 BIT 位的含义
+
+```cpp
+    for (int i = 1; i <= n; ++i) {
+        tr[i] = nums[i - 1];    // 初值
+        for (int j = i - 1; j > i - lowbit(i); j -= lowbit(j))
+            tr[i] += tr[j];
+    }
+```
+
+具体使用参见 [307. 区域和检索 - 数组可修改](https://leetcode-cn.com/problems/range-sum-query-mutable/)
+

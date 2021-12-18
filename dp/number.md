@@ -321,6 +321,16 @@ int main() {
 > 我们发现，尽管前缀所选择的状态不同，而 $f$ 的三个参数相同，答案就是一样的。为了防止这个答案被计算多次，可以使用记忆化搜索的方式实现。
 
 
+> [!TIP] **思路**
+> 
+> f 状态定义
+> 
+> 共 i 个位置且最近一个位置为 j 的方案数
+> 
+> 注意 init 中 f[1][0] = 1 dp 中为0
+> 
+> 注意处理 不重不漏
+
 <details>
 <summary>详细代码</summary>
 <!-- tabs:start -->
@@ -481,3 +491,376 @@ TODO@binacs
 [CF55D Beautiful numbers](http://codeforces.com/problemset/problem/55/D)
 
 [CF628D Magic Numbers](http://codeforces.com/problemset/problem/628/D)
+
+
+> [!NOTE] **[AcWing 1081. 度的数量](https://www.acwing.com/problem/content/1083/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 理解记忆 f状态定义
+> 
+> 共 i 个位置放置 j 个 1 的方案数
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// https://www.acwing.com/solution/content/6997/
+int x, y, k, b;
+vector<vector<int>> c;
+
+void init() {
+    // 组合数
+    for (int i = 0; i < 35; ++i)
+        for (int j = 0; j <= i; ++j)
+            if (!j)
+                c[i][j] = 1;
+            else
+                c[i][j] = c[i - 1][j] + c[i - 1][j - 1];
+}
+
+int f(int n) {
+    if (!n) return 0;
+    vector<int> nums;
+    while (n) nums.push_back(n % b), n /= b;
+    int res = 0;
+    int last = 0;  // 表示已经取了多少个 1
+    // 从最高位对每一位数讨论
+    for (int i = nums.size() - 1; i >= 0; --i) {
+        int x = nums[i];
+        // if(x) 左侧分支
+        if (x) {
+            // 加上第i位取0的时候的组合数 即：对于后面i位取k-last个1的数量
+            res += c[i][k - last];
+            // 第i位取1：
+            if (x > 1) {
+                // 如果x>1 后面i位随便取k-last-1个1  使用组合数
+                if (k - last - 1 >= 0) res += c[i][k - last - 1];
+                break;
+            } else {
+                // 如果x==1 第i位取1时需继续向下取 此时不是组合数
+                ++last;
+                if (last > k) break;
+            }
+        }
+        if (!i && last == k) ++res;  // 最右侧分支上的方案 对于最后一位特殊考虑
+    }
+    return res;
+}
+
+int main() {
+    c = vector<vector<int>>(36, vector<int>(36));
+    init();
+
+    cin >> x >> y >> k >> b;
+    cout << f(y) - f(x - 1) << endl;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1082. 数字游戏](https://www.acwing.com/problem/content/1084/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> f 状态定义
+> 
+> 共 i 个位置且最高位为 j 的不递减方案数
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 15;
+
+int f[N][N];  // f[i, j] 表示一共有i位 且最高位填j的数的个数
+
+void init() {
+    for (int i = 0; i <= 9; ++i) f[1][i] = 1;
+    for (int i = 2; i < N; ++i)
+        for (int j = 0; j <= 9; ++j)  // j 从0开始
+            for (int k = j; k <= 9; ++k) f[i][j] += f[i - 1][k];
+}
+
+int dp(int n) {
+    if (!n) return 1;
+    vector<int> nums;
+    while (n) nums.push_back(n % 10), n /= 10;
+    int res = 0;
+    int last = 0;  // 保留前缀信息 对于本题 前缀信息是：上一个数是多少
+    for (int i = nums.size() - 1; i >= 0; --i) {
+        int x = nums[i];
+        for (int j = last; j < x; ++j)
+            res += f[i + 1][j];  // 位置下标为i 后面总共有i+1个数
+        if (x < last) break;
+        last = x;
+        if (!i) ++res;
+    }
+    return res;
+}
+
+int main() {
+    init();
+    int a, b;
+    while (cin >> a >> b) { cout << dp(b) - dp(a - 1) << endl; }
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1084. 数字游戏 II](https://www.acwing.com/problem/content/1086/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 同样 init 中n=0 f[1][i][i%c] = 1 dp中对于n=0为0
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 11;
+const int M = 110;
+int f[N][10][M];
+
+int c;
+
+int mod(int x, int y) { return (x % y + y) % y; }
+
+void init() {
+    memset(f, 0, sizeof f);
+    for (int i = 0; i <= 9; ++i) f[1][i][i % c] = 1;
+    for (int i = 2; i < N; ++i)
+        for (int j = 0; j <= 9; ++j)
+            for (int k = 0; k < c; ++k)
+                for (int x = 0; x <= 9; ++x)
+                    f[i][j][k] += f[i - 1][x][mod(k - j, c)];
+}
+
+int dp(int n) {
+    if (!n) return 1;
+    vector<int> nums;
+    while (n) nums.push_back(n % 10), n /= 10;
+    int res = 0;
+    int last = 0;
+    for (int i = nums.size() - 1; i >= 0; --i) {
+        int x = nums[i];
+        for (int j = 0; j < x; ++j) res += f[i + 1][j][mod(-last, c)];
+        last += x;
+        if (!i && last % c == 0) ++res;
+    }
+    return res;
+}
+
+int main() {
+    int a, b;
+    while (cin >> a >> b >> c) {
+        init();
+        cout << dp(b) - dp(a - 1) << endl;
+    }
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1086. 恨7不成妻](https://www.acwing.com/problem/content/1088/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+typedef long long LL;
+
+const int N = 20, P = 1e9 + 7;
+
+struct F {
+    int s0, s1, s2;
+} f[N][10][7][7];
+
+int power7[N], power9[N];
+
+int mod(LL x, int y) { return (x % y + y) % y; }
+
+void init() {
+    for (int i = 0; i <= 9; i++) {
+        if (i == 7) continue;
+        auto& v = f[1][i][i % 7][i % 7];
+        v.s0++, v.s1 += i, v.s2 += i * i;
+    }
+
+    LL power = 10;
+    for (int i = 2; i < N; i++, power *= 10)
+        for (int j = 0; j <= 9; j++) {
+            if (j == 7) continue;
+            for (int a = 0; a < 7; a++)
+                for (int b = 0; b < 7; b++)
+                    for (int k = 0; k <= 9; k++) {
+                        if (k == 7) continue;
+                        auto &v1 = f[i][j][a][b],
+                             &v2 = f[i - 1][k][mod(a - j * power, 7)]
+                                    [mod(b - j, 7)];
+                        v1.s0 = mod(v1.s0 + v2.s0, P);
+                        v1.s1 =
+                            mod(v1.s1 + v2.s1 + j * (power % P) % P * v2.s0, P);
+                        v1.s2 = mod(v1.s2 +
+                                        j * j * (power % P) % P * (power % P) %
+                                            P * v2.s0 +
+                                        v2.s2 + 2 * j * power % P * v2.s1,
+                                    P);
+                    }
+        }
+
+    power7[0] = 1;
+    for (int i = 1; i < N; i++) power7[i] = power7[i - 1] * 10 % 7;
+
+    power9[0] = 1;
+    for (int i = 1; i < N; i++) power9[i] = power9[i - 1] * 10ll % P;
+}
+
+F get(int i, int j, int a, int b) {
+    int s0 = 0, s1 = 0, s2 = 0;
+    for (int x = 0; x < 7; x++)
+        for (int y = 0; y < 7; y++)
+            if (x != a && y != b) {
+                auto v = f[i][j][x][y];
+                s0 = (s0 + v.s0) % P;
+                s1 = (s1 + v.s1) % P;
+                s2 = (s2 + v.s2) % P;
+            }
+    return {s0, s1, s2};
+}
+
+int dp(LL n) {
+    if (!n) return 0;
+
+    LL backup_n = n % P;
+    vector<int> nums;
+    while (n) nums.push_back(n % 10), n /= 10;
+
+    int res = 0;
+    LL last_a = 0, last_b = 0;
+    for (int i = nums.size() - 1; i >= 0; i--) {
+        int x = nums[i];
+        for (int j = 0; j < x; j++) {
+            if (j == 7) continue;
+            int a = mod(-last_a * power7[i + 1], 7);
+            int b = mod(-last_b, 7);
+            auto v = get(i + 1, j, a, b);
+            res = mod(res +
+                          (last_a % P) * (last_a % P) % P * power9[i + 1] % P *
+                              power9[i + 1] % P * v.s0 % P +
+                          v.s2 + 2 * last_a % P * power9[i + 1] % P * v.s1,
+                      P);
+        }
+
+        if (x == 7) break;
+        last_a = last_a * 10 + x;
+        last_b += x;
+
+        if (!i && last_a % 7 && last_b % 7)
+            res = (res + backup_n * backup_n) % P;
+    }
+
+    return res;
+}
+
+int main() {
+    int T;
+    cin >> T;
+
+    init();
+
+    while (T--) {
+        LL l, r;
+        cin >> l >> r;
+        cout << mod(dp(r) - dp(l - 1), P) << endl;
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

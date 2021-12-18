@@ -169,3 +169,274 @@ int querykth(int o, int k) {
     // 如要找排名为 k 的元素所对应的结点，直接 return o 即可
 }
 ```
+
+## 习题
+
+> [!NOTE] **[AcWing 253. 普通平衡树](https://www.acwing.com/problem/content/255/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 100010, INF = 1e8;
+
+int n;
+struct Node {
+    int l, r;
+    int key, val;
+    int cnt, size;  // 数量 树大小
+}tr[N];
+
+int root, idx;
+
+void pushup(int p) {
+    tr[p].size = tr[tr[p].l].size + tr[tr[p].r].size + tr[p].cnt;
+}
+
+int get_node(int key) {
+    tr[ ++ idx].key = key;
+    tr[idx].val = rand();
+    tr[idx].cnt = tr[idx].size = 1;
+    return idx;
+}
+
+// 右旋
+void zig(int & p) {
+    int q = tr[p].l;
+    tr[p].l = tr[q].r, tr[q].r = p, p = q;
+    pushup(tr[p].r), pushup(p);
+}
+
+// 左旋
+void zag(int & p) {
+    int q = tr[p].r;
+    tr[p].r = tr[q].l, tr[q].l = p, p = q;
+    pushup(tr[p].l), pushup(p);
+}
+
+void build() {
+    // 哨兵节点 -inf inf
+    get_node(-INF), get_node(INF);
+    // 1节点-inf 2节点inf
+    root = 1, tr[1].r = 2;
+    pushup(root);
+    
+    if (tr[1].val < tr[2].val) zag(root);
+}
+
+// 注意引用 以及修改p的lr
+void insert(int & p, int key) {
+    if (!p) p = get_node(key);
+    else if (tr[p].key == key) tr[p].cnt ++ ;
+    else if (tr[p].key > key) {
+        insert(tr[p].l, key);
+        if (tr[tr[p].l].val > tr[p].val) zig(p);
+    } else {
+        insert(tr[p].r, key);
+        if (tr[tr[p].r].val > tr[p].val) zag(p);
+    }
+    pushup(p);
+}
+
+void remove(int & p, int key) {
+    if (!p) return ;    // 不存在 不用管
+    if (tr[p].key == key) {
+        if (tr[p].cnt > 1) tr[p].cnt -- ;
+        else if (tr[p].l || tr[p].r) {
+            // 非叶子节点 要删除当前节点
+            // 右空或 左val>右val 右旋
+            if (!tr[p].r || tr[tr[p].l].val > tr[tr[p].r].val) {
+                // zag之后p引用指向的节点会变为tr[p].r 故递归处理
+                zig(p);
+                remove(tr[p].r, key);
+            } else {
+                zag(p);
+                remove(tr[p].l, key);
+            }
+        } else p = 0;
+    } else if (tr[p].key > key) remove(tr[p].l, key);
+    else remove(tr[p].r, key);
+    pushup(p);
+}
+
+// 通过数值找排名
+int get_rank_by_key(int p, int key) {
+    if (!p) return 0;   // 本题中不会发生此情况
+    if (tr[p].key == key) return tr[tr[p].l].size + 1;
+    if (tr[p].key > key) return get_rank_by_key(tr[p].l, key);
+    return tr[tr[p].l].size + tr[p].cnt + get_rank_by_key(tr[p].r, key);
+}
+
+// 通过排名找数值
+int get_key_by_rank(int p, int rank) {
+    if (!p) return INF; // 本题中不会发生此情况
+    if (tr[tr[p].l].size >= rank) return get_key_by_rank(tr[p].l, rank);
+    if (tr[tr[p].l].size + tr[p].cnt >= rank) return tr[p].key;
+    return get_key_by_rank(tr[p].r, rank - tr[tr[p].l].size - tr[p].cnt);
+}
+
+// 找到严格小于key的最大数
+int get_prev(int p, int key) {
+    if (!p) return -INF;
+    if (tr[p].key >= key) return get_prev(tr[p].l, key);
+    return max(tr[p].key, get_prev(tr[p].r, key));
+}
+
+// 找到严格大于key的最小数
+int get_next(int p, int key) {
+    if (!p) return INF;
+    if (tr[p].key <= key) return get_next(tr[p].r, key);
+    return min(tr[p].key, get_next(tr[p].l, key));
+}
+
+int main() {
+    build();
+    
+    scanf("%d", &n);
+    while (n -- ) {
+        int opt, x;
+        scanf("%d%d", &opt, &x);
+        if (opt == 1) insert(root, x);
+        else if (opt == 2) remove(root, x);
+        else if (opt == 3) printf("%d\n", get_rank_by_key(root, x) - 1);    // 去除前面一个哨兵
+        else if (opt == 4) printf("%d\n", get_key_by_rank(root, x + 1));    // 算上前面一个哨兵
+        else if (opt == 5) printf("%d\n", get_prev(root, x));
+        else printf("%d\n", get_next(root, x));
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 265. 营业额统计](https://www.acwing.com/problem/content/267/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// 本质上找prev next
+// 不需要存相同值
+#include<bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+const int N = 33010, INF = 1e7;
+
+int n;
+struct Node {
+    int l, r;
+    int key, val;
+}tr[N];
+
+int root, idx;
+
+int get_node(int key) {
+    tr[++ idx].key = key;
+    tr[idx].val = rand();
+    return idx;
+}
+
+void build() {
+    get_node(-INF), get_node(INF);
+    root = 1, tr[1].r = 2;
+    // pushup
+    // if ... zag
+}
+
+void zig(int & p) {
+    int q = tr[p].l;
+    tr[p].l = tr[q].r, tr[q].r = p, p = q;
+}
+
+void zag(int & p) {
+    int q = tr[p].r;
+    tr[p].r = tr[q].l, tr[q].l = p, p = q;
+}
+
+void insert(int & p, int key) {
+    if (!p) p = get_node(key);
+    else if (tr[p].key == key) return;  // 不需要存相同值
+    else if (tr[p].key > key) {
+        insert(tr[p].l, key);
+        if (tr[tr[p].l].val > tr[p].val) zig(p);
+    } else {
+        insert(tr[p].r, key);
+        if (tr[tr[p].r].val > tr[p].val) zag(p);
+    }
+}
+
+int get_prev(int p, int key) {
+    if (!p) return -INF;
+    if (tr[p].key > key) return get_prev(tr[p].l, key);
+    return max(tr[p].key, get_prev(tr[p].r, key));
+}
+
+int get_next(int p, int key) {
+    if (!p) return INF;
+    if (tr[p].key < key) return get_next(tr[p].r, key);
+    return min(tr[p].key, get_next(tr[p].l, key));
+}
+
+int main() {
+    build();
+    scanf("%d", &n);
+    
+    LL res = 0;
+    for (int i = 1; i <= n; ++ i ) {
+        int x;
+        scanf("%d", &x);
+        if (i == 1) res += x;
+        else res += min(x - get_prev(root, x), get_next(root, x) - x);
+        insert(root, x);
+    }
+    printf("%lld\n", res);
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

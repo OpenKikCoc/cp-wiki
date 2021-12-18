@@ -147,3 +147,362 @@ $E = \{a_{j_1}a_{j_2}\cdots a_{j_{n-1}}|a_j \in S, 1 \leq j \leq n\}$
 - [洛谷 P1341 无序字母对](https://www.luogu.com.cn/problem/P1341)
 
 - [洛谷 P2731 骑马修栅栏](https://www.luogu.com.cn/problem/P2731)
+
+> [!NOTE] **[AcWing 1123. 铲雪车](https://www.acwing.com/problem/content/1125/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 本题有向图 且所有的出度都等于入度
+> 
+> 故必然存在欧拉回路
+> 
+> 则最小时间就是所有（单向）边长 * 2
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+int main() {
+    double x1, y1, x2, y2;
+    cin >> x1 >> y1;
+    
+    double sum = 0;
+    while (cin >> x1 >> y1 >> x2 >> y2) {
+        double dx = x1 - x2;
+        double dy = y1 - y2;
+        sum += sqrt(dx * dx + dy * dy) * 2;
+    }
+    int minutes = round(sum / 1000 / 20 * 60);
+    int hours = minutes / 60;
+    minutes %= 60;
+    
+    printf("%d:%02d\n", hours, minutes);
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1184. 欧拉回路](https://www.acwing.com/problem/content/1186/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 对有无向图G和有向图H：
+> 
+> 1. 图G存在欧拉路径与欧拉回路的充要条件分别是：
+> 
+>    - 欧拉路径： 图中所有奇度点的数量为0或2。
+> 
+>    - 欧拉回路： 图中所有点的度数都是偶数。
+> 
+> 2. 图H存在欧拉路径和欧拉回路的充要条件分别是：
+> 
+>    - 欧拉路径： 所有点的入度等于出度 或者 存在一点出度比入度大1(起点)，
+>              一点入度比出度大1(终点)，其他点的入度均等于出度。
+>    - 欧拉回路：所有点的入度等于出度。
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 100010, M = 400010;
+
+int type;
+int n, m;
+int h[N], e[M], ne[M], idx;
+bool used[M];
+//
+int ans[M], cnt;
+int din[N], dout[N];
+
+void add(int a, int b) {
+    e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+void dfs(int u) {
+    for (int & i = h[u]; ~i;) {
+        if (used[i]) {
+            i = ne[i];
+            continue;
+        }
+        used[i] = true;
+        if (type == 1) used[i ^ 1] = true;  // 无向图标记反向边
+        
+        // 获取对应边序号
+        int t;
+        if (type == 1) {
+            t = i / 2 + 1;
+            if (i & 1) t = -t;
+        } else t = i + 1;
+        
+        int j = e[i];
+        i = ne[i];
+        dfs(j);
+        
+        ans[ ++ cnt] = t;
+    }
+}
+
+int main() {
+    memset(h, -1, sizeof h);
+    
+    cin >> type;
+    cin >> n >> m;
+    for (int i = 0; i < m; ++ i ) {
+        int a, b;
+        cin >> a >> b;
+        add(a, b);
+        if (type == 1) add(b, a);
+        din[b] ++ , dout[a] ++ ;
+    }
+    
+    if (type == 1) {
+        // 无向图 所有度数都是偶数
+        for (int i = 1; i <= n; ++ i )
+            if (din[i] + dout[i] & 1) {
+                cout << "NO" << endl;
+                return 0;
+            }
+    } else {
+        // 有向图 入度等于出度
+        for (int i = 1; i <= n; ++ i )
+            if (din[i] != dout[i]) {
+                cout << "NO" << endl;
+                return 0;
+            }
+    }
+    
+    for (int i = 1; i <= n; ++ i )
+        if (h[i] != -1) {
+            // 任一点起始
+            dfs(i);
+            break;
+        }
+    if (cnt < m) {
+        cout << "NO" << endl;
+        return 0;
+    }
+    cout << "YES" << endl;
+    for (int i = cnt; i; -- i ) cout << ans[i] << ' ';
+    cout << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1124. 骑马修栅栏](https://www.acwing.com/problem/content/1126/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 无向图的欧拉路径
+> 
+> 只有0或2个点的度数是奇数
+> 
+> 输出字典序最小的欧拉路径
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 510, M = 1050;
+
+int n = 500, m;
+// 方便不用排序直接用邻接矩阵
+int g[N][N];
+int ans[M], cnt;
+int d[N];
+
+// 按从小到大搜
+void dfs(int u) {
+    for (int i = 1; i <= n; ++ i )
+        if (g[u][i]) {
+            g[u][i] -- , g[i][u] -- ;
+            dfs(i);
+        }
+    ans[++ cnt] = u;
+}
+
+int main() {
+    cin >> m;
+    
+    while (m -- ) {
+        int a, b;
+        cin >> a >> b;
+        g[a][b] ++ , g[b][a] ++ ;
+        d[a] ++ , d[b] ++ ;
+    }
+    int start = 1;
+    // 不一定从一号点开始走 故先找到第一个度数不为0的点
+    while (!d[start]) start ++ ;
+    // 找到度数为奇数的点
+    for (int i = 1; i <= 500; ++ i )
+        if (d[i] & 1) {
+            start = i;
+            break;
+        }
+    dfs(start);
+    
+    for (int i = cnt; i; -- i ) cout << ans[i] << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1185. 单词游戏](https://www.acwing.com/problem/content/1187/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 原来自己见到这类题 思考的是把单词作为一个点，相同字母可以连一条边
+> 
+> 而本题：每个字母是一个点，单词本身是一条边
+> 
+> 显然所有单词都需要出现一次，转化为 ==> 所有边都恰好被访问一次 ==> 欧拉路径
+> 
+> 1. 除了起点终点之外 其他点入度=出度
+> 2. 连通
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 30, M = 100010;
+
+int n;
+int din[N], dout[N], p[N];
+bool st[N]; // 每个字母是否被用过
+
+int find(int x) {
+    if (p[x] != x) return p[x] = find(p[x]);
+    return x;
+}
+
+int main() {
+    char str[1010];
+    
+    int t;
+    scanf("%d", &t);
+    while (t -- ) {
+        memset(din, 0, sizeof din);
+        memset(dout, 0, sizeof dout);
+        memset(st, 0, sizeof st);
+        for (int i = 0; i < 26; ++ i ) p[i] = i;
+        
+        scanf("%d", &n);
+        for (int i = 0; i < n; ++ i ) {
+            scanf("%s", str);
+            int len = strlen(str);
+            int a = str[0] - 'a', b = str[len - 1] - 'a';
+            st[a] = st[b] = true;
+            dout[a] ++ , din[b] ++ ;
+            p[find(a)] = find(b);
+        }
+        // 判断条件1
+        int start = 0, end = 0;
+        bool success = true;
+        for (int i = 0; i < 26; ++ i )
+            if (din[i] != dout[i]) {
+                if (din[i] == dout[i] + 1) ++ end;
+                else if (din[i] + 1 == dout[i]) ++ start;
+                else {
+                    success = false;
+                    break;
+                }
+            }
+        if (success && !(!start && !end || start == 1 && end == 1)) success = false;
+        
+        int rep = -1;
+        for (int i = 0; i < 26; ++ i )
+            if (st[i]) {
+                if (rep == -1) rep = find(i);
+                else if (rep != find(i)) {
+                    success = false;
+                    break;
+                }
+            }
+        if (success) puts("Ordering is possible.");
+        else puts("The door cannot be opened.");
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

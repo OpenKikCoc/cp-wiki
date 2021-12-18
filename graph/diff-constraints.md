@@ -1,3 +1,38 @@
+> [!TIP] **总结**
+> 
+> 差分约束：
+> 
+> （1）求不等式组的可行解
+>  
+>    源点需要满足的条件：从源点出发，一定可以走到所有的边
+> 
+> 步骤：
+> 
+> [1] 先将每一个不等式 xi <= xj + ck 转化成一条从 xj 走到 xi，长度为 ck 的一条边
+> 
+> [2] 找到一个超级源点，使得该源点一定可以遍历到所有的边
+> 
+> [3] 从源点求一遍单元最短路
+> 
+>     结果1: 如果存在负环，则原不等式一定无解
+> 
+>     结果2: 如果没有负环，则 dist[i] 就是原不等式组的一个可行解
+> 
+> （2）如何求最大值或最小值，这里的最值指的是每个变量的最值
+> 
+> 结论：如果求的是最小值，则应该求最长路；如果求得是最大值，则应该求最短路
+> 
+> 问题：如何转化 xi <= c ，其中 c 是一个常数，这类的不等式。
+> 
+> 方法：建立一个超级源点 0 ，然后建立 0 -> i，长度是 c 的边即可。
+> 
+> 以求 xi 的最大值为例：求所有从 xi 触发，
+> 
+> 【构成的不等式链 xi <= xj + c1 <= xk + c2 + c1 <= ... <= c1+c2...】
+> 
+> 所计算出的上界，最终 xi 的最大值等于所有上界的最小值.
+
+
 **差分约束系统** 是一种特殊的 $n$ 元一次不等式组，它包含 $n$ 个变量 $x_1,x_2,...,x_n$ 以及 $m$ 个约束条件，每个约束条件是由两个其中的变量做差构成的，形如 $x_i-x_j\leq c_k$，其中 $1 \leq i, j \leq n, i \neq j, 1 \leq k \leq m$ 并且 $c_k$ 是常数（可以是非负数，也可以是负数）。我们要解决的问题是：求一组解 $x_1=a_1,x_2=a_2,...,x_n=a_n$，使得所有的约束条件得到满足，否则判断出无解。
 
 差分约束系统中的每个约束条件 $x_i-x_j\leq c_k$ 都可以变形成 $x_i\leq x_j+c_k$，这与单源最短路中的三角形不等式 $dist[y]\leq dist[x]+z$ 非常相似。因此，我们可以把每个变量 $x_i$ 看做图中的一个结点，对于每个约束条件 $x_i-x_j\leq c_k$，从结点 $j$ 向结点 $i$ 连一条长度为 $c_k$ 的有向边。
@@ -133,3 +168,507 @@ def Bellman_Ford():
 [POJ 1364 King](http://poj.org/problem?id=1364)
 
 [POJ 2983 Is the Information Reliable?](http://poj.org/problem?id=2983)
+
+> [!NOTE] **[AcWing 1169. 糖果](https://www.acwing.com/problem/content/1171/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+> 不等式关系
+> $$
+>     w[a] >= 0   \\
+>                 \\
+> x == 1          \\
+>     w[a] = w[b] \\
+> x == 2          \\
+>     w[a] < w[b] \\
+> x == 3          \\
+>     w[a] >= w[b]\\
+> x == 4          \\
+>     w[a] > w[b] \\
+> x == 5          \\
+>     w[a] <= w[b]\\
+> $$
+> 
+> 求最长路
+> 
+> **之所以建边方向和 oi-wiki 不同，是因为这里求的最长路 而非最短路**
+> **【一定要理解记忆】**
+
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const int N = 100010, M = 300010;
+
+int n, m;
+int h[N], e[M], w[M], ne[M], idx;
+LL dist[N];
+int q[N], cnt[N];
+bool st[N];
+
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+bool spfa() {
+    memset(dist, 0xcf, sizeof dist);
+    
+    dist[0] = 0;
+    st[0] = true;
+    cnt[0] = 0;
+    int tt = 0;
+    q[tt ++ ] = 0;
+    
+    while (tt) {
+        int t = q[ -- tt];
+        st[t] = false;
+        
+        for (int i = h[t]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (dist[j] < dist[t] + w[i]) {
+                dist[j] = dist[t] + w[i];
+                cnt[j] = cnt[t] + 1;
+                if (cnt[j] >= n + 1)
+                    return false;
+                if (!st[j]) {
+                    q[tt ++ ] = j;
+                    st[j] = true;
+                }
+            }
+        }
+    }
+    return true;
+}
+
+int main() {
+    memset(h, -1, sizeof h);
+    
+    cin >> n >> m;
+    
+    for (int i = 1; i <= n; ++ i )
+        add(0, i, 1);   // 边长为1
+
+    while (m -- ) {
+        int x, a, b;
+        cin >> x >> a >> b;
+        if (x == 1) {
+            add(a, b, 0);
+            add(b, a, 0);
+        } else if (x == 2) {
+            add(a, b, 1);
+        } else if (x == 3) {
+            add(b, a, 0);
+        } else if (x == 4) {
+            add(b, a, 1);
+        } else {
+            add(a, b, 0);
+        }
+    }
+    
+    if (!spfa())
+        cout << -1 << endl;
+    else {
+        LL res = 0;
+        for (int i = 1; i <= n; ++ i )
+            res += dist[i];
+        cout << res << endl;
+    }
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 362. 区间](https://www.acwing.com/problem/content/364/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **寻找不等式**
+> 
+> 不等式关系
+> $$
+> s[i] <= s[i + 1]
+> s[i + 1] - s[i] <= 1
+> s[b] - s[a - 1] >= c
+> $$
+> 
+> 最长路
+> 
+> ==>
+> 
+> $$
+> s[i + 1] >= s[i]
+> s[i] >= s[i + 1] - 1
+> s[b] >= s[a - 1] + c
+> $$
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 50010, M = 150010;
+
+int n;
+int h[N], e[M], w[M], ne[M], idx;
+int dist[N];
+int q[N];
+bool st[N];
+
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+void spfa() {
+    memset(dist, 0xcf, sizeof dist);
+    dist[0] = 0;
+    st[0] = true;
+    int hh = 0, tt = 0; // 0, tt ++ 
+    q[tt ++ ] = 0;
+    while (hh != tt) {
+        int t = q[hh ++ ];
+        if (hh == N)
+            hh = 0;
+        st[t] = false;
+        
+        for (int i = h[t]; ~i; i = ne[i]) {
+            int j = e[i], c = w[i];
+            if (dist[j] < dist[t] + c) {
+                dist[j] = dist[t] + c;
+                if (!st[j]) {
+                    q[tt ++ ] = j;
+                    if (tt == N)
+                        tt = 0;
+                    st[j] = true;
+                }
+            }
+        }
+    }
+}
+
+int main() {
+    memset(h, -1, sizeof h);
+    for (int i = 0; i < N - 1; ++ i ) {
+        add(i, i + 1, 0);
+        add(i + 1, i, -1);
+    }
+    
+    cin >> n;
+    for (int i = 0; i < n; ++ i ) {
+        int a, b, c;
+        cin >> a >> b >> c;
+        add(a - 1, b, c);
+    }
+    
+    spfa();
+    cout << dist[50001] << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1170. 排队布局](https://www.acwing.com/problem/content/1172/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 判断条件
+> 
+> spfa(n), spfa(1)
+> 
+> 最短路
+> 
+> $$
+> s[b] - s[a] <= l
+> s[b] - s[a] >= d
+> s[b] - s[a] >= 0
+> $$
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 1010, M = 21010, INF = 0x3f3f3f3f;
+
+int n, ml, md;
+int h[N], e[M], w[M], ne[M], idx;
+int dist[N], q[N], cnt[N];
+bool st[N];
+
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+bool spfa(int size) {
+    int hh = 0, tt = 0;
+    memset(dist, 0x3f, sizeof dist);
+    memset(st, 0, sizeof st);
+    memset(cnt, 0, sizeof cnt);
+    
+    for (int i = 1; i <= size; ++ i ) {
+        q[tt ++ ] = i;
+        dist[i] = 0;
+        st[i] = true;
+    }
+    
+    while (hh != tt) {
+        int t = q[hh ++ ];
+        if (hh == N)
+            hh = 0;
+        st[t] = false;
+        
+        for (int i = h[t]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (dist[j] > dist[t] + w[i]) {
+                dist[j] = dist[t] + w[i];
+                cnt[j] = cnt[t] + 1;
+                if (cnt[j] >= n)
+                    return true;
+                if (!st[j]) {
+                    q[tt ++ ] = j;
+                    if (tt == N)
+                        tt = 0;
+                    st[j] = true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+int main() {
+    memset(h, -1, sizeof h);
+    
+    cin >> n >> ml >> md;
+    
+    for (int i = 1; i < n; ++ i )
+        add(i + 1, i, 0);
+    while (ml -- ) {
+        int a, b, l;
+        cin >> a >> b >> l;
+        if (a > b)
+            swap(a, b);
+        add(a, b, l);
+    }
+    while (md -- ) {
+        int a, b, d;
+        cin >> a >> b >> d;
+        if (a > b)
+            swap(a, b);
+        add(b, a, -d);
+    }
+    
+    if (spfa(n))
+        cout << -1 << endl;
+    else {
+        spfa(1);
+        cout << (dist[n] == INF ? -2 : dist[n]) << endl;
+    }
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 393. 雇佣收银员](https://www.acwing.com/problem/content/395/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **环状 复杂不等式转化**
+> 
+> 求最长路
+> 
+> $$
+> s[i] - s[i - 1] >= 0
+> s[i] - s[i - 1] <= num[i]
+> 
+> if i >= 8:
+>     s[i] - s[i - 8] >= r[i]
+> else:
+>     s[i] + s[24] - s[24 - i] >= r[i]
+>     ===>
+>     s[i] + c - s[16 + i] >= r[i]
+> $$
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 30, M = 100, INF = 0x3f3f3f3f;
+
+int n;
+int h[N], e[M], w[M], ne[M], idx;
+int r[N], num[N];   // r需求 num某个时刻开始工作的人
+int dist[N], q[N], cnt[N];
+bool st[N];
+
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+void build(int c) {
+    memset(h, -1, sizeof h);
+    idx = 0;
+    
+    for (int i = 1; i <= 24; ++ i ) {
+        add(i - 1, i, 0);
+        add(i, i - 1, -num[i]);
+    }
+    for (int i = 1; i <= 7; ++ i )
+        add(i + 16, i, r[i] - c);   // ATTENTION
+    for (int i = 8; i <= 24; ++ i )
+        add(i - 8, i, r[i]);
+    // s[0] + c == s[24]
+    add(0, 24, c);  // s[24] >= s[0] + c
+    add(24, 0, -c); // s[0] >= s[24] - c
+}
+
+bool spfa(int c) {
+    build(c);
+    
+    memset(dist, 0xcf, sizeof dist);
+    memset(cnt, 0, sizeof cnt);
+    memset(st, 0, sizeof st);
+    
+    int hh = 0, tt = 0;
+    q[tt ++ ] = 0;
+    dist[0] = 0;
+    st[0] = true;
+    
+    while (hh != tt) {
+        int t = q[hh ++ ];
+        if (hh == N)
+            hh = 0;
+        st[t] = false;
+        
+        for (int i = h[t]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (dist[j] < dist[t] + w[i]) {
+                dist[j] = dist[t] + w[i];
+                cnt[j] = cnt[t] + 1;
+                if (cnt[j] >= 25)
+                    return false;
+                if (!st[j]) {
+                    q[tt ++ ] = j;
+                    if (tt == N)
+                        tt = 0;
+                    st[j] = true;
+                }
+            }
+        }
+    }
+    return true;
+}
+
+int main() {
+    int T;
+    cin >> T;
+    while (T -- ) {
+        for (int i = 1; i <= 24; ++ i )
+            cin >> r[i];
+        cin >> n;
+        memset(num, 0, sizeof num);
+        for (int i = 0; i < n; ++ i ) {
+            int t;
+            cin >> t;
+            num[t + 1] ++ ;
+        }
+        
+        // 枚举最后需要多少人 也即dist[24]
+        bool success = false;
+        for (int i = 0; i <= 1000; ++ i )
+            if (spfa(i)) {
+                cout << i << endl;
+                success = true;
+                break;
+            }
+        if (!success)
+            cout << "No Solution" << endl;
+    }
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

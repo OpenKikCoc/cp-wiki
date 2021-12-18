@@ -150,3 +150,127 @@ else
 分数规划可以用二分法来解决。
 
 ## 习题
+
+> [!NOTE] **[AcWing 102. 最佳牛围栏](https://www.acwing.com/problem/content/104/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 100010;
+
+int n, f;
+double a[N], s[N];
+
+bool check(double avg) {
+    // - avg 变为：求是否存在长度大于等于f的一段和大于0
+    for (int i = 1; i <= n; ++ i ) s[i] = s[i - 1] + a[i] - avg;
+    
+    double mins = 0;
+    for (int k = f; k <= n; ++ k ) {
+        mins = min(mins, s[k - f]);
+        if (s[k] >= mins) return true;
+    }
+    return false;
+}
+
+int main() {
+    cin >> n >> f;
+    double l = 0, r = 0;
+    for (int i = 1; i <= n; ++ i ) {
+        cin >> a[i];
+        r = max(r, a[i]);
+    }
+    while (r - l > 1e-5) {
+        double mid = (l + r) / 2.0;
+        if (check(mid)) l = mid;
+        else r = mid;
+    }
+    // 因为精度和二分边界问题(边界其实不明显),所以我们需要是右边界.
+    // 精度往往会使得l和r有极为细微的差异(如果你写l*1000你会发现样例答案是6499),
+    // 而且我们这道题目r是最高边界.
+    cout << (int)(r * 1000) << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
+> [!NOTE] **[AcWing 113. 特殊排序](https://www.acwing.com/problem/content/115/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> note
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Forward declaration of compare API.
+// bool compare(int a, int b);
+// return bool means whether a is less than b.
+
+class Solution {
+public:
+    // 基于插入排序
+    vector<int> specialSort(int N) {
+        vector<int> res(1, 1);
+        for (int i = 2; i <= N; ++ i ) {
+            int l = 0, r = res.size() - 1;
+            // 找到一个大于等于i的位置 插入
+            while (l < r) {
+                int mid = l + r >> 1;
+                if (compare(res[mid], i)) l = mid + 1;
+                else r = mid;
+            }
+            
+            res.push_back(i);
+            for (int j = res.size() - 2; j > r; -- j ) swap(res[j], res[j + 1]);
+            if (compare(i, res[r])) swap(res[r], res[r + 1]);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
