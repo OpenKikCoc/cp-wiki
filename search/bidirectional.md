@@ -25,79 +25,6 @@ while (队列 q 不为空) {
 }
 ```
 
-AcWing 双向广搜写法:
-
-[AcWing 190. 字串变换](https://www.acwing.com/problem/content/192/)
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-int n;
-string a[N], b[N];
-
-int extend(queue<string>& q, unordered_map<string, int>& da, unordered_map<string, int>& db, string a[], string b[]) {
-    for (int k = 0, sk = q.size(); k < sk; k ++ ) {
-        string t = q.front();
-        q.pop();
-
-        for (int i = 0; i < t.size(); i ++ )
-            for (int j = 0; j < n; j ++ )
-                if (t.substr(i, a[j].size()) == a[j]) {
-                    string state = t.substr(0, i) + b[j] + t.substr(i + a[j].size());
-                    if (da.count(state)) continue;
-                    if (db.count(state)) return da[t] + 1 + db[state];
-                    da[state] = da[t] + 1;
-                    q.push(state);
-                }
-    }
-
-    return 11;
-}
-
-int bfs(string A, string B) {
-    queue<string> qa, qb;
-    unordered_map<string, int> da, db;
-    qa.push(A), da[A] = 0;
-    qb.push(B), db[B] = 0;
-
-    while (qa.size() && qb.size()) {
-        int t;
-        if (qa.size() <= qb.size()) t = extend(qa, da, db, a, b);
-        else t= extend(qb, db, da, b, a);
-
-        if (t <= 10) return t;
-    }
-
-    return 11;
-}
-
-int main() {
-    string A, B;
-    cin >> A >> B;
-    while (cin >> a[n] >> b[n]) n ++ ;
-
-    int step = bfs(A, B);
-    if (step > 10) puts("NO ANSWER!");
-    else printf("%d\n", step);
-
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
 ## Meet in the middle
 
 > [!WARNING]
@@ -165,30 +92,20 @@ Meet in the middle 算法没有正式译名，常见的翻译为「折半搜索�
 ##### **C++**
 
 ```cpp
-#include <algorithm>
-#include <cstring>
-#include <iostream>
-#include <queue>
-#include <unordered_map>
-
-using namespace std;
-
-const int N = 6;
+#include <bits/stdc++.h>
 
 int n;
 string a[N], b[N];
 
-int extend(queue<string>& q, unordered_map<string, int>& da,
-           unordered_map<string, int>& db, string a[], string b[]) {
-    for (int k = 0, sk = q.size(); k < sk; k++) {
+int extend(queue<string>& q, unordered_map<string, int>& da, unordered_map<string, int>& db, string a[], string b[]) {
+    for (int k = 0, sk = q.size(); k < sk; k ++ ) {
         string t = q.front();
         q.pop();
 
-        for (int i = 0; i < t.size(); i++)
-            for (int j = 0; j < n; j++)
+        for (int i = 0; i < t.size(); i ++ )
+            for (int j = 0; j < n; j ++ )
                 if (t.substr(i, a[j].size()) == a[j]) {
-                    string state =
-                        t.substr(0, i) + b[j] + t.substr(i + a[j].size());
+                    string state = t.substr(0, i) + b[j] + t.substr(i + a[j].size());
                     if (da.count(state)) continue;
                     if (db.count(state)) return da[t] + 1 + db[state];
                     da[state] = da[t] + 1;
@@ -207,10 +124,8 @@ int bfs(string A, string B) {
 
     while (qa.size() && qb.size()) {
         int t;
-        if (qa.size() <= qb.size())
-            t = extend(qa, da, db, a, b);
-        else
-            t = extend(qb, db, da, b, a);
+        if (qa.size() <= qb.size()) t = extend(qa, da, db, a, b);
+        else t= extend(qb, db, da, b, a);
 
         if (t <= 10) return t;
     }
@@ -221,13 +136,11 @@ int bfs(string A, string B) {
 int main() {
     string A, B;
     cin >> A >> B;
-    while (cin >> a[n] >> b[n]) n++;
+    while (cin >> a[n] >> b[n]) n ++ ;
 
     int step = bfs(A, B);
-    if (step > 10)
-        puts("NO ANSWER!");
-    else
-        printf("%d\n", step);
+    if (step > 10) puts("NO ANSWER!");
+    else printf("%d\n", step);
 
     return 0;
 }
@@ -340,6 +253,8 @@ int main() {
 <br>
 
 * * *
+
+### Meet in the middle
 
 ## 参考资料与注释
 

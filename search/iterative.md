@@ -25,6 +25,8 @@
 ##### **C++**
 
 ```cpp
+#include <bits/stdc++.h>
+
 const int N = 110;
 
 int n;

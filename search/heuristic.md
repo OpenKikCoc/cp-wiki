@@ -285,6 +285,8 @@ int main() {
 
 * * *
 
+## 习题
+
 > [!NOTE] **[AcWing 179. 八数码](https://www.acwing.com/problem/content/181/)**
 > 
 > 题意: TODO
@@ -404,9 +406,6 @@ int main() {
 <br>
 
 * * *
-
-## 习题
-
 
 ## 参考资料与注释
 
