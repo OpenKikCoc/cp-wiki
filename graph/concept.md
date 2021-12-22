@@ -343,3 +343,137 @@ $$
 离散数学（修订版），田文成 周禄新 编著，天津文学出版社，P184-187
 
 戴一奇，胡冠章，陈卫。图论与代数结构[M]. 北京：清华大学出版社，1995.
+
+
+## 习题
+
+> [!NOTE] **[AcWing 1352. 虫洞](https://www.acwing.com/problem/content/1354/)**
+> 
+> 题意: 基环树（森林）找环
+
+> [!TIP] **思路**
+> 
+> **经典算法 背过**
+> 
+> 将每个点拆为两个点
+> 
+> 入点 出点
+> 
+> 本题每个点的出边只有一条 可以不用tarjan 直接dfs判环
+> 
+> or 基环树(森林)找环 需要背过 经典算法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 12;
+
+int n;
+int to1[N], to2[N];
+bool st[N], used[N][2], cur[N][2];
+
+struct Point {
+    int x, y;
+    bool operator< (const Point & t) const {
+        if (y != t.y) return y < t.y;
+        return x < t.x;
+    }
+}q[N];
+int ans;
+
+// 判断当前的这部分图中是否存在环
+bool dfs_c(int a, int b) {
+    if (cur[a][b]) return true;
+    if (used[a][b]) return false;
+    // cur[a][b] = true
+    // 当前选择的这个走法的序列中走过，整个dfs函数结束到时候要标记为false因为不能影响到其他的dfs情况
+    // used[a][b] = true;
+    // 已经走过这个点了（历史情况中一定走过这个点，标记为true整个dfs过程中都不能变了）
+    cur[a][b] = used[a][b] = true;
+    bool res = false;
+    
+    if (!b) {
+        // a 的入点
+        // 是入点，要传送，也就是要走ver2, 0 -> 1
+        if (dfs_c(to2[a], 1)) res = true;
+    } else {
+        // a 的出点
+        // 是出点，要向右走，也就是要走ver1, 1 -> 0
+        // a点可以向右走并且向右走的这条路存在环
+        if (to1[a] != -1 && dfs_c(to1[a], 0)) res = true;
+    }
+    cur[a][b] = false;  //已经dfs完了，这里是回溯到的，要恢复现场
+    return res;
+}
+
+// 检查当前方案是否合法
+bool check() {
+    memset(used, 0, sizeof used);
+    memset(cur, 0, sizeof cur);
+    
+    for (int i = 0; i < n; ++ i )
+        for (int j = 0; j < 2; ++ j )
+            if (!used[i][j])
+                // 没有走过的话就走一下，因为我们要把整张图的所有的点都遍历一遍
+                // 所以只要used = false ，我们从这儿就走（因为可能存在孤立点）
+                if (dfs_c(i, j))
+                    return true;
+    return false;
+}
+
+// 分配方案（将n个点分为n/2组，每组2个点）
+void dfs(int u) {
+    if (u == n / 2) {
+        if (check()) ++ ans;
+        return ;
+    }
+    for (int i = 0; i < n; ++ i )
+        // 当前方案中没有选到这个点，也就意味着可以选
+        if (!st[i]) {
+            for (int j = i + 1; j < n; ++ j )
+                if (!st[j]) {
+                    st[i] = st[j] = true;
+                    to2[i] = j, to2[j] = i;
+                    dfs(u + 1);
+                    to2[i] = to2[j] = -1;
+                    st[i] = st[j] = false;
+                }
+            break;// 选完了可以退了，不然会多选
+        }
+}
+
+int main() {
+    cin >> n;
+    for (int i = 0; i < n; ++ i ) cin >> q[i].x >> q[i].y;
+    sort(q, q + n);
+    
+    memset(to1, -1, sizeof to1);
+    memset(to2, -1, sizeof to2);
+    for (int i = 1; i < n; ++ i )
+        if (q[i].y == q[i - 1].y)   // 可以从i-1走到i
+            to1[i - 1] = i;
+    dfs(0);
+    cout << ans << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

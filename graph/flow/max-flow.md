@@ -846,3 +846,105 @@ int main() {
 [^note1]: 英语文献中通常称为“active“。
 
 [^note2]: 在英语文献中，一个结点的高度通常被称为“distance label”。此处使用的“高度”这个术语源自算法导论中的相关章节。你可以在机械工业出版社算法导论（原书第 3 版）的 P432 脚注中找到这么做的理由。
+
+
+## 习题
+
+> [!NOTE] **[AcWing 412. 排水沟](https://www.acwing.com/problem/content/414/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// 最大流模板题
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 210, M = N * 2, INF = 0x3f3f3f3f;
+
+int n, m, S, T;
+int h[N], e[M], f[M], ne[M], idx;
+int q[N], d[N], cur[N];
+
+void add(int a, int b, int c) {
+    e[idx] = b, f[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+    e[idx] = a, f[idx] = 0, ne[idx] = h[b], h[b] = idx ++ ;
+}
+
+bool bfs() {
+    memset(d, -1, sizeof d);
+    int hh = 0, tt = -1;
+    q[ ++ tt] = S, d[S] = 0, cur[S] = h[S];
+    while (hh <= tt) {
+        int t = q[hh ++ ];
+        for (int i = h[t]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (d[j] == -1 && f[i]) {
+                d[j] = d[t] + 1;
+                cur[j] = h[j];
+                if (j == T) return true;
+                q[ ++ tt] = j;
+            }
+        }
+    }
+    return false;
+}
+
+int find(int u, int limit) {
+    if (u == T) return limit;
+    int flow = 0;
+    for (int i = cur[u]; ~i && flow < limit; i = ne[i]) {
+        cur[u] = i;
+        int j = e[i];
+        if (d[j] == d[u] + 1 && f[i]) {
+            int t = find(j, min(f[i], limit - flow));
+            if (!t) d[t] = -1;
+            f[i] -= t, f[i ^ 1] += t, flow += t;
+        }
+    }
+    return flow;
+}
+
+int dinic() {
+    int r = 0, flow;
+    while (bfs()) while (flow = find(S, INF)) r += flow;
+    return r;
+}
+
+int main() {
+    memset(h, -1, sizeof h);
+    
+    cin >> m >> n;
+    S = 1, T = n;
+    while (m -- ) {
+        int a, b, c;
+        cin >> a >> b >> c;
+        add(a, b, c);
+    }
+    cout << dinic() << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

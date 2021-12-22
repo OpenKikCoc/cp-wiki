@@ -137,3 +137,248 @@ void dfs(int u) {
 - [「USACO 5.4」Telecowmunication](https://www.luogu.com.cn/problem/P1345)
 - [「Luogu 1361」小 M 的作物](https://www.luogu.com.cn/problem/P1361)
 - [「SHOI 2007」善意的投票](https://www.luogu.com.cn/problem/P2057)
+
+## 习题
+
+> [!NOTE] **[AcWing 1399. 控制污染奶](https://www.acwing.com/problem/content/1401/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 有向图网络流 求最小割
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+const int N = 40, M = 2010;
+const LL INF = 1e18;
+
+int n, m, S, T;
+int h[N], e[M], ne[M], idx;
+LL f[M];
+int q[N], d[N], cur[N];
+
+void add(int a, int b, LL c) {
+    e[idx] = b, f[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+    e[idx] = a, f[idx] = 0, ne[idx] = h[b], h[b] = idx ++ ;
+}
+
+bool bfs() {
+    memset(d, -1, sizeof d);
+    
+    int hh = 0, tt = -1;
+    q[ ++ tt] = S, d[S] = 0, cur[S] = h[S];
+    while (hh <= tt) {
+        int t = q[hh ++ ];
+        for (int i = h[t]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (d[j] == -1 && f[i]) {
+                d[j] = d[t] + 1;
+                cur[j] = h[j];
+                if (j == T) return true;
+                q[ ++ tt] = j;
+            }
+        }
+    }
+    return false;
+}
+
+LL find(int u, LL limit) {
+    if (u == T) return limit;
+    LL flow = 0;
+    for (int i = cur[u]; ~i && flow < limit; i = ne[i]) {
+        cur[u] = i;
+        int j = e[i];
+        if (d[j] == d[u] + 1 && f[i]) {
+            LL t = find(j, min(f[i], limit - flow));
+            if (!t) d[j] = -1;
+            f[i] -= t, f[i ^ 1] += t, flow += t;
+        }
+    }
+    return flow;
+}
+
+LL dinic() {
+    LL r = 0, flow;
+    while (bfs()) while (flow = find(S, INF)) r += flow;
+    return r;
+}
+
+void init() {
+    for (int i = 0; i < idx; i += 2) {
+        f[i] += f[i ^ 1];
+        f[i ^ 1] = 0;
+    }
+}
+
+int main() {
+    cin >> n >> m;
+    S = 1, T = n;
+    memset(h, -1, sizeof h);
+    while (m -- ) {
+        int a, b, c;
+        cin >> a >> b >> c;
+        add(a, b, c * 10000ll + 1);
+    }
+    
+    LL res = dinic();
+    cout << res / 10000 << ' ' << res % 10000 << endl;
+    
+    for (int i = 0; i < idx; i += 2) {
+        init();
+        LL t = f[i];
+        f[i] = 0;
+        LL r = dinic();
+        if (r == res - t) {
+            cout << i / 2 + 1 << endl;
+            res = r;
+        } else f[i] = t;
+    }
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1409. 奶牛通信](https://www.acwing.com/problem/content/1411/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 拆点 最小割
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// 最小割 拆点
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 210, M = 2610, INF = 1e8;
+
+int n, m, S, T;
+int h[N], e[M], f[M], ne[M], idx;
+int q[N], d[N], cur[N];
+
+void add(int a, int b, int c) {
+    e[idx] = b, f[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+    e[idx] = a, f[idx] = 0, ne[idx] = h[b], h[b] = idx ++ ;
+}
+
+bool bfs() {
+    memset(d, -1, sizeof d);
+    
+    int hh = 0, tt = -1;
+    q[ ++ tt] = S, d[S] = 0, cur[S] = h[S];
+    while (hh <= tt) {
+        int t = q[hh ++ ];
+        for (int i = h[t]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (d[j] == -1 && f[i]) {
+                d[j] = d[t] + 1;
+                cur[j] = h[j];
+                if (j == T) return true;
+                q[ ++ tt] = j;
+            }
+        }
+    }
+    return false;
+}
+
+int find(int u, int limit) {
+    if (u == T) return limit;
+    int flow = 0;
+    for (int i = cur[u]; ~i && flow < limit; i = ne[i]) {
+        cur[u] = i;
+        int j = e[i];
+        if (d[j] == d[u] + 1 && f[i]) {
+            int t = find(j, min(f[i], limit - flow));
+            if (!t) d[j] = -1;
+            f[i] -= t, f[i ^ 1] += t, flow += t;
+        }
+    }
+    return flow;
+}
+
+int dinic() {
+    int r = 0, flow;
+    while (bfs()) while (flow = find(S, INF)) r += flow;
+    return r;
+}
+
+void init() {
+    for (int i = 0; i < idx; i += 2) {
+        f[i] += f[i ^ 1];
+        f[i ^ 1] = 0;
+    }
+}
+
+int main() {
+    memset(h, -1, sizeof h);
+    
+    // 拆点
+    cin >> n >> m >> S >> T;
+    S += n;
+    for (int i = 1; i <= n; ++ i ) add(i, i + n, 1);
+    while (m -- ) {
+        int a, b;
+        cin >> a >> b;
+        add(a + n, b, INF);
+        add(b + n, a, INF);
+    }
+    
+    int res = dinic();
+    cout << res << endl;
+    for (int i = 1; i <= n; ++ i ) {
+        init();
+        int j = (i - 1) * 2;
+        f[j] = 0;
+        int t = dinic();
+        if (res == t + 1) {
+            cout << i << ' ';
+            -- res;
+        } else f[j] = 1;
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

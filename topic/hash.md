@@ -1,0 +1,97 @@
+## 习题
+
+> [!NOTE] **[AcWing 1402. 星空之夜](https://www.acwing.com/problem/content/1404/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 考虑设计一个 hash 使得图形翻转 hash 值不变
+> 
+> 本题 计算每个小格子之间的距离之和
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using PII = pair<int, int>;
+
+const int N = 110;
+
+int n, m;
+char g[N][N];
+PII q[N * N];
+int top;
+
+double get_dist(PII a, PII b) {
+    double dx = a.first - b.first;
+    double dy = a.second - b.second;
+    return sqrt(dx * dx + dy * dy);
+}
+
+double get_hash() {
+    double res = 0;
+    for (int i = 0; i < top; ++ i )
+        for (int j = i + 1; j < top; ++ j )
+            res += get_dist(q[i], q[j]);
+    return res;
+}
+
+char get_id(double s) {
+    static double hash[N];
+    static int cnt = 0;
+    for (int i = 0; i < cnt; ++ i )
+        if (fabs(s - hash[i]) < 1e-6)
+            return i + 'a';
+    hash[cnt ++ ] = s;
+    return cnt - 1 + 'a';
+}
+
+void dfs(int a, int b) {
+    g[a][b] = '0';
+    q[top ++ ] = {a, b};
+    for (int x = a - 1; x <= a + 1; ++ x )
+        for (int y = b - 1; y <= b + 1; ++ y )
+            if (x != a || y != b)
+                if (x >= 0 && x < n && y >= 0 && y < m && g[x][y] == '1')
+                    dfs(x, y);
+}
+
+int main() {
+    cin >> m >> n;
+    for (int i = 0; i < n; ++ i ) cin >> g[i];
+    
+    for (int i = 0; i < n; ++ i )
+        for (int j = 0; j < m; ++ j )
+            if (g[i][j] == '1') {
+                top = 0;
+                dfs(i, j);
+                auto s = get_hash();
+                char c = get_id(s);
+                for (int k = 0; k < top; ++ k )
+                    g[q[k].first][q[k].second] = c;
+            }
+    
+    for (int i = 0; i < n; ++ i ) cout << g[i] << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

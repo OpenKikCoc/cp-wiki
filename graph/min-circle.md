@@ -136,3 +136,119 @@ GDOI2018 Day2 巡逻
 每次询问的复杂度为跑一次单源最短路的复杂度，为 $O(n^2)$。
 
 总时间复杂度为 $O(qn^2)$。
+
+> [!NOTE] **[AcWing 1393. 围栏圈](https://www.acwing.com/problem/content/1395/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> floyd求无向图长度大于等于3的最小环
+> 
+> > 模板题 344.观光之旅
+> 
+> 并查集用以处理输入的边
+> 
+> **处理输入的方法清奇**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 210, INF = 0x3f3f3f3f;
+
+int n;
+int p[N];
+struct Edge {
+    int w;
+    vector<int> e[2];
+} edge[N];
+int d[N][N], g[N][N];
+
+int get(int a, int b) {
+    for (int j = 0; j < 2; ++ j )
+        for (int k : edge[b].e[j])
+            if (a == k)
+                return b + j * n;
+    return -1;
+}
+
+int find(int x) {
+    if (p[x] != x) p[x] = find(p[x]);
+    return p[x];
+}
+
+int main() {
+    // 1. 读入边 i为边的编号 e存储其两端连接的其他边的编号
+    cin >> n;
+    for (int k = 0; k < n; ++ k ) {
+        int i;
+        cin >> i;
+        int id, cnt1, cnt2;
+        cin >> edge[i].w >> cnt1 >> cnt2;
+        while (cnt1 -- ) {
+            cin >> id;
+            edge[i].e[0].push_back(id);
+        }
+        while (cnt2 -- ) {
+            cin >> id;
+            edge[i].e[1].push_back(id);
+        }
+    }
+    
+    // 2. 边华点
+    // 并查集 a为当前边编号 b判断其在边的哪一侧
+    // 对端点重新编号 分别为 [边编号] 与 [边编号+n]
+    for (int i = 1; i <= n * 2; ++ i ) p[i] = i;
+    for (int i = 1; i <= n; ++ i )
+        for (int j = 0; j < 2; ++ j )
+            for (int k : edge[i].e[j]) { 
+                int a = i + j * n, b = get(i, k);
+                p[find(a)] = find(b);
+            }
+    
+    memset(g, 0x3f, sizeof g);
+    for (int i = 1; i <= n * 2; ++ i ) g[i][i] = 0;
+    for (int i = 1; i <= n; ++ i ) {
+        int a = find(i), b = find(i + n);
+        g[a][b] = g[b][a] = edge[i].w;
+    }
+    
+    // 3. floyd 找最小环
+    memcpy(d, g, sizeof d);
+    int res = INF;
+    // k 环中最大的节点编号
+    // 1 ~ k-1
+    // i+1 ~ k-1
+    for (int k = 1; k <= n * 2; ++ k ) {
+        for (int i = 1; i < k; ++ i )
+            for (int j = i + 1; j < k; ++ j )
+                res = min((long long)res, d[i][j] + (long long)g[j][k] + g[k][i]);
+        for (int i = 1; i <= n * 2; ++ i )
+            for (int j = 1; j <= n; ++ j )
+                d[i][j] = min(d[i][j], d[i][k] + d[k][j]);
+    }
+    cout << res << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

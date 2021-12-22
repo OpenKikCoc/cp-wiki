@@ -85,3 +85,76 @@
 - [6][Bill Yang's Blog - 带花树学习笔记](<https://blog.bill.moe/blossom-algorithm-notes/>)
 - [7][二分图的最大匹配、完美匹配和匈牙利算法](<https://www.renfei.org/blog/bipartite-matching.html>)
 - [8][Wikiwand - Hopcroft–Karp algorithm](<https://www.wikiwand.com/en/Hopcroft%E2%80%93Karp_algorithm>)
+
+## 习题
+
+> [!NOTE] **[AcWing 1394. 完美牛棚](https://www.acwing.com/problem/content/1396/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 二分匹配模版
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 210;
+
+int n, m;
+bool g[N][N], st[N];
+int match[N];
+
+bool find(int x) {
+    for (int i = 1; i <= m; ++ i )
+        if (!st[i] && g[x][i]) {
+            st[i] = true;
+            if (!match[i] || find(match[i])) {
+                match[i] = x;
+                return true;
+            }
+        }
+    return false;
+}
+
+int main() {
+    cin >> n >> m;
+    for (int i = 1; i <= n; ++ i ) {
+        int cnt, id;
+        cin >> cnt;
+        while (cnt -- ) {
+            cin >> id;
+            g[i][id] = true;
+        }
+    }
+    
+    int res = 0;
+    for (int i = 1; i <= n; ++ i ) {
+        memset(st, 0, sizeof st);
+        if (find(i)) ++ res;
+    }
+    cout << res << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

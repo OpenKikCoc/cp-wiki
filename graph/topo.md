@@ -546,6 +546,118 @@ int main() {
 
 * * *
 
+> [!NOTE] **[AcWing 1400. 堆叠相框](https://www.acwing.com/problem/content/1402/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// 拓扑排序
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 40;
+
+int n, m;
+char str[N][N];
+bool g[N][N], st[N];
+int d[N];
+string path;
+
+// 检查【边上】是否有覆盖 建边
+void work(int x1, int y1, int x2, int y2, char c) {
+    for (int i = x1; i <= x2; ++ i )
+        for (int j = y1; j <= y2; ++ j )
+            if (str[i][j] != c && str[i][j] != '.') {
+                int a = c - 'A', b = str[i][j] - 'A';
+                if (!g[a][b]) {
+                    g[a][b] = true;
+                    d[b] ++ ;
+                }
+            }
+}
+
+// s 所有入度为0的点的集合
+void dfs(string s) {
+    if (s.empty()) {
+        cout << path << endl;
+        return;
+    }
+    
+    sort(s.begin(), s.end());
+    for (int i = 0; i < s.size(); ++ i ) {
+        char c = s[i];
+        path += c;
+        string w = s.substr(0, i) + s.substr(i + 1);
+        // 加入删完i后新的入度为0的点
+        for (int j = 0; j < 26; ++ j )
+            if (g[c - 'A'][j] && -- d[j] == 0)
+                w += j + 'A';
+        dfs(w);
+        // 恢复
+        for (int j = 0; j < 26; ++ j )
+            if (g[c - 'A'][j])
+                d[j] ++ ;
+        path.pop_back();
+    }
+}
+
+void topsort() {
+    string s;
+    for (int i = 0; i < 26; ++ i )
+        if (st[i] && !d[i])
+            s += i + 'A';
+    dfs(s);
+}
+
+int main() {
+    cin >> n >> m;
+    for (int i = 0; i < n; ++ i ) cin >> str[i];
+    for (char i = 'A'; i <= 'Z'; ++ i ) {
+        int x1 = N, x2 = -N, y1 = N, y2 = -N;
+        for (int j = 0; j < n; ++ j )
+            for (int k = 0; k < m; ++ k )
+                if (str[j][k] == i) {
+                    x1 = min(x1, j), x2 = max(x2, j);
+                    y1 = min(y1, k), y2 = max(y2, k);
+                }
+        if (x1 == N) continue;
+        // 检查四条边 看是否有覆盖
+        work(x1, y1, x1, y2, i);
+        work(x1, y1, x2, y1, i);
+        work(x1, y2, x2, y2, i);
+        work(x2, y1, x2, y2, i);
+        st[i - 'A'] = true; // 出现过 标记一下
+    }
+    
+    topsort();
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[AcWing 456. 车站分级](https://www.acwing.com/problem/content/458/)**
 > 
 > 题意: TODO

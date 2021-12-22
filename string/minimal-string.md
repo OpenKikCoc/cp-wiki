@@ -87,3 +87,66 @@ i = min(i, j)
 
 <!-- tabs:end -->
 </details>
+
+> [!NOTE] **[AcWing 1410. 隐藏密码](https://www.acwing.com/problem/content/1412/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// 求字符串的最小表示
+// 经典算法 背过
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 200010;
+
+int n;
+string s;
+
+int get_min() {
+    // 用两个指针来找
+    // 枚举从 i / j 开始的两个连续区间
+    int i = 0, j = 1;
+    while (i < n && j < n) {
+        int k = 0;
+        while (k < n && s[i + k] == s[j + k]) ++ k ;
+        if (k == n) break;
+        if (s[i + k] > s[j + k]) i += k + 1;
+        else j += k + 1;
+        if (i == j) ++ j ;
+    }
+    return min(i, j);
+}
+
+int main() {
+    cin >> n;
+    string line;
+    while (cin >> line) s += line;
+    s += s; // 后面再接一份
+    cout << get_min() << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

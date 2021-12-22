@@ -246,3 +246,59 @@ $\left|n\theta−m−\alpha\right|<\varepsilon$
 当然，采用抽屉原理的证明可以发现，上文中提到的最佳逼近有理数列，每项满足定理中右边改成分母为一次式的不等式。
 
 进一步有结论，渐进有理数列中，每一项均满足 Dirichlet 逼近定理的不等式。
+
+
+## 习题
+
+> [!NOTE] **[AcWing 1360. 有序分数](https://www.acwing.com/problem/content/1362/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> Stern-Brocot Tree 具体数学的内容
+> 
+> 每一层 相邻两个分数的分子分母分别相加形成下一层的新分数
+> 
+> 可以证明其产生的分数必然是最简分数（分子分母互质）
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int n;
+
+void dfs(int a, int b, int c, int d) {
+    if (b + d > n) return;
+    dfs(a, b, a + c, b + d);
+    cout << a + c << '/' << b + d << endl;
+    dfs(a + c, b + d, c, d);
+}
+
+int main() {
+    cin >> n;
+    cout << "0/1" << endl;
+    dfs(0, 1, 1, 1);
+    cout << "1/1" << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

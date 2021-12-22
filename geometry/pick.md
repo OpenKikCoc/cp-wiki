@@ -45,3 +45,58 @@ Pick 定理：给定顶点均为整点的简单多边形，皮克定理说明了
 </details>
 
 <br>
+
+
+> [!NOTE] **[AcWing 1390. 通电围栏]()**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 数论 皮克定理
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using PII = pair<int, int>;
+
+int n, m, p;
+PII q[3];
+
+int gcd(int a, int b) {
+    return b ? gcd(b, a % b) : a;
+}
+
+int main() {
+    cin >> n >> m >> p;
+    int s = p * m;
+    int b = 0;
+    q[1] = {p, 0}, q[2] = {n, m};
+    for (int i = 0; i < 3; ++ i )
+        for (int j = i + 1; j < 3; ++ j )
+            b += abs(gcd(q[j].first - q[i].first, q[j].second - q[i].second));
+    cout << (s - b + 2) / 2 << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

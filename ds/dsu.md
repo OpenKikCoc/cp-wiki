@@ -400,3 +400,100 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[AcWing 1359. 城堡](https://www.acwing.com/problem/content/1361/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 可以 flood fill 也可以并查集 并查集较短所以这里用并查集
+> 
+> **典型 并查集在图中的应用**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 55, M = N * N;
+
+int n, m;
+int g[N][N];
+int p[M], sz[M];
+
+int find(int x) {
+    if (p[x] != x) p[x] = find(p[x]);
+    return p[x];
+}
+
+int main() {
+    cin >> m >> n;
+    for (int i = 0; i < n; ++ i )
+        for (int j = 0; j < m; ++ j )
+            cin >> g[i][j];
+            
+    for (int i = 0; i < n * m; ++ i )
+        p[i] = i, sz[i] = 1;
+    
+    int dx[2] = {-1, 0}, dy[2] = {0, 1}, dw[2] = {2, 4};
+    int cnt = n * m, max_area = 1;
+    for (int x = 0; x < n; ++ x )
+        for (int y = 0; y < m; ++ y )
+            for (int u = 0; u < 2; ++ u )
+                if (!(g[x][y] & dw[u])) {
+                    int nx = x + dx[u], ny = y + dy[u];
+                    if (nx < 0 || nx >= n || ny < 0 || ny >= m) continue;
+                    int a = x * m + y, b = nx * m + ny;
+                    a = find(a), b = find(b);
+                    if (a != b) {
+                        cnt -- ;
+                        sz[b] += sz[a];
+                        p[a] = b;
+                        max_area = max(max_area, sz[b]);
+                    }
+                }
+    cout << cnt << endl << max_area << endl;
+    
+    max_area = 0;
+    int rx, ry, rw;
+    for (int y = 0; y < m; ++ y )
+        for (int x = n - 1; x >= 0; -- x )
+            for (int u = 0; u < 2; ++ u )
+                if (g[x][y] & dw[u]) {
+                    int nx = x + dx[u], ny = y + dy[u];
+                    if (nx < 0 || nx >= n || ny < 0 || ny >= m) continue;
+                    int a = x * m + y, b = nx * m + ny;
+                    a = find(a), b = find(b);
+                    if (a != b) {
+                        int area = sz[a] + sz[b];
+                        if (area > max_area) {
+                            max_area = area;
+                            rx = x, ry = y, rw = u;
+                        }
+                    }
+                }
+    cout << max_area << endl;
+    cout << rx + 1 << ' ' << ry + 1 << ' ' << (rw ? 'E' : 'N') << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

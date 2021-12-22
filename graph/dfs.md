@@ -214,3 +214,296 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[AcWing 1357. 优质牛肋骨](https://www.acwing.com/problem/content/1359/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 搜索 注意写法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int n;
+
+bool is_prime(int x) {
+    for (int i = 2; i <= x / i; ++ i )
+        if (x % i == 0)
+            return false;
+    return true;
+}
+
+void dfs(int x, int k) {
+    if (!is_prime(x)) return;
+    if (k == n) cout << x << endl;
+    else {
+        int d[] = {1, 3, 7, 9};
+        for (int i : d)
+            dfs(x * 10 + i, k + 1);
+    }
+}
+
+int main() {
+    cin >> n;
+    dfs(2, 1), dfs(3, 1), dfs(5, 1), dfs(7, 1);
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
+> [!NOTE] **[AcWing 1363. 汉明码](https://www.acwing.com/problem/content/1365/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 256;
+
+int n, b, d;
+bool g[N][N];
+int path[N];
+
+int get_ones(int x) {
+    int res = 0;
+    while (x) res += x & 1, x >>= 1;
+    return res;
+}
+
+bool dfs(int u, int start) {
+    if (u == n) {
+        for (int i = 0; i < n; ++ i ) {
+            cout << path[i];
+            if ((i + 1) % 10) cout << ' ';
+            else cout << endl;
+        }
+        return true;
+    }
+    for (int i = start; i < 1 << b; ++ i ) {
+        bool flag = true;
+        for (int j = 0; j < u; ++ j )
+            if (!g[i][path[j]]) {
+                flag = false;
+                break;
+            }
+        if (flag) {
+            path[u] = i;
+            if (dfs(u + 1, i + 1)) return true;
+        }
+    }
+    return false;
+}
+
+int main() {
+    cin >> n >> b >> d;
+    for (int i = 0; i < 1 << b; ++ i )
+        for (int j = 0; j < 1 << b; ++ j )
+            // if (__builtin_popcount(i ^ j) >= d)
+            if (get_ones(i ^ j) >= d)
+                g[i][j] = true;
+    // 显然0必选 再选后面其他的    
+    dfs(1, 1);
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1372. 控股公司](https://www.acwing.com/problem/content/1374/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **分析** 更新图的思路
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 110;
+
+int n = 100, m;
+int w[N][N];
+bool g[N][N];
+
+void dfs(int x, int y) {
+    // return 避免无限递归
+    if (g[x][y]) return;
+    g[x][y] = true;
+    
+    for (int i = 1; i <= n; ++ i ) w[x][i] += w[y][i];
+    for (int i = 1; i <= n; ++ i )
+        if (g[i][x])
+            dfs(i, y);
+    for (int i = 1; i <= n; ++ i )
+        if (w[x][i] > 50)
+            dfs(x, i);
+}
+
+int main() {
+    for (int i = 1; i <= n; ++ i ) g[i][i] = true;
+    
+    cin >> m;
+    while (m -- ) {
+        int a, b, c;
+        cin >> a >> b >> c;
+        for (int i = 1; i <= n; ++ i )
+            if (g[i][a]) {
+                w[i][b] += c;
+                if (w[i][b] > 50) dfs(i, b);    // 虚边变为实边
+            }
+    }
+    
+    for (int i = 1; i <= n; ++ i )
+        for (int j = 1; j <= n; ++ j )
+            if (i != j && g[i][j])
+                cout << i << ' ' << j << endl;
+                
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1404. 蜗牛漫步](https://www.acwing.com/problem/content/1406/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **经典回溯思想**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// 爆搜即可
+// 回溯精髓题
+#include <bits/stdc++.h>
+using namespace std;
+
+using PII = pair<int, int>;
+const int N = 130;
+
+int n, m;
+int g[N][N];
+int dx[] = {-1, 0, 1, 0}, dy[] = {0, 1, 0, -1};
+int ans;
+
+void dfs(int x, int y, int d, int k) {
+    if (!x || x > n || !y || y > n || g[x][y]) return;
+    // 栈存储本次走一行/一列所走过的点 方便恢复
+    stack<PII> stk;
+    while (x && x <= n && y && y <= n && !g[x][y]) {
+        g[x][y] = 2;
+        stk.push({x, y});
+        x += dx[d], y += dy[d];
+        k ++ ;
+    }
+    ans = max(ans, k);
+    // 转弯
+    if (!x || x > n || !y || y > n || g[x][y] == 1) {
+        x -= dx[d], y -= dy[d];
+        for (int i = 0; i < 4; ++ i )
+            if ((i + d) % 2)    // 90度方向的 相加都是奇数
+                dfs(x + dx[i], y + dy[i], i, k);
+    }
+    
+    while (stk.size()) {
+        auto [x, y] = stk.top(); stk.pop();
+        g[x][y] = 0;
+    }
+}
+
+int main() {
+    cin >> n >> m;
+    while (m -- ) {
+        char a; int b;
+        cin >> a >> b;
+        a = a - 'A' + 1;
+        g[b][a] = 1;
+    }
+    dfs(1, 1, 1, 0);
+    dfs(1, 1, 2, 0);
+    cout << ans << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

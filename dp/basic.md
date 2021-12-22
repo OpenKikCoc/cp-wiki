@@ -1514,6 +1514,77 @@ if __name__=='__main__':
 
 * * *
 
+> [!NOTE] **[AcWing 314. 低买](https://www.acwing.com/problem/content/316/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **LIS变形 细节清奇**
+> 
+> **严格下降子序列 求数值不同的所有方案数**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 5010;
+
+int n;
+int a[N], f[N], g[N];
+// f 所有以a[i]结尾的下降子序列的集合的最大长度
+// g 数量
+
+int main() {
+    cin >> n;
+    for (int i = 1; i <= n; ++ i ) cin >> a[i];
+    g[0] = 1;
+    
+    int res = 0;
+    for (int i = 1; i <= n; ++ i ) {
+        for (int j = 0; j < i; ++ j )
+            if (!j || a[j] > a[i])
+                f[i] = max(f[i], f[j] + 1);
+        // 考虑 对有相同数字、不同位置方案的情况
+        // 只考虑最后一个位置上的方案
+        for (int j = 1; j < i; ++ j )
+            if (a[j] == a[i])
+                f[j] = -1;      // 删除前面的状态
+        for (int j = 0; j < i; ++ j )
+            if ((!j || a[j] > a[i]) && f[i] == f[j] + 1)
+                g[i] += g[j];
+        res = max(res, f[i]);
+    }
+    
+    int cnt = 0;
+    for (int i = 1; i <= n; ++ i )
+        if (f[i] == res)
+            cnt += g[i];
+    cout << res << ' ' << cnt << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 状态机模型
 
 > [!NOTE] **[AcWing 1057. 股票买卖 IV](https://www.acwing.com/problem/content/description/1059/)**

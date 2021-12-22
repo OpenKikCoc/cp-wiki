@@ -114,3 +114,100 @@ $$
 [POJ1113 Wall](http://poj.org/problem?id=1113)
 
 [「SHOI2012」信用卡凸包](https://www.luogu.com.cn/problem/P3829)
+
+## 习题
+
+> [!NOTE] **[AcWing 1401. 围住奶牛](https://www.acwing.com/problem/content/1403/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// 求凸包模板题
+#include <bits/stdc++.h>
+using namespace std;
+
+using PDD = pair<double, double>;
+#define x first
+#define y second
+
+const int N = 10010;
+
+int n;
+PDD q[N];
+int stk[N], top;
+bool used[N];
+
+PDD operator- (PDD a, PDD b) {
+    return {a.x - b.x, a.y - b.y};
+}
+
+double operator* (PDD a, PDD b) {
+    return a.x * b.y - a.y * b.x;
+}
+
+double area(PDD a, PDD b, PDD c) {
+    return (b - a) * (c - a);
+}
+
+double get_dist(PDD a, PDD b) {
+    double dx = a.x - b.x;
+    double dy = a.y - b.y;
+    return sqrt(dx * dx + dy * dy);
+}
+
+double get_convex() {
+    sort(q, q + n);
+    for (int i = 0; i < n; ++ i ) {
+        while (top >= 2 && area(q[stk[top - 1]], q[stk[top]], q[i]) <= 0) {
+            if (area(q[stk[top - 1]], q[stk[top]], q[i]) < 0)
+                used[stk[top -- ]] = false;
+            else top -- ;
+        }
+        stk[ ++ top] = i;
+        used[i] = true;
+    }
+    used[0] = false;
+    for (int i = n - 1; i >= 0; -- i ) {
+        if (used[i]) continue;
+        while (top >= 2 && area(q[stk[top - 1]], q[stk[top]], q[i]) <= 0)
+            top -- ;
+        stk[ ++ top] = i;
+    }
+    
+    double res = 0;
+    for (int i = 1; i < top; ++ i )
+        res += get_dist(q[stk[i]], q[stk[i + 1]]);
+    return res;
+}
+
+int main() {
+    cin >> n;
+    for (int i = 0; i < n; ++ i ) cin >> q[i].x >> q[i].y;
+    printf("%.2lf\n", get_convex());
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

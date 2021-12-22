@@ -124,6 +124,269 @@
 - [P2123 皇后游戏 - 洛谷](https://www.luogu.com.cn/problem/P2123)
 - [LeetCode 上标签为算法的题目](https://leetcode-cn.com/tag/greedy/)
 
+### USACO Training
+
+> [!NOTE] **[AcWing 1348. 搭配牛奶](https://www.acwing.com/problem/content/1350/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 简单学习下 struct 比较级函数
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 5010;
+
+int n, m;
+struct Milk {
+    int p, a;
+    bool operator< (const Milk& t) const {
+        return p < t.p;
+    }
+}milk[N];
+
+int main() {
+    cin >> n >> m;
+    for (int i = 0; i < m; ++ i ) cin >> milk[i].p >> milk[i].a;
+    sort(milk, milk + m);
+    
+    int res = 0;
+    for (int i = 0; i < m && n; ++ i ) {
+        int add = min(n, milk[i].a);
+        n -= add;
+        res += add * milk[i].p;
+    }
+    cout << res << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1349. 修理牛棚](https://www.acwing.com/problem/content/1351/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 补集的思想 先把0～c-1所有的用一个木板覆盖 随后断开
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 210;
+
+int m, s, c;
+int a[N], b[N]; // V 表示间隙
+
+int main() {
+    cin >> m >> s >> c;
+    for (int i = 0; i < c; ++ i ) cin >> a[i];
+    sort(a, a + c);
+    
+    int res = a[c - 1] - a[0] + 1;
+    
+    for (int i = 1; i < c; ++ i ) b[i] = a[i] - a[i - 1] - 1;
+    sort(b + 1, b + c, greater<int>());
+    
+    // 至多断开m - 1次
+    for (int i = 1; i <= m - 1 && i < c; ++ i )
+        res -= b[i];
+    
+    cout << res << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1351. 密码锁](https://www.acwing.com/problem/content/1353/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 暴力枚举显然可以 On^3
+> 
+> 思考如何简化 容斥原理
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 3;
+
+int n;
+int a[N], b[N];
+
+int both() {
+    if (n < 5) return n * n * n;
+    int res = 1;
+    for (int i = 0; i < 3; ++ i ) {
+        int x = a[i], y = b[i];
+        int d = min(abs(x - y), n - abs(x - y));
+        res *= min(n, max(0, 5 - d));
+    }
+    return res;
+}
+
+int single() {
+    int res = 1;
+    for (int i = 0; i < 3; ++ i ) res *= min(n, 5);
+    return res;
+}
+
+int main() {
+    cin >> n;
+    for (int i = 0; i < 3; ++ i ) cin >> a[i];
+    for (int i = 0; i < 3; ++ i ) cin >> b[i];
+    
+    cout << single() + single() - both() << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1395. 产品处理](https://www.acwing.com/problem/content/1397/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **思维题**
+> 
+> Q1 
+> 
+> Q2 需要排序不等式
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 1010;
+
+int n, m1, m2;
+int a[N], b[N];
+struct Node {
+    int finish_time, cost;
+    bool operator< (const Node & t) const {
+        return finish_time > t.finish_time;
+    }
+};
+
+void work(int m, int f[]) {
+    priority_queue<Node> heap;
+    for (int i = 0; i < m; ++ i ) {
+        int cost;
+        cin >> cost;
+        // 加入的是 【洗完下一件衣服最早结束的时间,单个时间消耗】
+        heap.push({cost, cost});
+    }
+    
+    for (int i = 1; i <= n; ++ i ) {
+        auto t = heap.top(); heap.pop();
+        f[i] = t.finish_time;
+        t.finish_time += t.cost;
+        heap.push(t);
+    }
+}
+
+int main() {
+    cin >> n >> m1 >> m2;
+    work(m1, a);
+    work(m2, b);
+    
+    // attention 互补这样
+    // ------  ---
+    // ----  -----
+    // -- --------
+    // - ---------
+    int res = 0;
+    for (int i = 1, j = n; i <= n; ++ i , -- j )
+        res = max(res, a[i] + b[j]);
+    cout << a[n] << ' ' << res << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### others TODO
+
 > [!NOTE] **[AcWing 803. 区间合并](https://www.acwing.com/problem/content/805/)**
 > 
 > 题意: TODO

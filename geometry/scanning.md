@@ -133,3 +133,226 @@ int main() {
 - <https://blog.csdn.net/riba2534/article/details/76851233>
 
 - <https://blog.csdn.net/winddreams/article/details/38495093>
+
+## 习题
+
+> [!NOTE] **[AcWing 1406. 窗口面积](https://www.acwing.com/problem/content/1408/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 求矩形面积的并：扫描线
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using PII = pair<int, int>;
+#define x first
+#define y second
+
+struct Rect {
+    char c;
+    PII a, b;
+};
+list<Rect> rect;
+
+// 求合并覆盖后的长度
+int get_intersection(int a, int b, int c, int d) {
+    if (b <= c || d <= a) return 0;
+    return min(b, d) - max(a, c);
+}
+
+double get_area(char c) {
+    // 保存当前矩形上方的所有矩形有哪些
+    vector<Rect> cur;
+    for (auto r : rect)
+        if (r.c == c || cur.size())
+            cur.push_back(r);
+    // xs保存所有竖线
+    vector<int> xs;
+    for (int i = 0; i < cur.size(); ++ i ) {
+        auto & r = cur[i];
+        // 左右边界 是否在矩形内
+        if (r.a.x >= cur[0].a.x && r.a.x <= cur[0].b.x)
+            xs.push_back(r.a.x);
+        if (r.b.x >= cur[0].a.x && r.b.x <= cur[0].b.x)
+            xs.push_back(r.b.x);
+    }
+    sort(xs.begin(), xs.end());
+    // 算面积
+    int res = 0;
+    for (int i = 0; i + 1 < xs.size(); ++ i )
+        // 没有重合，其实可以unique一下
+        if (xs[i] != xs[i + 1]) {
+            // 区域左右x边界
+            int a = xs[i], b = xs[i + 1];
+            // 保存矩形和本次计算的区域是否有交集
+            vector<PII> q;
+            for (int j = 1; j < cur.size(); ++ j ) {
+                auto & r = cur[j];
+                if (r.a.x <= a && r.b.x >= b)
+                    q.push_back({r.a.y, r.b.y});
+            }
+            if (q.size()) {
+                // 此时q保存的y 即所有本区域内的横线
+                // 合并计数其长度 同时计算面积
+                sort(q.begin(), q.end());
+                int st = q[0].x, ed = q[0].y;
+                for (int j = 1; j < q.size(); ++ j )
+                    if (q[j].x <= ed) ed = max(ed, q[j].y);
+                    else {
+                        // st ed 要和当前区域求交集
+                        res += get_intersection(st, ed, cur[0].a.y, cur[0].b.y) * (b - a);
+                        st = q[j].x, ed = q[j].y;
+                    }
+                res += get_intersection(st, ed, cur[0].a.y, cur[0].b.y) * (b - a);
+            }
+        }
+    return (1 - (double)res / (cur[0].b.x - cur[0].a.x) / (cur[0].b.y - cur[0].a.y)) * 100;
+}
+
+int main() {
+    char op;
+    while (cin >> op) {
+        if (op == 'w') {
+            char c;
+            int x1, y1, x2, y2;
+            scanf("(%c,%d,%d,%d,%d)", &c, &x1, &y1, &x2, &y2);
+            rect.push_back({c, {min(x1, x2), min(y1, y2)}, {max(x1, x2), max(y1, y2)}});
+        } else {
+            char c;
+            scanf("(%c)", &c);
+            // 找到当前窗口
+            list<Rect>::iterator it;
+            for (auto i = rect.begin(); i != rect.end(); ++ i )
+                if (i->c == c) {
+                    it = i;
+                    break;
+                }
+            if (op == 't') rect.push_back(*it), rect.erase(it);
+            else if (op == 'b') rect.push_front(*it), rect.erase(it);
+            else if (op == 'd') rect.erase(it);
+            else printf("%.3lf\n", get_area(c));
+        }
+    }
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 262. 海报](https://www.acwing.com/problem/content/264/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using PII = pair<int, int>;
+#define x first
+#define y second
+
+const int N = 5010;
+
+int n;
+struct Rect {
+    PII a, b;
+}rect[N];
+
+int get_range_len(int a, int b) {
+    vector<PII> q;
+    for (int i = 0; i < n; ++ i ) {
+        auto & r = rect[i];
+        if (r.a.x <= a && r.b.x >= b)
+            q.push_back({r.a.y, r.b.y});
+    }
+    if (q.empty()) return 0;
+    
+    sort(q.begin(), q.end());
+    int res = 0, st = q[0].x, ed = q[0].y;
+    for (int i = 1; i < q.size(); ++ i )
+        if (q[i].x <= ed) ed = max(ed, q[i].y);
+        else {
+            res += (b - a) * 2;
+            st = q[i].x, ed = q[i].y;
+        }
+    res += (b - a) * 2;
+    return res;
+}
+
+int get_len() {
+    vector<int> xs;
+    for (int i = 0; i < n; ++ i ) {
+        xs.push_back(rect[i].a.x);
+        xs.push_back(rect[i].b.x);
+    }
+    sort(xs.begin(), xs.end());
+    int res = 0;
+    for (int i = 0; i + 1 < xs.size(); ++ i )
+        if (xs[i] != xs[i + 1])
+            res += get_range_len(xs[i], xs[i + 1]);
+    return res;
+}
+
+int main() {
+    cin >> n;
+    for (int i = 0; i < n; ++ i ) {
+        int x1, y1, x2, y2;
+        cin >> x1 >> y1 >> x2 >> y2;
+        rect[i] = {{x1, y1}, {x2, y2}};
+    }
+    // 分别算水平和垂直方向的周长
+    int res = get_len();
+    for (int i = 0; i < n; ++ i ) {
+        swap(rect[i].a.x, rect[i].a.y);
+        swap(rect[i].b.x, rect[i].b.y);
+    }
+    cout << res + get_len() << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

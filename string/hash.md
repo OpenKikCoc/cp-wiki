@@ -213,3 +213,74 @@ if __name__ == '__main__':
 <br>
 
 * * *
+
+> [!NOTE] **[AcWing 1368. 最长前缀](https://www.acwing.com/problem/content/1370/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 变形
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ULL = unsigned long long;
+
+const int N = 200010, P = 131;
+
+string str;
+bool f[N];
+
+int main() {
+    unordered_set<ULL> hash;
+    while (cin >> str, str != ".") {
+        ULL h = 0;
+        for (int i = str.size() - 1; i >= 0; -- i )
+            h = h * P + str[i];
+        hash.insert(h);
+    }
+    
+    str.clear();
+    string line;
+    while (cin >> line) str += line;    // 可能多行
+    
+    int res = 0;
+    f[0] = true;
+    for (int i = 1; i <= str.size(); ++ i ) {
+        ULL h = 0;
+        // 每个串长度不超过10 倒着枚举
+        for (int j = i; j > i - 10 && j > 0; -- j ) {
+            h = h * P + str[j - 1];
+            if (hash.count(h) && f[j - 1]) {
+                f[i] = true;
+                break;
+            }
+        }
+        if (f[i]) res = i;
+    }
+    cout << res << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

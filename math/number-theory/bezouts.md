@@ -166,3 +166,66 @@ $$
 ### 题目
 
 [P3951 NOIP2017 提高组 小凯的疑惑/蓝桥杯 2013 省 买不到的数目](https://www.luogu.com.cn/problem/P3951)
+
+> [!NOTE] **[AcWing 1392. 麦乐牛块](https://www.acwing.com/problem/content/1394/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 斐蜀定理
+> 
+> $$
+> p q 互质 则其不能凑成的最大数是 (p - 1) * (q - 1) - 1
+> $$
+> 
+> 这是两个数
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// 原因:  256 * 255 6万左右
+const int N = 70000;
+
+int n;
+bool f[N];
+
+int main() {
+    cin >> n;
+    f[0] = true;
+    for (int i = 0; i < n; ++ i ) {
+        int v;
+        cin >> v;
+        for (int j = v; j < N; ++ j )
+            f[j] |= f[j - v];
+    }
+    
+    int k = N - 1;
+    while (k && f[k]) -- k ;
+    
+    if (k >= N - 256) cout << 0 << endl;
+    else cout << k << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

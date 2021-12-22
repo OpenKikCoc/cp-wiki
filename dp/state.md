@@ -55,6 +55,81 @@ TODO@binacs
 
 [UVA1252 20 个问题 Twenty Questions](https://www.luogu.com.cn/problem/UVA1252)
 
+> [!NOTE] **[AcWing 1362. 健康的荷斯坦奶牛](https://www.acwing.com/problem/content/1364/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 15, M = 25;
+
+int m, n;
+int need[M], s[N][M], sum[M];
+
+int main() {
+    cin >> m;
+    for (int i = 0; i < m; ++ i ) cin >> need[i];
+    
+    cin >> n;
+    for (int i = 0; i < n; ++ i )
+        for (int j = 0; j < m; ++ j )
+            cin >> s[i][j];
+    
+    vector<int> res;
+    // 2^15 = 30000
+    for (int i = 0; i < 1 << n; ++ i ) {
+        vector<int> t;
+        memset(sum, 0, sizeof sum);
+        for (int j = 0; j < n; ++ j )
+            if (i >> j & 1) {
+                t.push_back(j);
+                for (int k = 0; k < m; ++ k )
+                    sum[k] += s[j][k];
+            }
+        
+        bool flag = true;
+        for (int j = 0; j < m; ++ j )
+            if (sum[j] < need[j]) {
+                flag = false;
+                break;
+            }
+        if (flag) {
+            if (res.empty() || res.size() > t.size() || res.size() == t.size() && res > t)
+                res = t;
+        }
+    }
+    cout << res.size() << ' ';
+    for (auto x : res) cout << x + 1 << ' ';
+    cout << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[AcWing 291. 蒙德里安的梦想](https://www.acwing.com/problem/content/293/)**
 > 
 > 题意: TODO

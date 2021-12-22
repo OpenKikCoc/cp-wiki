@@ -121,7 +121,7 @@ for k in range(1, n + 1):
 > 只是此时的边的边权变为 $1/0$，而取 $\min$ 变成了 **或** 运算。
 > 
 > 再进一步用 bitset 优化，复杂度可以到 $O(\frac{n^3}{w})$。
-    
+
 ```cpp
 // std::bitset<SIZE> f[SIZE];
 for (k = 1; k <= n; k++)
@@ -191,7 +191,7 @@ bool bellmanford(int n, int s) {
     return flag;
 }
 ```
-    
+
 ```python
     # Python Version
     class Edge:
@@ -260,7 +260,7 @@ bool spfa(int n, int s) {
     return true;
 }
 ```
-    
+
 ```python
     # Python Version
     class Edge:
@@ -386,7 +386,7 @@ void dijkstra(int n, int s) {
     }
 }
 ```
-    
+
 ```python
     # Python Version
     class Edge:
@@ -3230,6 +3230,148 @@ public:
 };
 ```
 
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### Trick 最短路 思维题
+
+> [!NOTE] **[AcWing 1386. 卡米洛特](https://www.acwing.com/problem/content/1388/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+>
+> 核心：枚举
+>
+> 枚举汇合点、骑士接国王 枚举接国王的骑士 ==> 复杂度过高
+>
+> 考虑：
+>
+> 对于枚举的每一个汇合点，国王两种走法。
+>
+> 1. 自己走过去
+>
+> 2. 选一名骑士接（额外步数 dist_min 最少的骑士）
+>
+> `换了枚举思路 降低复杂度`
+>
+> 参见 https://www.acwing.com/solution/content/32282/
+>
+> `dist_sum 所有骑士到汇合点[i, j]的最短距离和`
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using PII = pair<int, int>;
+using PIII = tuple<int, int, int>;
+
+const int N = 31, M = N * N, INF = 0x3f3f3f3f;
+
+int n, m;
+PII king;
+int dist_sum[N][N], dist_min[N][N], dist[N][N][2];
+// struct Node {
+//     int x, y, z;
+// }q[M];
+PIII q[M];
+bool st[N][N][2];
+int dx[] = {-2, -1, 1, 2, 2, 1, -1, -2};
+int dy[] = {1, 2, 2, 1, -1, -2, -2, -1};
+
+void spfa(int sx, int sy) {
+    memset(dist, 0x3f, sizeof dist);
+    
+    int hh = 0, tt = 0;
+    q[tt ++ ] = {sx, sy, 0};
+    dist[sx][sy][0] = 0;
+    st[sx][sy][0] = true;
+    
+    while (hh != tt) {
+        auto [x, y, z] = q[hh ++ ];
+        if (hh == M) hh = 0;
+        st[x][y][z] = false;    // 出队
+        
+        for (int i = 0; i < 8; ++ i ) {
+            int nx = x + dx[i], ny = y + dy[i];
+            if (nx < 1 || nx > n || ny < 1 || ny > m) continue;
+            if (dist[nx][ny][z] > dist[x][y][z] + 1) {
+                dist[nx][ny][z] = dist[x][y][z] + 1;
+                if (!st[nx][ny][z]) {
+                    q[tt ++ ] = {nx, ny, z};
+                    if (tt == M) tt = 0;
+                    st[nx][ny][z] = true;
+                }
+            }
+            
+            if (!z) {
+                int d = dist[x][y][z] + max(abs(king.first - x), abs(king.second - y));
+                if (dist[x][y][1] > d) {
+                    dist[x][y][1] = d;
+                    if (!st[x][y][1]) {
+                        q[tt ++ ] = {x, y, 1};
+                        if (tt == M) tt = 0;
+                        st[x][y][1] = true;
+                    }
+                }
+            }
+        }
+    }
+    
+    for (int i = 1; i <= n; ++ i )
+        for (int j = 1; j <= m; ++ j )
+            if (dist[i][j][0] == INF)
+                dist_sum[i][j] = INF;
+            else
+                dist_sum[i][j] += dist[i][j][0];
+    
+    for (int i = 1; i <= n; ++ i )
+        for (int j = 1; j <= m; ++ j )
+            dist_min[i][j] = min(dist_min[i][j], dist[i][j][1] - dist[i][j][0]);    // [1] - [0] 即可
+}
+
+int main() {
+    cin >> n >> m;
+    
+    int x; char y;
+    cin >> y >> x;
+    y = y - 'A' + 1;
+    king = {x, y};
+    
+    for (int i = 1; i <= n; ++ i )
+        for (int j = 1; j <= m; ++ j )
+            dist_min[i][j] = max(abs(i - x), abs(j - y));
+    while (cin >> y >> x) {
+        y = y - 'A' + 1;
+        spfa(x, y);
+    }
+    
+    int res = INF;
+    for (int i = 1; i <= n; ++ i )
+        for (int j = 1; j <= m; ++ j )
+            res = min(res, dist_sum[i][j] + dist_min[i][j]);
+    cout << res << endl;
+    
+    return 0;
+}
+```
 
 ##### **Python**
 

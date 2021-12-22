@@ -493,6 +493,78 @@ TODO@binacs
 [CF628D Magic Numbers](http://codeforces.com/problemset/problem/628/D)
 
 
+> [!NOTE] **[AcWing 1382. 比特串](https://www.acwing.com/problem/content/1384/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典基础数位dp
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+/*
+数位dp
+考虑截至现在第i位
+    如果填1后面多少种方案
+        填0后面多少种方案
+*/
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+const int N = 40;
+
+LL n, L, I;
+LL c[N][N], f[N][N];
+
+int main() {
+    cin >> n >> L >> I;
+    
+    // 1. 组合数 i的长度恰好有j位的种类数
+    for (int i = 0; i < N; ++ i )
+        for (int j = 0; j <= i; ++ j )
+            if (!j) c[i][j] = 1;
+            else c[i][j] = c[i - 1][j] + c[i - 1][j - 1];
+    
+    // i位长度 后面不超过j个 种类总数
+    for (int i = 0; i < N; ++ i )
+        for (int j = 0; j < N; ++ j )
+            for (int k = 0; k <= j; ++ k )
+                f[i][j] += c[i][k];
+    
+    for (int i = 1, s = 0; i <= n; ++ i ) {
+        LL x = f[n - i][L - s];
+        if (I > x) {
+            cout << 1;
+            I -= x;
+            s ++ ;
+        } else cout << 0;
+    }
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[AcWing 1081. 度的数量](https://www.acwing.com/problem/content/1083/)**
 > 
 > 题意: TODO
@@ -848,6 +920,117 @@ int main() {
         cout << mod(dp(r) - dp(l - 1), P) << endl;
     }
 
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 多维状态
+
+> [!NOTE] **[AcWing 1411. 二五](https://www.acwing.com/problem/content/1413/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// 数位dp
+// 5000000复杂度
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 6;
+
+int f[N][N][N][N][N];
+int p[30];
+bool st[30];
+int id[N][N];
+
+bool check(int a, int b) {
+    return p[b] == -1 || p[b] == a;
+}
+
+// 枚举从小到达每个字母 [k] 放到哪一个位置 每行的个数状态分别abcde
+int dp(int a, int b, int c, int d, int e, int k) {
+    if (k == 25) return 1;
+    auto & v = f[a][b][c][d][e];
+    if (v != -1) return v;
+    v = 0;
+    if (a < 5 && check(k, id[1][a + 1])) v += dp(a + 1, b, c, d, e, k + 1);
+    if (b < a && check(k, id[2][b + 1])) v += dp(a, b + 1, c, d, e, k + 1);
+    if (c < b && check(k, id[3][c + 1])) v += dp(a, b, c + 1, d, e, k + 1);
+    if (d < c && check(k, id[4][d + 1])) v += dp(a, b, c, d + 1, e, k + 1);
+    if (e < d && check(k, id[5][e + 1])) v += dp(a, b, c, d, e + 1, k + 1);
+    return v;
+}
+
+void work1() {
+    int n;
+    cin >> n;
+    memset(p, -1, sizeof p);
+    for (int i = 1; i <= 25; ++ i )
+        for (int j = 0; j < 25; ++ j ) {
+            if (st[j]) continue;
+            p[i] = j, st[j] = true;
+            memset(f, -1, sizeof f);
+            int t = dp(0, 0, 0, 0, 0, 0);
+            if (t >= n) break;
+            n -= t;
+            p[i] = -1, st[j] = false;
+        }
+    string res;
+    for (int i = 1; i <= 25; ++ i ) res += p[i] + 'A';
+    cout << res << endl;
+}
+
+void work2() {
+    char str[30];
+    cin >> str + 1;
+    int res = 0;
+    memset(p, -1, sizeof p);
+    for (int i = 1; i <= 25; ++ i ) {
+        int u = str[i] - 'A';
+        for (int j = 0; j < u; ++ j ) {
+            if (st[j]) continue;
+            p[i] = j, st[j] = true;
+            memset(f, -1, sizeof f);
+            res += dp(0, 0, 0, 0, 0, 0);
+            p[i] = -1, st[j] = false;
+        }
+        p[i] = u, st[u] = false;
+    }
+    cout << res + 1 << endl;
+}
+
+int main() {
+    for (int i = 1, k = 1; i <= 5; ++ i )
+        for (int j = 1; j <= 5; ++ j , ++ k )
+            id[i][j] = k;
+    char op;
+    cin >> op;
+    if (op == 'N') work1();
+    else work2();
+    
     return 0;
 }
 ```

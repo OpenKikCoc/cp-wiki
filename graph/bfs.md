@@ -383,3 +383,175 @@ int main() {
 <br>
 
 * * *
+
+### USACO Training 杂项
+
+> [!NOTE] **[AcWing 1355. 母亲的牛奶](https://www.acwing.com/problem/content/1357/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> bfs 注意**写法**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 21;
+
+int A, B, C;
+bool st[N][N][N];
+struct Node {
+    int a, b, c;
+}q[N * N * N];
+int hh, tt;
+
+void insert(int a, int b, int c) {
+    if (!st[a][b][c]) {
+        q[ ++ tt] = {a, b, c};
+        st[a][b][c] = true;
+    }
+}
+
+void bfs() {
+    q[0] = {0, 0, C};
+    st[0][0][C] = true;
+    
+    while (hh <= tt) {
+        auto [a, b, c] = q[hh ++ ];
+        insert(a - min(a, B - b), min(a + b, B), c);
+        insert(a - min(a, C - c), b, min(a + c, C));
+        insert(min(a + b, A), b - min(b, A - a), c);
+        insert(a, b - min(b, C - c), min(b + c, C));
+        insert(min(a + c, A), b, c - min(A - a, c));
+        insert(a, min(b + c, B), c - min(B - b, c));
+    }
+}
+
+int main() {
+    cin >> A >> B >> C;
+    
+    bfs();
+    
+    for (int c = 0; c <= C; ++ c )
+        for (int b = 0; b <= B; ++ b )
+            if (st[0][b][c]) {
+                cout << c << ' ';
+                break;
+            }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1374. 穿越栅栏](https://www.acwing.com/problem/content/1376/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using PII = pair<int, int>;
+
+const int N = 210, M = 100;
+
+int n, m;
+string g[N];
+int dist[2][N][M];
+int dx[] = {-1, 0, 1, 0}, dy[] = {0, 1, 0, -1};
+
+PII q[N * M];
+int hh, tt;
+
+// 是空格 则可以走
+bool check(int x, int y, int d) {
+    return g[x * 2 - 1 + dx[d]][y * 2 - 1 + dy[d]] == ' ';
+}
+
+void bfs(int sx, int sy, int dist[][M]) {
+    memset(dist, 0x3f, N * M * 4);   // attention
+    
+    int hh = 0, tt = -1;
+    q[ ++ tt] = {sx, sy};
+    dist[sx][sy] = 1;
+    while (hh <= tt) {
+        auto [x, y] = q[hh ++ ];
+        for (int i = 0; i < 4; ++ i ) {
+            int nx = x + dx[i], ny = y + dy[i];
+            if (nx < 1 || nx > n || ny < 1 || ny > m) continue;
+            if (!check(x, y, i)) continue; // 
+            if (dist[nx][ny] > dist[x][y] + 1) {
+                dist[nx][ny] = dist[x][y] + 1;
+                q[ ++ tt] = {nx, ny};
+            }
+        }
+    }
+}
+
+int main() {
+    cin >> m >> n;
+    getchar();
+    for (int i = 0; i < n * 2 + 1; ++ i ) getline(cin, g[i]);
+    
+    int k = 0;
+    for (int i = 1; i <= n; ++ i ) {
+        if (check(i, 1, 3)) bfs(i, 1, dist[k ++ ]);
+        if (check(i, m, 1)) bfs(i, m, dist[k ++ ]);
+    }
+    for (int i = 1; i <= m; ++ i ) {
+        if (check(1, i, 0)) bfs(1, i, dist[k ++ ]);
+        if (check(n, i, 2)) bfs(n, i, dist[k ++ ]);
+    }
+    
+    int res = 0;
+    for (int i = 1; i <= n; ++ i )
+        for (int j = 1; j <= m; ++ j )
+            res = max(res, min(dist[0][i][j], dist[1][i][j]));
+    cout << res << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
