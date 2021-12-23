@@ -380,3 +380,229 @@ int main() {
 <br>
 
 * * *
+
+
+### 旋转排序数组 (右端点有意义)
+
+> [!NOTE] **[LeetCode 153. 寻找旋转排序数组中的最小值](https://leetcode-cn.com/problems/find-minimum-in-rotated-sorted-array/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int findMin(vector<int>& nums) {
+        int n = nums.size();
+        int l = 0, r = n - 1;
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+            if (nums[mid] > nums[r])
+                l = mid + 1;
+            else if (nums[mid] < nums[r])
+                r = mid;
+            // else 
+        }
+        return nums[l];
+    }
+};
+```
+
+##### **Python**
+
+```python
+class Solution:
+    def findMin(self, nums: List[int]) -> int:
+        n = len(nums)
+        l, r = 0, n - 1
+        while l < r:
+            m = l + (r - l) // 2 
+            if nums[m] > nums[r]:
+                l = m + 1 
+            elif nums[m] < nums[r]:
+                r = m 
+            else:
+                r -= 1  # 当存在重复元素时
+        return nums[l]
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 154. 寻找旋转排序数组中的最小值 II](https://leetcode-cn.com/problems/find-minimum-in-rotated-sorted-array-ii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int findMin(vector<int>& nums) {
+        int n = nums.size();
+        int l = 0, r = n - 1;
+        while (l < r) {
+            int m = l + (r - l) / 2;
+            if (nums[m] > nums[r])
+                l = m + 1;
+            else if (nums[m] < nums[r])
+                r = m;
+            else -- r ;
+        }
+        return nums[l];
+    }
+};
+```
+
+##### **Python**
+
+```python
+class Solution:
+    def findMin(self, nums: List[int]) -> int:
+        n = len(nums)
+        l, r = 0, n - 1
+        while l < r:
+            m = l + (r - l) // 2 
+            if nums[m] > nums[r]:
+                l = m + 1 
+            elif nums[m] < nums[r]:
+                r = m 
+            else:
+                r -= 1  # 当存在重复元素时
+        return nums[l]
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 33. 搜索旋转排序数组](https://leetcode-cn.com/problems/search-in-rotated-sorted-array/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int search(vector<int>& nums, int target) {
+        int n = nums.size();
+        int l = 0, r = n - 1;
+        while (l < r) {
+            int m = l + r >> 1;
+            if (nums[m] < nums[r]) {
+                if (target > nums[m] && target <= nums[r])
+                    l = m + 1;
+                else
+                    r = m;
+            } else if (nums[m] > nums[r]) {
+                if (target > nums[m] || target <= nums[r])
+                    l = m + 1;
+                else
+                    r = m;
+            }
+            // else
+        }
+        return target == nums[l] ? l : -1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 81. 搜索旋转排序数组 II](https://leetcode-cn.com/problems/search-in-rotated-sorted-array-ii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    bool search(vector<int>& nums, int target) {
+        int n = nums.size();
+        // 旋转排序树组 右端点有意义
+        int l = 0, r = n - 1;
+        while (l < r) {
+            int m = l + r >> 1;
+            if (nums[m] < nums[r]) {
+                if (target > nums[m] && target <= nums[r])
+                    l = m + 1;
+                else
+                    r = m;
+            } else if (nums[m] > nums[r]) {
+                if (target > nums[m] || target <= nums[r])
+                    l = m + 1;
+                else
+                    r = m;
+            } else
+                r -- ;
+        }
+        return nums[l] == target;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

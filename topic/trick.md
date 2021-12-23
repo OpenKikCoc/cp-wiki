@@ -188,3 +188,93 @@ int main() {
 <br>
 
 * * *
+
+### 剪绳子
+
+> [!NOTE] **[SwordOffer 14- I. 剪绳子](https://leetcode-cn.com/problems/jian-sheng-zi-lcof/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int maxProductAfterCutting(int n) {
+        if (n <= 3)
+            return n - 1;
+        
+        int res = 1;
+        if (n % 3 == 1)
+            res *= 4, n -= 4;
+        while (n >= 3)
+            res *= 3, n -= 3;
+        if (n == 2)
+            res *= 2;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+# python3
+# dp
+# 状态表示：f[i] : 表示长度为i时的乘积方案数；属性：Max
+# 状态转移：第一刀剪在长度为j, 那区别在于：后面的（i-j)是否还要再剪：
+#          要剪：那就是j * f[i-j];不剪：j *(i-j)
+class Solution:
+    def cuttingRope(self, n: int) -> int:
+        # 长度为1时，为0；长度为2，最大乘积为1
+        f = [0] * (n + 1)  
+        for i in range(2, n + 1):
+            for j in range(1, i):
+                f[i] = max(f[i], j * (i-j), j * f[i-j])
+        return f[n]
+      
+ 
+
+# 数学方法
+# 结论：把这个整数分成尽可能多的3，如果剩下两个2，就分成两个2 
+# 证明如下：
+# 1. 显然1 不会出现在最优解里
+# 2. 证明最优解没有 大于等于5的数。假设有一个数ni >= 5, 那么其实可以把ni 拆为 3 + （ni -3），很显然可以证明：3(ni-3) > ni；所以最优解里肯定不会有大于等于5的数字，那最大的只可能是4
+# 3. 证明最优解里不存在4，因为 4 拆出来 2 + 2，乘积不变，所以可以定最优解里没有4
+# 4. 证明最优解里最多只能有两个2，因为假设有3个2，那3 * 3 > 2 * 2 * 2, 替换成3 乘积更大，所以最优解不能有三个2.
+
+# 综上，选用尽量多的3，直到剩下2 或者 4，用2.
+
+class Solution:
+    def cuttingRope(self, n: int) -> int:
+        if n <= 3:return 1 * (n - 1)
+        # 踩坑：res 初始化位1 
+       	res = 1
+        # 处理 最优解 有两个2的情况
+        if n % 3 == 1:  
+            res *= 4
+            n -= 4
+         # 处理 最优解 只有一个2的情况
+        if n % 3 == 2:  
+            res *= 2
+            n -= 2
+        while n:
+            res *= 3
+            n -= 3
+        return res
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

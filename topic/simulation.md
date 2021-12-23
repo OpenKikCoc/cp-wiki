@@ -131,6 +131,10 @@ int main() {
 
 * * *
 
+### 丑数
+
+
+
 > [!NOTE] **[AcWing 1378. 谦虚数字](https://www.acwing.com/problem/content/1380/)**
 > 
 > 题意: TODO
@@ -358,6 +362,187 @@ int main() {
 
 ```python
 
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 数字相关
+
+> [!NOTE] **[SwordOffer 16. 数值的整数次方](https://leetcode-cn.com/problems/shu-zhi-de-zheng-shu-ci-fang-lcof/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    double myPow(double x, int n) {
+          // case
+        if (x == 1) return 1;
+        else if (x == -1) return n & 1 ? -1 : 1;
+        if (n == INT_MIN) return 0;
+        int N = n;
+        if (n < 0) {
+            N = -N;
+            x = 1.0 / x;
+        }
+        double res = 1;
+        while (N) {
+            if (N & 1) res *= x;
+            x *= x;
+            N >>= 1;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+# python3
+# 快速幂 求 pow(n, k) ===> O(logk)
+# 快速幂算法的原理是通过将指数 k 拆分成几个因数相乘的形式，来简化幂运算。
+# 原理就是利用位运算里的位移“>>”和按位与“&”运算，代码中 k & 1其实就是取 k 二进制的最低位，用来判断最低位是0还是1，再根据是0还是1决定乘不乘，如果是1，就和当前的 n 相乘，并且 k 要往后移动，把当前的 1 移走，同时 需要 x *= x；
+
+class Solution:
+    def myPow(self, x: float, n: int) -> float:
+        def fastPow(a, b):
+            res = 1
+            while b:
+                if b & 1:
+                    res *= a
+                # 注意：b >>= 1 !!!
+                b >>= 1
+                a *= a
+            return res
+
+        if x == 0:return 0
+        if n < 0:
+            x, n = 1 / x, -n
+        return fastPow(x, n)
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[SwordOffer 20. 表示数值的字符串](https://leetcode-cn.com/problems/biao-shi-shu-zhi-de-zi-fu-chuan-lcof/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// 标准写法
+class Solution {
+public:
+    int n;
+
+    bool scanUnsignedInt(string & s, int & i) {
+        int p = i;
+        while (i < n && isdigit(s[i]))
+            i ++ ;
+        return i > p;
+    }
+
+    bool scanInt(string & s, int & i) {
+        if (i < n && (s[i] == '+' || s[i] == '-'))
+            i ++ ;
+        return scanUnsignedInt(s, i);
+    }
+
+    bool isNumber(string s) {
+        this->n = s.size();
+        int i = 0;
+
+        while (i < n && s[i] == ' ')
+            i ++ ;
+        
+        bool flag = scanInt(s, i);
+        if (i < n && s[i] == '.')
+            flag = scanUnsignedInt(s, ++ i ) || flag;
+        if (i < n && (s[i] == 'e' || s[i] == 'E'))
+            flag = scanInt(s, ++ i ) && flag;
+        
+        while (i < n && s[i] == ' ')
+            i ++ ;
+
+        return flag && i == n;
+    }
+};
+```
+
+##### **Python**
+
+```python
+# python3
+# (模拟) O(n)
+# 这道题边界情况很多，首先要考虑清楚的是有效的数字格式是什么，这里用A[.[B]][e|EC]或者.B[e|EC]表示，其中A和C都是整数(可以有正负号也可以没有)，B是无符号整数。
+
+# 那么我们可以用两个辅助函数来检查整数和无符号整数的情况，从头到尾扫一遍字符串然后分情况判断，注意这里要传数字的引用或者用全局变量。
+
+
+class Solution:
+    def isNumber(self, s: str) -> bool:
+        n = len(s)
+        i = 0
+
+        # 用来判断是否存在正数
+        def scanUnsignedInt():
+            # 用 nonlocal 踩坑，不能把 i 放进函数里传递
+            nonlocal i  
+            p = i 
+            while i < n and s[i].isdigit():
+                i += 1
+            return p < i
+        
+        # 用来判断是否存在整数
+        def scanInt():
+            nonlocal i
+            if i < n and (s[i] == '+' or s[i] == '-'):
+                i += 1
+            return scanUnsignedInt()
+
+        while i < n and s[i] == ' ':
+            i += 1
+
+        flag = scanInt()
+        if i < n and s[i] == '.':
+            i += 1
+            flag = scanUnsignedInt() or flag
+        if i < n and (s[i] == 'e' or s[i] == 'E'):
+            i += 1
+            flag = scanInt() and flag
+
+        while i < n and s[i] == ' ':
+            i += 1
+        return flag and i == n
 ```
 
 <!-- tabs:end -->
