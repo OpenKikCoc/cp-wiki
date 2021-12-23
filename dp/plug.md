@@ -995,3 +995,84 @@ int main() {
 ![sm18847458](./images/sm18847458.png)
 
 - [【动画】从方格这头走向那头有多少种走法呢～【结尾迷之感动】](https://www.bilibili.com/video/BV1Cx411D74e)\|[Youtube](https://www.youtube.com/watch?v=Q4gTV4r0zRs)
+
+
+## 习题
+
+> [!NOTE] **[AcWing 1412. 邮政货车](https://www.acwing.com/problem/content/1414/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 求 N * 4 格点的哈密顿回路的个数
+> 
+> 经典插头dp问题
+> 
+> 但是不用插头dp来做 但沿用插头dp的思想 简单一些
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 1010, M = 1000;
+
+int n;
+int f[N][6][M];
+// 分类讨论 状态转移
+int w[6][6] = {
+    {1, 0, 1, 1, 0, 0},
+    {0, 1, 0, 0, 1, 0},
+    {0, 1, 0, 0, 1, 0},
+    {0, 1, 0, 0, 1, 0},
+    {1, 0, 1, 1, 0, 1},
+    {0, 0, 0, 0, 1, 0},
+};
+
+void add(int a[], int b[]) {
+    for (int i = 0, t = 0; i < M; ++ i ) {
+        t += a[i] + b[i];
+        a[i] = t % 10;
+        t /= 10;
+    }
+}
+
+int main() {
+    cin >> n;
+    f[1][4][0] = f[1][1][0] = 1;
+    for (int i = 2; i < n; ++ i )
+        for (int j = 0; j < 6; ++ j )
+            for (int k = 0; k < 6; ++ k )
+                if (w[k][j])
+                    add(f[i][j], f[i - 1][k]);
+    int res[M] = {0};
+    add(res, f[n - 1][0]), add(res, f[n - 1][4]);
+    add(res, res);
+    
+    int k = M - 1;
+    while (k > 0 && !res[k]) -- k ;
+    for (int i = k; i >= 0; -- i ) cout << res[i];
+    cout << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

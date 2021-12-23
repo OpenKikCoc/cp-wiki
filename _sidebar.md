@@ -325,5 +325,6 @@
   * [括号序列](topic/bracket.md)
   * [建模](topic/modeling.md)
   * [模拟](topic/simulation.md)
+  * [分情况讨论](topic/casebycase.md)
   * [trick](topic/trick.md)
   * [hash](topic/hash.md)

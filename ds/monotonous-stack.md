@@ -117,6 +117,87 @@ if __name__ == '__main__':
 
 * * *
 
+> [!NOTE] **[AcWing 1413. 矩形牛棚](https://www.acwing.com/problem/content/1415/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 单调栈
+> 
+> 最大矩形
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 3010;
+
+int n, m;
+int g[N][N], h[N][N];
+// int l[N], r[N], stk[N];
+int stk[N];
+
+int work(int h[]) {
+    // top = 0 ----> idx-0 DO NOT store value
+    int top = 0, res = 0;
+    for (int i = 1; i <= m + 1; ++ i ) {
+        while (top && h[stk[top]] >= h[i]) {
+            int l = stk[top -- ];
+            res = max(res, h[l] * (top == 0 ? i - 1 : i - stk[top] - 1));
+        }
+        stk[ ++ top] = i;
+    }
+    // cout << "res = " << res << endl;
+    return res;
+}
+
+int main() {
+    int p;
+    cin >> n >> m >> p;
+    while (p -- ) {
+        int x, y;
+        cin >> x >> y;
+        g[x][y] = 1;
+    }
+    // 计算本行本列向上最多有多少可用位置
+    for (int i = 1; i <= n; ++ i )
+        for (int j = 1; j <= m; ++ j )
+            if (!g[i][j])
+                h[i][j] = h[i - 1][j] + 1;
+    
+    // for (int i = 1; i <= n; ++ i )
+    //     for (int j = 1; j <= m; ++ j )
+    //         cout << h[i][j] << " \n"[j == m];
+    
+    int res = 0;
+    for (int i = 1; i <= n; ++ i )
+        res = max(res, work(h[i]));
+    cout << res << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[LeetCode 1944. 队列中可以看到的人数](https://leetcode-cn.com/problems/number-of-visible-people-in-a-queue/)**
 > 
 > [biweekly-57](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-07-24_Biweekly-57/)

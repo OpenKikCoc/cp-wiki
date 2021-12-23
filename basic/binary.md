@@ -274,3 +274,109 @@ public:
 <br>
 
 * * *
+
+### 三分
+
+> [!NOTE] **[AcWing 1420. 通电围栏](https://www.acwing.com/problem/content/1422/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 三分 要求：必须是凸/凹函数
+> 
+> 显然有三分性质 三分套三分
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+#define x first
+#define y second
+
+using PDD = pair<double, double>;
+const int N = 160;
+const double eps = 1e-6;
+
+int n;
+struct Segment {
+    PDD a, b;
+} seg[N];
+
+double get_dist(PDD a, PDD b) {
+    double dx = a.x - b.x;
+    double dy = a.y - b.y;
+    return sqrt(dx * dx + dy * dy);
+}
+
+double f(double x, double y) {
+    double s = 0;
+    for (int i = 0; i < n; ++ i ) {
+        auto a = seg[i].a, b = seg[i].b;
+        double da = get_dist({x, y}, a);
+        double db = get_dist({x, y}, b);
+        // 计算距离
+        // Case1 到端点距离
+        // Case2 x / y 坐标差 两种情况
+        double d = min(da, db);
+        if (x >= a.x && x <= b.x) d = fabs(y - a.y);
+        else if (y >= a.y && y <= b.y) d = fabs(x - a.x);
+        s += d;
+    }
+    return s;
+}
+
+// 三分纵坐标
+double g(double x, double & y) {
+    double l = 0, r = 100;
+    while (r - l > eps) {
+        double m1 = l + (r - l) / 3, m2 = l + (r - l) / 3 * 2;
+        if (f(x, m1) >= f(x, m2)) l = m1;
+        else r = m2;
+    }
+    y = r;
+    return f(x, y);
+}
+
+int main() {
+    cin >> n;
+    for (int i = 0; i < n; ++ i ) {
+        double x1, y1, x2, y2;
+        cin >> x1 >> y1 >> x2 >> y2;
+        if (x1 > x2) swap(x1, x2);
+        if (y1 > y2) swap(y1, y2);
+        seg[i] = {{x1, y1}, {x2, y2}};
+    }
+    
+    // 三分横坐标
+    double l = 0, r = 100, y;
+    while (r - l > eps) {
+        double m1 = l + (r - l) / 3, m2 = l + (r - l) / 3 * 2;
+        if (g(m1, y) >= g(m2, y)) l = m1;
+        else r = m2;
+    }
+    double d = f(r, y);
+    printf("%.1lf %.1lf %.1lf\n", r, y, d);
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

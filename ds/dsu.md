@@ -497,3 +497,109 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[AcWing ]()**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **经典 并查集**
+> 
+> 先后染色统计问题 + 扫描线
+> 
+> 分解之后 求每个区域不同颜色各自的面积和
+> 
+> 有一个超经典的题 【疯狂的馒头】
+> 
+> 想当然的会有线段树做法 但复杂度过高 有巧妙的 并查集做法
+> 
+> 并查集经典应用
+> 
+> **理解透彻**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+#define x first
+#define y second
+
+using PII = pair<int, int>;
+const int N = 1010, M = 25010;
+
+int A, B, n;
+struct Rect {
+    int c;
+    PII a, b;
+}rect[N];
+int ans[M];
+int p[10010];
+
+// 找到 x 开始向右至 n 第一个未染色的节点
+int find(int x) {
+    if (p[x] != x) p[x] = find(p[x]);
+    return p[x];
+}
+
+int draw(int a, int b) {
+    int res = 0;
+    for (int i = find(a); i <= b; i = find(i)) {
+        p[i] = i + 1;
+        res ++ ;
+    }
+    return res;
+}
+
+void get_range(int a, int b) {
+    for (int i = 1; i <= B + 1; ++ i ) p[i] = i;
+    // 逆序 方便使用并查集draw的思路
+    for (int i = n - 1; i >= 0; -- i ) {
+        auto & r = rect[i];
+        if (r.a.x <= a && r.b.x >= b)
+            ans[r.c] += draw(r.a.y + 1, r.b.y) * (b - a);   // +1
+    }
+    ans[1] += draw(1, B) * (b - a);
+}
+
+int main() {
+    cin >> A >> B >> n;
+    vector<int> xs;
+    for (int i = 0; i < n; ++ i ) {
+        int x1, y1, x2, y2, c;
+        cin >> x1 >> y1 >> x2 >> y2 >> c;
+        rect[i] = {c, {x1, y1}, {x2, y2}};
+        xs.push_back(x1), xs.push_back(x2);
+    }
+    xs.push_back(0), xs.push_back(A);
+    
+    sort(xs.begin(), xs.end());
+    for (int i = 0; i + 1 < xs.size(); ++ i )
+        if (xs[i] != xs[i + 1])
+            get_range(xs[i], xs[i + 1]);
+    
+    for (int i = 1; i < M; ++ i )
+        if (ans[i])
+            cout << i << ' ' << ans[i] << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

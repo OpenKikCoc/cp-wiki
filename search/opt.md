@@ -479,3 +479,711 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[AcWing 1418. 栅栏围栏](https://www.acwing.com/problem/content/1420/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **复杂剪枝 贪心 优化**
+> 
+> 爆搜即可
+> 
+> 显然如果短的可以满足 更长的一定可以满足 故首先【从小到大排】
+> 
+> 枚举顺序和剪枝细节
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 55, M = 1050;
+
+int n, m;
+int board[N], rail[M], sum[M], tot;
+int mid;
+
+// u 要裁减的编号 start 木板号
+bool dfs(int u, int start) {
+    if (!u) return true;
+    // 总长度都剪不出来 false
+    if (tot < sum[u]) return false;
+    // 循环 注意条件
+    if (u + 1 > mid || rail[u] != rail[u + 1]) start = 1;
+    for (int i = start; i <= n; ++ i ) {
+        // 去重
+        if (i > start && board[i] == board[i - 1]) continue;
+        if (board[i] >= rail[u]) {
+            // 更改
+            tot -= rail[u];
+            board[i] -= rail[u];
+            if (board[i] < rail[1]) tot -= board[i];
+            
+            if (dfs(u - 1, i)) {
+                // 恢复
+                if (board[i] < rail[1]) tot += board[i];
+                board[i] += rail[u];
+                tot += rail[u];
+                return true;
+            }
+            
+            // 恢复
+            if (board[i] < rail[1]) tot += board[i];
+            board[i] += rail[u];
+            tot += rail[u];
+        }
+    }
+    return false;
+}
+
+int main() {
+    cin >> n;
+    for (int i = 1; i <= n; ++ i ) cin >> board[i], tot += board[i];
+    cin >> m;
+    for (int i = 1; i <= m; ++ i ) cin >> rail[i];
+    
+    sort(board + 1, board + n + 1);
+    sort(rail + 1, rail + m + 1);
+    for (int i = 1; i <= m; ++ i ) sum[i] = sum[i - 1] + rail[i];
+    
+    // 有单调性
+    int l = 0, r = m;
+    while (l < r) {
+        mid = l + r + 1 >> 1;
+        // 写法
+        if (dfs(mid, 1)) l = mid;
+        else r = mid - 1;
+    }
+    cout << l << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1419. 牛的密码学](https://www.acwing.com/problem/content/1421/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 复杂模拟 爆搜 剪枝
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// 爆搜
+#include <bits/stdc++.h>
+using namespace std;
+
+using ULL = unsigned long long;
+const int P = 131;
+
+string target = "Begin the Escape execution at the Break of Dawn";
+unordered_set<ULL> S, valid;
+
+ULL get_hash(string state) {
+    ULL res = 0;
+    for (auto c : state) res = res * P + c;
+    return res;
+}
+
+// 检查其他字符够不够
+bool check1(string state) {
+    int c = 0, o = 0, w = 0;
+    string a = target, b;
+    for (auto x : state)
+        if (x == 'C') ++ c ;
+        else if (x == 'O') ++ o ;
+        else if (x == 'W') ++ w ;
+        else b += x;
+    sort(a.begin(), a.end()), sort(b.begin(), b.end());
+    return a == b;
+}
+
+// state是否合法
+bool check2(string state) {
+    if (state.size() == target.size()) return false;
+    // 找到最外的两个子段 检查
+    int l = 0, r = state.size() - 1;
+    while (state[l] != 'C' && state[l] != 'O' && state[l] != 'W') ++ l ;
+    while (state[r] != 'C' && state[r] != 'O' && state[r] != 'W') -- r ;
+    if (state[l] != 'C' || state[r] != 'W') return false;
+    if (state.substr(0, l) != target.substr(0, l)) return false;
+    if (state.substr(r + 1) != target.substr(target.size() - (state.size() - r - 1))) return false;
+    
+    // 判断每一个子串 是否出现过
+    string s;
+    for (int i = l + 1; i <= r; ++ i ) {
+        auto c = state[i];
+        if (c == 'C' || c == 'O' || c == 'W') {
+            if (valid.count(get_hash(s)) == 0) return false;
+            s.clear();
+        } else s += c;
+    }
+    return true;
+}
+
+bool dfs(string state) {
+    if (state == target) return true;
+    if (!check2(state)) return false;   // 保证了state不会比target短
+    auto h = get_hash(state);
+    if (S.count(h)) return false;
+    S.insert(h);
+    
+    for (int o = 0; o < state.size(); ++ o ) {
+        if (state[o] != 'O') continue;
+        for (int c = 0; c < o; ++ c ) {
+            if (state[c] != 'C') continue;
+            for (int w = o + 1; w < state.size(); ++ w ) {
+                if (state[w] != 'W') continue;
+                auto s1 = state.substr(0, c), s2 = state.substr(c + 1, o - c - 1);
+                auto s3 = state.substr(o + 1, w - o - 1), s4 = state.substr(w + 1);
+                if (dfs(s1 + s3 + s2 + s4)) return true;
+            }
+        }
+    }
+    return false;
+}
+
+int main() {
+    // 加入目标的所有子串的hash
+    valid.insert(0);
+    for (int i = 0; i < target.size(); ++ i )
+        for (int j = i; j < target.size(); ++ j )
+            valid.insert(get_hash(target.substr(i, j - i + 1)));
+    
+    string start;
+    getline(cin, start);
+    if (!check1(start)) cout << "0 0" << endl;
+    else if (!dfs(start)) cout << "0 0" << endl;
+    else cout << 1 << ' ' << (start.size() - target.size()) / 3 << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1122. 质数方阵](https://www.acwing.com/problem/content/1124/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 搜索顺序 贪心 剪枝
+> 
+> 从搜索顺序来优化
+> 
+> 先设置对角线
+> 
+> cx[] 表示第x位共用的情况下都有哪些数
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 100010, M = 10;
+
+int n, m;
+int primes[N], cnt;
+bool st[N];
+vector<int> c1[M], c3[M], c15[M][M], c124[M][M][M];
+int g[6][6];
+vector<string> ans;
+
+int get(int x, int k) {
+    int t = 1;
+    for (int i = 0; i < 5 - k; ++ i ) t *= 10;
+    return x / t % 10;
+}
+
+void init() {
+    for (int i = 2; i < N; ++ i ) {
+        if (!st[i]) primes[cnt ++ ] = i;
+        for (int j = 0; primes[j] <= N / i; ++ j ) {
+            st[primes[j] * i] = true;
+            if (i % primes[j] == 0) break;
+        }
+    }
+    
+    for (int i = 0; i < cnt; ++ i ) {
+        int p = primes[i];
+        if (p < 10000 || p > 99999) continue;
+        int n1 = get(p, 1), n2 = get(p, 2), n3 = get(p, 3), n4 = get(p, 4), n5 = get(p, 5);
+        if (n1 + n2 + n3 + n4 + n5 != n) continue;
+        c1[n1].push_back(p);
+        c3[n3].push_back(p);
+        if (n2 && n3 && n4)
+            c15[n1][n5].push_back(p);
+        c124[n1][n2][n4].push_back(p);
+    }
+}
+
+bool check(int x1, int y1, int x2, int y2) {
+    int s = 0;
+    for (int i = x1; i <= x2; ++ i )
+        for (int j = y1; j <= y2; ++ j ) {
+            int x = g[i][j];
+            if (x < 0 || x > 9) return false;
+            s = s * 10 + x;
+        }
+    return !st[s];
+}
+
+// 按特定顺序爆搜
+void dfs(int u) {
+    if (u > 7) {
+        g[3][5] = n - g[3][1] - g[3][2] - g[3][3] - g[3][4];
+        g[4][5] = n - g[1][5] - g[2][5] - g[3][5] - g[5][5];
+        g[4][3] = n - g[4][1] - g[4][2] - g[4][4] - g[4][5];
+        g[5][3] = n - g[5][1] - g[5][2] - g[5][4] - g[5][5];
+
+        if (check(1, 3, 5, 3) && check(1, 5, 5, 5) && check(3, 1, 3, 5) &&
+            check(4, 1, 4, 5) && check(5, 1, 5, 5)) {
+            string s;
+            for (int i = 1; i <= 5; i ++ )
+                for (int j = 1; j <= 5; j ++ )
+                    s += to_string(g[i][j]);
+            ans.push_back(s);
+        }
+        return;
+    }
+    if (u == 1) {
+        for (auto x : c1[g[1][1]]) {
+            g[2][2] = get(x, 2), g[3][3] = get(x, 3), g[4][4] = get(x, 4), g[5][5] = get(x, 5);
+            dfs(u + 1);
+        }
+    } else if (u == 2) {
+        for (auto x : c3[g[3][3]]) {
+            g[5][1] = get(x, 1), g[4][2] = get(x, 2), g[2][4] = get(x, 4), g[1][5] = get(x, 5);
+            dfs(u + 1);
+        }
+    } else if (u == 3) {
+        for (auto x : c15[g[1][1]][g[1][5]]) {
+            g[1][2] = get(x, 2), g[1][3] = get(x, 3), g[1][4] = get(x, 4);
+            dfs(u + 1);
+        }
+    } else if (u == 4) {
+        for (auto x : c124[g[1][2]][g[2][2]][g[4][2]]) {
+            g[3][2] = get(x, 3), g[5][2] = get(x, 5);
+            dfs(u + 1);
+        }
+    } else if (u == 5) {
+        for (auto x : c124[g[1][4]][g[2][4]][g[4][4]]) {
+            g[3][4] = get(x, 3), g[5][4] = get(x, 5);
+            dfs(u + 1);
+        }
+    } else if (u == 6) {
+        for (auto x : c15[g[1][1]][g[5][1]]) {
+            g[2][1] = get(x, 2), g[3][1] = get(x, 3), g[4][1] = get(x, 4);
+            dfs(u + 1);
+        }
+    } else {
+        for (auto x : c124[g[2][1]][g[2][2]][g[2][4]]) {
+            g[2][3] = get(x, 3), g[2][5] = get(x, 5);
+            dfs(u + 1);
+        }
+    }
+}
+
+int main() {
+    cin >> n >> m;
+    init();
+    
+    g[1][1] = m;
+    dfs(1);
+    
+    if (ans.empty()) cout << "NONE" << endl;
+    else {
+        sort(ans.begin(), ans.end());
+        for (int i = 0; i < ans.size(); ++ i ) {
+            for (int j = 0; j < 25; ++ j ) {
+                cout << ans[i][j];
+                if ((j + 1) % 5 == 0) cout << endl;
+            }
+            if (i + 1 < ans.size()) cout << endl;
+        }
+    }
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1422. 拉丁矩阵](https://www.acwing.com/problem/content/1424/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 搜索
+> 
+> **分析性质 剪枝 置换群**
+> 
+> 性质
+> 
+> 1. 交换两行 / 两列仍是
+> 
+> 2. 1-n置换 仍是
+> 
+> 已经要求了第一行 1-N
+> 
+> 根据置换分析 固定第一列也是1-N
+> 
+> 置换圈个数相同及对应的置换圈内元素个数相同即视为相同方案
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const int N = 10;
+
+int n;
+int g[N][N];
+bool row[N][N], col[N][N];
+map<vector<int>, int> f;
+
+void put(int x, int y, int k) {
+    g[x][y] = k;
+    row[x][k] = true;
+    col[y][k] = true;
+}
+
+void unput(int x, int y) {
+    int k = g[x][y];
+    row[x][k] = false;
+    col[y][k] = false;
+    g[x][y] = 0;
+}
+
+int dfs(int x, int y) {
+    // 从下一行再开始
+    if (y > n) ++ x, y = 2;
+    // 【剪枝 2】第n行不用判断
+    if (x == n) return 1;
+    
+    // 【剪枝 3】 置换群的优化剪枝
+    // x = 3 y = 2 时前两行的置换已经找完了
+    // [只要其结构相同 就算一种]
+    if (x == 3 && y == 2) {
+        vector<int> line;
+        bool st[N] = {0};
+        for (int i = 1; i <= n; ++ i ) {
+            if (st[i]) continue;
+            int s = 0;
+            for (int j = i; !st[j]; j = g[2][j]) {
+                ++ s;
+                st[j] = true;
+            }
+            line.push_back(s);
+        }
+        sort(line.begin(), line.end());
+        if (f.count(line)) return f[line];
+        int res = 0;
+        for (int i = 1; i <= n; ++ i )
+            if (!row[x][i] && !col[y][i]) {
+                put(x, y, i);
+                res += dfs(x, y + 1);
+                unput(x, y);
+            }
+        return f[line] = res;
+    }
+    
+    int res = 0;
+    for (int i = 1; i <= n; ++ i )
+        if (!row[x][i] && !col[y][i]) {
+            put(x, y, i);
+            res += dfs(x, y + 1);
+            unput(x, y);
+        }
+    return res;
+}
+
+int main() {
+    cin >> n;
+    // 【剪枝 1】第一列也1-n
+    for (int i = 1; i <= n; ++ i ) {
+        put(1, i, i);
+        put(i, 1, i);
+    }
+    
+    LL res = dfs(2, 2);
+    // 计算置换
+    for (int i = 1; i <= n - 1; ++ i ) res *= i;
+    cout << res << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1430. 贝特西之旅](https://www.acwing.com/problem/content/1432/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **搜索 若数据范围更大需插头dp**
+> 
+> 分析 剪枝
+> 
+> [剪枝1] 每个各自出入各来自一个方向 四选二
+> 
+> 判断周围空格数量是否小于等于1
+> 
+> [剪枝1] 上下 or 左右 都走过 必然无解
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 10;
+
+int n;
+bool st[N][N];
+int dx[] = {-1, 0, 0, 1}, dy[] = {0, -1, 1, 0};
+
+// 周围空格数量小于等于1
+bool check(int x, int y) {
+    int cnt = 0;
+    for (int i = 0; i < 4; ++ i ) {
+        int a = x + dx[i], b = y + dy[i];
+        if (!st[a][b])
+            ++ cnt;
+    }
+    return cnt <= 1;
+}
+
+int dfs(int x, int y, int u) {
+    if (x == n && y == 1) {
+        if (u == n * n) return 1;
+        return 0;
+    }
+    
+    // 剪枝2
+    if (st[x - 1][y] && st[x + 1][y] && !st[x][y - 1] && !st[x][y + 1] || 
+        st[x][y - 1] && st[x][y + 1] && !st[x - 1][y] && !st[x + 1][y])
+        return 0;
+    
+    // 【该位置的周围空格】的周围空格数量有几个大于等于1
+    int cnt = 0, sx, sy;
+    for (int i = 0; i < 4; ++ i ) {
+        int nx = x + dx[i], ny = y + dy[i];
+        if (!(nx == n && ny == 1) && !st[nx][ny] && check(nx, ny)) {
+            cnt ++ ;
+            sx = nx, sy = ny;
+        }
+    }
+    
+    int res = 0;
+    if (cnt > 1) return 0;
+    else if (cnt == 1) {
+        st[sx][sy] = true;
+        res += dfs(sx, sy, u + 1);
+        st[sx][sy] = false;
+    } else {
+        for (int i = 0; i < 4; ++ i ) {
+            int nx = x + dx[i], ny = y + dy[i];
+            if (!st[nx][ny]) {
+                st[nx][ny] = true;
+                res += dfs(nx, ny, u + 1);
+                st[nx][ny] = false;
+            }
+        }
+    }
+    return res;
+}
+
+int main() {
+    cin >> n;
+    for (int i = 0; i <= n + 1; ++ i )
+        st[i][0] = st[i][n + 1] = st[0][i] = st[n + 1][i] = true;
+        
+    st[1][1] = true;
+    cout << dfs(1, 1, 1) << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
+
+> [!NOTE] **[AcWing 1431. 时钟](https://www.acwing.com/problem/content/1433/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 搜索
+> 
+> 分析 剪枝
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// 每个操作最多执行3次
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 10;
+
+int q[N];
+vector<int> ans, path;
+string ops[9] = {
+    "ABDE", "ABC", "BCEF", "ADG", "BDEFH",
+    "CFI", "DEGH", "GHI", "EFHI"
+};
+
+bool check() {
+    for (int i = 0; i < 9; ++ i )
+        if (q[i] != 12)
+            return false;
+    return true;
+}
+
+void rotate(int u) {
+    for (auto c : ops[u]) {
+        int k = c - 'A';
+        q[k] += 3;
+        if (q[k] == 15) q[k] = 3;
+    }
+}
+
+// 爆搜每种操作执行多少次
+void dfs(int u) {
+    if (u == 9) {
+        if (check()) {
+            if (ans.empty() || ans.size() > path.size() || 
+                ans.size() == path.size() && ans > path)
+                ans = path;
+        }
+        return;
+    }
+    
+    // 最多旋转3次 第4次相当于恢复
+    for (int i = 0; i < 4; ++ i ) {
+        // u + 1 为编号 u 为下标
+        dfs(u + 1);
+        path.push_back(u + 1);
+        rotate(u);
+    }
+    for (int i = 0; i < 4; ++ i ) path.pop_back();
+}
+
+int main() {
+    for (int i = 0; i < 9; ++ i ) cin >> q[i];
+    dfs(0);
+    
+    for (auto x : ans) cout << x << ' ';
+    cout << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

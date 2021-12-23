@@ -507,3 +507,95 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[AcWing 1421. 威斯康星方形牧场](https://www.acwing.com/problem/content/1423/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 5;
+
+char g[N][N];
+int num[] = {3, 3, 3, 4, 3};
+bool st[N][N];
+int ans;
+struct Node {
+    char c;
+    int a, b;
+} path[N * N];
+
+bool check(int a, int b, int c) {
+    for (int i = a - 1; i <= a + 1; ++ i )
+        for (int j = b - 1; j <= b + 1; ++ j )
+            if (i >= 0 && i < 4 && j >= 0 && j < 4 && g[i][j] == c)
+                return false;
+    return true;
+}
+
+void dfs(char c, int u) {
+    if (u == 16) {
+        ans ++ ;
+        if (ans == 1) {
+            for (int i = 0; i < 16; ++ i )
+                cout << path[i].c << ' ' << path[i].a + 1 << ' ' << path[i].b + 1 << endl;
+        }
+        return;
+    }
+    
+    for (int i = 0; i < 4; ++ i )
+        for (int j = 0; j < 4; ++ j )
+            // 没放过 且可以填c
+            if (!st[i][j] && check(i, j, c)) {
+                st[i][j] = true;
+                char t = g[i][j];
+                g[i][j] = c;
+                path[u] = {c, i, j};
+                num[c - 'A'] -- ;
+                
+                // u == 15 时任意点搜下一层 否则会多次重复计数ans++
+                if (u == 15) dfs('A', u + 1);
+                else {
+                    for (int k = 0; k < 5; ++ k )
+                        if (num[k] > 0)
+                            dfs(k + 'A', u + 1);
+                }
+                
+                num[c - 'A'] ++ ;
+                g[i][j] = t;
+                st[i][j] = false;
+            }
+}
+
+int main() {
+    for (int i = 0; i < 4; ++ i ) cin >> g[i];
+    dfs('D', 0);
+    cout << ans << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
