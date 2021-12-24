@@ -299,3 +299,173 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[Luogu 集合](https://www.luogu.com.cn/problem/P1621)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 1e5 + 10;
+
+int a, b, p;
+int pa[N];
+bool st[N];
+
+int find(int x) {
+    if (pa[x] != x)
+        pa[x] = find(pa[x]);
+    return pa[x];
+}
+
+int main() {
+    cin >> a >> b >> p;
+    
+    for (int i = a; i <= b; ++ i )
+        pa[i] = i;
+    
+    // 每合并一次-1
+    int res = b - a + 1;
+    // 筛法
+    for (int i = 2; i <= b; ++ i )
+        if (!st[i]) {
+            for (int j = i * 2; j <= b; j += i) {
+                st[j] = true;
+                
+                // i >= p 才合并    合并需要 j - i >= a
+                if (i >= p && j - i >= a) {
+                    int fa = find(j), fb = find(j - i);
+                    if (fa != fb) {
+                        pa[fa] = fb;
+                        res -- ;
+                    }
+                }
+            }
+        }
+    cout << res << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu 签到题](https://www.luogu.com.cn/problem/P3601)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 欧拉函数经典应用
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// 推导
+// 显然 qiandao(x) = x - phi(x)
+//
+// r 最大1e12 ==> 开根最大1e6
+//
+// 1. 求出1e6的所有素数
+// 2. 枚举求和 用埃氏筛法的思想算每个质数对 [l,r] 每个数的贡献
+//
+// 注意 for 循环及数组用 LL
+
+using LL = long long;
+using PII = pair<int, int>;
+const int N = 1e6 + 10, MOD = 666623333;
+
+int primes[N], cnt;
+bool st[N];
+
+LL vis[N], phi[N];
+
+void init() {
+    for (int i = 2; i < N; ++i) {
+        if (!st[i])
+            primes[cnt++] = i;
+        for (int j = 0; primes[j] <= (N - 1) / i; ++j) {
+            st[primes[j] * i] = true;
+            if (i % primes[j] == 0)
+                break;
+        }
+    }
+}
+
+int main() {
+    init();
+
+    LL l, r;
+    cin >> l >> r;
+
+    for (LL i = l; i <= r; ++i)
+        vis[i - l] = phi[i - l] = i;
+
+    // 求所有的[l,r]的phi
+    for (int i = 0; i < cnt && primes[i] <= r / primes[i]; ++i) {
+        LL p = primes[i];
+        // 遍历起始为 l/p向上取整*p
+        for (LL j = (l + p - 1) / p * p; j <= r; j += p) {
+            // 先除
+            phi[j - l] = phi[j - l] / p * (p - 1);
+            while (vis[j - l] % p == 0)
+                vis[j - l] /= p;
+        }
+    }
+
+    LL res = 0;
+    for (LL i = l; i <= r; ++i) {
+        // 有大质数 更新phi
+        if (vis[i - l] > 1)
+            phi[i - l] = phi[i - l] / vis[i - l] * (vis[i - l] - 1);
+        // 累加得到的phi
+        res = (res + (i - phi[i - l]) % MOD) % MOD;
+    }
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

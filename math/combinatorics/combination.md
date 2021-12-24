@@ -681,3 +681,128 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[Luogu NOIP2003 普及组 栈](https://www.luogu.com.cn/problem/P1044)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典组合数
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+const int N = 40;
+
+LL c[N][N];
+
+int main() {
+    for (int i = 0; i < N; ++ i )
+        for (int j = 0; j <= i; ++ j )
+            if (!j)
+                c[i][j] = 1;
+            else
+                c[i][j] = c[i - 1][j - 1] + c[i - 1][j];
+    
+    int n;
+    cin >> n;
+    cout << c[n * 2][n] / (n + 1) << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu [NOIP2016 提高组] 组合数问题](https://www.luogu.com.cn/problem/P2822)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 为了处理多组数据询问 前缀和预处理
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 2010;
+
+int c[N][N];
+int s[N][N];
+
+int main() {
+    int T, k;
+    scanf("%d%d", &T, &k);
+
+    for (int i = 0; i < N; i++)
+        for (int j = 0; j <= i; j++) {
+            if (!j)
+                c[i][j] = 1 % k;
+            else
+                c[i][j] = (c[i - 1][j] + c[i - 1][j - 1]) % k;
+
+            if (!c[i][j])
+                s[i][j] = 1;
+        }
+
+    for (int i = 0; i < N; i++)
+        for (int j = 0; j < N; j++) {
+            if (i)
+                s[i][j] += s[i - 1][j];
+            if (j)
+                s[i][j] += s[i][j - 1];
+            if (i && j)
+                s[i][j] -= s[i - 1][j - 1];
+        }
+
+    while (T--) {
+        int n, m;
+        scanf("%d%d", &n, &m);
+
+        printf("%d\n", s[n][m]);
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

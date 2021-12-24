@@ -721,3 +721,65 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[Luogu 车的攻击](https://www.luogu.com.cn/problem/P3913)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+LL n, k;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+    
+    cin >> n >> k;
+    
+    vector<int> vx, vy;
+    while (k -- ) {
+        int x, y;
+        cin >> x >> y;
+        vx.push_back(x);
+        vy.push_back(y);
+    }
+    sort(vx.begin(), vx.end());
+    sort(vy.begin(), vy.end());
+    vx.erase(unique(vx.begin(), vx.end()), vx.end());
+    vy.erase(unique(vy.begin(), vy.end()), vy.end());
+    LL nx = vx.size(), ny = vy.size();
+
+    LL res = n * n - (n - nx) * (n - ny);
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

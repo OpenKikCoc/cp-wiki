@@ -320,3 +320,134 @@ if __name__ == '__main__':
 [leetcode 15. 三数之和](https://leetcode-cn.com/problems/3sum/)
 
 [leetcode 1438. 绝对差不超过限制的最长连续子数组](https://leetcode-cn.com/problems/longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit/)
+
+
+> [!NOTE] **[Luogu [USACO15OPEN]Trapped in the Haybales S](https://www.luogu.com.cn/problem/P3124)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// 引用某题解的话
+// > 先给大家表演一波错误的思路：
+// > 从初始位置出发向左右两边分别破障，取最小值。
+// > 错误的思路加上理解题意错误，题意只能增加一捆稻草。
+// > 导致浪费时间+自闭自闭自闭
+// > WA WA WA
+// > 这就是思路不清晰的后果，
+// > 一定要想好了再动手！！！！想好了再动手！！！
+//
+// 题意为【只增加一个草堆的数量检查能否困住奶牛】
+//
+// 需要加固该草堆的size就等于跑动的距离减去该草堆的大小。
+// 那么某一个草堆能够被撞击的最大加速值是在不打破该草堆的前提下
+// 让Bessie随意倒腾能够开辟出的最大空间。
+// ===> 反映在代码实现中就是只要另一侧可以继续开扩则continue开阔
+//
+// 枚举，分别向左向右i枚举每一个草堆
+// 假设加高当前草堆 则需找到另一侧最近的不被击破的草堆位值
+// 1. 另一侧草堆被击破 继续向边界搜索直到越界
+// 2. 不被击破 根据距离 可以求出本个草堆需要增加的高度
+//    如果本个草堆就算不加稻草也不会被击破 显然输出0结束
+//    如果本个草堆会被击破 计算稻草【并在同一侧开阔区间】
+//
+// 那么问题来了，为什么可以在本个草堆被击破时开阔本侧？
+// ===> 因为考虑枚举同侧更靠外的一个点，还要重复之前开阔另一侧的过程
+//      已知Bessie已经可以自由走到另一侧的某个位置，无需再走一遍
+//
+// ===> 归根到底是：双指针的Trick优化
+
+const int N = 1e5 + 10, INF = 0x3f3f3f3f;
+
+int n, b;
+struct K {
+    int s, p;
+} k[N];
+
+int main() {
+    cin >> n >> b;
+    for (int i = 1; i <= n; ++ i )
+        cin >> k[i].s >> k[i].p;
+    sort(k + 1, k + n + 1, [](const K & a, const K & b) {
+        return a.p < b.p;
+    });
+    
+    int id;
+    for (int i = 1; i <= n; ++ i )
+        if (k[i].p > b) {
+            id = i;
+            break;
+        }
+    
+    int res = INF;
+    {
+        // 初始化
+        int l = id - 1, r = id, d = k[r].p - k[l].p;
+        while (l >= 1 && r <= n) {
+            if (k[l].s >= d && k[r].s >= d) {
+                cout << 0 << endl;
+                return 0;
+            }
+            if (k[r].s < d) {
+                d += k[r + 1].p - k[r].p;
+                r ++ ;
+                // think why
+                continue;
+            }
+            if (k[l].s < d) {
+                res = min(res, d - k[l].s);
+                d += k[l].p - k[l - 1].p;
+                l -- ;
+            }
+        }
+    }
+    {
+        int l = id - 1, r = id, d = k[r].p - k[l].p;
+        while (l >= 1 && r <= n) {
+            if (k[l].s >= d && k[r].s >= d) {
+                cout << 0 << endl;
+                return 0;
+            }
+            if (k[l].s < d) {
+                d += k[l].p - k[l - 1].p;
+                l -- ;
+                continue;
+            }
+            if (k[r].s < d) {
+                res = min(res, d - k[r].s);
+                d += k[r + 1].p - k[r].p;
+                r ++ ;
+            }
+        }
+    }
+    
+    cout << (res == INF ? -1 : res) << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

@@ -207,6 +207,54 @@ int main() {
 }
 ```
 
+##### **C++ 3**
+
+```cpp
+// 标准写法
+#include <bits/stdc++.h>
+using namespace std;
+
+int n, x;
+
+int main() {
+    cin >> n >> x;
+    
+    int res = 0;
+    vector<int> nums;
+    while (n)
+        nums.push_back(n % 10), n /= 10;
+    n = nums.size();
+    // Solve: x = 0
+    // NOT `for (int i = n - 1; i >= 0; -- i ) {`
+    // BUT
+    for (int i = n - 1 - !x; i >= 0; -- i ) {
+        int l = 0, r = 0, t = 1;
+        for (int j = n - 1; j > i; -- j )
+            l = l * 10 + nums[j];
+        for (int j = i - 1; j >= 0; -- j )
+            r = r * 10 + nums[j], t *= 10;
+        
+        // NOT `res += l * t;`
+        // BUT
+        {
+            if (i < n - 1) {
+                res += l * t;
+                if (!x)
+                    res -= t;
+            }
+        }
+        if (nums[i] == x)
+            res += r + 1;
+        else if (nums[i] > x)
+            res += t;
+    }
+    cout << res << endl;
+    
+    return 0;
+}
+```
+
+
 ##### **Python**
 
 ```python
@@ -1031,6 +1079,92 @@ int main() {
     if (op == 'N') work1();
     else work2();
     
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu 编码](https://www.luogu.com.cn/problem/P1246)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 数位 dp + 组合数
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 27;
+
+int c[N][N];
+
+// 组合数
+void init() {
+    for (int i = 0; i < N; ++ i )
+        for (int j = 0; j <= i; ++ j )
+            if (!j)
+                c[i][j] = 1;
+            else
+                c[i][j] = (c[i - 1][j] + c[i - 1][j - 1]);
+}
+
+int main() {
+    init();
+    
+    string str;
+    cin >> str;
+    
+    for (auto c : str)
+        if (c < 'a' || c > 'z') {
+            cout << 0 << endl;
+            return 0;
+        }
+    
+    int s = 0, n = str.size();
+    // 先累加所有长度比其小的单词数
+    for (int i = 1; i < n; ++ i )
+        s += c[26][i];
+
+    // 数位dp
+    int last = 0;
+    for (int i = 0; i < n; ++ i ) {
+        // 当前位置对应的值
+        int x = str[i] - 'a' + 1;
+        for (int j = last + 1; j < x; ++ j )
+            // 当前这一位填j 后面的n-i-1只要挑比j大的即可
+            s += c[26 - j][n - i - 1];
+
+        if (x <= last) {
+            s = 0;
+            break;
+        }
+        last = x;
+
+        if (i == n - 1)
+            s ++ ;
+    }
+    
+    cout << s << endl;
     return 0;
 }
 ```

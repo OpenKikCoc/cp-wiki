@@ -434,3 +434,90 @@ int main() {
 <br>
 
 * * *
+
+
+## 习题
+
+> [!NOTE] **[Luogu NOIP2003 普及组 麦森数](https://www.luogu.com.cn/problem/P1045)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 快速幂 + 大数
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// 考虑 2^p - 1 与 2^p 位数相同，故不直接计算 2 ^ p;
+// [2^p 没有 5 这个因数故尾数不为 0 ]
+
+const int N = 510;
+
+int d[N], c[N], res[N];
+
+void mul(int a[N], int b[N], int res[N]) {
+    memset(c, 0, N * 4);
+    for (int i = 0; i < 500; i ++ )
+        for (int j = 0; j < 500; j ++ )
+            if (i + j < 500)
+                c[i + j] += a[i] * b[j];
+    for (int i = 0, t = 0; i < 500; i ++ ) {
+        t += c[i];
+        res[i] = t % 10;
+        t /= 10;
+    }
+}
+
+void qmi(int p)
+{
+    res[0] = 1;
+    d[0] = 2;
+    while (p) {
+        if (p & 1)
+            mul(d, res, res);
+        mul(d, d, d);
+        p >>= 1;
+    }
+    res[0] -- ;
+}
+
+int main() {
+    int p;
+    cin >> p;
+    
+    // Q1
+    cout << int(p * log10(2.0) + 1) << endl;
+    
+    // Q2
+    qmi(p);
+    
+    for (int i = 499, j = 0; j < 10; j ++ ) {
+        for (int k = 0; k < 50; k ++, i -- )
+            printf("%d", res[i]);
+        puts("");
+    }
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

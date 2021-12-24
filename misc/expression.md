@@ -163,3 +163,87 @@ public:
     }
 };
 ```
+
+> [!NOTE] **[Luogu 后缀表达式](https://www.luogu.com.cn/problem/P1449)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+string s;
+int n;
+
+unordered_map<char, int> pr;
+stack<int> num;
+stack<char> op;
+
+void eval() {
+    int b = num.top(); num.pop();
+    int a = num.top(); num.pop();
+    char c = op.top(); op.pop();
+    int r;
+    if (c == '+')
+        r = a + b;
+    else if (c == '-')
+        r = a - b;
+    else if (c == '*')
+        r = a * b;
+    else
+        r = a / b;
+    num.push(r);
+}
+
+int main() {
+    cin >> s;
+    n = s.size();
+    
+    for (int i = 0; i < n; ++ i ) {
+        char c = s[i];
+        if (c == '.')
+            continue;
+        if (c == '@')
+            break;
+        if (isdigit(c)) {
+            int x = 0, j = i;
+            while (j < n && isdigit(s[j]))
+                x = x * 10 + (s[j ++ ] - '0');
+            num.push(x);
+            i = j - 1;
+        } else {
+            op.push(c);
+            while (op.size())
+                eval();
+        }
+    }
+    while (op.size())
+        eval();
+    cout << num.top() << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

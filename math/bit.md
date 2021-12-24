@@ -347,3 +347,92 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[Luogu 开灯](https://www.luogu.com.cn/problem/P1161)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+double a;
+int n, t;
+
+int main() {
+    cin >> n;
+    
+    int res = 0;
+    for (int i = 0; i < n; ++ i ) {
+        cin >> a >> t;
+        for (int j = 1; j <= t; ++ j )
+            res ^= (int)(a * j);
+    }
+    cout << res << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu 高低位交换](https://www.luogu.com.cn/problem/P1100)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using namespace std;
+int main() {
+    unsigned long long x;
+    cin >> x;
+    cout << ((x & 0x0000ffff) << 16 | (x & 0xffff0000) >> 16)
+         << endl;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

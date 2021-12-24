@@ -475,3 +475,78 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[Luogu 大师](https://www.luogu.com.cn/problem/P4933)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 求形成等差序列的子序列方案数
+> 
+> 状态定义和转移 实现
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 1e3 + 10, M = 4e4 + 10, MOD = 998244353;
+
+int n, res;
+int h[N];
+int f1[N][M];
+int f2[N][M];
+
+// O(n*m)
+// f1[i][j] 表示以i结尾公差为j的等差数列的数量
+// 删去
+
+// O(n^2)
+// f2[i][j] 同样表示以i结尾公差为j的等差数列的数量
+void work2() {
+    int offset = 2e4;
+    for (int i = 1; i <= n; ++ i )
+        //    枚举上一个数是哪个
+        // 以i结尾且上一个数是j的公差为d的等差数列数量
+        // 是以j结尾公差为d的等差数列数+1
+        for (int j = i - 1; j; -- j ) {
+            int d = h[i] - h[j] + offset;
+            int add = f2[j][d] + 1;
+            
+            f2[i][d] = (f2[i][d] + add) % MOD;
+            res = (res + add) % MOD;
+        }
+}
+
+int main() {
+    cin >> n;
+    for (int i = 1; i <= n; ++ i )
+        cin >> h[i];
+    
+    work2();
+    
+    // 加上每个数字自己单独作为等差数列
+    cout << res + n << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

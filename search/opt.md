@@ -1187,3 +1187,112 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[Luogu [NOIP2018 提高组] 旅行](https://www.luogu.com.cn/problem/P5022)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **暴力 + 剪枝**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// 题目条件很重要 n == m(有一个环) OR n == m + 1
+//
+// 对于无环情况爆搜即可
+// 对于有环情况枚举环上要删除的边 再暴力枚举 并与现有答案比对剪枝即可
+// O(n^2)
+
+using PII = pair<int, int>;
+const int N = 5010;
+
+int n, m;
+vector<int> e[N];   // 需要排序
+PII edge[N];
+int del_u, del_v;
+vector<int> ans(N, N);
+vector<int> path(N);
+bool st[N];
+int cnt, state;
+
+// 思考使用 bool 返回值的意义
+// 本质是如果发现大于就一直返回 直到不大于为止再更新新的答案
+bool dfs(int u) {
+    if (!state) {
+        // TODO
+        if (u > ans[cnt])
+            return true;
+        if (u < ans[cnt])
+            state = -1;
+    }
+    
+    st[u] = true;
+    path[cnt ++ ] = u;
+    
+    for (int i = 0; i < e[u].size(); ++ i ) {
+        int x = e[u][i];
+        if (!(x == del_u && u == del_v) && !(x == del_v && u == del_u) && !st[x])
+            if (dfs(x))
+                return true;
+    }
+    return false;
+}
+
+int main() {
+    cin >> n >> m;
+    for (int i = 0; i < m; ++ i ) {
+        int a, b;
+        cin >> a >> b;
+        e[a].push_back(b);
+        e[b].push_back(a);
+        edge[i] = {a, b};
+    }
+    
+    for (int i = 1; i <= n; ++ i )
+        sort(e[i].begin(), e[i].end());
+    
+    if (n == m) {
+        for (int i = 0; i < m; ++ i ) {
+            del_u = edge[i].first, del_v = edge[i].second;
+            
+            memset(st, 0, sizeof st);
+            cnt = state = 0;
+            dfs(1); // 显然要字典序最小 总是要从1开始
+            if (cnt == n)
+                ans = path;
+        }
+    } else {
+        dfs(1);
+        if (cnt == n)
+            ans = path;
+    }
+    
+    for (int i = 0; i < n; ++ i )
+        cout << ans[i] << ' ';
+    cout << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

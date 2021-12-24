@@ -488,6 +488,90 @@ int main() {
 
 * * *
 
+> [!NOTE] **[Luogu [NOIP2013 提高组] 火柴排队](https://www.luogu.com.cn/problem/P1966)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **经典** 推理转化为求逆序对
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 1e5 + 10, MOD = 1e8 - 3;
+
+int n;
+int x[N], t[N];
+struct Node {
+    int x, id;
+} a[N], b[N];
+
+int merge(int l, int r) {
+    if (l >= r)
+        return 0;
+    
+    int m = l + r >> 1;
+    int ret = (merge(l, m) + merge(m + 1, r)) % MOD;
+    int i = l, j = m + 1, k = 0;
+    while (i <= m && j <= r)
+        if (x[i] <= x[j])
+            t[k ++ ] = x[i ++ ];
+        else
+            ret = (ret + m + 1 - i) % MOD, t[k ++ ]= x[j ++ ];
+    
+    while (i <= m)
+        t[k ++ ] = x[i ++ ];
+    while (j <= r)
+        t[k ++ ] = x[j ++ ];
+
+    for (int i = l, j = 0; i <= r; ++ i , ++ j )
+        x[i] = t[j];
+    return ret;
+}
+
+int main() {
+    cin >> n;
+    for (int i = 0; i < n; ++ i )
+        cin >> a[i].x, a[i].id = i;
+    for (int i = 0; i < n; ++ i )
+        cin >> b[i].x, b[i].id = i;
+    
+    auto cmp = [](const Node & a, const Node & b) -> bool {
+        return a.x < b.x;
+    };
+    sort(a, a + n, cmp);
+    sort(b, b + n, cmp);
+    
+    for (int i = 0; i < n; ++ i )
+        x[a[i].id] = b[i].id;
+    
+    cout << merge(0, n - 1) << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 
 ### 三路排序
 

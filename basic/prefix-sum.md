@@ -243,3 +243,197 @@ $$
 - [NOIP2016 天天爱跑步](http://uoj.ac/problem/261)
 
 * * *
+
+
+## 习题
+
+### 前缀和优化
+
+> [!NOTE] **[Luogu ]()**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+>
+> 思维
+> 
+> **经验：O(n^2) 公式转化利用前缀和达到 O(n)**
+>
+> 核心：奇偶性
+>
+> 易于想到x z颜色相同且同奇偶，且每个三元组其实是 `中间坐标的两倍*左右和`
+>
+> 显然有O(n^2)做法但会超时
+>
+> **考虑先按颜色分组，由【同奇偶】的性质每组内再按奇偶分组**
+>
+> 考虑最终分组后的单个组（总个数为k），组内需如下统计：
+>
+> ```
+> [第i个数的下标用x[i]指代 值用y[i]指代]
+> for (int i = 0; i < k; ++ i )
+>     for (int j = i + 1; j < k; ++ j )
+>         t += (x[i] + x[j]) * (y[i] + y[j]);
+> ```
+>
+> 
+>
+> 转化（提取x[i]）：
+>
+> ```
+> t = x[1] * ((y[1] + y[2]) + (y[1] + y[3]) + (y[1] + y[4]) + ... + (y[1] + y[k]))
+>   + x[2] * ((y[2] + y[1]) + (y[2] + y[3]) + (y[2] + y[4]) + ... + (y[2] + y[k]))
+>   + ...
+>   + x[k-1] * ((y[k-1] + y[1]) +                                 + (y[k-1] + y[k]))
+>   + x[k] * ((y[k] + y[1]) +                                     + (y[k] + y[k-1]))
+> ```
+>
+> 也即（注意k-2）：
+>
+> ```
+> t = x[1] * (y[1] * (k-2) + y[1] + y[2] + ... + y[k])
+>   + x[2] * (y[2] * (k-2) + y[1] + y[2] + ... + y[k])
+>   + ...
+>   + x[k-1] * (y[k-1] * (k-2) + y[1] + y[2] + ... + y[k])
+>   + x[k] * (y[k] * (k-2) + y[1] + y[2] + ... + y[k])
+> ```
+>
+> 则 可线性求解
+>
+> 进一步提取公因式：
+>
+> ```
+> t = (k-2) * sum{(x[i] * y[i])} + sum{yi} * sum{xi}
+> 因为 sum{(x[i] * y[i])} 的部分只与第i项相关 所以可以
+> 以 for (int i = 1; i <= n; ++ i ) 的形式单独累加每一个
+> 因而有luogu大多数题解的代码实现如：
+> https://www.luogu.com.cn/problem/solution/P2671
+> ```
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const int N = 1e5 + 10, MOD = 10007;
+
+int n, m;
+int a[N], c[N];
+vector<int> g[N][2];  // 分组
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+    
+    cin >> n >> m;
+    for (int i = 1; i <= n; ++ i )
+        cin >> a[i];
+    for (int i = 1; i <= n; ++ i )
+        cin >> c[i], g[c[i]][i % 2].push_back(i);
+    
+    int res = 0;
+    for (int i = 1; i <= m; ++ i )
+        for (int j = 0; j < 2; ++ j ) {
+            int sz = g[i][j].size();
+            int s = 0, sx = 0, sy = 0;
+            for (int k = 0; k < sz; ++ k ) {
+                int id = g[i][j][k];
+                s = (s + (LL)id * a[id] % MOD) % MOD;
+                sx = (sx + a[id]) % MOD;
+                sy = (sy + id) % MOD;
+            }
+            res = (res + (LL)(sz - 2) * s % MOD + sx * sy % MOD) % MOD;
+        }
+    cout << res << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 维护
+
+> [!NOTE] **[Luogu ]()**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+>
+> ## 题解
+>
+> [![z1.png](https://camo.githubusercontent.com/6b106419f0d48329126a7c3efde9328cf291e6d8c1fd976c689f5938059a7a72/68747470733a2f2f63646e2e616377696e672e636f6d2f6d656469612f61727469636c652f696d6167652f323031392f30392f30332f373431325f356466653639613463652d7a312e706e67)](https://camo.githubusercontent.com/6b106419f0d48329126a7c3efde9328cf291e6d8c1fd976c689f5938059a7a72/68747470733a2f2f63646e2e616377696e672e636f6d2f6d656469612f61727469636c652f696d6167652f323031392f30392f30332f373431325f356466653639613463652d7a312e706e67)
+>
+> [![z2.png](https://camo.githubusercontent.com/339966d53a026964d12ebe1489b1c200318348e5c45930072858f6068f806df2/68747470733a2f2f63646e2e616377696e672e636f6d2f6d656469612f61727469636c652f696d6167652f323031392f30392f30332f373431325f363736643435653663652d7a322e706e67)](https://camo.githubusercontent.com/339966d53a026964d12ebe1489b1c200318348e5c45930072858f6068f806df2/68747470733a2f2f63646e2e616377696e672e636f6d2f6d656469612f61727469636c652f696d6167652f323031392f30392f30332f373431325f363736643435653663652d7a322e706e67)
+>
+> > https://www.acwing.com/solution/content/4127/
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 125;
+
+int n;
+int s[N][N];
+
+int main() {
+    cin >> n;
+    for (int i = 1; i <= n; ++ i )
+        for (int j = 1; j <= n; ++ j )
+            cin >> s[i][j], s[i][j] += s[i - 1][j];
+    
+    int res = -2e9;
+    for (int i = 1; i <= n; ++ i )
+        for (int j = i; j <= n; ++ j ) {
+            // s[j][k] - s[i - 1][k] 作为一维
+            // 来执行最大子序和过程
+            int sum = 0;
+            for (int k = 1; k <= n; ++ k ) {
+                sum = max(sum, 0) + s[j][k] - s[i - 1][k];
+                res = max(res, sum);
+            }
+        }
+    
+    cout << res << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

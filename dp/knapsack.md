@@ -1402,6 +1402,65 @@ if __name__ == '__main__':
 
 * * *
 
+> [!NOTE] **[Luogu kkksc03考前临时抱佛脚](https://www.luogu.com.cn/problem/P2392)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 均分
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 22;
+
+int s[4];
+int a[4][N], t[4];
+int f[4][1500];
+
+int main() {
+    for (int i = 0; i < 4; ++ i )
+        cin >> s[i];
+    
+    for (int i = 0; i < 4; ++ i )
+        for (int j = 0; j < s[i]; ++ j )
+            cin >> a[i][j], t[i] += a[i][j];
+    
+    int res = 0;
+    for (int i = 0; i < 4; ++ i ) {
+        // 01 背包
+        for (int j = 0; j < s[i]; ++ j )
+            for (int k = t[i] >> 1; k >= a[i][j]; -- k )
+                f[i][k] = max(f[i][k], f[i][k - a[i][j]] + a[i][j]);
+        res += t[i] - f[i][t[i] >> 1];
+    }
+    cout << res << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 二维背包
 
 > [!NOTE] **[AcWing 1020. 潜水员](https://www.acwing.com/problem/content/description/1022/)**
@@ -2330,6 +2389,229 @@ if __name__ == '__main__':
                 if j >= v:
                     f[j] = max(f[j], f[j - v] + w)
     print(f[n])
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu [NOIP2012 普及组] 摆花](https://www.luogu.com.cn/problem/P1077)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 分组背包即可
+> 
+> 重点在于部分情况下分组背包可以前缀和优化
+> 
+> 以及【生成函数】解法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 110, MOD = 1000007;
+
+int n, m;
+int a[N];
+int f1[N], s[N];
+
+// 分组背包即可
+void func1() {
+    f1[0] = 1;
+    for (int i = 1; i <= n; ++ i )
+        for (int j = m; j >= 0; -- j )
+            for (int k = 1; k <= a[i]; ++ k )
+                if (k <= j)
+                    f1[j] = (f1[j] + f1[j - k]) % MOD;
+    cout << f1[m] << endl;
+}
+
+// func1 的前缀和优化
+void func1_more() {
+    s[0] = 1;   // think
+    for (int i = 1; i <= m; ++ i )
+        s[i] += s[i - 1];   // always 1
+    f1[0] = 1;
+    for (int i = 1; i <= n; ++ i ) {
+        for (int j = m; j >= 1; -- j ) {    // 需要修改为 [1, m]
+            int bound = j - a[i] - 1;       // 左侧
+            if (bound >= 0)
+                f1[j] = (f1[j] + s[j - 1] - s[bound] + MOD) % MOD;
+            else
+                f1[j] = (f1[j] + s[j - 1]) % MOD;
+        }
+        for (int j = 1; j <= m; ++ j )
+            s[j] = (s[j - 1] + f1[j]) % MOD;
+    }
+    cout << f1[m] << endl;
+}
+
+// 生成函数
+// https://www.luogu.com.cn/blog/76228/ti-xie-p1077-bai-hua-post
+void func2() {
+    // TODO
+}
+
+int main() {
+    cin >> n >> m;
+    
+    for (int i = 1; i <= n; ++ i )
+        cin >> a[i];
+    
+    // func1();
+    func1_more();
+    // func2();
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu 5倍经验日](https://www.luogu.com.cn/problem/P1802)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **01背包简单变形**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// 0/1背包变形
+
+const int N = 1010;
+
+int n, m;
+int a[N], b[N], c[N], f[N];
+
+int main() {
+    cin >> n >> m;
+    for (int i = 0; i < n; ++ i )
+        cin >> a[i] >> b[i] >> c[i];
+    
+    for (int i = 0; i < n; ++ i ) {
+        // 打赢或打输
+        // =
+        for (int j = m; j >= c[i]; -- j )
+            f[j] = max(f[j] + a[i], f[j - c[i]] + b[i]);
+        // 打输
+        // +
+        for (int j = c[i] - 1; j >= 0; -- j )
+            f[j] += a[i];
+            // f[j] = max(f[j], f[j] + a[i]);
+    }
+    cout << 5ll * f[m] << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu 尼克的任务](https://www.luogu.com.cn/problem/P1280)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 排序 贪心 背包
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 1e4 + 10;
+
+int n, k;
+struct Ks {
+    int k, l;
+} ks[N];
+int s[N], f[N];
+
+int main() {
+    cin >> n >> k;
+    
+    for (int i = 0; i < k; ++ i ) {
+        cin >> ks[i].k >> ks[i].l;
+        s[ks[i].k] ++ ;    // ATTENTION
+    }
+    
+    // ATTENTION
+    sort(ks, ks + k, [](const Ks & a, const Ks & b) {
+        return a.k > b.k;
+    });
+    
+    int p = 0;  // 任务从晚到早遍历
+    for (int i = n; i > 0; -- i ) {
+        if (s[i] == 0)
+            f[i] = f[i + 1] + 1;
+        else
+            // 找出选择哪一个本时刻的任务使空闲时间最大化
+            for (int j = 0; j < s[i]; ++ j) {
+                if (f[i + ks[p].l] > f[i])
+                    f[i] = f[i + ks[p].l];
+                p ++ ;
+            }
+    }
+
+    cout << f[1] << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
 ```
 
 <!-- tabs:end -->

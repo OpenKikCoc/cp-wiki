@@ -856,3 +856,638 @@ int main() {
 
 * * *
 
+
+
+> [!NOTE] **[Luogu [JLOI2009]二叉树问题](https://www.luogu.com.cn/problem/P3884)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 110, M = 8;
+
+int n;
+int h[N], e[N], ne[N], idx;
+int depth[N], cnt[N], max_depth, max_cnt;
+int fa[N][M], q[N];
+
+void add(int a, int b) {
+    e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+void bfs(int root) {
+    memset(depth, 0x3f, sizeof depth);
+    memset(cnt, 0, sizeof cnt);
+    
+    depth[0] = 0, depth[root] = 1;
+    int hh = 0, tt = -1;
+    q[ ++ tt] = root;
+    while (hh <= tt) {
+        int t = q[hh ++ ];
+        for (int i = h[t]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (depth[j] > depth[t] + 1) {
+                depth[j] = depth[t] + 1;
+                cnt[depth[j]] ++ ;
+                
+                q[ ++ tt] = j;
+                fa[j][0] = t;
+                for (int k = 1; k < M; ++ k )
+                    fa[j][k] = fa[fa[j][k - 1]][k - 1];
+            }
+        }
+    }
+}
+
+int lca(int a, int b) {
+    if (depth[a] < depth[b])
+        swap(a, b);
+    for (int k = M - 1; k >= 0; -- k )
+        if (depth[fa[a][k]] >= depth[b])
+            a = fa[a][k];
+    if (a == b)
+        return a;
+    for (int k = M - 1; k >= 0; -- k )
+        if (fa[a][k] != fa[b][k])
+            a = fa[a][k], b = fa[b][k];
+    return fa[a][0];
+}
+
+int main() {
+    memset(h, -1, sizeof h);
+    
+    cin >> n;
+    for (int i = 0; i < n - 1; ++ i ) {
+        int a, b;
+        cin >> a >> b;
+        add(a, b);
+    }
+    
+    bfs(1);
+    
+    for (int i = 1; i <= n; ++ i )
+        max_depth = max(max_depth, depth[i]);
+    for (int i = 1; i <= max_depth; ++ i )
+        max_cnt = max(max_cnt, cnt[i]);
+    
+    int u, v;
+    cin >> u >> v;
+    
+    int pa = lca(u, v);
+    
+    cout << max_depth << endl;
+    cout << max_cnt << endl;
+    cout << (depth[u] - depth[pa]) * 2 + (depth[v] - depth[pa]) << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu [USACO19DEC]Milk Visits S](https://www.luogu.com.cn/problem/P5836)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 标准LCA
+> 
+> **有 O(n) 的并查集做法**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 1e5 + 10, M = N << 1, K = 18;
+
+int n, m;
+char c[N];
+int h[N], e[M], ne[M], idx;
+
+int depth[N], fa[N][K], q[N];
+int H[N], G[N];
+
+void add(int a, int b) {
+    e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+void bfs(int root) {
+    memset(depth, 0x3f, sizeof depth);
+    depth[0] = 0, depth[root] = 1;
+    H[root] = c[root] == 'H', G[root] = c[root] == 'G';
+    int hh = 0, tt = -1;
+    q[ ++ tt] = root;
+    while (hh <= tt) {
+        int t = q[hh ++ ];
+        for (int i = h[t]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (depth[j] > depth[t] + 1) {
+                depth[j] = depth[t] + 1;
+                H[j] = H[t] + (c[j] == 'H'), G[j] = G[t] + (c[j] == 'G');
+                q[ ++ tt] = j;
+                fa[j][0] = t;
+                for (int k = 1; k < K; ++ k )
+                    fa[j][k] = fa[fa[j][k - 1]][k - 1];
+            }
+        }
+    }
+}
+
+int lca(int a, int b) {
+    if (depth[a] < depth[b])
+        swap(a, b);
+    for (int k = K - 1; k >= 0; -- k )
+        if (depth[fa[a][k]] >= depth[b])
+            a = fa[a][k];
+    if (a == b)
+        return a;
+    for (int k = K - 1; k >= 0; -- k )
+        if (fa[a][k] != fa[b][k])
+            a = fa[a][k], b = fa[b][k];
+    return fa[a][0];
+}
+
+int main() {
+    memset(h, -1, sizeof h);
+    cin >> n >> m;
+    cin >> (c + 1);
+    
+    for (int i = 0; i < n - 1; ++ i ) {
+        int a, b;
+        cin >> a >> b;
+        add(a, b), add(b, a);
+    }
+    
+    bfs(1);
+    
+    while (m -- ) {
+        int a, b;
+        char w;
+        cin >> a >> b >> w;
+        int p = lca(a, b);    
+        if (w == 'H' && H[a] + H[b] - H[p] * 2 + (c[p] == 'H') > 0 ||
+            w == 'G' && G[a] + G[b] - G[p] * 2 + (c[p] == 'G') > 0)
+            cout << 1;
+        else
+            cout << 0;
+    }
+    cout << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu 仓鼠找sugar](https://www.luogu.com.cn/problem/P3398)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 判断树上两路径相交的条件
+> 
+> 若两路径相交，则必有其中一条路径的LCA在另一条路径上
+> 
+> **LCA + 高度较低的LCA 与 高度较高的两点之一 的LCA相同即可**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 1e5 + 10, M = N << 1, K = 18;
+
+int n, m;
+int h[N], e[M], ne[M], idx;
+int depth[N], fa[N][K], q[N];
+
+void add(int a, int b) {
+    e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+void bfs(int root) {
+    memset(depth, 0x3f, sizeof depth);
+    depth[0] = 0, depth[root] = 1;
+    int hh = 0, tt = -1;
+    q[ ++ tt] = root;
+    while (hh <= tt) {
+        int t = q[hh ++ ];
+        for (int i = h[t]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (depth[j] > depth[t] + 1) {
+                depth[j] = depth[t] + 1;
+                q[ ++ tt] = j;
+                fa[j][0] = t;
+                for (int k = 1; k < K; ++ k )
+                    fa[j][k] = fa[fa[j][k - 1]][k - 1];
+            }
+        }
+    }
+}
+
+int lca(int a, int b) {
+    if (depth[a] < depth[b])
+        swap(a, b);
+    for (int k = K - 1; k >= 0; -- k )
+        if (depth[fa[a][k]] >= depth[b])
+            a = fa[a][k];
+    if (a == b)
+        return a;
+    for (int k = K - 1; k >= 0; -- k )
+        if (fa[a][k] != fa[b][k])
+            a = fa[a][k], b = fa[b][k];
+    return fa[a][0];
+}
+
+int main() {
+    memset(h, -1, sizeof h);
+    
+    cin >> n >> m;
+    for (int i = 0; i < n - 1; ++ i ) {
+        int a, b;
+        cin >> a >> b;
+        add(a, b), add(b, a);
+    }
+    
+    bfs(1);
+    
+    while (m -- ) {
+        int a, b, c, d;
+        cin >> a >> b >> c >> d;
+        int x = lca(a, b), y = lca(c, d);
+        bool f;
+        if (depth[x] < depth[y]) {
+            f = (lca(a, y) == y || lca(b, y) == y);
+        } else {
+            f = (lca(c, x) == x || lca(d, x) == x);
+        }
+        cout << (f ? "Y" : "N") << endl;
+    }
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu [AHOI2008]紧急集合 / 聚会](https://www.luogu.com.cn/problem/P4281)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **LCA + 推导**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 5e5 + 10, M = N << 1, K = 19;
+
+int n, m;
+int h[N], e[M], ne[M], idx;
+int depth[N], fa[N][K], q[N];
+
+void add(int a, int b) {
+    e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+void bfs(int root) {
+    memset(depth, 0x3f, sizeof depth);
+    depth[0] = 0, depth[root] = 1;
+    int hh = 0, tt = -1;
+    q[ ++ tt] = root;
+    while (hh <= tt) {
+        int t = q[hh ++ ];
+        for (int i = h[t]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (depth[j] > depth[t] + 1) {
+                depth[j] = depth[t] + 1;
+                q[ ++ tt] = j;
+                fa[j][0] = t;
+                for (int k = 1; k < K; ++ k )
+                    fa[j][k] = fa[fa[j][k - 1]][k - 1];
+            }
+        }
+    }
+}
+
+int lca(int a, int b) {
+    if (depth[a] < depth[b])
+        swap(a, b);
+    for (int k = K - 1; k >= 0; -- k )
+        if (depth[fa[a][k]] >= depth[b])
+            a = fa[a][k];
+    if (a == b)
+        return a;
+    for (int k = K - 1; k >= 0; -- k )
+        if (fa[a][k] != fa[b][k])
+            a = fa[a][k], b = fa[b][k];
+    return fa[a][0];
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+    
+    memset(h, -1, sizeof h);
+    
+    cin >> n >> m;
+    for (int i = 0; i < n - 1; ++ i ) {
+        int a, b;
+        cin >> a >> b;
+        add(a, b), add(b, a);
+    }
+    bfs(1);
+    
+    while (m -- ) {
+        int a, b, c;
+        cin >> a >> b >> c;
+        
+        int pab = lca(a, b), pac = lca(a, c), pbc = lca(b, c);
+        int p = lca(pab, pbc);
+        
+        // 容易推理得出 要去的点一定在
+        // [较低的lca & 较高的lca] 的路径上
+        // 进一步推导 应该在较低的lca上
+        if (p != pab) {
+            int t = depth[pab] + depth[c] - depth[p] * 2;
+            int d = depth[a] + depth[b] - depth[pab] * 2 + t;
+            cout << pab << ' ' << d << endl;
+        } else if (p != pac) {
+            int t = depth[pac] + depth[b] - depth[p] * 2;
+            int d = depth[a] + depth[c] - depth[pac] * 2 + t;
+            cout << pac << ' ' << d << endl;
+        } else {
+            int t = depth[pbc] + depth[a] - depth[p] * 2;
+            int d = depth[b] + depth[c] - depth[pbc] * 2 + t;
+            cout << pbc << ' ' << d << endl;
+        }
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu ]()**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu [CSP-S2019] 树的重心](https://www.luogu.com.cn/problem/P5666)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> dfs类LCA 经典倍增优化题
+> 
+> 经典 换根 + 倍增
+> 
+> 断断续续写了两天独立A掉 好题
+> 
+> Luogu 和网络上各类题解及其代码都特别麻烦。。。
+> 
+> **本质上就是枚举删哪条边，同时利用倍增快速找到重心，以及利用换根降低计算复杂度。**
+
+
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const int N = 3e5 + 10, M = N << 1, K = 20; // 2^19
+
+int t, n;
+int h[N], e[M], ne[M], idx;
+int son[N][K], sz[N], pa[N], w[N][2];
+LL res;
+
+void init() {
+    memset(h, -1, sizeof h);
+    idx = 0;
+    res = 0;
+    memset(sz, 0, sizeof sz);   // sz[0] = 0;
+    memset(son, 0, sizeof son);
+    memset(w, 0, sizeof w);
+    memset(pa, 0, sizeof pa);
+}
+
+void add(int a, int b) {
+    e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+void update_st(int u) {
+    for (int k = 1; k < K; ++ k )
+        son[u][k] = son[son[u][k - 1]][k - 1];
+}
+
+void calc(int u) {
+    int x = u;
+    for (int k = K - 1; k >= 0; -- k )
+        if (son[x][k] && sz[son[x][k]] * 2 >= sz[u])
+            x = son[x][k];
+    // 如果某子树大小刚好是根树的一半 则子树及子树的父节点都是重心
+    if (sz[x] * 2 == sz[u])
+        res += (LL)pa[x];
+    res += (LL)x;
+}
+
+void dfs_d(int u, int fa) {
+    sz[u] = 1, pa[u] = fa;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (j != fa) {
+            dfs_d(j, u);
+            
+            sz[u] += sz[j];
+            // 考虑断开某条边后 换根后需要对是否是重链做判读 预处理
+            // 重儿子和次重儿子
+            if (sz[j] >= sz[w[u][0]])
+                w[u][1] = w[u][0], w[u][0] = j;
+            else if (sz[j] >= sz[w[u][1]])
+                w[u][1] = j;
+        }
+    }
+    
+    son[u][0] = w[u][0];
+    update_st(u);
+}
+
+void dfs_u(int u, int fa) {
+    // t1: 在换根过程中 sz[u] 会变，使用临时变量 t1 记录
+    // t2: 换根过程中 u 的父节点会作为 u 的儿子，会修改 pa[fa]，故使用临时变量记录
+    int t1 = sz[u], t2 = pa[fa];
+    pa[fa] = u;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (j != fa) {
+            // 1. 计算 j 作为根的树
+            calc(j);
+ 
+            // 2. 计算 u 作为根的树
+            //   2.1 先在向下的方向找个最大的
+            son[u][0] = (j == w[u][0] ? w[u][1] : w[u][0]);
+            //   2.2 向上的方向继续更新
+            if (sz[son[u][0]] < n - t1)
+                son[u][0] = pa[u];
+            update_st(u);
+            sz[u] = n - sz[j];
+            calc(u);
+
+            // 3. 递归
+            dfs_u(j, u);
+        }
+    }
+    sz[u] = t1, pa[fa] = t2;
+    son[u][0] = w[u][0];
+    update_st(u);
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+    
+    cin >> t;
+    while (t -- ) {
+        init();
+        
+        cin >> n;
+        for (int i = 0; i < n - 1; ++ i ) {
+            int a, b;
+            cin >> a >> b;
+            add(a, b), add(b, a);
+        }
+        
+        // 0 instead of -1
+        dfs_d(1, 0);
+        dfs_u(1, 0);
+        
+        cout << res << endl;
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

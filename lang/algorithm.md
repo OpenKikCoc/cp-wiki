@@ -88,3 +88,123 @@ sort(a, a + N);
 int cnt = unique(a, a + N) - a;
 cout << a[k - 1];
 ```
+
+## 习题
+
+> [!NOTE] **[Luogu NOIP2011 普及组 统计单词数](https://www.luogu.com.cn/problem/P1308)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    string a, b;
+
+    getline(cin, a); // 读入一行
+    getline(cin, b);
+
+    transform(a.begin(), a.end(), a.begin(), ::tolower); //转小写
+    transform(b.begin(), b.end(), b.begin(), ::tolower);
+
+    a = ' ' + a + ' ';  // 防止识别在单词内
+    b = ' ' + b + ' ';
+
+    int pos = b.find(a); //find()函数找到返回第一次下标，否则返回-1
+
+    int idx = 0, res = 0;
+    if(pos != -1){
+        idx = pos;
+
+        while (pos != -1){
+            res ++ ;
+            pos = b.find(a, pos + 1);
+        }
+    } else {
+        cout << -1 << endl;
+        return 0;
+    }
+
+    cout << res << " " << idx <<endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### next_permutation (一系列 包括周赛逆操作)
+
+> [!NOTE] **[Luogu NOIP2004 普及组 火星人](https://www.luogu.com.cn/problem/P1088)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int n, m;
+
+int main() {
+    cin >> n >> m;
+    
+    vector<int> ve;
+    for (int i = 0; i < n; ++ i ) {
+        int v;
+        cin >> v;
+        ve.push_back(v);
+    }
+    
+    while (m -- ) {
+        next_permutation(ve.begin(), ve.end());
+    }
+    for (auto v : ve)
+        cout << v << ' ';
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

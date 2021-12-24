@@ -989,3 +989,392 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[Luogu 医院设置](https://www.luogu.com.cn/problem/P1364)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典换根
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 110;
+
+int n, s;
+int w[N];
+int sz[N], sum[N], up[N];
+int h[N], e[N], ne[N], idx;
+
+void add(int a, int b) {
+    e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+void dfs_d(int u, int fa) {
+    sz[u] = w[u], sum[u] = 0;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (j == fa)
+            continue;
+        dfs_d(j, u);
+        sz[u] += sz[j];
+        sum[u] += sum[j] + sz[j];
+    }
+}
+
+void dfs_u(int u, int fa) {
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (j == fa)
+            continue;
+        // 上面部分的距离
+        // up[u] + (s - sz[j]) - sz[j]
+        //              up             + w[u] +   [sum of other son]    +  [size of other son]
+        // up[j] = up[u] + (s - sz[u]) + w[u] + sum[u] - sum[j] - sz[j] + sz[u] - w[u] - sz[j];
+        up[j] = up[u] + s + sum[u] - sum[j] - 2 * sz[j];
+        dfs_u(j, u);
+    }
+}
+
+int main() {
+    s = idx = 0;
+    memset(h, -1, sizeof h);
+    
+    cin >> n;
+    for (int i = 1; i <= n; ++ i ) {
+        int l, r;
+        cin >> w[i] >> l >> r;
+        if (l)
+            add(i, l);
+        if (r)
+            add(i, r);
+        s += w[i];
+    }
+    
+    dfs_d(1, -1);
+    dfs_u(1, -1);
+
+    // cout << "s = " << s << endl;
+    // cout << "sz[1] = " << sz[1] << endl;
+
+
+    // for (int i = 1; i <= n; ++ i )
+    //     cout << i << " sz  = " << sz[i] << endl;
+    // for (int i = 1; i <= n; ++ i )
+    //     cout << i << " sum = " << sum[i] << endl;
+    // for (int i = 1; i <= n; ++ i )
+    //     cout << i << " up  = " << up[i] << endl;
+
+    int res = 2e9;
+    for (int i = 1; i <= n; ++ i )
+        res = min(res, sum[i] + up[i]);
+    cout << res << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu 会议](https://www.luogu.com.cn/problem/P1395)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 同【医院设置】但更简单
+> 
+> 因为本题只需计算节点个数即可 每个节点不会有多个权
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 5e4 + 10, M = N << 1;
+
+int n;
+int h[N], e[M], w[M], ne[M], idx;
+int down[N], up[N], sz[N];
+
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+void dfs_d(int u, int fa) {
+    down[u] = 0, sz[u] = 1;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (j != fa) {
+            dfs_d(j, u);
+            down[u] += down[j] + sz[j];
+            sz[u] += sz[j];
+        }
+    }
+}
+
+void dfs_u(int u, int fa) {
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (j != fa) {
+            // ATTENTION 容易漏掉
+            // (down[u] - down[j] - sz[j]) 是 u 向其他子节点伸展的部分
+            up[j] = up[u] + (down[u] - down[j] - sz[j]) + n - sz[j];
+            dfs_u(j, u);
+        }
+    }
+}
+
+int main() {
+    memset(h, -1, sizeof h);
+    
+    cin >> n;
+    for (int i = 0; i < n - 1; ++ i ) {
+        int a, b;
+        cin >> a >> b;
+        add(a, b, 1), add(b, a, 1);
+    }
+    
+    dfs_d(1, -1);
+    dfs_u(1, -1);   // up[1] = 0
+
+    // for (int i = 1; i <= n; ++ i )
+    //     cout << i << ' ' << down[i] << ' ' << up[i] << endl;
+    
+    int res = INT_MAX, p = 0;
+    for (int i = 1; i <= n; ++ i )
+        if (down[i] + up[i] < res)
+            res = down[i] + up[i], p = i;
+    cout << p << ' ' << res << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu [ZJOI2006]三色二叉树](https://www.luogu.com.cn/problem/P2585)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典树dp流程
+> 
+> 细节处理起来有点麻烦
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <cstdio>
+#include <cstring>
+#include <iostream>
+using namespace std;
+const int N = 500050;
+char s[N];
+int f[N][3], g[N][3], cnt;
+
+int res = 1;
+
+void dfs(int x) {
+    if (s[x] == '0') {  //叶节点
+        g[x][0] = f[x][0] = 1;
+        return;
+    }
+    dfs(++cnt);
+    // 左儿子编号为x+1
+    if (s[x] == '1') {  //一个儿子
+        f[x][0] = max(f[x + 1][1], f[x + 1][2]) + 1;
+        f[x][1] = max(f[x + 1][0], f[x + 1][2]);
+        f[x][2] = max(f[x + 1][0], f[x + 1][1]);
+
+        // 上方代码完全是复制一遍到下面
+        g[x][0] = min(g[x + 1][1], g[x + 1][2]) + 1;
+        g[x][1] = min(g[x + 1][0], g[x + 1][2]);
+        g[x][2] = min(g[x + 1][0], g[x + 1][1]);
+    } else {
+        // 右儿子编号为k
+        int k = ++cnt;
+        dfs(k);
+        f[x][0] = max(f[x + 1][1] + f[k][2], f[x + 1][2] + f[k][1]) + 1;
+        f[x][1] = max(f[x + 1][0] + f[k][2], f[x + 1][2] + f[k][0]);
+        f[x][2] = max(f[x + 1][0] + f[k][1], f[x + 1][1] + f[k][0]);
+
+        g[x][0] = min(g[x + 1][1] + g[k][2], g[x + 1][2] + g[k][1]) + 1;
+        g[x][1] = min(g[x + 1][0] + g[k][2], g[x + 1][2] + g[k][0]);
+        g[x][2] = min(g[x + 1][0] + g[k][1], g[x + 1][1] + g[k][0]);
+    }
+    res = max(res, f[x][0]);
+}
+int main() {
+    scanf("%s", s + 1);
+    dfs(++cnt);
+    cout << res << ' ' << min(g[1][0], min(g[1][1], g[1][2])) << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu 有线电视网](https://www.luogu.com.cn/problem/P1273)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典的树形分组dp变形
+> 
+> 【状态设计 转移】
+> 
+> 反复做
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// 显然树上分组背包 考虑如何进行状态设计
+//
+// f[i][j] 表示以i为根满足j个客户需求的收入
+// 不必考虑当前收入是否为负 只要最后取正值即可 ==> 思考
+//
+// 【核心在于定义和分组时遍历的实现】
+
+const int N = 3010, M = N;
+
+int n, m;
+int h[N], e[M], w[M], ne[M], idx;
+int in[N];
+int f[N][N], sz[N];
+
+void init() {
+    memset(h, -1, sizeof h);
+    idx = 0;
+}
+
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+void dp(int u) {
+    // user
+    if (u > n - m) {
+        f[u][1] = in[u];
+        sz[u] = 1;
+        return;
+    }
+    
+    sz[u] = 0;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int son = e[i];
+        dp(son);
+
+        sz[u] += sz[son];
+        // 中继本身不占用名额 故 j >= 0
+        for (int j = sz[u]; j >= 0; -- j )
+            // 分给多余sz[son]的空间也没用 所以 k <= sz[son]
+            for (int k = 0; k <= sz[son]; ++ k )
+                if (j - k >= 0)
+                    f[u][j] = max(f[u][j], f[u][j - k] + f[son][k] - w[i]);
+    }
+}
+
+int main() {
+    init();
+    cin >> n >> m;
+
+    for (int i = 1; i <= n - m; ++ i ) {
+        int k, a, c;
+        cin >> k;
+        while (k -- ) {
+            cin >> a >> c;
+            add(i, a, c);
+        }
+    }
+    
+    for (int i = n - m + 1; i <= n; ++ i )
+        cin >> in[i];
+
+    memset(f, 0xcf, sizeof f);  // -INF
+    for (int i = 1; i <= n; ++ i )
+        f[i][0] = 0;
+    dp(1);
+    for (int i = m; i >= 1; -- i )
+        if (f[1][i] >= 0) {
+            cout << i << endl;
+            break;
+        }
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

@@ -122,3 +122,69 @@ public static BigInteger isqrtNewton(BigInteger n) {
 
 - [UVa 10428 - The Roots](https://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=16&page=show_problem&problem=1369)
 -   [LeetCode 69. x 的平方根](https://leetcode-cn.com/problems/sqrtx/)
+
+
+> [!NOTE] **[Luogu [NOIP2001 提高组] 一元三次方程求解](https://www.luogu.com.cn/problem/P1024)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 1. 对函数求导并求 $f'(x) = 0$ 的点，即【极点】
+> 
+> 2. 显然有两哥单峰极值
+> 
+> 3. 在极值划分的三个区间内牛顿迭代即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const double eps = 1e-4;
+
+double a, b, c, d;
+
+// f(x)
+double f(double x) { return a * x * x * x + b * x * x + c * x + d; }
+
+// f'(x)
+double df(double x) { return 3 * a * x * x + 2 * b * x + c; }
+
+// 牛顿迭代
+double slove(double l, double r) {
+    double x, x0 = (l + r) / 2;
+    while (abs(x0 - x) > eps)
+        x = x0 - f(x0) / df(x0), swap(x0, x);
+    return x;
+}
+
+int main() {
+    cin >> a >> b >> c >> d;
+
+    double p = (-b - sqrt(b * b - 3 * a * c)) / (3 * a);
+    double q = (-b + sqrt(b * b - 3 * a * c)) / (3 * a);
+
+    printf("%.2lf %.2lf %.2lf\n", slove(-100, p), slove(p, q), slove(q, 100));
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

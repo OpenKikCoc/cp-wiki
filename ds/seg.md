@@ -1130,3 +1130,882 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[Luogu 【模板】线段树 1](https://www.luogu.com.cn/problem/P3372)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 一般修改和查询
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// sum, add
+
+using LL = long long;
+const int N = 1e5 + 10;
+
+int n, m;
+LL w[N];
+struct Node {
+    int l, r;
+    LL sum, add;
+} tr[N << 2];
+
+void pushup(int u) {
+    tr[u].sum = tr[u << 1].sum + tr[u << 1 | 1].sum;
+}
+
+void eval(Node & t, LL add) {
+    t.sum += (LL)(t.r - t.l + 1) * add;
+    t.add += add;
+}
+
+void pushdown(int u) {
+    // 代表u的所有子段都要加tr[u].add
+    eval(tr[u << 1], tr[u].add);
+    eval(tr[u << 1 | 1], tr[u].add);
+    tr[u].add = 0;
+}
+
+void build(int u, int l, int r) {
+    if (l == r)
+        tr[u] = {l, r, w[l], 0};
+    else {
+        tr[u] = {l, r, 0, 0};
+        int mid = l + r >> 1;
+        build(u << 1, l, mid), build(u << 1 | 1, mid + 1, r);
+        pushup(u);
+    }
+}
+
+void modify(int u, int l, int r, LL k) {
+    if (tr[u].l >= l && tr[u].r <= r)
+        eval(tr[u], k);
+    else {
+        pushdown(u);
+        int mid = tr[u].l + tr[u].r >> 1;
+        if (l <= mid)
+            modify(u << 1, l, r, k);
+        if (r > mid)
+            modify(u << 1 | 1, l, r, k);
+        pushup(u);
+    }
+}
+
+LL query(int u, int l, int r) {
+    if (tr[u].l >= l && tr[u].r <= r)
+        return tr[u].sum;
+    else {
+        pushdown(u);
+        int mid = tr[u].l + tr[u].r >> 1;
+        // ATTENTION LL instead of int WA
+        LL sum = 0;
+        if (l <= mid)
+            sum += query(u << 1, l, r);
+        if (r > mid)
+            sum += query(u << 1 | 1, l, r);
+        // pushup(u);
+        return sum;
+    }
+}
+
+int main() {
+    cin >> n >> m;
+    
+    // 与查询的坐标对应
+    for (int i = 1; i <= n; ++ i )
+        cin >> w[i];
+    
+    build(1, 1, n);
+    
+    while (m -- ) {
+        LL op, x, y, k;
+        cin >> op >> x >> y;
+        if (op == 1) {
+            cin >> k;
+            modify(1, x, y, k);
+        } else
+            cout << query(1, x, y) << endl;
+    }
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu 【模板】线段树 2](https://www.luogu.com.cn/problem/P3373)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典
+> 乘 + 加
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// 先乘后加
+// 每次修改都作为 ax + b的整体
+// new_a = a0 * a, new_b = b0 * a + b;
+
+using LL = long long;
+const int N = 1e5 + 10;
+
+int n, m, p;
+int w[N];
+struct Node {
+    int l, r;
+    int sum, mul, add;
+} tr[N << 2];
+
+void pushup(int u) {
+    tr[u].sum = (tr[u << 1].sum + tr[u << 1 | 1].sum) % p;
+}
+
+void eval(Node & t, int mul, int add) {
+    t.sum = ((LL)t.sum * mul + (LL)(t.r - t.l + 1) * add) % p;
+    t.mul = (LL)t.mul * mul % p;
+    t.add = ((LL)t.add * mul % p + add) % p;
+}
+
+void pushdown(int u) {
+    eval(tr[u << 1], tr[u].mul, tr[u].add);
+    eval(tr[u << 1 | 1], tr[u].mul, tr[u].add);
+    tr[u].mul = 1, tr[u].add = 0;
+}
+
+void build(int u, int l, int r) {
+    if (l == r)
+        tr[u] = {l, r, w[l], 1, 0};
+    else {
+        // ATTENTION
+        tr[u] = {l, r, 0, 1, 0};
+        int mid = l + r >> 1;
+        build(u << 1, l, mid), build(u << 1 | 1, mid + 1, r);
+        pushup(u);
+    }
+}
+
+void modify(int u, int l, int r, int a, int b) {
+    if (tr[u].l >= l && tr[u].r <= r)
+        eval(tr[u], a, b);
+    else {
+        pushdown(u);
+        int mid = tr[u].l + tr[u].r >> 1;
+        if (l <= mid)
+            modify(u << 1, l, r, a, b);
+        if (r > mid)
+            modify(u << 1 | 1, l, r, a, b);
+        pushup(u);
+    }
+}
+
+int query(int u, int l, int r) {
+    if (tr[u].l >= l && tr[u].r <= r)
+        return tr[u].sum;
+    else {
+        pushdown(u);
+        int mid = tr[u].l + tr[u].r >> 1;
+        int sum = 0;
+        if (l <= mid)
+            sum = (sum + query(u << 1, l, r)) % p;
+        if (r > mid)
+            sum = (sum + query(u << 1 | 1, l, r)) % p;
+        return sum;
+    }
+}
+
+int main() {
+    cin >> n >> m >> p;
+    
+    for (int i = 1; i <= n; ++ i )
+        cin >> w[i];
+    
+    build(1, 1, n);
+    
+    while (m -- ) {
+        int op, x, y, k;
+        cin >> op >> x >> y;
+        if (op == 1) {
+            cin >> k;
+            modify(1, x, y, k, 0);
+        } else if (op == 2) {
+            cin >> k;
+            modify(1, x, y, 1, k);
+        } else
+            cout << query(1, x, y) << endl;
+    }
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu [TJOI2018]数学计算](https://www.luogu.com.cn/problem/P4588)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 独立1A... 思维题
+> 
+> 推导知线段树维护每次操作乘积
+> 
+> 节点维护乘积取模即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const int N = 1e5 + 10;
+
+int t, q, m;
+struct Node {
+    int l, r;
+    LL product;
+} tr[N << 2];
+
+void pushup(int u) {
+    tr[u].product = tr[u << 1].product * tr[u << 1 | 1].product % m;
+}
+
+void eval(Node & t, int op, int k) {
+    if (op == 1)
+        t.product = t.product * k % m;
+    else
+        t.product = 1;
+}
+
+void build(int u, int l, int r) {
+    if (l == r)
+        tr[u] = {l, r, 1};
+    else {
+        tr[u] = {l, r, 1};
+        int mid = l + r >> 1;
+        build(u << 1, l, mid), build(u << 1 | 1, mid + 1, r);
+        pushup(u);
+    }
+}
+
+void modify(int u, int l, int r, int op, int k) {
+    if (tr[u].l >= l && tr[u].r <= r)
+        eval(tr[u], op, k);
+    else {
+        // nothing to pushdown
+        int mid = tr[u].l + tr[u].r >> 1;
+        // In fact, only one will be executed cause l == r always
+        if (l <= mid)
+            modify(u << 1, l, r, op, k);
+        if (r > mid)
+            modify(u << 1 | 1, l, r, op, k);
+        pushup(u);
+    }
+}
+
+LL query(int u, int l, int r) {
+    if (tr[u].l >= l && tr[u].r <= r)
+        return tr[u].product;
+    else {
+        // no pushdown
+        int mid = tr[u].l + tr[u].r >> 1;
+        
+        LL p = 1;
+        if (l <= mid)
+            p = (p * query(u << 1, l, r)) % m;
+        if (r > mid)
+            p = (p * query(u << 1 | 1, l, r)) % m;
+        return p;
+    }
+}
+
+int main() {
+    cin >> t;
+    while (t -- ) {
+        cin >> q >> m;
+        
+        // 0 init
+        build(1, 0, q);
+        
+        for (int i = 1; i <= q; ++ i ) {
+            LL op, y;
+            cin >> op >> y;
+            if (op == 1) {
+                modify(1, i, i, 1, y);
+            } else {
+                modify(1, y, y, 2, 0);
+            }
+            cout << query(1, 0, i) << endl;
+        }
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu 窗口的星星](https://www.luogu.com.cn/problem/P1502)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **转化**
+> 
+> 考虑两点同窗 则以每个点坐标为坐下角的矩形重叠
+> 
+> 故转化为求 任意坐标最多有多少个矩形重叠
+> 
+> 也即：区间最值
+> 
+> 另外扫描线是特殊的不需要写pushdown的线段树应用
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const int N = 1e5 + 10; // 题面数据范围有误 应该是1e5
+
+int t, n, w, h;
+struct Seg {
+    int x, y1, y2;
+    int k;
+    bool operator< (const Seg & t) const {
+        // case
+        if (x != t.x)
+            return x < t.x;
+        return k > t.k; // 先算加入再算退出
+    }
+} seg[N * 2];
+struct Node {
+    int l, r;
+    LL maxv, add;
+} tr[N << 2];
+vector<int> ys;
+
+int find(int y) {
+    return lower_bound(ys.begin(), ys.end(), y) - ys.begin();
+}
+
+void pushup(int u) {
+    tr[u].maxv = max(tr[u << 1].maxv, tr[u << 1 | 1].maxv) + tr[u].add;
+}
+
+void build(int u, int l, int r) {
+    if (l == r)
+        tr[u] = {l, r, 0, 0};
+    else {
+        tr[u] = {l, r, 0, 0};
+        int mid = l + r >> 1;
+        build(u << 1, l, mid), build(u << 1 | 1, mid + 1, r);
+    }
+}
+
+void modify(int u, int l, int r, LL k) {
+    if (tr[u].l >= l && tr[u].r <= r) {
+        tr[u].add += k;
+        pushup(u);
+    } else {
+        int mid = tr[u].l + tr[u].r >> 1;
+        if (l <= mid)
+            modify(u << 1, l, r, k);
+        if (r > mid)
+            modify(u << 1 | 1, l, r, k);
+        pushup(u);
+    }
+}
+
+int main() {
+    cin >> t;
+    while (t -- ) {
+        cin >> n >> w >> h;
+        w -- , h -- ;
+        
+        ys.clear();
+        for (int i = 0, j = 0; i < n; ++ i ) {
+            int x, y, l;
+            cin >> x >> y >> l;
+            seg[j ++ ] = {x, y, y + h, l};
+            seg[j ++ ] = {x + w, y, y + h, -l};
+            ys.push_back(y), ys.push_back(y + h);
+        }
+        sort(ys.begin(), ys.end());
+        ys.erase(unique(ys.begin(), ys.end()), ys.end());
+        
+        build(1, 0, ys.size() - 2);
+        
+        sort(seg, seg + n * 2);
+        LL res = 0;
+        for (int i = 0; i < 2 * n; ++ i ) {
+            // 如果是此处 modify 的 r 是 find(seg[i].y2) - 1 会 WA[9]
+            // https://www.luogu.com.cn/discuss/show/64282
+            // 因为对于当前节点【其影响范围包含右侧闭区间】
+            modify(1, find(seg[i].y1), find(seg[i].y2), seg[i].k);
+            res = max(res, tr[1].maxv);
+        }
+        cout << res << endl;
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu [SCOI2007]降雨量](https://www.luogu.com.cn/problem/P2471)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> [线段树 / ST表]的简单应用 数据和细节巨坑
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 5e4 + 10, INF = 0x3f3f3f3f;
+
+int n, m;
+int t[N], w[N];
+unordered_map<int, int> mp;
+struct Node {
+    int l, r;
+    int maxv;
+} tr[N << 2];
+
+int find(int y) {
+    return lower_bound(t, t + n + 1, y) - t;
+}
+
+void pushup(int u) {
+    tr[u].maxv = max(tr[u << 1].maxv, tr[u << 1 | 1].maxv);
+}
+
+void build(int u, int l, int r) {
+    if (l == r)
+        tr[u] = {l, r, w[l]};
+    else {
+        tr[u] = {l, r, -INF};   // ATTENTION -INF
+        int mid = l + r >> 1;
+        build(u << 1, l, mid), build(u << 1 | 1, mid + 1, r);
+        pushup(u);
+    }
+}
+
+int query(int u, int l, int r) {
+    if (tr[u].l >= l && tr[u].r <= r)
+        return tr[u].maxv;
+    else {
+        int mid = tr[u].l + tr[u].r >> 1;
+        int ret = -INF; // ATTENTION -INF
+        if (l <= mid)
+            ret = max(ret, query(u << 1, l, r));
+        if (r > mid)
+            ret = max(ret, query(u << 1 | 1, l, r));
+        return ret;
+    }
+}
+
+int main() {
+    cin >> n;
+    // 【巨坑。。。不加下面这行初始化就挂 加了就过】
+    t[0] = -INF, t[n + 1] = INF;
+    for (int i = 1; i <= n; ++ i ) {
+        int y, r;
+        cin >> t[i] >> w[i];
+    }
+    build(1, 1, n);
+
+    cin >> m;
+    while (m -- ) {
+        int l, r;
+        cin >> l >> r;
+
+        if (l >= r) {
+            cout << "false" << endl;
+            continue;
+        }
+        
+        int fl = find(l), fr = find(r);
+        bool has_l = t[fl] == l, has_r = t[fr] == r;
+
+        if (!has_l && !has_r) {
+            cout << "maybe" << endl;
+        } else if (!has_l && has_r) {
+            if (fl == fr)   // X和Y见的所有降雨量未知
+                cout << "maybe" << endl;
+            else {
+                int t = query(1, fl, fr - 1);
+                if (t >= w[fr])
+                    cout << "false" << endl;
+                else
+                    cout << "maybe" << endl;
+            }
+        } else if (has_l && !has_r) {
+            if (fl + 1 == fr)   // r未知
+                cout << "maybe" << endl;
+            else {
+                int t = query(1, fl + 1, fr - 1);
+                if (w[fl] <= t) // fl不可能作为开头
+                    cout << "false" << endl;
+                else
+                    cout << "maybe" << endl;
+            }
+        } else {
+            if (w[fl] < w[fr]) {
+                cout << "false" << endl;
+            } else {
+                if (fl + 1 == fr) {
+                    if (l + 1 == r)
+                        cout << "true" << endl;
+                    else
+                        cout << "maybe" << endl;
+                } else {
+                    int t = query(1, fl + 1, fr - 1);
+                    if (w[fr] <= t)
+                        cout << "false" << endl;
+                    else if (r - l == fr - fl)
+                        cout << "true" << endl;
+                    else
+                        cout << "maybe" << endl;
+                }
+            }
+        }
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu 楼房重建](https://www.luogu.com.cn/problem/P4198)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **思维 将 pushup logN 化**
+> 
+> pushup维护的推导
+> 
+> **以及何时pushup**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 1e5 + 10;
+
+int n, m;
+double w[N];
+struct Node {
+    int l, r;
+    int len;
+    double mx;
+} tr[N << 2];
+
+int pushup_log(double lmx, int u) {
+    int l = tr[u].l, r = tr[u].r;
+    
+    // 右侧都不合法
+    if (tr[u].mx <= lmx)
+        return 0;
+    // 右侧最左侧的都比左侧最高的高
+    if (w[l] > lmx)
+        return tr[u].len;
+    if (l == r)
+        return w[l] > lmx;
+    
+    if (tr[u << 1].mx <= lmx)   // 左侧不会产生贡献 直接找右侧
+        return pushup_log(lmx, u << 1 | 1);
+    else                        // 左侧会产生贡献 单独求左侧加上右侧已有的贡献
+        return pushup_log(lmx, u << 1) + (tr[u].len - tr[u << 1].len);
+}
+
+void pushup(int u) {
+    tr[u].mx = max(tr[u << 1].mx, tr[u << 1 | 1].mx);
+    
+    // update len
+    tr[u].len = tr[u << 1].len + pushup_log(tr[u << 1].mx, u << 1 | 1);
+}
+
+void build(int u, int l, int r) {
+    if (l == r)
+        tr[u] = {l, r, 0, 0};
+    else {
+        tr[u] = {l, r, 0, 0};
+        int mid = l + r >> 1;
+        build(u << 1, l, mid), build(u << 1 | 1, mid + 1, r);
+        pushup(u);
+    }
+}
+
+void modify(int u, int l, int r, double k) {
+    if (tr[u].l >= l && tr[u].r <= r) {
+        // eval
+        tr[u].mx = k;
+        tr[u].len = 1;
+        // NOT PUSHUP
+        // pushup(u);
+    } else {
+        int mid = tr[u].l + tr[u].r >> 1;
+        if (l <= mid)
+            modify(u << 1, l, r, k);
+        if (r > mid)
+            modify(u << 1 | 1, l, r, k);
+        pushup(u);
+    }
+}
+
+int main() {
+    cin >> n >> m;
+    build(1, 1, n);
+    
+    for (int i = 1; i <= m; ++ i ) {
+        int x, y;
+        cin >> x >> y;
+        double k = (double)y / x;
+        w[x] = k;
+        modify(1, x, x, k);
+        cout << tr[1].len << endl;
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu XOR的艺术](https://www.luogu.com.cn/problem/P2574)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **经典 标准的lazy线段树**
+> 
+> eval(u)形式
+> 
+> **区别【表示本段的部分】与【表示子段lazy的部分】**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 2e5 + 10;
+
+int n, m;
+int w[N];
+struct Node {
+    int l, r;
+    int c0, c1;
+    bool f; // 只代表子
+} tr[N << 2];
+
+void pushup(int u) {
+    tr[u].c0 = tr[u << 1].c0 + tr[u << 1 | 1].c0;
+    tr[u].c1 = tr[u << 1].c1 + tr[u << 1 | 1].c1;
+}
+
+void eval(Node & t) {
+    swap(t.c0, t.c1);
+    t.f ^= 1;
+}
+
+void pushdown(int u) {
+    if (tr[u].f) {
+        eval(tr[u << 1]), eval(tr[u << 1 | 1]);
+        tr[u].f = false;
+    }
+}
+
+void build(int u, int l, int r) {
+    if (l == r)
+        tr[u] = {l, r, (w[l] == 0), (w[l] == 1), false};
+    else {
+        tr[u] = {l, r, 0, 0, false};
+        int mid = l + r >> 1;
+        build(u << 1, l, mid), build(u << 1 | 1, mid + 1, r);
+        pushup(u);
+    }
+}
+
+void modify(int u, int l, int r) {
+    if (tr[u].l >= l && tr[u].r <= r) {
+        eval(tr[u]);
+    } else {
+        pushdown(u);
+        int mid = tr[u].l + tr[u].r >> 1;
+        if (l <= mid)
+            modify(u << 1, l, r);
+        if (r > mid)
+            modify(u << 1 | 1, l, r);
+        pushup(u);
+    }
+}
+
+int query(int u, int l, int r) {
+    if (tr[u].l >= l && tr[u].r <= r)
+        return tr[u].c1;
+    else {
+        pushdown(u);
+        int mid = tr[u].l + tr[u].r >> 1;
+        int ret = 0;
+        if (l <= mid)
+            ret += query(u << 1, l, r);
+        if (r > mid)
+            ret += query(u << 1 | 1, l, r);
+        return ret;
+    }
+}
+
+int main() {
+    string s;
+    cin >> n >> m >> s;
+    
+    for (int i = 0; i < s.size(); ++ i )
+        w[i + 1] = s[i] - '0';
+    
+    build(1, 1, n);
+    
+    while (m -- ) {
+        int op, l, r;
+        cin >> op >> l >> r;
+        if (op == 0) {
+            modify(1, l, r);
+        } else {
+            cout << query(1, l, r) << endl;
+        }
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

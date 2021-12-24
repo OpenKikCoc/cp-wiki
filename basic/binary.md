@@ -219,6 +219,156 @@ int main() {
 
 * * *
 
+> [!NOTE] **[Luogu [NOIP2015 提高组] 跳石头](https://www.luogu.com.cn/problem/P2678)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 5e4 + 10;
+
+int s, n, m;
+int d[N];
+
+// 如果不合法 ----> [j == i + 1]  or  [c < n + 1 - m]
+bool check(int mid) {
+    int c = 0;
+    for (int i = 0; i <= n; ++ i ) {
+        int j = i + 1;
+        while (j <= n + 1 && d[j] - d[i] < mid)
+            j ++ ;
+        // f[j] - d[i] >= mid
+        c ++ ;
+        i = j - 1;
+    }
+    return c >= n + 1 - m;
+}
+
+int main() {
+    cin >> s >> n >> m;
+    
+    d[0] = 0, d[n + 1] = s;
+    for (int i = 1; i <= n; ++ i )
+        cin >> d[i];
+    
+    int l = 1, r = s + 1;
+    while (l < r) {
+        int mid = l + r >> 1;
+        if (check(mid))
+            l = mid + 1;
+        else
+            r = mid;
+    }
+    cout << l - 1 << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu 寻找段落](https://www.luogu.com.cn/problem/P1419)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 维护 idx 之前 [s, t] 长度的区间窗口
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 1e5 + 10;
+const double eps = 1e-5;
+
+int n, s, t;
+int a[N], q[N];
+double b[N], c[N];
+
+bool check(double m) {
+    for (int i = 1; i <= n; ++ i )
+        b[i] = (double)a[i] - m;
+    for (int i = 1; i <= n; ++ i )
+        c[i] = c[i - 1] + b[i];
+    
+    // 经典 维护 idx 之前 [s, t] 长度的区间窗口
+    int hh = 0, tt = -1;
+    for (int i = s; i <= n; ++ i ) {
+        while (hh <= tt && q[hh] < i - t)
+            hh ++ ;
+
+        // [弹尾部可以放前面] 以本段新加入的i-s作为起点 长度恰好为s
+        while (hh <= tt && c[q[tt]] >= c[i - s])
+            tt -- ;
+        q[ ++ tt] = i - s;
+
+        if (c[i] - c[q[hh]] >= 0)
+            return true;
+    }
+    return false;
+}
+
+int main() {
+    cin >> n >> s >> t;
+    for (int i = 1; i <= n; ++ i )
+        cin >> a[i];
+    
+    double l = -1e4, r = 1e4;
+    while (r - l > eps) {
+        double m = (l + r) / 2;
+        if (check(m))
+            l = m;
+        else
+            r = m;
+    }
+    printf("%.3lf\n", l);
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 > [!NOTE] **[AcWing 113. 特殊排序](https://www.acwing.com/problem/content/115/)**
 > 

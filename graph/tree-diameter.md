@@ -1,3 +1,19 @@
+> [!TIP] **区别**
+>
+> 两种方式求树直径：
+>
+> 1. dfs：在树上随机选一个点，对其进行一次 dfs 求出距离它最远的一个点 A , 然后再从 A dfs 找到一个离 A 点距离最远的 B 点， AB 之间的路径即为树的直径
+>
+>    **优点**：可以记录直径的起点 / 中点 / 完整路径
+>
+>    **缺点**：不可处理负权边
+>
+> 2. dp：标准树 dp ，枚举每一个点作为路径中层高最低的点即可
+>
+>    **优点**：可以处理负边权的树
+>
+>    **缺点**：只能求一个树的直径的长度，其他的求不出
+
 图中所有最短路径的最大值即为「直径」，可以用两次 DFS 或者树形 DP 的方法在 O(n) 时间求出树的直径。
 
 前置知识：[树基础](./tree-basic.md)。
@@ -117,3 +133,304 @@ int main() {
 - [ZOJ 3820, Building Fire Stations](https://vjudge.net/problem/ZOJ-3820)
 - [CEOI2019/CodeForces 1192B. Dynamic Diameter](https://codeforces.com/contest/1192/problem/B)
 - [IPSC 2019 网络赛，Lightning Routing I](https://nanti.jisuanke.com/t/41398)
+
+## 习题
+
+> [!NOTE] **[Luogu [NOIP2007 提高组] 树网的核](https://www.luogu.com.cn/problem/P1099)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典树问题
+> 
+> 树直径原理 + 枚举优化 + 二分
+> 
+> 反复做
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+using PII = pair<int, int>;
+const int N = 5e5 + 10, M = N << 1;
+
+int n, s;
+int h[N], e[M], w[M], ne[M], idx;
+int q[N], dist[N], pre[N];
+vector<PII> path;
+bool st[N];
+
+// ----------------- helper func -----------------
+
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+int get_max() {
+    int t = 1;
+    for (int i = 1; i <= n; ++ i )
+        if (dist[t] < dist[i])
+            t = i;
+    return t;
+}
+
+// ----------------- basic func -----------------
+
+void bfs(int start) {
+    memset(dist, 0x3f, sizeof dist);
+    memset(pre, -1, sizeof pre);
+    dist[start] = 0;
+    int hh = 0, tt = -1;
+    q[ ++ tt] = start;
+    
+    while (hh <= tt) {
+        int t = q[hh ++ ];
+        for (int i = h[t]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (dist[j] > dist[t] + w[i]) {
+                pre[j] = t;
+                dist[j] = dist[t] + w[i];
+                q[ ++ tt] = j;
+            }
+        }
+    }
+}
+
+int bfs_max_dist(int start) {
+    int res = 0;
+    int hh = 0, tt = -1;
+    q[ ++ tt] = start;
+    while (hh <= tt) {
+        int t = q[hh ++ ];
+        res = max(res, dist[t]);
+        for (int i = h[t]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (!st[j]) {
+                st[j] = true;
+                dist[j] = dist[t] + w[i];
+                q[ ++ tt] = j;
+            }
+        }
+    }
+    return res;
+}
+
+bool check(int m) {
+    // 3. 找分别与 u / v 距离不超过 mid 的且最远的节点
+    //    分别作为 p / q
+    int u = 0, v = path.size() - 1;
+    while (u + 1 < path.size() && path[u + 1].second <= m)
+        u ++ ;
+    while (v - 1 >= 0 && path.back().second - path[v - 1].second <= m)
+        v -- ;
+    if (u > v)
+        return true;
+    // 4. p 和 q 之间距离不超过 mid
+    if (path[v].second - path[u].second > s)
+        return false;
+    
+    memset(st, 0, sizeof st);
+    memset(dist, 0, sizeof dist);
+    for (auto p : path)
+        st[p.first] = true;
+    
+    // 5. p 和 q 之间所有点到其他所有点的距离不超过 mid
+    for (int i = u; i <= v; ++ i )
+        if (bfs_max_dist(path[i].first) > m)
+            return false;
+    return true;
+}
+
+int main() {
+    memset(h, -1, sizeof h);
+    
+    cin >> n >> s;
+    for (int i = 0; i < n - 1; ++ i ) {
+        int a, b, c;
+        cin >> a >> b >> c;
+        add(a, b, c), add(b, a, c);
+    }
+    
+    // 1. 先找直径
+    bfs(1);
+    int u = get_max();
+    bfs(u);
+    int v = get_max();
+    while (v != -1) {
+        path.push_back({v, dist[v]});
+        v = pre[v];
+    }
+    reverse(path.begin(), path.end());
+    
+    // 2. 二分偏心距
+    int l = 0, r = 2e9;
+    while (l < r) {
+        int mid = (LL) l + r >> 1;
+        if (check(mid))
+            r = mid;
+        else
+            l = mid + 1;
+    }
+    cout << l << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu [APIO2010]巡逻](https://www.luogu.com.cn/problem/P3629)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **对比两种(dfs/dp)求直径的方式**
+> 
+> 同时使用两种方式
+> 
+> **取反计算的trick思维**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+using PII = pair<int, int>;
+const int N = 1e5 + 10, M = N << 1;
+
+int n, k;
+int h[N], e[M], w[M], ne[M], idx;
+// ---------- bfs 求直径(可得完整路径) ----------
+int q[N], dist[N], pre[N];
+vector<PII> path;
+unordered_set<LL> S;
+// ---------- dfs 求带负权的直径 ----------
+int f[N], res;
+bool st[N];
+
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+int get_max() {
+    int t = 1;
+    for (int i = 1; i <= n; ++ i )
+        if (dist[t] < dist[i])
+            t = i;
+    return t;
+}
+
+void bfs(int start) {
+    memset(dist, 0x3f, sizeof dist);
+    memset(pre, -1, sizeof pre);
+    dist[start] = 0;
+    int hh = 0, tt = -1;
+    q[ ++ tt] = start;
+    
+    while (hh <= tt) {
+        int t = q[hh ++ ];
+        for (int i = h[t]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (dist[j] > dist[t] + w[i]) {
+                pre[j] = t;
+                dist[j] = dist[t] + w[i];
+                q[ ++ tt] = j;
+            }
+        }
+    }
+}
+
+void dfs(int u) {
+    st[u] = true;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (st[j])
+            continue;
+        int cost = w[i];
+        if (S.count((LL)u * N + j) || S.count((LL)j * N + u))
+            cost = -cost;
+        dfs(j);
+        // ATTENTION 多叉树求直径
+        res = max(res, f[u] + f[j] + cost);
+        f[u] = max(f[u], f[j] + cost);
+    }
+}
+
+int main() {
+    memset(h, -1, sizeof h);
+    
+    cin >> n >> k;
+    for (int i = 0; i < n - 1; ++ i ) {
+        int a, b;
+        cin >> a >> b;
+        add(a, b, 1), add(b, a, 1);
+    }
+    
+    bfs(1);
+    int u = get_max();
+    bfs(u);
+    int v = get_max();
+    while (v != -1) {
+        path.push_back({v, dist[v]});
+        {
+            S.insert((LL)v * N + pre[v]);
+        }
+        v = pre[v];
+    }
+    reverse(path.begin(), path.end());
+    
+    if (k == 1) {
+        //   (n - 1) * 2 - (l1 - 1)
+        // 其中 l1 = path.size() - 1
+        cout << (n - 1) * 2 - (path.size() - 1 - 1) << endl;
+    } else {
+        memset(f, 0, sizeof f);
+        res = 0;
+        dfs(1);
+        //   (n - 1) * 2 - (l1 - 1) - (l2 - 1)
+        // 其中 l1 = path.size() - 1, l2 = res
+        cout << (n - 1) * 2 - (res - 1) - (path.size() - 1 - 1) << endl;
+    }
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

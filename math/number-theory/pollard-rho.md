@@ -263,3 +263,64 @@ ll Pollard_Rho(ll x) {
 </details>
 
 <br>
+
+
+> [!NOTE] **[Luogu [NOIP2001 普及组] 最大公约数和最小公倍数问题](https://www.luogu.com.cn/problem/P1029)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 分解质因数 应用
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// 暴力很简单 有更好的思路
+// 强化记忆分解质因子的写法
+
+int main() {
+    int x0, y0;
+    cin >> x0 >> y0;
+    if (y0 % x0) {
+        cout << 0 << endl;
+    } else {
+        int mul = y0 / x0;
+        int res = 1;
+        // 对mul分解质因数
+        for (int i = 2; i <= mul / i; ++ i )
+            if (mul % i == 0) {
+                // 每遇到一个质因数 划分方案*2
+                res <<= 1;
+                while (mul % i == 0)
+                    mul /= i;
+            }
+        // ATTENTION
+        if (mul > 1)
+            res <<= 1;
+        
+        cout << res << endl;
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

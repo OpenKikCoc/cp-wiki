@@ -189,6 +189,58 @@ int main() {
 
 * * *
 
+> [!NOTE] **[Luogu 单词覆盖还原](https://www.luogu.com.cn/problem/P1321)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int boy, girl;
+string x;
+
+int main() {
+   cin >> x;
+   for (int i = 0; i < x.length(); i ++ ){
+   	// boy
+   	if (x[i] == 'b') boy ++ ;
+   	if (x[i] == 'o' && x[i - 1] != 'b') boy ++ ;
+   	if (x[i] == 'y' && x[i - 1] != 'o') boy ++ ;
+   	// girl
+   	if (x[i] == 'g') girl ++;
+   	if (x[i] == 'i' && x[i - 1] != 'g') girl ++ ;
+   	if (x[i] == 'r' && x[i - 1] != 'i') girl ++ ;
+   	if (x[i] == 'l' && x[i - 1] != 'r') girl ++ ;
+   }
+   cout << boy << endl << girl << endl;
+   return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 剪绳子
 
 > [!NOTE] **[SwordOffer 14- I. 剪绳子](https://leetcode-cn.com/problems/jian-sheng-zi-lcof/)**
@@ -270,6 +322,368 @@ class Solution:
             res *= 3
             n -= 3
         return res
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### dfs
+
+> [!NOTE] **[Luogu 幻象迷宫](https://www.luogu.com.cn/problem/P1363)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 1510;
+
+int n, m;
+int vis[N][N][3];
+bool flag, g[N][N];
+
+int dx[4] = {1, -1, 0, 0}, dy[4] = {0, 0, 1, -1};
+
+void dfs(int x, int y, int lx, int ly) {
+    if (flag)
+        return;
+    if (vis[x][y][0] && (vis[x][y][1] != lx || vis[x][y][2] != ly)) {
+        flag = 1;
+        return;
+    }
+    vis[x][y][1] = lx, vis[x][y][2] = ly, vis[x][y][0] = 1;
+    for (int i = 0; i < 4; ++i) {
+        int xx = (x + dx[i] + n) % n, yy = (y + dy[i] + m) % m;
+        int lxx = lx + dx[i], lyy = ly + dy[i];
+        if (!g[xx][yy]) {
+            if (vis[xx][yy][1] != lxx || vis[xx][yy][2] != lyy ||
+                !vis[xx][yy][0])
+                dfs(xx, yy, lxx, lyy);
+        }
+    }
+}
+int main() {
+    while (cin >> n >> m) {
+        flag = false;
+        memset(g, 0, sizeof(g));
+        memset(vis, 0, sizeof(vis));
+
+        int g_x, g_y;
+        for (int i = 0; i < n; ++i)
+            for (int j = 0; j < m; ++j) {
+                char ch;
+                cin >> ch;
+                if (ch == '#')
+                    g[i][j] = 1;
+                if (ch == 'S')
+                    g_x = i, g_y = j;
+            }
+        dfs(g_x, g_y, g_x, g_y);
+        cout << (flag ? "Yes" : "No") << endl;
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu 又是毕业季II](https://www.luogu.com.cn/problem/P1414)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 先求每个数字的因子并统计次数，然后根据次数去更新 r 最后输出即可
+> 
+> **注意次数少的可以使用右侧次数多的**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 1e4 + 10, M = 1e6 + 10;
+
+int n;
+int a[N], c[M], r[N];
+unordered_map<int, int> cnt;
+
+int main() {
+    cin >> n;
+    for (int i = 1; i <= n; ++ i )
+        cin >> a[i], cnt[a[i]] ++ ;
+    
+    for (auto [k, v] : cnt)
+        for (int i = 1; i <= k / i; ++ i )
+            if (k % i == 0) {
+                c[i] += v ;
+                if (k / i != i)
+                    c[k / i] += v ;
+            }
+    
+    for (int i = 1; i < M; ++ i )
+        r[c[i]] = max(r[c[i]], i);
+    
+    // ATTENTION 次数多于本个的 本个一定可以用
+    for (int i = n - 1; i >= 1; -- i )
+        r[i] = max(r[i], r[i + 1]);
+    
+    for (int i = 1; i <= n; ++ i )
+        cout << r[i] << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu [AHOI2005]约数研究](https://www.luogu.com.cn/problem/P1403)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// 同样的题意 数据范围更大：https://www.luogu.com.cn/problem/SP26073
+//
+// 本题当然可以考虑遍历解决：
+// [1, n] 中有i的个数是 n/i
+// 故所求即 n/1 + n/2 + ... + n/n
+// res += n / i 即可
+//
+// 优化: n/i 相同的连续i  考虑分块
+// 再把 n/i = n/j 的连续部分一次性算掉
+
+int main() {
+    int n, res;
+    cin >> n;
+    for (int i = 1, j; i <= n; i = j + 1) {
+        // 最后的位值
+        j = n / (n / i);
+        // 计算结果相同(均为n/i)的有 j-i+1 个
+        res += (n / i) * (j - i + 1);
+    }
+    cout << res << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu 小猪佩奇爬树](https://www.luogu.com.cn/problem/P5588)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> `不管本节点是何类型先累计 最终判断再决定使用哪个` 思维
+> 
+> 乘法原理优化
+> 
+> $O(n)$ 思路重复做
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// 易分析得出：
+// 只有所有的同颜色点在一条链上（分两种情况）才对结果有贡献
+// 1. 链只有一个点
+// 2. 链有多个点 但必须有且只有2个端点
+// https://www.cnblogs.com/Ning-H/p/11670828.html
+
+using LL = long long;
+const int N = 1e6 + 10, M = N << 1;
+
+int n;
+int w[N], tot[N], nos[N];
+int h[N], e[M], ne[M], idx;
+int sz[N], cnt[N], enos[N]; // used in dfs
+LL res1[N], res2[N];
+
+void init() {
+    memset(h, -1, sizeof h);
+    idx = 0;
+    
+    memset(sz, 0, sizeof sz);
+    memset(cnt, 0, sizeof cnt);
+    memset(enos, 0, sizeof enos);
+    memset(res1, 0, sizeof res1);
+    memset(res2, 0, sizeof res2);
+}
+
+void add(int a, int b) {
+    e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+// 核心在于如何【判断端点】
+// 1. 对于每一个点u 检查其是否只有一条边所连的子树
+//    中有与其相同颜色的点 如果是就是一个端点【对应某节点是最上方端点的情况】
+// 2. 如果左右子树都没有 而本节点既不是访问到的第一个点也不是最后一个点
+//    就flag ++ 
+void dfs(int u, int fa) {
+    // c 颜色, k 到目前为止有多少个该颜色点
+    int c = w[u], k = cnt[c];
+    // flag 代表当前节点下子树颜色也为 c 的个数
+    // 具体来说 【本个节点为根时，有多少个子树包含颜色为c的点】
+    int flag = 0, pos = 0;
+    
+    sz[u] = 1;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (j != fa) {
+            int last_cnt = cnt[c];
+            dfs(j, u);
+            // 暂时不管本个节点是否合法
+            // 尽管累积所有子树的数量乘积
+            // [乘法原理]
+            res1[u] += (LL)sz[u] * sz[j];
+            sz[u] += sz[j];
+            // 更新flag pos
+            if (last_cnt != cnt[c])
+                flag ++ , pos = j;
+        }
+    }
+    // 累积向上的数量乘积
+    res1[u] += (LL)sz[u] * (n - sz[u]);
+
+    // 我把这个放前面 感觉更合理些
+    // 加入本个节点的节点信息
+    cnt[c] ++ ;
+
+    // ATTENTION
+    // 另一种可能: 1. 进入当前节点时 cnt[c] 已经有值(不是第一个点)
+    //           或
+    //           2. 当前节点不为当前颜色的最后一个节点
+    // 也要使 flag++。
+    // 【为什么这里要 ++ ？】
+    // 【端点判断【2】】
+    // TODO 修改这里
+    if (k || cnt[c] != tot[c])
+        flag ++ ;
+    
+    // ATTENTION
+    // flag 为 1 说明[有可能]是一个端点
+    // 【端点判断【1】】
+    if (flag == 1) {
+        if (!enos[c])
+            nos[c] = u;
+        else {
+            // 不管是否有多于两个端点的
+            // 尽管按两个端点来算先
+            int p = pos ? n - sz[pos] : sz[u];
+            res2[c] = (LL)sz[nos[c]] * p;
+        }
+        enos[c] ++ ;
+    }
+}
+
+int main() {
+    init();
+    cin >> n;
+    for (int i = 1; i <= n; ++ i ) {
+        cin >> w[i];
+    
+        tot[w[i]] ++ ;
+        nos[w[i]] = i;  // 某个颜色对应的点为 I 
+    }
+    for (int i = 0; i < n - 1; ++ i ) {
+        int a, b;
+        cin >> a >> b;
+        add(a, b), add(b, a);
+    }
+    
+    dfs(1, -1);
+    
+    for (int i = 1; i <= n; ++ i ) {
+        if (tot[i] == 0)
+            cout << (LL)n * (n - 1) / 2 << endl;
+        else if (tot[i] == 1)
+            cout << res1[nos[i]] << endl;
+        else if (enos[i] == 2)
+            cout << res2[i] << endl;
+        else
+            cout << 0 << endl;
+    }
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
 ```
 
 <!-- tabs:end -->

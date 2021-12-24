@@ -152,3 +152,116 @@ def tarjan(u, fa):
 - [POJ1523 SPF](https://vjudge.net/problem/POJ-1523)
 
 Tarjan 算法还有许多用途，常用的例如求强连通分量，缩点，还有求 2-SAT 的用途等。
+
+## 习题
+
+> [!NOTE] **[Luogu 【模板】割点（割顶）](https://www.luogu.com.cn/problem/P3388)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 模版 dfn[u] <= low[j]
+> 
+> 两种情况：1.跟节点有多于两个子 2.非根dfn low
+> 
+> 遍历跑 tarjan 时需更新 root
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// 割点 存在于无向图中
+// 1. 对于根节点 有两颗以上的子树 就是割点
+// 2. 非根节点对于其子 v 有 low[v] >= dfn[u]  则 u 是割点
+
+const int N = 2e4 + 10, M = 2e5 + 10;
+
+int n, m, cnt;
+int h[N], e[M], ne[M], idx;
+
+int dfn[N], low[N], timestamp;
+bool cut[N];
+int root;
+
+void init() {
+    memset(h, -1, sizeof h);
+    idx = 0;
+}
+
+void add(int a, int b) {
+    e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+void tarjan(int u) {
+    dfn[u] = low[u] = ++ timestamp;
+    // 此处不需要得到双连通分量dcc 所以不需要栈
+    
+    if (u == root && h[u] == -1)
+        return;
+    
+    int cnt = 0;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (!dfn[j]) {
+            tarjan(j);
+            low[u] = min(low[u], low[j]);
+            if (dfn[u] <= low[j]) {
+                cnt ++ ;
+                if (u != root || cnt > 1)
+                    cut[u] = true;
+                // ... 其他题目在此处理dcc
+            }
+        } else
+            low[u] = min(low[u], dfn[j]);
+    }
+    // 其他题目 还可在此处理cnt 表示切掉本节点后有多少个分量
+}
+
+int main() {
+    init();
+    
+    cin >> n >> m;
+    while (m -- ) {
+        int a, b;
+        cin >> a >> b;
+        add(a, b), add(b, a);
+    }
+    
+    // ATTENTION
+    for (root = 1; root <= n; ++ root )
+        if (!dfn[root])
+            tarjan(root);
+    
+    int res = 0;
+    for (int i = 1; i <= n; ++ i )
+        if (cut[i])
+            res ++ ;
+    cout << res << endl;
+    for (int i = 1; i <= n; ++ i )
+        if (cut[i])
+            cout << i << ' ';
+    cout << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

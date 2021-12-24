@@ -830,6 +830,8 @@ if __name__ == '__main__':
 
 * * *
 
+
+
 > [!NOTE] **[AcWing 913. 排队打水](https://www.acwing.com/problem/content/description/915/)**
 > 
 > 题意: TODO
@@ -1098,6 +1100,389 @@ if __name__ == '__main__':
         res = max(res, prefix_weight - s)
         prefix_weight += w
     print(res)
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### trick
+
+> [!NOTE] **[Luogu 最大乘积](https://www.luogu.com.cn/problem/P1249)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 贪心 + 大数
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// 1. 贪心从 2 开始递增累加(s) 直到大于 n ，把 s-n 删掉
+// 2. 高精度累乘
+
+vector<int> mul(vector<int> & a, int b) {
+    vector<int> c;
+    for (int i = 0, t = 0; i < a.size() || t; ++ i ) {
+        if (i < a.size())
+            t += a[i] * b;
+        c.push_back(t % 10);
+        t /= 10;
+    }
+    while (c.size() > 1 && c.back() == 0)
+        c.pop_back();
+    return c;
+}
+
+int main() {
+    int n;
+    cin >> n;
+
+    int v = 1, s = 0;
+    vector<int> ve;
+    while (s < n) {
+        v ++ ;
+        ve.push_back(v);
+        
+        s += v;
+    }
+    
+    int nouse = 0;
+    if (s > n)
+        nouse = s - n;
+    
+    vector<int> res(1, 1);
+    for (auto v : ve) {
+        if (v == nouse)
+            continue;
+        cout << v << ' ';
+        res = mul(res, v);
+    }
+    cout << endl;
+
+    for (int i = res.size() - 1; i >= 0; -- i )
+        cout << res[i];
+    cout << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu [NOIP2018 提高组] 铺设道路](https://www.luogu.com.cn/problem/P5019)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典贪心
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const int N = 1e6 + 10;
+
+int n;
+LL d[N];
+
+int main() {
+    cin >> n;
+    for (int i = 1; i <= n; ++ i )
+        cin >> d[i];
+    
+    LL res = 0;
+    stack<int> st;
+    // i = 0 -----> d[i] = 0
+    for (int i = 1; i <= n; ++ i )
+        if (d[i] > d[i - 1])
+            res += d[i] - d[i - 1];
+    cout << res << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu [AHOI2018初中组]分组](https://www.luogu.com.cn/problem/P4447)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using PII = pair<int, int>;
+#define x first
+#define y second
+const int N = 1e5 + 10;
+
+int n;
+unordered_map<int, int> cnt;
+vector<PII> ve;
+
+int main() {
+    cin >> n;
+    for (int i = 0; i < n; ++ i ) {
+        int v;
+        cin >> v;
+        cnt[v] ++ ;
+    }
+    
+    for (auto [k, v] : cnt)
+        ve.push_back({k, v});
+    sort(ve.begin(), ve.end());
+    
+    int res = 2e9;
+    int m = ve.size();
+    for (int i = 0; i < m; ++ i ) {
+        // 先消耗一个连续上升区间
+        ve[i].y -- ;
+        int j = i + 1;
+        while (j < m && ve[j].x == ve[j - 1].x + 1 && ve[j].y > ve[j - 1].y)
+            ve[j].y -- , j ++ ;
+        
+        // [l, j - 1]
+        int len = j - i;
+        if (len < res)
+            res = len;
+
+        int k = i;
+        while (k < m && ve[k].y == 0)
+            k ++ ;
+        i = k - 1;
+    }
+    cout << res << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu [USACO07MAR]Face The Right Way G](https://www.luogu.com.cn/problem/P2882)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 反转问题/开关问题
+> 
+> 贪心 动态维护
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 5010;
+
+int n;
+int d[N], f[N];
+
+int get(int k) {
+    memset(f, 0, sizeof f);
+    
+    // s 维护会影响到i的点击数
+    int s = 0, res = 0;
+    for (int i = 0; i + k <= n; ++ i ) {
+        // 第i头牛 + 之前能影响到它的点击数
+        // &1 说明当前朝后 需要点击
+        if ((d[i] + s) & 1)
+            f[i] = 1, res ++ ;
+        
+        s += f[i];
+        if (i - k + 1 >= 0)
+            s -= f[i - k + 1];
+    }
+    
+    // 检查最后一段
+    for (int i = n - k + 1; i < n; ++ i ) {
+        if ((d[i] + s) & 1)
+            return -1;
+        if (i - k + 1 >= 0)
+            s -= f[i - k + 1];
+    }
+    return res;
+}
+
+int main() {
+    cin >> n;
+    
+    for (int i = 0; i < n; ++ i ) {
+        char c;
+        cin >> c;
+        if (c == 'F')
+            d[i] = 0;
+        else
+            d[i] = 1;
+    }
+    
+    int K = 1, M = n;
+    for (int k = 1; k <= n; ++ k ) {
+        int m = get(k);
+        if (m >= 0 && m < M)
+            M = m, K = k;
+    }
+    cout << K << ' ' << M << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
+### 堆
+
+> [!NOTE] **[Luogu [JSOI2007]建筑抢修](https://www.luogu.com.cn/problem/P4053)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **贪心思路推导 + 堆**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// 核心：贪心策略
+// 先按 t 贪心，中途再更改
+// 1. 按 t 从小到大排序之后，开始轮流遍历每个建筑
+// 2. 如果中途某个建筑 i 无法在 t_i 的时间内修复，
+//    那么在先前选择修复的建筑中拿出 w_j 最大的 j 号建筑
+//    若 w_i < w_j ，则放弃 j 转而修 i。
+
+const int N = 150010;
+
+int n, T;  // T指遍历时经过了多久时间
+struct node {
+    int w, t;
+} a[N];
+priority_queue<int> Q;  //优先队列
+
+bool cmp(node x, node y) {
+    return x.t < y.t;  //按t从小到大排序
+}
+int main() {
+    scanf("%d", &n);
+    for (int i = 1; i <= n; i++)
+        scanf("%d%d", &a[i].w, &a[i].t);
+    sort(a + 1, a + n + 1, cmp);
+
+    int res = 0;
+    for (int i = 1; i <= n; i++)
+        //如果无法修复此楼
+        if (T + a[i].w > a[i].t) {
+            // ai < aj
+            if (a[i].w < Q.top()) {
+                //注意这里要减掉
+                T -= Q.top();
+                Q.pop();
+                Q.push(a[i].w);
+                T += a[i].w;
+            }
+        } else {
+            Q.push(a[i].w);
+            res++;
+            T += a[i].w;
+        }
+
+    printf("%d\n", res);
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
 ```
 
 <!-- tabs:end -->

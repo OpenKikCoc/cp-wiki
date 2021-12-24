@@ -1064,6 +1064,87 @@ int main() {
 * * *
 
 
+> [!NOTE] **[Luogu 吃奶酪](https://www.luogu.com.cn/problem/P1433)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典状压
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 16, M = (1 << N) + 10;
+
+int n;
+double dis[N][N];
+struct Point {
+    double x, y;
+} ps[N];
+
+double f[N][M];
+
+double get_dist(int i, int j) {
+    double dx = ps[i].x - ps[j].x, dy = ps[i].y - ps[j].y;
+    return sqrt(dx * dx + dy * dy);
+}
+
+int main() {
+    cin >> n;
+    // 0 能否直接作为集合表示中的点 ? 代价：数组空间扩大一倍
+    
+    ps[0].x = ps[0].y = 0;
+    for (int i = 1; i <= n; ++ i )
+        cin >> ps[i].x >> ps[i].y;
+    
+    for (int i = 0; i <= n; ++ i )
+        for (int j = 0; j <= i; ++ j )
+            dis[i][j] = dis[j][i] = get_dist(i, j);
+    
+    // double init INF
+    memset(f, 127, sizeof f);
+    for (int i = 1; i <= n; ++ i )
+        f[i][1 << (i - 1)] = dis[0][i];
+
+    for (int i = 1; i < 1 << n; ++ i )
+        for (int j = 1; j <= n; ++ j )
+            if (i >> (j - 1) & 1)
+                // 当前位于第j个点 从k转移过来
+                for (int k = 1; k <= n; ++ k )
+                    if ((i >> (k - 1) & 1) && k != j)
+                        f[j][i] = min(f[j][i], f[k][i ^ (1 << (j - 1))] + dis[k][j]);
+
+    double res = 2e18;
+    // end with i != 0
+    for (int i = 1; i <= n; ++ i )
+        res = min(res, f[i][(1 << n) - 1]);
+    printf("%.2lf\n", res);
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 三进制状压
 
 对于三进制的状态压缩题目，可以考虑使用 `limit << 1` 的形式也可以使用 `pow(3, M)` 的形式
@@ -1693,6 +1774,142 @@ public:
         return res;
     }
 };
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu 邦邦的大合唱站队](https://www.luogu.com.cn/problem/P3694)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典
+> 
+> 排列类问题 只要考虑已为前面的某些排列好 再考虑当前即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// 考虑枚举最终的排列 计算有多少个位值不同(需出列)
+
+const int N = 1e5 + 10, M = (1 << 20) + 10;
+
+int n, m;
+int s[N][22], sz[M];
+int f[M], len[M];
+
+int main() {
+    cin >> n >> m;
+    
+    for (int i = 1; i <= n; ++ i ) {
+        int x;
+        cin >> x;
+        for (int j = 1; j <= m; ++ j )
+            s[i][j] = s[i - 1][j] + (x == j);
+        sz[x] ++ ;
+    }
+    
+    memset(f, 0x3f, sizeof f);
+    f[0] = 0; len[0] = 0;
+    for (int i = 0; i < 1 << m; ++ i )
+        for (int j = 0; j < m; ++ j )
+            if (i >> j & 1) {
+                int old = i ^ (1 << j);
+                int l = len[old];
+                int r = l + sz[j + 1];
+                len[i] = r;
+                
+                int has = s[r][j + 1] - s[l][j + 1];
+                f[i] = min(f[i], f[i ^ (1 << j)] + sz[j + 1] - has);
+            }
+        
+    cout << f[(1 << m) - 1] << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu 砝码称重](https://www.luogu.com.cn/problem/P1441)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典
+> 
+> 状压 + bitset优化
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// bitset 加速简化
+
+const int N = 22, M = 2010;
+
+int n, m;
+int w[N];
+
+int main() {
+    cin >> n >> m;
+    for (int i = 0; i < n; ++ i )
+        cin >> w[i];
+    
+    int res = 0;
+    for (int i = 0; i < 1 << n; ++ i )
+        if (__builtin_popcount(i) == n - m) {
+            bitset<M> s;
+            s[0] = 1;
+            for (int j = 0; j < n; ++ j )
+                if (i >> j & 1)
+                    // ATTENTION
+                    s |= s << w[j];
+            // 把第0位的1去掉
+            res = max(res, (int)s.count() - 1);
+        }
+    
+    cout << res << endl;
+    
+    return 0;
+}
 ```
 
 ##### **Python**

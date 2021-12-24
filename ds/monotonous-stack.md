@@ -361,3 +361,70 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[Luogu 删数问题](https://www.luogu.com.cn/problem/P1106)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 260;
+
+int n, k;
+string s;
+
+int main() {
+    cin >> s >> k;
+    n = s.size();
+    
+    stack<char> st;
+    for (int i = 0; i < n; ++ i ) {
+        while (st.size() && k && s[st.top()] > s[i]) {
+            st.pop();
+            k -- ;
+        }
+        st.push(i);
+    }
+
+    while (k -- && st.size())
+        st.pop();
+    
+    string res;
+    while (st.size()) {
+        res.push_back(s[st.top()]);
+        st.pop();
+    }
+    // zero in head
+    while (res.size() > 1 && res.back() == '0')
+        res.pop_back();
+    reverse(res.begin(), res.end());
+    cout << res << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

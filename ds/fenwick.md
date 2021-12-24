@@ -661,3 +661,292 @@ BIT 的另一种初始化方式：
 
 具体使用参见 [307. 区域和检索 - 数组可修改](https://leetcode-cn.com/problems/range-sum-query-mutable/)
 
+
+
+> [!NOTE] **[Luogu 【模板】树状数组 1](https://www.luogu.com.cn/problem/P3374)**
+> 
+> 题意: 记录值
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 5e5 + 10;
+
+int n, m;
+int tr[N];
+
+int lowbit(int x) {
+    return x & -x;
+}
+
+void add(int x, int c) {
+    for (int i = x; i <= n; i += lowbit(i))
+        tr[i] += c;
+}
+
+int sum(int x) {
+    int res = 0;
+    for (int i = x; i; i -= lowbit(i))
+        res += tr[i];
+    return res;
+}
+
+int main() {
+    cin >> n >> m;
+    for (int i = 1; i <= n; ++ i ) {
+        int c;
+        cin >> c;
+        add(i, c);
+    }
+    
+    while (m -- ) {
+        int op, x, y;
+        cin >> op >> x >> y;
+        if (op == 1)
+            add(x, y);
+        else
+            cout << sum(y) - sum(x - 1) << endl;
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu 【模板】树状数组 2](https://www.luogu.com.cn/problem/P3368)**
+> 
+> 题意: 记录差分
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 5e5 + 10;
+
+int n, m;
+int a[N], tr[N];
+
+int lowbit(int x) {
+    return x & -x;
+}
+
+void add(int x, int c) {
+    for (int i = x; i <= n; i += lowbit(i))
+        tr[i] += c;
+}
+
+int sum(int x) {
+    int ret = 0;
+    for (int i = x; i; i -= lowbit(i))
+        ret += tr[i];
+    return ret;
+}
+
+int main() {
+    cin >> n >> m;
+    
+    for (int i = 1; i <= n; ++ i ) {
+        cin >> a[i];
+        add(i, a[i] - a[i - 1]);
+    }
+    
+    while (m -- ) {
+        int op, x;
+        cin >> op >> x;
+        if (op == 1) {
+            int y, k;
+            cin >> y >> k;
+            add(x, k), add(y + 1, -k);
+        } else
+            cout << sum(x) << endl;
+    }
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 经典离线+预处理
+
+> [!NOTE] **[Luogu [GZOI2017]配对统计](https://www.luogu.com.cn/problem/P5677)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典的预处理、离线、BIT计数
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// 【技巧】
+// 对于每次查询，只把【右端点】在 (0,r] 内的好对放进树状数组。
+//
+// 树状数组 tree[i] 表示【左端点】在 [i-lowbit(i)+1 , i]
+// 内的所有好对的的个数。
+
+#define x first
+#define y second
+
+using LL = long long;
+using PII = pair<int, int>;
+const int N = 3e5 + 10, INF = 0x3f3f3f3f;
+
+int n, m;
+PII a[N];
+vector<PII> ps;
+
+struct Qs {
+    int l, r, id;
+};
+vector<Qs> qs;
+
+// BIT
+int tr[N];
+
+int lowbit(int x) {
+    return x & -x;
+}
+
+void add(int x, int c) {
+    for (int i = x; i <= n; i += lowbit(i))
+        tr[i] += c;
+}
+
+int sum(int x) {
+    int ret = 0;
+    for (int i = x; i; i -= lowbit(i))
+        ret += tr[i];
+    return ret;
+}
+
+// FUNC
+// 右端点在前
+void add_l(int i) {
+    int l = min(a[i].y, a[i - 1].y), r = max(a[i].y, a[i - 1].y);
+    ps.push_back({r, l});
+}
+
+void add_r(int i) {
+    int l = min(a[i].y, a[i + 1].y), r = max(a[i].y, a[i + 1].y);
+    ps.push_back({r, l});
+}
+
+int main() {
+    cin >> n >> m;
+    
+    // 排序处理原数据
+    for (int i = 1; i <= n; ++ i ) {
+        int x;
+        cin >> x;
+        a[i] = {x, i};
+    }
+    sort(a + 1, a + n + 1);
+    
+    for (int i = 1; i <= n; ++ i ) {
+        int l = INF, r = INF;
+        if (i > 1)
+            l = a[i].x - a[i - 1].x;
+        if (i < n)
+            r = a[i + 1].x - a[i].x;
+        
+        if (l == r) {
+            if (l != INF)
+                add_l(i), add_r(i);
+        } else {
+            if (l < r)
+                add_l(i);
+            else
+                add_r(i);
+        }
+    }
+    sort(ps.begin(), ps.end());
+
+    // 读查询
+    for (int i = 0; i < m; ++ i ) {
+        int l, r;
+        cin >> l >> r;
+        qs.push_back({l, r, i});
+    }
+    sort(qs.begin(), qs.end(), [](const Qs & a, const Qs & b) {
+        return a.r < b.r;
+    });;
+    
+    // 离线处理
+    LL res = 0;
+    int nps = ps.size(), nqs = qs.size();
+    for (int i = 0, j = 0; i < nqs; ++ i ) {
+        while (j < nps && ps[j].x <= qs[i].r)
+            // 继续把【这队的左】加入BIT
+            add(ps[j ++ ].y, 1);
+        res += LL(sum(qs[i].r) - sum(qs[i].l - 1)) * (qs[i].id + 1);
+    }
+    cout << res << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

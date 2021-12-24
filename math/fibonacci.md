@@ -375,3 +375,120 @@ $$
 - [HackerRank - Is Fibo](https://www.hackerrank.com/contests/codesprint5/challenges/is-fibo/problem)
 - [Project Euler - Even Fibonacci numbers](https://www.hackerrank.com/contests/projecteuler/challenges/euler002/problem)
 -   [洛谷 P4000 斐波那契数列](https://www.luogu.com.cn/problem/P4000)
+
+> [!NOTE] **[Luogu 月落乌啼算钱（斐波那契数列）](https://www.luogu.com.cn/problem/P1720)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 数学公式与 fib
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+const int N = 55;
+
+LL f[N];
+
+int main() {
+    int n;
+    cin >> n;
+    f[0] = 0, f[1] = 1;
+    for (int i = 2; i <= n; ++ i )
+        f[i] = f[i - 1] + f[i - 2];
+    cout << f[n] << ".00" << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu 蜜蜂路线](https://www.luogu.com.cn/problem/P2437)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 1010;
+
+int s, t;
+
+vector<int> add(vector<int> & a, vector<int> & b) {
+    vector<int> c;
+    for (int i = 0, t = 0; i < a.size() || i < b.size() || t; ++ i ) {
+        if (i < a.size())
+            t += a[i];
+        if (i < b.size())
+            t += b[i];
+        c.push_back(t % 10);
+        t /= 10;
+    }
+    while (c.size() > 1 && c.back() == 0)
+        c.pop_back();
+    return c;
+}
+
+int main() {
+    cin >> s >> t;
+    
+    vector<int> a(1, 0), b(1, 1);
+    for (int i = s + 1; i <= t; ++ i ) {
+        auto t = add(a, b);
+        a = b;
+        b = t;
+    }
+    for (int i = b.size() - 1; i >= 0; -- i )
+        cout << b[i];
+    cout << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+

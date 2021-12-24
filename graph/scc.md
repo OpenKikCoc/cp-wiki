@@ -765,3 +765,299 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[Luogu 【模板】缩点](https://www.luogu.com.cn/problem/P3387)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 模版 dfn[u] == low[u]
+> 
+> tarjan 结束后的再建边跑拓扑 注意遍历顺序
+> 
+> 补充知识：tarjan 后 scc 的递减序已经是拓扑序
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const int N = 1e4 + 10, M = 2e5 + 10;
+
+int n, m;
+int w[N], d[N];
+int h1[N], h2[N], e[M], ne[M], idx;
+
+int dfn[N], low[N], timestamp;
+int stk[N], top;
+bool in_stk[N];
+int id[N], scc_cnt, sz[N], sum[N];  // sum[N] 记录和
+
+int q[N], f[N];
+
+void init() {
+    memset(h1, -1, sizeof h1);
+    memset(h2, -1, sizeof h2);
+    idx = 0;
+}
+
+void add(int h[], int a, int b) {
+    e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+void tarjan(int u) {
+    dfn[u] = low[u] = ++ timestamp;
+    stk[ ++ top] = u, in_stk[u] = true;
+    
+    for (int i = h1[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (!dfn[j]) {
+            tarjan(j);
+            low[u] = min(low[u], low[j]);
+        } else if (in_stk[j]) {
+            low[u] = min(low[u], dfn[j]);
+        }
+    }
+    
+    if (dfn[u] == low[u]) {
+        scc_cnt ++ ;
+        int y;
+        do {
+            y = stk[top -- ];
+            in_stk[y] = false;
+            id[y] = scc_cnt;
+            sz[scc_cnt] ++ ;
+            // -------- 本题的特殊处理 --------
+            sum[scc_cnt] += w[y];
+            // --------------------------------
+        } while (y != u);
+    }
+}
+
+void topo() {
+    int hh = 0, tt = -1;
+    // scc_cnt instead of n
+    for (int i = 1; i <= scc_cnt; ++ i )
+        if (!d[i])
+            q[ ++ tt] = i;
+    
+    while (hh <= tt) {
+        int t = q[hh ++ ];
+        for (int i = h2[t]; ~i; i = ne[i]) {
+            int j = e[i];
+            if ( -- d[j] == 0)
+                q[ ++ tt] = j;
+        }
+    }
+}
+
+int main() {
+    init();
+    cin >> n >> m;
+    for (int i = 1; i <= n; ++ i )
+        cin >> w[i];
+    while (m -- ) {
+        int a, b;
+        cin >> a >> b;
+        add(h1, a, b);
+    }
+    
+    for (int i = 1; i <= n; ++ i )
+        if (!dfn[i])
+            tarjan(i);
+    
+    unordered_set<LL> S;
+    for (int i = 1; i <= n; ++ i )
+        for (int j = h1[i]; ~j; j = ne[j]) {
+            int k = e[j];
+            int a = id[i], b = id[k];
+            LL hash = a * 1000000ll + b;
+            if (a != b && !S.count(hash)) {
+                // 此时 a b 是scc的id
+                add(h2, a, b);
+                d[b] ++ ;
+                S.insert(hash);
+            }
+        }
+
+    topo();
+
+    // len = scc_cnt
+    // ATTENTION 遍历顺序
+    // 【此处的 i 是队列 q 的下标】
+    for (int i = 0; i < scc_cnt; ++ i ) {
+        int t = q[i];
+        if (!f[t])
+            f[t] = sum[t];
+        for (int i = h2[t]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (f[j] < f[t] + sum[j])
+                f[j] = f[t] + sum[j];
+        }
+    }
+    
+    int res = 0;
+    for (int i = 1; i <= scc_cnt; ++ i )
+        res = max(res, f[i]);
+    cout << res << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
+> [!NOTE] **[Luogu 间谍网络](https://www.luogu.com.cn/problem/P1262)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// 容易想出对于连通子图缩点并计算整个子图最小消耗min cost
+//
+// 【核心是计算缩点后新的图的消耗：所有入度为0的点的cost和】
+
+const int N = 3010, M = 8010, INF = 0x3f3f3f3f;
+
+int n, p, r;
+int h[N], e[M], ne[M], idx;
+int price[N];
+
+int dfn[N], low[N], timestamp;
+int stk[N], top;
+bool in_stk[N];
+int id[N], scc_cnt, sz[N], cost[N];
+int d[N];
+
+void init() {
+    memset(h, -1, sizeof h);
+    idx = 0;
+    
+    // ATTENTION
+    memset(price, 0x3f, sizeof price);
+    memset(cost, 0x3f, sizeof cost);
+}
+
+void add(int a, int b) {
+    e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+void tarjan(int u) {
+    dfn[u] = low[u] = ++ timestamp;
+    stk[ ++ top] = u, in_stk[u] = true;
+    
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (!dfn[j]) {
+            tarjan(j);
+            low[u] = min(low[u], low[j]);
+        } else if (in_stk[j])
+            low[u] = min(low[u], dfn[j]);
+    }
+    
+    if (dfn[u] == low[u]) {
+        scc_cnt ++ ;
+        int y;
+        do {
+            y = stk[top -- ];
+            in_stk[y] = false;
+            
+            // handle
+            id[y] = scc_cnt;
+            sz[scc_cnt] ++ ;
+            cost[scc_cnt] = min(cost[scc_cnt], price[y]);   // 收买y的价格 显然
+        } while (y != u);
+    }
+}
+
+int main() {
+    init();
+    
+    cin >> n >> p;
+    while (p -- ) {
+        int a, b;
+        cin >> a >> b;
+        price[a] = b;
+    }
+    cin >> r;
+    while (r -- ) {
+        int a, b;
+        cin >> a >> b;
+        add(a, b);
+    }
+    
+    for (int i = 1; i <= n; ++ i )
+        if (!dfn[i] && price[i] != INF)
+            tarjan(i);
+    
+    // ATTENTION ADD
+    for (int i = 1; i <= n; ++ i )
+        if (!dfn[i]) {
+            // 从未被遍历过 必然无解
+            cout << "NO" << endl << i << endl;
+            return 0;
+        }
+    
+    // 思路：计算入度
+    for (int i = 1; i <= n; ++ i )
+        for (int j = h[i]; ~j; j = ne[j]) {
+            int k = e[j];
+            int a = id[i], b = id[k];
+            if (a != b)
+                d[b] ++ ;
+        }
+
+    // 计算消耗
+    int res = 0;
+    for (int i = 1; i <= scc_cnt; ++ i )
+        if (!d[i])
+            res += cost[i];
+    cout << "YES" << endl << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

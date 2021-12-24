@@ -131,6 +131,434 @@ int main() {
 
 * * *
 
+> [!NOTE] **[Luogu 闰年判断](https://www.luogu.com.cn/problem/P5711)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int n;
+
+bool f(int x) {
+    return x % 4 == 0 && x % 100 || x % 400 == 0;
+}
+
+int main() {
+    cin >> n;
+    
+    cout << (f(n) ? 1 : 0) << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu USACO1.2 方块转换 Transformations](https://www.luogu.com.cn/problem/P1205)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+using VS = vector<string>;
+
+int n;
+
+void mirror(VS & s) {
+    for (int i = 0; i < n; ++ i )
+        for (int j = 0, k = n - 1; j < k; ++ j , -- k )
+            swap(s[i][j], s[i][k]);
+}
+
+void rotate(VS & s) {
+    // 关于对角线对称
+    for (int i = 0; i < n; ++ i )
+        for (int j = 0; j < i; ++ j )
+            swap(s[i][j], s[j][i]);
+    // 镜像对称
+    mirror(s);
+}
+
+int check(VS & a, VS & b) {
+    auto c = a;
+    for (int i = 1; i <= 3; ++ i ) {
+        rotate(c);
+        if (c == b) return i;
+    }
+    c = a;
+    mirror(c);
+    if (c == b) return 4;
+    for (int i = 1; i <= 3; ++ i ) {
+        rotate(c);
+        if (c == b) return 5;
+    }
+    if (a == b) return 6;
+    return 7;
+}
+
+int main() {
+    VS a, b;
+    string line;
+    
+    cin >> n;
+    for (int i = 0; i < n; ++ i ) cin >> line, a.push_back(line);
+    for (int i = 0; i < n; ++ i ) cin >> line, b.push_back(line);
+    cout << check(a, b) << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu NOIP2003 普及组 乒乓球](https://www.luogu.com.cn/problem/P1042)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+string get(string s) {
+    string ret;
+    for (auto c : s)
+        if (c != 'E')
+            ret.push_back(c);
+        else
+            break;
+    return ret;
+}
+
+void f(string s, int d) {
+    int n = s.size();
+    
+    // 如果一局比赛刚开始 则此时比分为 0:0 最后一个case
+    int w = 0, l = 0;
+    
+    int i = 0;
+    while (i < n) {
+        int j = i;
+        // case
+        while (j < n && (w < d && l < d || w >= d - 1 && l >= d - 1 && abs(w - l) < 2)) {
+            if (s[j] == 'W')
+                w ++ ;
+            else
+                l ++ ;
+            j ++ ;
+        }
+        
+        if ((w >= d || l >= d) && abs(w - l) >= 2) {
+            cout << w << ':' << l << endl;
+            w = 0, l = 0;
+        }
+        i = j;
+    }
+    cout << w << ':' << l << endl;
+}
+
+int main() {
+    string s, str;
+    while (cin >> str)
+        s += str;
+    
+    s = get(s);
+    
+    f(s, 11);
+    cout << endl;
+    f(s, 21);
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu NOIP2006 提高组 作业调度方案](https://www.luogu.com.cn/problem/P1065)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典大模拟
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 22, M = 1e5 + 10;
+
+int m, n;
+int all[N * N];
+int id[N][N], cost[N][N], step[N], pred[N];
+bool busy[N][M]; // the machine is idle
+
+int main() {
+    cin >> m >> n;
+    
+    for (int i = 1; i <= m * n; ++ i )
+        cin >> all[i];
+    
+    for (int i = 1; i <= n; ++ i )
+        for (int j = 1; j <= m; ++ j )
+            cin >> id[i][j];
+    for (int i = 1; i <= n; ++ i )
+        for (int j = 1; j <= m; ++ j )
+            cin >> cost[i][j];
+    
+    int res = 0;
+    for (int i = 1; i <= m * n; ++ i ) {
+        int sth = all[i];
+        step[sth] ++ ;
+        
+        int tid = id[sth][step[sth]], tcost = cost[sth][step[sth]];
+        
+        // begin from last done time
+        for (int j = pred[sth] + 1; ; ++ j )
+            if (!busy[tid][j]) {
+                int k = j;
+                while (k - j < tcost && !busy[tid][k])
+                    k ++ ;
+                if (k - j == tcost) {
+                    for (int t = j; t < k; ++ t )
+                        busy[tid][t] = true;
+                    pred[sth] = k - 1;
+                    // update
+                    res = max(res, k - 1);
+                    break;
+                }
+                // j = k - 1;
+                j = k;
+            }
+    }
+    cout << res << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
+
+> [!NOTE] **[Luogu 南蛮图腾](https://www.luogu.com.cn/problem/P1498)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// https://www.luogu.com.cn/blog/treer/solution-p1498
+
+const int N = 1100;
+
+int n;
+int g[N] = {1};
+
+int main() {
+    cin >> n;
+    for (int i = 0; i < 1 << n; ++i) {
+        for (int j = 1; j < (1 << n) - i; ++j)
+            cout << " ";  //前导空格
+        for (int j = i; j >= 0; --j)
+            g[j] ^= g[j - 1];  //修改数组
+        if (!(i % 2))
+            for (int j = 0; j <= i; ++j)
+                cout << (g[j] ? "/\\" : "  ");  //奇数行
+        else
+            for (int j = 0; j <= i; j += 2)
+                cout << (g[j] ? "/__\\" : "    ");  //偶数行
+        cout << endl;
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu 计算分数](https://www.luogu.com.cn/problem/P1572)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典模拟
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    string s;
+    cin >> s;
+    
+    if (s[0] != '-')
+        s = "+" + s;
+    int n = s.size();
+    
+    int a = 0, b = 1, f = 1;
+    for (int i = 0; i < n; ++ i ) {
+        int nf = (s[i] == '+' ? 1 : -1);
+        int na = 0, nb = 0;
+        int j = i + 1;
+        while (isdigit(s[j]))
+            na = na * 10 + s[j] - '0', j ++ ;
+        j ++ ;  // '/'
+        while (isdigit(s[j]))
+            nb = nb * 10 + s[j] - '0', j ++ ;
+        i = j - 1;  // '+' or '-'
+        
+        int g = __gcd(b, nb);
+        int nnb = b / g * nb;
+        int nna = f * nb / g * a + nf * b / g * na;
+        
+        f = (nna >= 0 ? 1 : -1);
+        
+        nna = abs(nna);
+        g = __gcd(nna, nnb);
+        if (g) {
+            nna /= g, nnb /= g;
+        } else {
+            nna = 0, nnb = 1;
+        }
+        a = nna, b = nnb;
+    }
+    if (f < 0)
+        cout << '-';
+    if (a % b == 0)
+        cout << to_string(a) << endl;
+    else
+        cout << to_string(a) << '/' << to_string(b) << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
 ### 丑数
 
 

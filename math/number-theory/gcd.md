@@ -707,3 +707,149 @@ int main() {
 <br>
 
 * * *
+
+### 负进制
+
+> [!NOTE] **[Luogu [NOIP2000 提高组] 进制转换](https://www.luogu.com.cn/problem/P1017)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int n, m;
+
+int main() {
+    cin >> n >> m;
+
+    cout << n << "=";
+
+    string s;
+    while (n) {
+        int mod = n % m;
+        n /= m;
+        // ATTENTION
+        // 出现负数 则从上一位借1
+        if (mod < 0)
+            mod -= m, ++n;
+
+        if (mod < 10)
+            s.push_back('0' + mod);
+        else
+            s.push_back('A' + (mod - 10));
+    }
+    reverse(s.begin(), s.end());
+    cout << s << "(base" << m << ")" << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu zzc 种田](https://www.luogu.com.cn/problem/P2660)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> gcd 的思想
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+LL s;
+
+/*
+// 1. dfs 直接 MLE
+
+    dfs(x, y);
+
+void dfs(LL x, LL y) {
+    if (x == 0 || y == 0)
+        return;
+    if (x < y)
+        swap(x, y);
+    // x >= y
+    s += y * 4;
+    dfs(y, x - y);
+}
+*/
+
+/*
+// 2. 模拟最后一个点超时
+
+    while (x && y) {
+        if (x < y)
+            swap(x, y);
+        s += y * 4;
+        {
+            LL nx = y, ny = x - y;
+            x = nx, y = ny;
+        }
+    }
+*/
+
+int main() {
+    LL x, y;
+    cin >> x >> y;
+
+    // 由做法2 考虑优化
+    // 每次不要只切一个正方形 可以且多个
+    // 即切 max(x, y) / min(x, y) 个  对应如下情况
+    // 【长10 宽1】这样的 大幅优化
+    while (x && y) {
+        if (x < y)
+            swap(x, y);
+        // x >= y
+        s += y * 4 * (x / y);
+        x %= y;
+    }    
+    cout << s << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

@@ -45,3 +45,156 @@ $d(i, r) = \max\left\{d(j, r') + h'\right\}$
 在试图计算前，如果发现已经计算过，直接返回保存的值；否则就按步计算，并保存。
 
 最终答案是所有 $d(i, r)$ 的最大值。
+
+## 习题
+
+> [!NOTE] **[Luogu 采蘑菇](https://www.luogu.com.cn/problem/P2656)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典
+> 
+> 缩点 + 拓扑 + dp
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// tarjan 找环 榨干环内所有的蘑菇
+// 随后建立新图 跑【拓扑排序 + dp】即可
+
+const int N = 8e4 + 10, M = 4e5 + 10;
+
+int n, m, s;
+int h1[N], h2[N], e[M], w[M], ne[M], idx;
+double restore[M];
+
+int dfn[N], low[N], ts;
+int stk[N], top;
+bool in_stk[N];
+int id[N], scc_cnt;
+
+int din[N], sum[N];
+int q[N], f[N];
+
+void init() {
+    memset(h1, -1, sizeof h1);
+    memset(h2, -1, sizeof h2);
+    idx = 0;
+}
+
+void add(int h[], int a, int b, int c, double r) {
+    restore[idx] = r;
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+void tarjan(int u) {
+    dfn[u] = low[u] = ++ ts;
+    stk[ ++ top] = u, in_stk[u] = true;
+    
+    for (int i = h1[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (!dfn[j]) {
+            tarjan(j);
+            low[u] = min(low[u], low[j]);
+        } else if (in_stk[j])
+            low[u] = min(low[u], dfn[j]);
+    }
+    
+    if (dfn[u] == low[u]) {
+        scc_cnt ++ ;
+        int y;
+        do {
+            y = stk[top -- ];
+            in_stk[y] = false;
+            
+            // id
+            id[y] = scc_cnt;
+        } while (y != u);
+    }
+}
+
+void topo(int start) {
+    memset(f, 0xcf, sizeof f);  // -INF
+    int st = id[start];
+    f[st] = sum[st];
+    
+    int hh = 0, tt = -1;
+    for (int i = 1; i <= scc_cnt; ++ i )
+        if (!din[i])
+            q[ ++ tt] = i;
+            
+    while (hh <= tt) {
+        int t = q[hh ++ ];
+        for (int i = h2[t]; ~i; i = ne[i]) {
+            int j = e[i];
+            f[j] = max(f[j], f[t] + w[i] + sum[j]);
+            if ( -- din[j] == 0)
+                q[ ++ tt] = j;
+        }
+    }
+}
+
+int main() {
+    init();
+    cin >> n >> m;
+    while (m -- ) {
+        int a, b, c;
+        double d;
+        cin >> a >> b >> c >> d;
+        add(h1, a, b, c, d);
+    }
+    cin >> s;
+    
+    for (int i = 1; i <= n; ++ i )
+        if (!dfn[i])
+            tarjan(i);
+    
+    for (int i = 1; i <= n; ++ i )
+        for (int j = h1[i]; ~j; j = ne[j]) {
+            int k = e[j];
+            int a = id[i], b = id[k];
+            if (a != b) {
+                add(h2, a, b, w[j], 0); // restore任意 因为不会有用
+                din[b] ++ ;
+            } else {
+                int x = w[j];
+                int scc = id[i];
+                while (x) {
+                    sum[scc] += x;
+                    x *= restore[j];
+                }
+            }
+        }
+    
+    topo(s);
+    
+    int res = 0;
+    for (int i = 1; i <= scc_cnt; ++ i )
+        res = max(res, f[i]);
+    cout << res << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

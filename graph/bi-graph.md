@@ -241,3 +241,96 @@ if __name__ == '__main__':
 ### 一般图最大权匹配
 
 详见 [一般图最大权匹配](graph/graph-matching/general-weight-match.md) 页面。
+
+## 习题
+
+> [!NOTE] **[Luogu [NOIP2010 提高组] 关押罪犯](https://www.luogu.com.cn/problem/P1525)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 二分 + 二分图
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 2e4 + 10, M = 2e5 + 10;
+
+int n, m;
+int h[N], e[M], w[M], ne[M], idx;
+int color[N];
+
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+bool dfs(int u, int c, int m) {
+    color[u] = c;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        // ATTENTION
+        if (w[i] <= m)
+            continue;
+        
+        int j = e[i];
+        if (color[j] == c)
+            return false;
+        if (!color[j] && !dfs(j, 3 - c, m))
+            return false;
+    }
+    return true;
+}
+
+bool check(int m) {
+    memset(color, 0, sizeof color);
+    for (int i = 1; i <= n; ++ i )
+        if (!color[i])
+            if (!dfs(i, 1, m))
+                return false;
+    return true;
+}
+
+int main() {
+    memset(h, -1, sizeof h);
+    
+    cin >> n >> m;
+    
+    while (m -- ) {
+        int a, b, c;
+        cin >> a >> b >> c;
+        add(a, b, c), add(b, a, c);
+    }
+    
+    int l = 0, r = 1e9;
+    while (l < r) {
+        int m = l + r >> 1;
+        if (check(m))
+            r = m;
+        else
+            l = m + 1;
+    }
+    cout << l << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

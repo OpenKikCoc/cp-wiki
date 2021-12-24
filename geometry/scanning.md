@@ -356,3 +356,121 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[Luogu [USACO12FEB]Overplanting S]()**
+> 
+> 题意: 扫描线求矩形交
+
+> [!TIP] **思路**
+> 
+> 扫描线十分特殊，推导可知无需pushdown
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const int N = 1010;
+
+int n;
+struct Seg {
+    int x, y1, y2;
+    int k;
+    bool operator< (const Seg & t) const {
+        return x < t.x;
+    }
+} seg[N << 1];
+struct Node {
+    int l, r;
+    int cnt, len;
+} tr[N << 3];
+
+vector<int> ys;
+
+int find(int y) {
+    return lower_bound(ys.begin(), ys.end(), y) - ys.begin();
+}
+
+void pushup(int u) {
+    if (tr[u].cnt)
+        tr[u].len = ys[tr[u].r + 1] - ys[tr[u].l];
+    else if (tr[u].l == tr[u].r)
+        tr[u].len = 0;
+    else
+        tr[u].len = tr[u << 1].len + tr[u << 1 | 1].len;
+}
+
+void build(int u, int l, int r) {
+    if (l == r)
+        tr[u] = {l, r, 0, 0};
+    else {
+        tr[u] = {l, r, 0, 0};
+        int m = l + (r - l) / 2;
+        build(u << 1, l, m), build(u << 1 | 1, m + 1, r);
+    }
+}
+
+void modify(int u, int l, int r, int k) {
+    if (tr[u].l >= l && tr[u].r <= r) {
+        tr[u].cnt += k;
+        pushup(u);
+    } else {
+        int m = tr[u].l + (tr[u].r - tr[u].l) / 2;
+        if (l <= m)
+            modify(u << 1, l, r, k);
+        if (r > m)
+            modify(u << 1 | 1, l, r, k);
+        pushup(u);
+    }
+}
+
+int main() {
+    cin >> n;
+    for (int i = 0, j = 0; i < n; ++ i ) {
+        int x1, y1, x2, y2;
+        cin >> x1 >> y1 >> x2 >> y2;
+        // seg[j ++ ] = {x1, y1, y2, 1};
+        // seg[j ++ ] = {x2, y1, y2, -1};
+        seg[j ++ ] = {x1, y2, y1, 1};
+        seg[j ++ ] = {x2, y2, y1, -1};
+        ys.push_back(y1), ys.push_back(y2);
+    }
+    
+    sort(ys.begin(), ys.end());
+    ys.erase(unique(ys.begin(), ys.end()), ys.end());
+    
+    // 保存的区间比size-1还要小1
+    build(1, 0, ys.size() - 2);
+    sort(seg, seg + 2 * n);
+    
+    LL res = 0;
+    for (int i = 0; i < 2 * n; ++ i ) {
+        if (i)
+            res += (LL)tr[1].len * (seg[i].x - seg[i - 1].x);
+        modify(1, find(seg[i].y1), find(seg[i].y2) - 1, seg[i].k);
+    }
+    
+    cout << res << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

@@ -68,3 +68,68 @@ TODO@binacs
 
 <br>
 
+## 习题
+
+> [!NOTE] **[Luogu 跑路](https://www.luogu.com.cn/problem/P1613)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 基础倍增 + floyd
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 55, M = 65;
+
+int n, m;
+int f[N][N][M], dis[N][N];
+
+int main() {
+    cin >> n >> m;
+    
+    memset(dis, 0x3f, sizeof dis);
+    while (m -- ) {
+        int a, b;
+        cin >> a >> b;
+        f[a][b][0] = 1;
+        dis[a][b] = 1;
+    }
+    
+    for (int d = 1; d < M; ++ d )
+        for (int k = 1; k <= n; ++ k )
+            for (int i = 1; i <= n; ++ i )
+                for (int j = 1; j <= n; ++ j )
+                    if (f[i][k][d - 1] && f[k][j][d - 1])
+                        f[i][j][d] = 1, dis[i][j] = 1;
+    
+    for (int k = 1; k <= n; ++ k )
+        for (int i = 1; i <= n; ++ i )
+            for (int j = 1; j <= n; ++ j )
+                dis[i][j] = min(dis[i][j], dis[i][k] + dis[k][j]);
+    cout << dis[1][n] << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
