@@ -118,6 +118,8 @@
 
 ## 习题
 
+### 花式应用
+
 > [!NOTE] **[AcWing 1252. 搭配购买](https://www.acwing.com/problem/content/1254/)**
 > 
 > 题意: TODO

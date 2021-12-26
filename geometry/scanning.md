@@ -138,11 +138,11 @@ int main() {
 
 > [!NOTE] **[AcWing 1406. 窗口面积](https://www.acwing.com/problem/content/1408/)**
 > 
-> 题意: TODO
+> 题意: 扫描线求矩形面积的并
 
 > [!TIP] **思路**
 > 
-> 求矩形面积的并：扫描线
+> 
 
 <details>
 <summary>详细代码</summary>
@@ -263,7 +263,7 @@ int main() {
 
 > [!NOTE] **[AcWing 262. 海报](https://www.acwing.com/problem/content/264/)**
 > 
-> 题意: TODO
+> 题意: 扫描线求矩形周长
 
 > [!TIP] **思路**
 > 

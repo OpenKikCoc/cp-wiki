@@ -305,6 +305,8 @@ int main() {
     
     顺带一提，刚刚的测试用例在这题的答案是 $212$。
 
+* * *
+
 > [!NOTE] **[Codeforces #487 E. Tourists](https://codeforces.com/contest/487/problem/E)**
 
 > [!TIP]  **题意简述**
@@ -352,6 +354,8 @@ int main() {
 
 <br>
 
+* * *
+
 > [!NOTE] **[「SDOI2018」战略游戏](https://loj.ac/p/2562)**
 > [!TIP]  **题意简述**
 > 
@@ -395,6 +399,8 @@ int main() {
 </details>
 
 <br>
+
+* * *
 
 ## 参考资料与注释
 

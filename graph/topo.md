@@ -237,6 +237,8 @@ def toposort():
 
 ## 习题
 
+### 一般应用
+
 > [!NOTE] **[AcWing 848. 有向图的拓扑序列](https://www.acwing.com/problem/content/850/)**
 > 
 > 题意: TODO
@@ -381,8 +383,6 @@ if __name__ == '__main__':
 <br>
 
 * * *
-
-## 习题
 
 > [!NOTE] **[AcWing 1192. 奖金](https://www.acwing.com/problem/content/1194/)**
 > 
@@ -773,6 +773,93 @@ int main() {
 
 * * *
 
+> [!NOTE] **[Luogu 【XR-3】核心城市](https://www.luogu.com.cn/problem/P5536)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **类似拓扑排序的思路即可**
+> 
+> 题解区有很多用树直径 + 推理贪心的思路 也可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// 拓扑的方案显然就可做
+// 题解区很多用树直径的做法 TODO
+
+const int N = 1e5 + 10, M = N << 1;
+
+int n, k;
+int h[N], e[M], ne[M], idx;
+int c[N], d[N], q[N];
+
+void init() {
+    memset(h, -1, sizeof h);
+    idx = 0;
+}
+
+void add(int a, int b) {
+    e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+int main() {
+    init();
+
+    cin >> n >> k;
+    
+    for (int i = 0; i < n - 1; ++ i ) {
+        int a, b;
+        cin >> a >> b;
+        add(a, b), add(b, a);
+        c[a] ++ , c[b] ++ ;
+    }
+    
+    int hh = 0, tt = -1;
+    for (int i = 1; i <= n; ++ i )
+        if (c[i] == 1)  // 叶子节点
+            q[ ++ tt] = i, d[i] = 1;
+    
+    int cnt = n - k;
+    while (hh <= tt) {
+        int t = q[hh ++ ];
+        cnt -- ;
+        if (!cnt) {
+            cout << d[t] << endl;
+            return 0;
+        }
+
+        for (int i = h[t]; ~i; i = ne[i]) {
+            int j = e[i];
+            if ( -- c[j] == 1)  // 1
+                d[j] = d[t] + 1, q[ ++ tt] = j;
+        }
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 拓扑排序方案数（可重集排序问题）
 
 > [!NOTE] **[LeetCode 1916. 统计为蚁群构筑房间的不同顺序](https://leetcode-cn.com/problems/count-ways-to-build-rooms-in-an-ant-colony/)**
@@ -854,93 +941,6 @@ public:
         return dfs(0);
     }
 };
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[Luogu 【XR-3】核心城市](https://www.luogu.com.cn/problem/P5536)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> **类似拓扑排序的思路即可**
-> 
-> 题解区有很多用树直径 + 推理贪心的思路 也可
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-// 拓扑的方案显然就可做
-// 题解区很多用树直径的做法 TODO
-
-const int N = 1e5 + 10, M = N << 1;
-
-int n, k;
-int h[N], e[M], ne[M], idx;
-int c[N], d[N], q[N];
-
-void init() {
-    memset(h, -1, sizeof h);
-    idx = 0;
-}
-
-void add(int a, int b) {
-    e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
-}
-
-int main() {
-    init();
-
-    cin >> n >> k;
-    
-    for (int i = 0; i < n - 1; ++ i ) {
-        int a, b;
-        cin >> a >> b;
-        add(a, b), add(b, a);
-        c[a] ++ , c[b] ++ ;
-    }
-    
-    int hh = 0, tt = -1;
-    for (int i = 1; i <= n; ++ i )
-        if (c[i] == 1)  // 叶子节点
-            q[ ++ tt] = i, d[i] = 1;
-    
-    int cnt = n - k;
-    while (hh <= tt) {
-        int t = q[hh ++ ];
-        cnt -- ;
-        if (!cnt) {
-            cout << d[t] << endl;
-            return 0;
-        }
-
-        for (int i = h[t]; ~i; i = ne[i]) {
-            int j = e[i];
-            if ( -- c[j] == 1)  // 1
-                d[j] = d[t] + 1, q[ ++ tt] = j;
-        }
-    }
-    return 0;
-}
 ```
 
 ##### **Python**

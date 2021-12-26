@@ -119,10 +119,8 @@ vector<int> twoSum(vector<int>& numbers, int target) {
 我们列出式子来观察一下，设相遇时，慢指针一共走了 $k$ 步，在环上走了 $l$ 步（快慢指针在环上相遇时，慢指针一定没走完一圈）。快指针走了 $2k$ 步，设环长为 $C$，则有
 
 $$
-\begin{align}
-& \ 2 k=n \times C+l+(k-l) \\
-& \ k=n \times C \\
-\end{align}
+ \ 2 k=n \times C+l+(k-l) \\
+ \ k=n \times C \\
 $$
 
 第一次相遇时 $n$ 取最小正整数 1。也就是说 $k=C$。那么利用这个等式，可以在两个指针相遇后，将其中一个指针移到表头，让两者都一步一步走，再度相遇的位置即为环的起点。

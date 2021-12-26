@@ -38,7 +38,7 @@
 - Fibonacci 字符串定义如下：
 
 $$
-\begin{align} t_0 &= a, \\ t_1 &= b, \\ t_i &= t_{i-1} + t_{i-2}, \end{align}
+t_0 = a, \\ t_1 = b, \\ t_i = t_{i-1} + t_{i-2}
 $$
 
 可以发现 Fibonacci 字符串具有高度的周期性。对于长度为 $f_i$ 的 Fibonacci 字符串 $t_i$，即使用 Crochemore 三元组压缩，也有 $O(f_i \log f_i)$ 个三元组。其本原重串的数量也有 $O(f_i \log f_i)$ 个。
@@ -83,10 +83,10 @@ Main-Lorentz 算法的核心思想是 **分治**。
 - 则所有符合条件的重串符合条件：
 
 $$
-\begin{align} l_1 + l_2 &= l = |u| - \textit{cntr} \\ l_1 &\le k_1, \\ l_2 &\le k_2. \\ \end{align}
+l_1 + l_2 = l = |u| - \textit{cntr} \\ l_1 \le k_1, \\ l_2 \le k_2. \\ 
 $$
 
-接下来，只需要考虑如何快速算出 $k_1$ 与 $k_2$ 了。借助 [Z 函数](./z-func.md)，我们可以 $O(1)$ 计算它们：
+接下来，只需要考虑如何快速算出 $k_1$ 与 $k_2$ 了。借助 [Z 函数](string/z-func.md)，我们可以 $O(1)$ 计算它们：
 
 - 计算 $k_1$：只需计算 $\overline{u}$ 的 Z 函数即可。
 - 计算 $k_2$：只需计算 $v + \# + u$ 的 Z 函数即可，其中 $\#$ 是一个 $u$，$v$ 中均没有的字符。

@@ -98,11 +98,21 @@ int calc(const std::string &s) {  // 计算转换好的后缀表达式
 
 ### 后缀
 
-后缀表达式求值 + 树形dp 【重复做】
+> [!NOTE] **[1896. 反转表达式值的最少操作次数](https://leetcode-cn.com/problems/minimum-cost-to-change-the-final-value-of-expression/)**
+> 
+> [biweekly-54](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-06-12_Biweekly-54#1896-反转表达式值的最少操作次数-tag)
+> 
+> 题意: 后缀表达式求值 + 树形dp 【重复做】
 
-[1896. 反转表达式值的最少操作次数](https://leetcode-cn.com/problems/minimum-cost-to-change-the-final-value-of-expression/)
+> [!TIP] **思路**
+> 
+> 
 
-[biweekly-54](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-06-12_Biweekly-54#1896-反转表达式值的最少操作次数-tag)
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
 
 ```cpp
 class Solution {
@@ -163,6 +173,19 @@ public:
     }
 };
 ```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 > [!NOTE] **[Luogu 后缀表达式](https://www.luogu.com.cn/problem/P1449)**
 > 

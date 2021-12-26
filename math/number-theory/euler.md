@@ -166,6 +166,8 @@ $$
 
 ## 习题
 
+### 欧拉及欧拉筛
+
 > [!NOTE] **[AcWing 873. 欧拉函数](https://www.acwing.com/problem/content/875/)**
 > 
 > 题意: TODO
@@ -299,6 +301,8 @@ int main() {
 <br>
 
 * * *
+
+### 综合应用
 
 > [!NOTE] **[Luogu 集合](https://www.luogu.com.cn/problem/P1621)**
 > 

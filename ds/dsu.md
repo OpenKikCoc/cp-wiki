@@ -129,6 +129,8 @@ $A(m, n) = \begin{cases}n+1&\text{if }m=0\\A(m-1,1)&\text{if }m>0\text{ and }n=0
 
 ## 习题
 
+### 并查集初步
+
 > [!NOTE] **[AcWing 836. 合并集合](https://www.acwing.com/problem/content/838/)**
 > 
 > 题意: TODO
@@ -230,6 +232,168 @@ if __name__ == '__main__':
 
 * * *
 
+
+### 带权并查集
+
+> [!NOTE] **[AcWing 240. 食物链](https://www.acwing.com/problem/content/242/)**
+> 
+> 题意: TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+使用 0/1/2 表示同类、吃、被吃的关系
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 50010;
+
+int n, m;
+int p[N], d[N];
+
+int find(int x) {
+    if (p[x] != x) {
+        int root = find(p[x]);
+        d[x] += d[p[x]];
+        p[x] = root;
+    }
+    return p[x];
+}
+
+int main() {
+    cin >> n >> m;
+    
+    for (int i = 1; i <= n; ++ i ) p[i] = i;
+    
+    int res = 0;
+    int t, x, y;
+    while (m -- ) {
+        cin >> t >> x >> y;
+        if (x > n || y > n) ++ res ;
+        else {
+            int px = find(x), py = find(y);
+            if (t == 1) {
+                if (px == py && (d[x] - d[y]) % 3) ++ res ;
+                else if (px != py) {
+                    p[px] = py;
+                    d[px] = d[y] - d[x];
+                }
+            } else {
+                if (px == py && (d[x] - d[y] - 1) % 3) ++ res ;
+                else if (px != py) {
+                    p[px] = py;
+                    d[px] = d[y] + 1 - d[x];
+                }
+            }
+        }
+    }
+    cout << res << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 并查集与反集
+
+> [!NOTE] **[Luogu [BOI2003]团伙](https://www.luogu.com.cn/problem/P1892)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 并查集 与 反集
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// 关于并查集与反集
+
+const int N = 1010;
+
+int n, m;
+int p[N << 1];  // 前 N 表示原集合，后 N 表示反集
+
+void init() {
+    for (int i = 1; i < N << 1; ++ i )
+        p[i] = i;
+}
+
+int find(int x) {
+    if (p[x] != x)
+        p[x] = find(p[x]);
+    return p[x];
+}
+
+int main() {
+    init();
+    
+    cin >> n >> m;
+    
+    while (m -- ) {
+        char op[2];
+        int a, b;
+        cin >> op >> a >> b;
+        if (op[0] == 'F')
+            p[find(a)] = find(b);
+        else {
+            // 反集合并
+            //
+            // 本质上 find(a + n) 记录了 a 的敌人的集合的根
+            // 所以 find(a +  n) 可以理解为是一个范围 [1, n] 的数
+            // 本操作将敌人与敌人合并
+            p[find(a + n)] = find(b);
+            p[find(b + n)] = find(a);
+        }
+    }
+    
+    int res = 0;
+    for (int i = 1; i <= n; ++ i )
+        if (find(i) == i)
+            res ++ ;
+    cout << res << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 并查集与图
+
 > [!NOTE] **[AcWing 837. 连通块中点的数量](https://www.acwing.com/problem/content/839/)**
 > 
 > 题意: TODO
@@ -318,80 +482,6 @@ if __name__ == '__main__':
         else:
             a = int(oper[1])
             print(size[find(a)])
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[AcWing 240. 食物链](https://www.acwing.com/problem/content/242/)**
-> 
-> 题意: TODO
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-使用 0/1/2 表示同类、吃、被吃的关系
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int N = 50010;
-
-int n, m;
-int p[N], d[N];
-
-int find(int x) {
-    if (p[x] != x) {
-        int root = find(p[x]);
-        d[x] += d[p[x]];
-        p[x] = root;
-    }
-    return p[x];
-}
-
-int main() {
-    cin >> n >> m;
-    
-    for (int i = 1; i <= n; ++ i ) p[i] = i;
-    
-    int res = 0;
-    int t, x, y;
-    while (m -- ) {
-        cin >> t >> x >> y;
-        if (x > n || y > n) ++ res ;
-        else {
-            int px = find(x), py = find(y);
-            if (t == 1) {
-                if (px == py && (d[x] - d[y]) % 3) ++ res ;
-                else if (px != py) {
-                    p[px] = py;
-                    d[px] = d[y] - d[x];
-                }
-            } else {
-                if (px == py && (d[x] - d[y] - 1) % 3) ++ res ;
-                else if (px != py) {
-                    p[px] = py;
-                    d[px] = d[y] + 1 - d[x];
-                }
-            }
-        }
-    }
-    cout << res << endl;
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
 ```
 
 <!-- tabs:end -->
@@ -498,7 +588,100 @@ int main() {
 
 * * *
 
-> [!NOTE] **[AcWing ]()**
+### 综合应用
+
+> [!NOTE] **[Luogu [NOI2015] 程序自动分析](https://www.luogu.com.cn/problem/P1955)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 并查集 + 离散化
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 1e6 + 10;
+
+struct Query {
+    int x, y, e;
+} qs[N];
+
+int n, m;
+int p[N];
+unordered_map<int, int> S;
+
+int get(int x) {
+    if (S.count(x) == 0)
+        S[x] = ++ n ;
+    return S[x];
+}
+
+int find(int x) {
+    if (p[x] != x)
+        p[x] = find(p[x]);
+    return p[x];
+}
+
+int main() {
+    int t;
+    cin >> t;
+    while (t -- ) {
+        n = 0;
+        S.clear();
+        
+        cin >> m;
+        for (int i = 0; i < m; ++ i ) {
+            int x, y, e;
+            cin >> x >> y >> e;
+            qs[i] = {get(x), get(y), e};
+        }
+        
+        for (int i = 1; i <= n; ++ i )
+            p[i] = i;
+        
+        for (int i = 0; i < m; ++ i )
+            if (qs[i].e == 1)
+                p[find(qs[i].x)] = p[find(qs[i].y)];
+        
+        bool has_conflict = false;
+        for (int i = 0; i < m; ++ i )
+            if (qs[i].e == 0) {
+                int pa = find(qs[i].x), pb = find(qs[i].y);
+                if (pa == pb) {
+                    has_conflict = true;
+                    break;
+                }
+            }
+        cout << (has_conflict ? "NO" : "YES") << endl;
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 并查集的抽象进阶
+
+> [!NOTE] **[AcWing 1417. 塑造区域](https://www.acwing.com/problem/content/1419/)**
 > 
 > 题意: TODO
 
@@ -587,176 +770,6 @@ int main() {
     for (int i = 1; i < M; ++ i )
         if (ans[i])
             cout << i << ' ' << ans[i] << endl;
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[Luogu [BOI2003]团伙](https://www.luogu.com.cn/problem/P1892)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 并查集 与 反集
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-// 关于并查集与反集
-
-const int N = 1010;
-
-int n, m;
-int p[N << 1];  // 前 N 表示原集合，后 N 表示反集
-
-void init() {
-    for (int i = 1; i < N << 1; ++ i )
-        p[i] = i;
-}
-
-int find(int x) {
-    if (p[x] != x)
-        p[x] = find(p[x]);
-    return p[x];
-}
-
-int main() {
-    init();
-    
-    cin >> n >> m;
-    
-    while (m -- ) {
-        char op[2];
-        int a, b;
-        cin >> op >> a >> b;
-        if (op[0] == 'F')
-            p[find(a)] = find(b);
-        else {
-            // 反集合并
-            //
-            // 本质上 find(a + n) 记录了 a 的敌人的集合的根
-            // 所以 find(a +  n) 可以理解为是一个范围 [1, n] 的数
-            // 本操作将敌人与敌人合并
-            p[find(a + n)] = find(b);
-            p[find(b + n)] = find(a);
-        }
-    }
-    
-    int res = 0;
-    for (int i = 1; i <= n; ++ i )
-        if (find(i) == i)
-            res ++ ;
-    cout << res << endl;
-    
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[Luogu [NOI2015] 程序自动分析](https://www.luogu.com.cn/problem/P1955)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 并查集 + 离散化
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int N = 1e6 + 10;
-
-struct Query {
-    int x, y, e;
-} qs[N];
-
-int n, m;
-int p[N];
-unordered_map<int, int> S;
-
-int get(int x) {
-    if (S.count(x) == 0)
-        S[x] = ++ n ;
-    return S[x];
-}
-
-int find(int x) {
-    if (p[x] != x)
-        p[x] = find(p[x]);
-    return p[x];
-}
-
-int main() {
-    int t;
-    cin >> t;
-    while (t -- ) {
-        n = 0;
-        S.clear();
-        
-        cin >> m;
-        for (int i = 0; i < m; ++ i ) {
-            int x, y, e;
-            cin >> x >> y >> e;
-            qs[i] = {get(x), get(y), e};
-        }
-        
-        for (int i = 1; i <= n; ++ i )
-            p[i] = i;
-        
-        for (int i = 0; i < m; ++ i )
-            if (qs[i].e == 1)
-                p[find(qs[i].x)] = p[find(qs[i].y)];
-        
-        bool has_conflict = false;
-        for (int i = 0; i < m; ++ i )
-            if (qs[i].e == 0) {
-                int pa = find(qs[i].x), pb = find(qs[i].y);
-                if (pa == pb) {
-                    has_conflict = true;
-                    break;
-                }
-            }
-        cout << (has_conflict ? "NO" : "YES") << endl;
-    }
     return 0;
 }
 ```

@@ -16,6 +16,15 @@
 
 ## 习题
 
+
+
+[NOIP 2007 矩阵取数游戏](https://vijos.org/p/1378)
+
+[「IOI2000」邮局](https://www.luogu.com.cn/problem/P4767)
+
+
+### 一维
+
 > [!NOTE] **[AcWing 1068. 环形石子合并](https://www.acwing.com/problem/content/description/1070/)**
 > 
 > 题意: TODO
@@ -343,6 +352,160 @@ int main() {
 
 * * *
 
+> [!NOTE] **[Luogu [HNOI2010]合唱队](https://www.luogu.com.cn/problem/P3205)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 统计方案数 流程
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// 显然区间dp 如下实现即可
+//
+// 对于子区间长度为1的情况写了好几个if判断 不够优雅
+// 实际上只有一个人的方案只有一种 可以直接按照默认在左侧进来
+// 即 初始化 f[i][i][0] = 1, f[i][i][1] = 0;即可 略
+
+const int N = 1010, MOD = 19650827;
+
+int n;
+int a[N];
+int f[N][N][2];
+
+int main() {
+    cin >> n;
+    for (int i = 1; i <= n; ++ i )
+        cin >> a[i];
+    
+    for (int i = 1; i <= n; ++ i )
+        f[i][i][0] = f[i][i][1] = 1;
+    
+    for (int len = 2; len <= n; ++ len )
+        for (int l = 1; l + len - 1 <= n; ++ l ) {
+            int r = l + len - 1;
+            
+            {
+                int v = a[l];
+                int tl = l + 1, tr = r, vl = 0, vr = 0;
+                if (v < a[tl])
+                    vl = f[tl][tr][0];
+                if (v < a[tr])
+                    vr = f[tl][tr][1];
+                if (tl == tr)
+                    f[l][r][0] = (f[l][r][0] + vl) % MOD;
+                else
+                    f[l][r][0] = (f[l][r][0] + (vl + vr) % MOD) % MOD;
+            }
+            {
+                int v = a[r];
+                int tl = l, tr = r - 1, vl = 0, vr = 0;
+                if (v > a[tl])
+                    vl = f[tl][tr][0];
+                if (v > a[tr])
+                    vr = f[tl][tr][1];
+                if (tl == tr)
+                    f[l][r][1] = (f[l][r][1] + vl) % MOD;
+                else
+                    f[l][r][1] = (f[l][r][1] + (vl + vr) % MOD) % MOD;
+            }
+        }
+        
+    cout << (f[1][n][0] + f[1][n][1]) % MOD << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu Zuma](https://www.luogu.com.cn/problem/CF607B)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典
+> 
+> 题面回文但非回文处理
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 510, INF = 0x3f3f3f3f;
+
+int n, a[N], f[N][N];
+
+int main() {
+    cin >> n;
+    for (int i = 1; i <= n; ++ i )
+        cin >> a[i];
+    
+    memset(f, 0x3f, sizeof f);
+    for (int i = 1; i <= n; ++ i )
+        f[i][i] = 1;
+    
+    for (int len = 2; len <= n; ++ len )
+        for (int l = 1; l + len - 1 <= n; ++ l ) {
+            int r = l + len - 1;
+            if (l + 1 == r) {
+                // f[l][r - 1] = f[l + 1][r] = 1;
+                f[l][r] = min(f[l][r - 1], f[l + 1][r]) + (a[l] != a[r]);
+            } else {
+                if (a[l] == a[r])
+                    f[l][r] = f[l + 1][r - 1];
+                for (int k = l; k < r; ++ k )
+                    f[l][r] = min(f[l][r], f[l][k] + f[k + 1][r]);
+            }
+        }
+    cout << f[1][n] << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 二维
+
 > [!NOTE] **[AcWing 321. 棋盘分割](https://www.acwing.com/problem/content/description/323/)**
 > 
 > 题意: TODO
@@ -432,6 +595,7 @@ int main() {
 
 * * *
 
+### 进阶
 
 > [!NOTE] **[LeetCode 546 移除盒子](https://github.com/OpenKikCoc/LeetCode/blob/master/0501-0600/0546/README.md)**
 > 
@@ -755,12 +919,7 @@ public:
 
 * * *
 
-
-[NOIP 2007 矩阵取数游戏](https://vijos.org/p/1378)
-
-[「IOI2000」邮局](https://www.luogu.com.cn/problem/P4767)
-
-### 区间dp优化进阶
+### 优化进阶
 
 尤其是线性优化
 
@@ -927,158 +1086,6 @@ public:
         return res;
     }
 };
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[Luogu [HNOI2010]合唱队](https://www.luogu.com.cn/problem/P3205)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 统计方案数 流程
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-// 显然区间dp 如下实现即可
-//
-// 对于子区间长度为1的情况写了好几个if判断 不够优雅
-// 实际上只有一个人的方案只有一种 可以直接按照默认在左侧进来
-// 即 初始化 f[i][i][0] = 1, f[i][i][1] = 0;即可 略
-
-const int N = 1010, MOD = 19650827;
-
-int n;
-int a[N];
-int f[N][N][2];
-
-int main() {
-    cin >> n;
-    for (int i = 1; i <= n; ++ i )
-        cin >> a[i];
-    
-    for (int i = 1; i <= n; ++ i )
-        f[i][i][0] = f[i][i][1] = 1;
-    
-    for (int len = 2; len <= n; ++ len )
-        for (int l = 1; l + len - 1 <= n; ++ l ) {
-            int r = l + len - 1;
-            
-            {
-                int v = a[l];
-                int tl = l + 1, tr = r, vl = 0, vr = 0;
-                if (v < a[tl])
-                    vl = f[tl][tr][0];
-                if (v < a[tr])
-                    vr = f[tl][tr][1];
-                if (tl == tr)
-                    f[l][r][0] = (f[l][r][0] + vl) % MOD;
-                else
-                    f[l][r][0] = (f[l][r][0] + (vl + vr) % MOD) % MOD;
-            }
-            {
-                int v = a[r];
-                int tl = l, tr = r - 1, vl = 0, vr = 0;
-                if (v > a[tl])
-                    vl = f[tl][tr][0];
-                if (v > a[tr])
-                    vr = f[tl][tr][1];
-                if (tl == tr)
-                    f[l][r][1] = (f[l][r][1] + vl) % MOD;
-                else
-                    f[l][r][1] = (f[l][r][1] + (vl + vr) % MOD) % MOD;
-            }
-        }
-        
-    cout << (f[1][n][0] + f[1][n][1]) % MOD << endl;
-    
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[Luogu Zuma](https://www.luogu.com.cn/problem/CF607B)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 经典
-> 
-> 题面回文但非回文处理
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int N = 510, INF = 0x3f3f3f3f;
-
-int n, a[N], f[N][N];
-
-int main() {
-    cin >> n;
-    for (int i = 1; i <= n; ++ i )
-        cin >> a[i];
-    
-    memset(f, 0x3f, sizeof f);
-    for (int i = 1; i <= n; ++ i )
-        f[i][i] = 1;
-    
-    for (int len = 2; len <= n; ++ len )
-        for (int l = 1; l + len - 1 <= n; ++ l ) {
-            int r = l + len - 1;
-            if (l + 1 == r) {
-                // f[l][r - 1] = f[l + 1][r] = 1;
-                f[l][r] = min(f[l][r - 1], f[l + 1][r]) + (a[l] != a[r]);
-            } else {
-                if (a[l] == a[r])
-                    f[l][r] = f[l + 1][r - 1];
-                for (int k = l; k < r; ++ k )
-                    f[l][r] = min(f[l][r], f[l][k] + f[k + 1][r]);
-            }
-        }
-    cout << f[1][n] << endl;
-    
-    return 0;
-}
 ```
 
 ##### **Python**

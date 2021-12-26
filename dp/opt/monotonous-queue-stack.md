@@ -154,6 +154,8 @@ int main() {
 
 [「SCOI2010」股票交易](https://loj.ac/problem/10183)
 
+### 单调队列
+
 > [!NOTE] **[AcWing 1087. 修剪草坪](https://www.acwing.com/problem/content/1089/)**
 > 
 > 题意: TODO
@@ -487,3 +489,5 @@ int main() {
 <br>
 
 * * *
+
+### 单调栈 主要结合其他优化

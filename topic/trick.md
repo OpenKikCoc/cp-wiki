@@ -1,5 +1,7 @@
 ## 习题
 
+### 补全思维
+
 > [!NOTE] **[AcWing 1379. 联系](https://www.acwing.com/problem/content/1381/)**
 > 
 > 题意: TODO
@@ -89,6 +91,8 @@ int main() {
 <br>
 
 * * *
+
+### 思维
 
 > [!NOTE] **[AcWing 1396. 街头竞速](https://www.acwing.com/problem/content/1398/)**
 > 

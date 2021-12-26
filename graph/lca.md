@@ -332,6 +332,8 @@ LCA 为两个游标跳转到同一条重链上时深度较小的那个游标所�
 - [货车运输](https://loj.ac/problem/2610)
 - [点的距离](https://loj.ac/problem/10130)
 
+### 一般 LCA
+
 > [!NOTE] **[AcWing 1172. 祖孙询问](https://www.acwing.com/problem/content/1174/)**
 > 
 > 题意: TODO
@@ -737,127 +739,6 @@ int main() {
 
 * * *
 
-> [!NOTE] **[AcWing 352. 闇の連鎖](https://www.acwing.com/problem/content/description/354/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 切两刀 需要为边增权
-> 
-> **树差分**
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include<bits/stdc++.h>
-using namespace std;
-
-const int N = 100010, M = N * 2;
-
-int n, m;
-int h[N], e[M], ne[M], idx;
-int depth[N], fa[N][17];
-int d[N];
-int q[N];
-int ans;
-
-void add(int a, int b) {
-    e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
-}
-
-void bfs() {
-    memset(depth, 0x3f, sizeof depth);
-    depth[0] = 0, depth[1] = 1;
-    int hh = 0, tt = 0;
-    q[0] = 1;
-    while (hh <= tt) {
-        int t = q[hh ++ ];
-        for (int i = h[t]; ~i; i = ne[i]) {
-            int j = e[i];
-            if (depth[j] > depth[t] + 1) {
-                depth[j] = depth[t] + 1;
-                q[ ++ tt] = j;
-                fa[j][0] = t;
-                for (int k = 1; k <= 16; ++ k )
-                    fa[j][k] = fa[fa[j][k - 1]][k - 1];
-            }
-        }
-    }
-}
-
-int lca(int a, int b) {
-    if (depth[a] < depth[b]) swap(a, b);
-    for (int k = 16; k >= 0; -- k )
-        if (depth[fa[a][k]] >= depth[b])
-            a = fa[a][k];
-    if (a == b) return a;
-    for (int k = 16; k >= 0; -- k )
-        if (fa[a][k] != fa[b][k]) {
-            a = fa[a][k];
-            b = fa[b][k];
-        }
-    return fa[a][0];
-}
-
-int dfs(int u, int father) {
-    int res = d[u];
-    for (int i = h[u]; ~i; i = ne[i]) {
-        int j = e[i];
-        if (j != father) {
-            int s = dfs(j, u);
-            if (s == 0) ans += m;
-            else if (s == 1) ans ++ ;
-            res += s;
-        }
-    }
-    return res;
-}
-
-int main() {
-    cin >> n >> m;
-    memset(h, -1, sizeof h);
-    for (int i = 0; i < n - 1; ++ i ) {
-        int a, b;
-        cin >> a >> b;
-        add(a, b), add(b, a);
-    }
-    bfs();
-    
-    for (int i = 0; i < m; ++ i ) {
-        int a, b;
-        cin >> a >> b;
-        int p = lca(a, b);
-        d[a] ++ , d[b] ++ , d[p] -= 2;
-    }
-    dfs(1, -1);
-    cout << ans << endl;
-}
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-<br>
-
-* * *
-
-
-
 > [!NOTE] **[Luogu [JLOI2009]二叉树问题](https://www.luogu.com.cn/problem/P3884)**
 > 
 > 题意: TODO
@@ -1063,6 +944,124 @@ int main() {
     }
     cout << endl;
     return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
+### 综合应用
+
+> [!NOTE] **[AcWing 352. 闇の連鎖](https://www.acwing.com/problem/content/description/354/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 切两刀 需要为边增权
+> 
+> **树差分**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 100010, M = N * 2;
+
+int n, m;
+int h[N], e[M], ne[M], idx;
+int depth[N], fa[N][17];
+int d[N];
+int q[N];
+int ans;
+
+void add(int a, int b) {
+    e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+void bfs() {
+    memset(depth, 0x3f, sizeof depth);
+    depth[0] = 0, depth[1] = 1;
+    int hh = 0, tt = 0;
+    q[0] = 1;
+    while (hh <= tt) {
+        int t = q[hh ++ ];
+        for (int i = h[t]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (depth[j] > depth[t] + 1) {
+                depth[j] = depth[t] + 1;
+                q[ ++ tt] = j;
+                fa[j][0] = t;
+                for (int k = 1; k <= 16; ++ k )
+                    fa[j][k] = fa[fa[j][k - 1]][k - 1];
+            }
+        }
+    }
+}
+
+int lca(int a, int b) {
+    if (depth[a] < depth[b]) swap(a, b);
+    for (int k = 16; k >= 0; -- k )
+        if (depth[fa[a][k]] >= depth[b])
+            a = fa[a][k];
+    if (a == b) return a;
+    for (int k = 16; k >= 0; -- k )
+        if (fa[a][k] != fa[b][k]) {
+            a = fa[a][k];
+            b = fa[b][k];
+        }
+    return fa[a][0];
+}
+
+int dfs(int u, int father) {
+    int res = d[u];
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (j != father) {
+            int s = dfs(j, u);
+            if (s == 0) ans += m;
+            else if (s == 1) ans ++ ;
+            res += s;
+        }
+    }
+    return res;
+}
+
+int main() {
+    cin >> n >> m;
+    memset(h, -1, sizeof h);
+    for (int i = 0; i < n - 1; ++ i ) {
+        int a, b;
+        cin >> a >> b;
+        add(a, b), add(b, a);
+    }
+    bfs();
+    
+    for (int i = 0; i < m; ++ i ) {
+        int a, b;
+        cin >> a >> b;
+        int p = lca(a, b);
+        d[a] ++ , d[b] ++ , d[p] -= 2;
+    }
+    dfs(1, -1);
+    cout << ans << endl;
 }
 ```
 
@@ -1305,37 +1304,6 @@ int main() {
 
 * * *
 
-> [!NOTE] **[Luogu ]()**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
 > [!NOTE] **[Luogu [CSP-S2019] 树的重心](https://www.luogu.com.cn/problem/P5666)**
 > 
 > 题意: TODO
@@ -1351,8 +1319,6 @@ int main() {
 > Luogu 和网络上各类题解及其代码都特别麻烦。。。
 > 
 > **本质上就是枚举删哪条边，同时利用倍增快速找到重心，以及利用换根降低计算复杂度。**
-
-
 
 <details>
 <summary>详细代码</summary>

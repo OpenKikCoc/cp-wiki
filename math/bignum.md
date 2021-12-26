@@ -69,7 +69,7 @@ int main() {
 
 ##### **C++ 压位**
 
-```c++
+```cpp
 #include<bits/stdc++.h>
 using namespace std;
 

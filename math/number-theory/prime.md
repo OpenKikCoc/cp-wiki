@@ -291,6 +291,8 @@ def millerRabin(n):
 
 ## 习题
 
+### 素数判定/分解
+
 > [!NOTE] **[AcWing 866. 试除法判定质数](https://www.acwing.com/problem/content/868/)**
 > 
 > 题意: TODO
@@ -389,6 +391,8 @@ int main() {
 
 * * *
 
+### 筛法
+
 > [!NOTE] **[AcWing 868. 筛质数](https://www.acwing.com/problem/content/870/)**
 > 
 > 题意: TODO
@@ -482,82 +486,9 @@ int main() {
 
 * * *
 
-> [!NOTE] **[Luogu USACO1.5 回文质数 Prime Palindromes](https://www.luogu.com.cn/problem/P1217)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 素数简单应用
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int N = 1e7 + 10;
-
-int cnt;
-bool st[N];
-int primes[N];
-
-void init() {
-    for (int i = 2; i < N; ++ i ) {
-        if (!st[i])
-            primes[cnt ++ ] = i;
-        for (int j = 0; primes[j] <= (N - 1) / i; ++ j ) {
-            st[primes[j] * i] = true;
-            if (i % primes[j] == 0)
-                break;
-        }
-    }
-}
-
-bool check(int x) {
-    string s = to_string(x);
-    int n = s.size();
-    for (int i = 0; i < n / 2; ++ i )
-        if (s[i] != s[n - i - 1])
-            return false;
-    return true;
-}
-
-int main() {
-    init();
-    
-    int a, b;
-    cin >> a >> b;
-    
-    for (int i = 0; i < cnt; ++ i ) {
-        int p = primes[i];
-        if (p >= a && p <= b && check(p))
-            cout << p << endl;
-    }
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
 > [!NOTE] **[Luogu 素数密度](https://www.luogu.com.cn/problem/P1835)**
 > 
-> 题意: TODO
+> 题意: 区间筛
 
 > [!TIP] **思路**
 > 
@@ -636,13 +567,15 @@ int main() {
 
 * * *
 
-> [!NOTE] **[Luogu 因子和](https://www.luogu.com.cn/problem/P1593)**
+### 简单应用
+
+> [!NOTE] **[Luogu USACO1.5 回文质数 Prime Palindromes](https://www.luogu.com.cn/problem/P1217)**
 > 
 > 题意: TODO
 
 > [!TIP] **思路**
 > 
-> 约束和 等比数列求和优化
+> 素数简单应用
 
 <details>
 <summary>详细代码</summary>
@@ -654,61 +587,44 @@ int main() {
 #include <bits/stdc++.h>
 using namespace std;
 
-using LL = long long;
-using PII = pair<int, int>;
-const int MOD = 9901;
+const int N = 1e7 + 10;
 
-LL a, b;
+int cnt;
+bool st[N];
+int primes[N];
 
-LL qpow(LL a, LL b) {
-    // ATTENTION: DO NOT [b %= MOD]
-    a %= MOD;
-    LL ret = 1;
-    while (b) {
-        if (b & 1)
-            ret = (ret * a) % MOD;
-        a = (a * a) % MOD;
-        b >>= 1;
+void init() {
+    for (int i = 2; i < N; ++ i ) {
+        if (!st[i])
+            primes[cnt ++ ] = i;
+        for (int j = 0; primes[j] <= (N - 1) / i; ++ j ) {
+            st[primes[j] * i] = true;
+            if (i % primes[j] == 0)
+                break;
+        }
     }
-    return ret;
 }
 
-// 等比数列求和
-// sum = (p^n - 1) / (p - 1)
-LL smul(LL p, LL s) {
-    s *= b; // a^b 扩大b倍
-    s ++ ;  // 此时 s = n - 0 + 1
-    
-    LL t = 0;
-    if (p % MOD == 1)
-        t = s % MOD;  // 逆元不存在
-    else
-        // (p^n-1) * modniv(p-1)
-        // ATTENTION -1 需要 + MOD 有个case在这里
-        t = (qpow(p, s) - 1 + MOD) % MOD *
-            qpow(p - 1, MOD - 2) % MOD;
-    return t;
+bool check(int x) {
+    string s = to_string(x);
+    int n = s.size();
+    for (int i = 0; i < n / 2; ++ i )
+        if (s[i] != s[n - i - 1])
+            return false;
+    return true;
 }
 
 int main() {
+    init();
+    
+    int a, b;
     cin >> a >> b;
     
-    vector<PII> ve;
-    for (int i = 2; i <= a / i; ++ i )
-        if (a % i == 0) {
-            int t = 0;
-            while (a % i == 0)
-                a /= i, t ++ ;
-            ve.push_back({i, t});
-        }
-    if (a > 1)
-        ve.push_back({a, 1});
-    
-    LL res = 1;
-    for (auto [p, s] : ve)
-        res = res * smul(p, s) % MOD;
-    cout << res << endl;
-    
+    for (int i = 0; i < cnt; ++ i ) {
+        int p = primes[i];
+        if (p >= a && p <= b && check(p))
+            cout << p << endl;
+    }
     return 0;
 }
 ```

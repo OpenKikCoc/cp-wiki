@@ -306,6 +306,56 @@ int exgcd(int a, int b, int &x, int &y) {
 
 ## 习题
 
+### 约数
+
+> [!NOTE] **[AcWing 872. 最大公约数](https://www.acwing.com/problem/content/874/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+int gcd(int a, int b) {
+    return b ? gcd(b, a % b) : a;
+}
+
+int main() {
+    int n;
+    cin >> n;
+    while (n -- ) {
+        int a, b;
+        cin >> a >> b;
+        cout << gcd(a, b) << endl;
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
 > [!NOTE] **[AcWing 869. 试除法求约数](https://www.acwing.com/problem/content/871/)**
 > 
 > 题意: TODO
@@ -535,13 +585,17 @@ int main() {
 
 * * *
 
-> [!NOTE] **[AcWing 872. 最大公约数](https://www.acwing.com/problem/content/874/)**
+> [!NOTE] **[AcWing 97. 约数之和](https://www.acwing.com/problem/content/99/)**
 > 
 > 题意: TODO
 
 > [!TIP] **思路**
 > 
+> ![png](https://github.com/OpenKikCoc/AcWing/raw/master/02_senior/97/题解.png)
 > 
+> 约数个数 & 约数之和 公式
+> 
+> 本题本身也有公式
 
 <details>
 <summary>详细代码</summary>
@@ -553,18 +607,42 @@ int main() {
 #include<bits/stdc++.h>
 using namespace std;
 
-int gcd(int a, int b) {
-    return b ? gcd(b, a % b) : a;
+const int mod = 9901;
+
+int qmi(int a, int k) {
+    int res = 1;
+    a %= mod;
+    while (k) {
+        if (k & 1) res = res * a % mod;
+        a = a * a % mod;
+        k >>= 1;
+    }
+    return res;
+}
+
+int sum(int p, int k) {
+    if (k == 1) return 1;
+    if (k % 2 == 0) return (1 + qmi(p, k / 2)) * sum(p, k / 2) % mod;
+    return (sum(p, k - 1) + qmi(p, k - 1)) % mod;
 }
 
 int main() {
-    int n;
-    cin >> n;
-    while (n -- ) {
-        int a, b;
-        cin >> a >> b;
-        cout << gcd(a, b) << endl;
-    }
+    int a, b;
+    cin >> a >> b;
+    int res = 1;
+    
+    // 对a分解质因数
+    for (int i = 2; i * i <= a; ++ i )
+        if (a % i == 0) {
+            int s = 0;
+            while (a % i == 0) {
+                a /= i, ++ s;
+            }
+            res = res * sum(i, b * s + 1) % mod;
+        }
+    if (a > 1) res = res * sum(a, b + 1) % mod;
+    if (a == 0) res = 0;
+    cout << res << endl;
     return 0;
 }
 ```
@@ -581,6 +659,98 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[Luogu 因子和](https://www.luogu.com.cn/problem/P1593)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 约束和 等比数列求和优化
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+using PII = pair<int, int>;
+const int MOD = 9901;
+
+LL a, b;
+
+LL qpow(LL a, LL b) {
+    // ATTENTION: DO NOT [b %= MOD]
+    a %= MOD;
+    LL ret = 1;
+    while (b) {
+        if (b & 1)
+            ret = (ret * a) % MOD;
+        a = (a * a) % MOD;
+        b >>= 1;
+    }
+    return ret;
+}
+
+// 等比数列求和
+// sum = (p^n - 1) / (p - 1)
+LL smul(LL p, LL s) {
+    s *= b; // a^b 扩大b倍
+    s ++ ;  // 此时 s = n - 0 + 1
+    
+    LL t = 0;
+    if (p % MOD == 1)
+        t = s % MOD;  // 逆元不存在
+    else
+        // (p^n-1) * modniv(p-1)
+        // ATTENTION -1 需要 + MOD 有个case在这里
+        t = (qpow(p, s) - 1 + MOD) % MOD *
+            qpow(p - 1, MOD - 2) % MOD;
+    return t;
+}
+
+int main() {
+    cin >> a >> b;
+    
+    vector<PII> ve;
+    for (int i = 2; i <= a / i; ++ i )
+        if (a % i == 0) {
+            int t = 0;
+            while (a % i == 0)
+                a /= i, t ++ ;
+            ve.push_back({i, t});
+        }
+    if (a > 1)
+        ve.push_back({a, 1});
+    
+    LL res = 1;
+    for (auto [p, s] : ve)
+        res = res * smul(p, s) % MOD;
+    cout << res << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 欧几里得
 
 > [!NOTE] **[AcWing 877. 扩展欧几里得算法](https://www.acwing.com/problem/content/879/)**
 > 
@@ -649,7 +819,7 @@ int main() {
 
 > [!TIP] **思路**
 > 
-> 
+> 拓展欧几里得
 
 <details>
 <summary>详细代码</summary>
@@ -768,6 +938,8 @@ int main() {
 <br>
 
 * * *
+
+### gcd 思想
 
 > [!NOTE] **[Luogu zzc 种田](https://www.luogu.com.cn/problem/P2660)**
 > 

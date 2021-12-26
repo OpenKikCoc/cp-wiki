@@ -372,25 +372,6 @@ TODO@binacs
 
 - [\[POI2014\]FAR-FarmCraft](https://www.luogu.com.cn/problem/P3574)
 
-### 树上DP
-
-- [「CTSC1997」选课](https://www.luogu.com.cn/problem/P2014)
-
-- [「JSOI2018」潜入行动](https://loj.ac/problem/2546)
-
-- [「SDOI2017」苹果树](https://loj.ac/problem/2268)
-
-### 换根
-
-- [POJ 3585 Accumulation Degree](http://poj.org/problem?id=3585)
-
-- [\[POI2008\]STA-Station](https://www.luogu.com.cn/problem/P3478)
-
-- [\[USACO10MAR\]Great Cow Gathering G](https://www.luogu.com.cn/problem/P2986)
-
-- [CodeForce 708C Centroids](http://codeforces.com/problemset/problem/708/C)
-
-## 习题
 
 > [!NOTE] **[AcWing 1072. 树的最长路径](https://www.acwing.com/problem/content/description/1074/)**
 > 
@@ -537,6 +518,381 @@ if __name__ == '__main__':
 
 * * *
 
+
+> [!NOTE] **[AcWing 1075. 数字转换](https://www.acwing.com/problem/content/description/1077/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 相当于求树中的最长路径
+> 
+> 问题在于如何快速求出 5e4范围内的数的约数和 ====> 筛法
+> 
+> 对于数据规模较大的情况 要想到筛法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+const int N = 50010, M = N;
+
+int n;
+int h[N], e[M], w[M], ne[M], idx;
+int sum[N];
+bool st[N];
+int ans;
+
+void add(int a, int b) { e[idx] = b, ne[idx] = h[a], h[a] = idx++; }
+
+int dfs(int u) {
+    st[u] = true;
+
+    int dist = 0;
+    int d1 = 0, d2 = 0;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (!st[j]) {
+            int d = dfs(j);
+            dist = max(dist, d);
+            if (d >= d1)
+                d2 = d1, d1 = d;
+            else if (d > d2)
+                d2 = d;
+        }
+    }
+
+    ans = max(ans, d1 + d2);
+
+    return dist + 1;
+}
+
+int main() {
+    cin >> n;
+    memset(h, -1, sizeof h);
+
+    for (int i = 1; i <= n; i++)
+        for (int j = 2; j <= n / i; j++) sum[i * j] += i;
+
+    for (int i = 2; i <= n; i++)
+        if (sum[i] < i) add(sum[i], i);
+
+    for (int i = 1; i <= n; i++)
+        if (!st[i]) dfs(i);
+
+    cout << ans << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 树上DP
+
+- [「CTSC1997」选课](https://www.luogu.com.cn/problem/P2014)
+
+- [「JSOI2018」潜入行动](https://loj.ac/problem/2546)
+
+- [「SDOI2017」苹果树](https://loj.ac/problem/2268)
+
+
+> [!NOTE] **[AcWing 1074. 二叉苹果树](https://www.acwing.com/problem/content/description/1076/)**
+> 
+> 题意: 必须从根节点开始 一个路径
+
+> [!TIP] **思路**
+> 
+> 分组背包 每个边的值当做从父节点到该点的值
+> 
+> 标准树dp写法
+> 
+> 先递归子树，再更新当前
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+const int N = 110, M = N * 2;
+
+int n, m;
+int h[N], e[M], w[M], ne[M], idx;
+int f[N][N];
+
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx++;
+}
+
+void dfs(int u, int father) {
+    for (int i = h[u]; ~i; i = ne[i]) {
+        if (e[i] == father) continue;
+        dfs(e[i], u);
+        for (int j = m; j; j--)
+            for (int k = 0; k + 1 <= j; k++)
+                f[u][j] = max(f[u][j], f[u][j - k - 1] + f[e[i]][k] + w[i]);
+    }
+}
+
+int main() {
+    cin >> n >> m;
+    memset(h, -1, sizeof h);
+    for (int i = 0; i < n - 1; i++) {
+        int a, b, c;
+        scanf("%d%d%d", &a, &b, &c);
+        add(a, b, c), add(b, a, c);
+    }
+
+    dfs(1, -1);
+
+    printf("%d\n", f[1][m]);
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
+> [!NOTE] **[Luogu [ZJOI2006]三色二叉树](https://www.luogu.com.cn/problem/P2585)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典树dp流程
+> 
+> 细节处理起来有点麻烦
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <cstdio>
+#include <cstring>
+#include <iostream>
+using namespace std;
+const int N = 500050;
+char s[N];
+int f[N][3], g[N][3], cnt;
+
+int res = 1;
+
+void dfs(int x) {
+    if (s[x] == '0') {  //叶节点
+        g[x][0] = f[x][0] = 1;
+        return;
+    }
+    dfs(++cnt);
+    // 左儿子编号为x+1
+    if (s[x] == '1') {  //一个儿子
+        f[x][0] = max(f[x + 1][1], f[x + 1][2]) + 1;
+        f[x][1] = max(f[x + 1][0], f[x + 1][2]);
+        f[x][2] = max(f[x + 1][0], f[x + 1][1]);
+
+        // 上方代码完全是复制一遍到下面
+        g[x][0] = min(g[x + 1][1], g[x + 1][2]) + 1;
+        g[x][1] = min(g[x + 1][0], g[x + 1][2]);
+        g[x][2] = min(g[x + 1][0], g[x + 1][1]);
+    } else {
+        // 右儿子编号为k
+        int k = ++cnt;
+        dfs(k);
+        f[x][0] = max(f[x + 1][1] + f[k][2], f[x + 1][2] + f[k][1]) + 1;
+        f[x][1] = max(f[x + 1][0] + f[k][2], f[x + 1][2] + f[k][0]);
+        f[x][2] = max(f[x + 1][0] + f[k][1], f[x + 1][1] + f[k][0]);
+
+        g[x][0] = min(g[x + 1][1] + g[k][2], g[x + 1][2] + g[k][1]) + 1;
+        g[x][1] = min(g[x + 1][0] + g[k][2], g[x + 1][2] + g[k][0]);
+        g[x][2] = min(g[x + 1][0] + g[k][1], g[x + 1][1] + g[k][0]);
+    }
+    res = max(res, f[x][0]);
+}
+int main() {
+    scanf("%s", s + 1);
+    dfs(++cnt);
+    cout << res << ' ' << min(g[1][0], min(g[1][1], g[1][2])) << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu 有线电视网](https://www.luogu.com.cn/problem/P1273)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典的树形分组dp变形
+> 
+> 【状态设计 转移】
+> 
+> 反复做
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// 显然树上分组背包 考虑如何进行状态设计
+//
+// f[i][j] 表示以i为根满足j个客户需求的收入
+// 不必考虑当前收入是否为负 只要最后取正值即可 ==> 思考
+//
+// 【核心在于定义和分组时遍历的实现】
+
+const int N = 3010, M = N;
+
+int n, m;
+int h[N], e[M], w[M], ne[M], idx;
+int in[N];
+int f[N][N], sz[N];
+
+void init() {
+    memset(h, -1, sizeof h);
+    idx = 0;
+}
+
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+void dp(int u) {
+    // user
+    if (u > n - m) {
+        f[u][1] = in[u];
+        sz[u] = 1;
+        return;
+    }
+    
+    sz[u] = 0;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int son = e[i];
+        dp(son);
+
+        sz[u] += sz[son];
+        // 中继本身不占用名额 故 j >= 0
+        for (int j = sz[u]; j >= 0; -- j )
+            // 分给多余sz[son]的空间也没用 所以 k <= sz[son]
+            for (int k = 0; k <= sz[son]; ++ k )
+                if (j - k >= 0)
+                    f[u][j] = max(f[u][j], f[u][j - k] + f[son][k] - w[i]);
+    }
+}
+
+int main() {
+    init();
+    cin >> n >> m;
+
+    for (int i = 1; i <= n - m; ++ i ) {
+        int k, a, c;
+        cin >> k;
+        while (k -- ) {
+            cin >> a >> c;
+            add(i, a, c);
+        }
+    }
+    
+    for (int i = n - m + 1; i <= n; ++ i )
+        cin >> in[i];
+
+    memset(f, 0xcf, sizeof f);  // -INF
+    for (int i = 1; i <= n; ++ i )
+        f[i][0] = 0;
+    dp(1);
+    for (int i = m; i >= 1; -- i )
+        if (f[1][i] >= 0) {
+            cout << i << endl;
+            break;
+        }
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 换根
+
+- [POJ 3585 Accumulation Degree](http://poj.org/problem?id=3585)
+
+- [\[POI2008\]STA-Station](https://www.luogu.com.cn/problem/P3478)
+
+- [\[USACO10MAR\]Great Cow Gathering G](https://www.luogu.com.cn/problem/P2986)
+
+- [CodeForce 708C Centroids](http://codeforces.com/problemset/problem/708/C)
+
 > [!NOTE] **[AcWing 1073. 树的中心](https://www.acwing.com/problem/content/description/1075/)**
 > 
 > 题意: TODO
@@ -630,348 +986,6 @@ int main() {
             res = min(res, max(d1[i], up[i]));
 
     printf("%d\n", res);
-
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[AcWing 1075. 数字转换](https://www.acwing.com/problem/content/description/1077/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 相当于求树中的最长路径
-> 
-> 问题在于如何快速求出 5e4范围内的数的约数和 ====> 筛法
-> 
-> 对于数据规模较大的情况 要想到筛法
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include <algorithm>
-#include <cstring>
-#include <iostream>
-
-using namespace std;
-
-const int N = 50010, M = N;
-
-int n;
-int h[N], e[M], w[M], ne[M], idx;
-int sum[N];
-bool st[N];
-int ans;
-
-void add(int a, int b) { e[idx] = b, ne[idx] = h[a], h[a] = idx++; }
-
-int dfs(int u) {
-    st[u] = true;
-
-    int dist = 0;
-    int d1 = 0, d2 = 0;
-    for (int i = h[u]; ~i; i = ne[i]) {
-        int j = e[i];
-        if (!st[j]) {
-            int d = dfs(j);
-            dist = max(dist, d);
-            if (d >= d1)
-                d2 = d1, d1 = d;
-            else if (d > d2)
-                d2 = d;
-        }
-    }
-
-    ans = max(ans, d1 + d2);
-
-    return dist + 1;
-}
-
-int main() {
-    cin >> n;
-    memset(h, -1, sizeof h);
-
-    for (int i = 1; i <= n; i++)
-        for (int j = 2; j <= n / i; j++) sum[i * j] += i;
-
-    for (int i = 2; i <= n; i++)
-        if (sum[i] < i) add(sum[i], i);
-
-    for (int i = 1; i <= n; i++)
-        if (!st[i]) dfs(i);
-
-    cout << ans << endl;
-
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[AcWing 1074. 二叉苹果树](https://www.acwing.com/problem/content/description/1076/)**
-> 
-> 题意: 必须从根节点开始 一个路径
-
-> [!TIP] **思路**
-> 
-> 分组背包 每个边的值当做从父节点到该点的值
-> 
-> 标准树dp写法
-> 
-> 先递归子树，再更新当前
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include <algorithm>
-#include <cstring>
-#include <iostream>
-
-using namespace std;
-
-const int N = 110, M = N * 2;
-
-int n, m;
-int h[N], e[M], w[M], ne[M], idx;
-int f[N][N];
-
-void add(int a, int b, int c) {
-    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx++;
-}
-
-void dfs(int u, int father) {
-    for (int i = h[u]; ~i; i = ne[i]) {
-        if (e[i] == father) continue;
-        dfs(e[i], u);
-        for (int j = m; j; j--)
-            for (int k = 0; k + 1 <= j; k++)
-                f[u][j] = max(f[u][j], f[u][j - k - 1] + f[e[i]][k] + w[i]);
-    }
-}
-
-int main() {
-    cin >> n >> m;
-    memset(h, -1, sizeof h);
-    for (int i = 0; i < n - 1; i++) {
-        int a, b, c;
-        scanf("%d%d%d", &a, &b, &c);
-        add(a, b, c), add(b, a, c);
-    }
-
-    dfs(1, -1);
-
-    printf("%d\n", f[1][m]);
-
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[AcWing 323. 战略游戏](https://www.acwing.com/problem/content/description/325/)**
-> 
-> 题意: 树上放，监控边
-
-> [!TIP] **思路**
-> 与leetcode看守题不同之处在于：这个是看边 leetcode是看节点
-> 
-> https://leetcode-cn.com/problems/binary-tree-cameras/
-> 
-> - f[i] 没有放置也没有被覆盖的不考虑
-> - f[i][0] i节点没有放置 覆盖全部边
-> - f[i][1] i节点放置 覆盖全部边
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include <algorithm>
-#include <cstring>
-#include <iostream>
-
-using namespace std;
-
-const int N = 1510;
-
-int n;
-int h[N], e[N], ne[N], idx;
-int f[N][2];
-bool st[N];
-
-void add(int a, int b) { e[idx] = b, ne[idx] = h[a], h[a] = idx++; }
-
-void dfs(int u) {
-    f[u][0] = 0, f[u][1] = 1;
-    for (int i = h[u]; ~i; i = ne[i]) {
-        int j = e[i];
-        dfs(j);
-        f[u][0] += f[j][1];
-        f[u][1] += min(f[j][0], f[j][1]);
-    }
-}
-
-int main() {
-    while (cin >> n) {
-        memset(h, -1, sizeof h);
-        idx = 0;
-
-        memset(st, 0, sizeof st);
-        for (int i = 0; i < n; i++) {
-            int id, cnt;
-            scanf("%d:(%d)", &id, &cnt);
-            while (cnt--) {
-                int ver;
-                cin >> ver;
-                add(id, ver);
-                st[ver] = true;
-            }
-        }
-
-        int root = 0;
-        while (st[root]) root++;
-        dfs(root);
-
-        printf("%d\n", min(f[root][0], f[root][1]));
-    }
-
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[AcWing 1077. 皇宫看守](https://www.acwing.com/problem/content/description/1079/)**
-> 
-> 题意: 树上放，监控点 思想
-
-> [!TIP] **思路**
-> 
-> 
-> - f[i][0]  // 第i个结点的父结点被选
-> - f[i][1]  // 第i个结点有一个子节点被选
-> - f[i][2]  // 第i个节点本身被选
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include <algorithm>
-#include <cstring>
-#include <iostream>
-
-using namespace std;
-
-const int N = 1510;
-
-int n;
-int h[N], w[N], e[N], ne[N], idx;
-int f[N][3];
-bool st[N];
-
-void add(int a, int b) { e[idx] = b, ne[idx] = h[a], h[a] = idx++; }
-
-void dfs(int u) {
-    f[u][2] = w[u];
-
-    int sum = 0;
-    for (int i = h[u]; ~i; i = ne[i]) {
-        int j = e[i];
-        dfs(j);
-        f[u][0] += min(f[j][1], f[j][2]);
-        f[u][2] += min(min(f[j][0], f[j][1]), f[j][2]);
-        sum += min(f[j][1], f[j][2]);
-    }
-
-    f[u][1] = 1e9;
-    for (int i = h[u]; ~i; i = ne[i]) {
-        int j = e[i];
-        f[u][1] = min(f[u][1], sum - min(f[j][1], f[j][2]) + f[j][2]);
-    }
-}
-
-int main() {
-    cin >> n;
-
-    memset(h, -1, sizeof h);
-    for (int i = 1; i <= n; i++) {
-        int id, cost, cnt;
-        cin >> id >> cost >> cnt;
-        w[id] = cost;
-        while (cnt--) {
-            int ver;
-            cin >> ver;
-            add(id, ver);
-            st[ver] = true;
-        }
-    }
-
-    int root = 1;
-    while (st[root]) root++;
-
-    dfs(root);
-
-    cout << min(f[root][1], f[root][2]) << endl;
 
     return 0;
 }
@@ -1189,15 +1203,21 @@ int main() {
 
 * * *
 
-> [!NOTE] **[Luogu [ZJOI2006]三色二叉树](https://www.luogu.com.cn/problem/P2585)**
+
+### 进阶：树DP状态设计
+
+> [!NOTE] **[AcWing 323. 战略游戏](https://www.acwing.com/problem/content/description/325/)**
 > 
-> 题意: TODO
+> 题意: 树上放，监控边
 
 > [!TIP] **思路**
+> 与leetcode看守题不同之处在于：这个是看边 leetcode是看节点
 > 
-> 经典树dp流程
+> https://leetcode-cn.com/problems/binary-tree-cameras/
 > 
-> 细节处理起来有点麻烦
+> - f[i] 没有放置也没有被覆盖的不考虑
+> - f[i][0] i节点没有放置 覆盖全部边
+> - f[i][1] i节点放置 覆盖全部边
 
 <details>
 <summary>详细代码</summary>
@@ -1206,50 +1226,54 @@ int main() {
 ##### **C++**
 
 ```cpp
-#include <cstdio>
+#include <algorithm>
 #include <cstring>
 #include <iostream>
+
 using namespace std;
-const int N = 500050;
-char s[N];
-int f[N][3], g[N][3], cnt;
 
-int res = 1;
+const int N = 1510;
 
-void dfs(int x) {
-    if (s[x] == '0') {  //叶节点
-        g[x][0] = f[x][0] = 1;
-        return;
+int n;
+int h[N], e[N], ne[N], idx;
+int f[N][2];
+bool st[N];
+
+void add(int a, int b) { e[idx] = b, ne[idx] = h[a], h[a] = idx++; }
+
+void dfs(int u) {
+    f[u][0] = 0, f[u][1] = 1;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        dfs(j);
+        f[u][0] += f[j][1];
+        f[u][1] += min(f[j][0], f[j][1]);
     }
-    dfs(++cnt);
-    // 左儿子编号为x+1
-    if (s[x] == '1') {  //一个儿子
-        f[x][0] = max(f[x + 1][1], f[x + 1][2]) + 1;
-        f[x][1] = max(f[x + 1][0], f[x + 1][2]);
-        f[x][2] = max(f[x + 1][0], f[x + 1][1]);
-
-        // 上方代码完全是复制一遍到下面
-        g[x][0] = min(g[x + 1][1], g[x + 1][2]) + 1;
-        g[x][1] = min(g[x + 1][0], g[x + 1][2]);
-        g[x][2] = min(g[x + 1][0], g[x + 1][1]);
-    } else {
-        // 右儿子编号为k
-        int k = ++cnt;
-        dfs(k);
-        f[x][0] = max(f[x + 1][1] + f[k][2], f[x + 1][2] + f[k][1]) + 1;
-        f[x][1] = max(f[x + 1][0] + f[k][2], f[x + 1][2] + f[k][0]);
-        f[x][2] = max(f[x + 1][0] + f[k][1], f[x + 1][1] + f[k][0]);
-
-        g[x][0] = min(g[x + 1][1] + g[k][2], g[x + 1][2] + g[k][1]) + 1;
-        g[x][1] = min(g[x + 1][0] + g[k][2], g[x + 1][2] + g[k][0]);
-        g[x][2] = min(g[x + 1][0] + g[k][1], g[x + 1][1] + g[k][0]);
-    }
-    res = max(res, f[x][0]);
 }
+
 int main() {
-    scanf("%s", s + 1);
-    dfs(++cnt);
-    cout << res << ' ' << min(g[1][0], min(g[1][1], g[1][2])) << endl;
+    while (cin >> n) {
+        memset(h, -1, sizeof h);
+        idx = 0;
+
+        memset(st, 0, sizeof st);
+        for (int i = 0; i < n; i++) {
+            int id, cnt;
+            scanf("%d:(%d)", &id, &cnt);
+            while (cnt--) {
+                int ver;
+                cin >> ver;
+                add(id, ver);
+                st[ver] = true;
+            }
+        }
+
+        int root = 0;
+        while (st[root]) root++;
+        dfs(root);
+
+        printf("%d\n", min(f[root][0], f[root][1]));
+    }
 
     return 0;
 }
@@ -1268,17 +1292,16 @@ int main() {
 
 * * *
 
-> [!NOTE] **[Luogu 有线电视网](https://www.luogu.com.cn/problem/P1273)**
+> [!NOTE] **[AcWing 1077. 皇宫看守](https://www.acwing.com/problem/content/description/1079/)**
 > 
-> 题意: TODO
+> 题意: 树上放，监控点 思想
 
 > [!TIP] **思路**
 > 
-> 经典的树形分组dp变形
 > 
-> 【状态设计 转移】
-> 
-> 反复做
+> - f[i][0]  // 第i个结点的父结点被选
+> - f[i][1]  // 第i个结点有一个子节点被选
+> - f[i][2]  // 第i个节点本身被选
 
 <details>
 <summary>详细代码</summary>
@@ -1287,81 +1310,63 @@ int main() {
 ##### **C++**
 
 ```cpp
-#include <bits/stdc++.h>
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+
 using namespace std;
 
-// 显然树上分组背包 考虑如何进行状态设计
-//
-// f[i][j] 表示以i为根满足j个客户需求的收入
-// 不必考虑当前收入是否为负 只要最后取正值即可 ==> 思考
-//
-// 【核心在于定义和分组时遍历的实现】
+const int N = 1510;
 
-const int N = 3010, M = N;
+int n;
+int h[N], w[N], e[N], ne[N], idx;
+int f[N][3];
+bool st[N];
 
-int n, m;
-int h[N], e[M], w[M], ne[M], idx;
-int in[N];
-int f[N][N], sz[N];
+void add(int a, int b) { e[idx] = b, ne[idx] = h[a], h[a] = idx++; }
 
-void init() {
-    memset(h, -1, sizeof h);
-    idx = 0;
-}
+void dfs(int u) {
+    f[u][2] = w[u];
 
-void add(int a, int b, int c) {
-    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
-}
-
-void dp(int u) {
-    // user
-    if (u > n - m) {
-        f[u][1] = in[u];
-        sz[u] = 1;
-        return;
-    }
-    
-    sz[u] = 0;
+    int sum = 0;
     for (int i = h[u]; ~i; i = ne[i]) {
-        int son = e[i];
-        dp(son);
+        int j = e[i];
+        dfs(j);
+        f[u][0] += min(f[j][1], f[j][2]);
+        f[u][2] += min(min(f[j][0], f[j][1]), f[j][2]);
+        sum += min(f[j][1], f[j][2]);
+    }
 
-        sz[u] += sz[son];
-        // 中继本身不占用名额 故 j >= 0
-        for (int j = sz[u]; j >= 0; -- j )
-            // 分给多余sz[son]的空间也没用 所以 k <= sz[son]
-            for (int k = 0; k <= sz[son]; ++ k )
-                if (j - k >= 0)
-                    f[u][j] = max(f[u][j], f[u][j - k] + f[son][k] - w[i]);
+    f[u][1] = 1e9;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        f[u][1] = min(f[u][1], sum - min(f[j][1], f[j][2]) + f[j][2]);
     }
 }
 
 int main() {
-    init();
-    cin >> n >> m;
+    cin >> n;
 
-    for (int i = 1; i <= n - m; ++ i ) {
-        int k, a, c;
-        cin >> k;
-        while (k -- ) {
-            cin >> a >> c;
-            add(i, a, c);
+    memset(h, -1, sizeof h);
+    for (int i = 1; i <= n; i++) {
+        int id, cost, cnt;
+        cin >> id >> cost >> cnt;
+        w[id] = cost;
+        while (cnt--) {
+            int ver;
+            cin >> ver;
+            add(id, ver);
+            st[ver] = true;
         }
     }
-    
-    for (int i = n - m + 1; i <= n; ++ i )
-        cin >> in[i];
 
-    memset(f, 0xcf, sizeof f);  // -INF
-    for (int i = 1; i <= n; ++ i )
-        f[i][0] = 0;
-    dp(1);
-    for (int i = m; i >= 1; -- i )
-        if (f[1][i] >= 0) {
-            cout << i << endl;
-            break;
-        }
-    
+    int root = 1;
+    while (st[root]) root++;
+
+    dfs(root);
+
+    cout << min(f[root][1], f[root][2]) << endl;
+
     return 0;
 }
 ```

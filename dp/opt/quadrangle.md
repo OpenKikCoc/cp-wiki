@@ -420,5 +420,3 @@ $$
 - [Video Tutorial by **Sothe" the Algorithm Wolf](https://www.youtube.com/watch?v=wLXEWuDWnzI)
 
 * * *
-
-**本页面主要译自英文版博文 [Divide and Conquer DP](https://cp-algorithms.com/dynamic_programming/divide-and-conquer-dp.html)。版权协议为 CC-BY-SA 4.0。**

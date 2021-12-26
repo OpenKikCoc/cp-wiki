@@ -88,6 +88,8 @@ i = min(i, j)
 <!-- tabs:end -->
 </details>
 
+## 习题
+
 > [!NOTE] **[AcWing 1410. 隐藏密码](https://www.acwing.com/problem/content/1412/)**
 > 
 > 题意: TODO

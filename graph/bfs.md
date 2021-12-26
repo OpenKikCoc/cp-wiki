@@ -89,6 +89,8 @@ while (队列不为空) {
 
 ## 习题
 
+### 一般 bfs
+
 > [!NOTE] **[AcWing 844. 走迷宫](https://www.acwing.com/problem/content/846/)**
 > 
 > 题意: TODO
@@ -185,7 +187,9 @@ if __name__ == '__main__':
 
 <br>
 
-* * *> [!NOTE] **[AcWing 845. 八数码](https://www.acwing.com/problem/content/847/)**
+* * *
+
+> [!NOTE] **[AcWing 845. 八数码](https://www.acwing.com/problem/content/847/)**
 > 
 > 题意: TODO
 

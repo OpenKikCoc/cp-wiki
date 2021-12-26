@@ -286,6 +286,8 @@ $$
 
 ## 习题
 
+### 求组合数
+
 > [!NOTE] **[AcWing 885. 求组合数 I](https://www.acwing.com/problem/content/887/)**
 > 
 > 题意: TODO
@@ -611,13 +613,15 @@ int main() {
 
 * * *
 
+### 组合数应用
+
 > [!NOTE] **[AcWing 889. 满足条件的01序列](https://www.acwing.com/problem/content/891/)**
 > 
 > 题意: TODO
 
 > [!TIP] **思路**
 >
-> 卡特兰数
+> **卡特兰数**
 >
 > 转化为：平面图路径 中线绿 非法线红
 >
@@ -734,6 +738,8 @@ int main() {
 <br>
 
 * * *
+
+### 综合应用
 
 > [!NOTE] **[Luogu [NOIP2016 提高组] 组合数问题](https://www.luogu.com.cn/problem/P2822)**
 > 

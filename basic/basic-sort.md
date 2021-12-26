@@ -422,6 +422,71 @@ if __name__ == '__main__':
 
 * * *
 
+## 习题
+
+### 三路排序
+
+> [!NOTE] **[SwordOffer 21. 调整数组顺序使奇数位于偶数前面](https://leetcode-cn.com/problems/diao-zheng-shu-zu-shun-xu-shi-qi-shu-wei-yu-ou-shu-qian-mian-lcof/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    void exchange(vector<int> &array) {
+        int l = 0, r = array.size() - 1;
+        while (l < r) {
+            while (l < r && array[l] & 1)
+                ++ l ;
+            while (l < r && !(array[r] & 1))
+                -- r ;
+            if (l < r)
+                swap(array[l], array[r]);
+        }
+    }
+};
+```
+
+##### **Python**
+
+```python
+# python3
+# 双指针法: l 指向开头， r 指向尾部。开始循环处理。
+# 当左边的数为奇数时， l+=1；直到遇到一个偶数
+# 当右边的数位偶数时，r-=1；直到遇到一个奇数
+# 把这两个数交换，然后继续下一个循环。
+
+class Solution(object):
+    def reOrderArray(self, arr):
+        l, r = 0, len(arr) -1
+        while l < r :
+            while l < r and arr[l] % 2 == 1:
+                l += 1
+            while l < r and arr[r] % 2 == 0:
+                r -= 1
+            arr[l], arr[r] = arr[r], arr[l]
+        return arr
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 逆序对
+
 > [!NOTE] **[AcWing 107. 超快速排序](https://www.acwing.com/problem/content/109/)**
 > 
 > 题意: TODO
@@ -563,68 +628,6 @@ int main() {
 
 ```python
 
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-
-### 三路排序
-
-> [!NOTE] **[SwordOffer 21. 调整数组顺序使奇数位于偶数前面](https://leetcode-cn.com/problems/diao-zheng-shu-zu-shun-xu-shi-qi-shu-wei-yu-ou-shu-qian-mian-lcof/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-class Solution {
-public:
-    void exchange(vector<int> &array) {
-        int l = 0, r = array.size() - 1;
-        while (l < r) {
-            while (l < r && array[l] & 1)
-                ++ l ;
-            while (l < r && !(array[r] & 1))
-                -- r ;
-            if (l < r)
-                swap(array[l], array[r]);
-        }
-    }
-};
-```
-
-##### **Python**
-
-```python
-# python3
-# 双指针法: l 指向开头， r 指向尾部。开始循环处理。
-# 当左边的数为奇数时， l+=1；直到遇到一个偶数
-# 当右边的数位偶数时，r-=1；直到遇到一个奇数
-# 把这两个数交换，然后继续下一个循环。
-
-class Solution(object):
-    def reOrderArray(self, arr):
-        l, r = 0, len(arr) -1
-        while l < r :
-            while l < r and arr[l] % 2 == 1:
-                l += 1
-            while l < r and arr[r] % 2 == 0:
-                r -= 1
-            arr[l], arr[r] = arr[r], arr[l]
-        return arr
 ```
 
 <!-- tabs:end -->

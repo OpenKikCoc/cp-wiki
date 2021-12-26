@@ -12,7 +12,7 @@ RMQ 是 Range Maximum/Minimum Query 的缩写，表示区间最大（最小）�
 
 参见：[最近公共祖先](graph/lca.md)
 
-## 习题
+## 例题
 
 ### 题 1
 
@@ -69,6 +69,8 @@ TODO@binacs
 <br>
 
 ## 习题
+
+### 基础倍增
 
 > [!NOTE] **[Luogu 跑路](https://www.luogu.com.cn/problem/P1613)**
 > 

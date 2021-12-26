@@ -124,7 +124,7 @@
 - [P2123 皇后游戏 - 洛谷](https://www.luogu.com.cn/problem/P2123)
 - [LeetCode 上标签为算法的题目](https://leetcode-cn.com/tag/greedy/)
 
-### USACO Training
+### 基本贪心
 
 > [!NOTE] **[AcWing 1348. 搭配牛奶](https://www.acwing.com/problem/content/1350/)**
 > 
@@ -238,15 +238,13 @@ int main() {
 
 * * *
 
-> [!NOTE] **[AcWing 1351. 密码锁](https://www.acwing.com/problem/content/1353/)**
+> [!NOTE] **[Luogu [NOIP2018 提高组] 铺设道路](https://www.luogu.com.cn/problem/P5019)**
 > 
 > 题意: TODO
 
 > [!TIP] **思路**
 > 
-> 暴力枚举显然可以 On^3
-> 
-> 思考如何简化 容斥原理
+> 经典贪心
 
 <details>
 <summary>详细代码</summary>
@@ -258,34 +256,25 @@ int main() {
 #include <bits/stdc++.h>
 using namespace std;
 
-const int N = 3;
+using LL = long long;
+const int N = 1e6 + 10;
 
 int n;
-int a[N], b[N];
-
-int both() {
-    if (n < 5) return n * n * n;
-    int res = 1;
-    for (int i = 0; i < 3; ++ i ) {
-        int x = a[i], y = b[i];
-        int d = min(abs(x - y), n - abs(x - y));
-        res *= min(n, max(0, 5 - d));
-    }
-    return res;
-}
-
-int single() {
-    int res = 1;
-    for (int i = 0; i < 3; ++ i ) res *= min(n, 5);
-    return res;
-}
+LL d[N];
 
 int main() {
     cin >> n;
-    for (int i = 0; i < 3; ++ i ) cin >> a[i];
-    for (int i = 0; i < 3; ++ i ) cin >> b[i];
+    for (int i = 1; i <= n; ++ i )
+        cin >> d[i];
     
-    cout << single() + single() - both() << endl;
+    LL res = 0;
+    stack<int> st;
+    // i = 0 -----> d[i] = 0
+    for (int i = 1; i <= n; ++ i )
+        if (d[i] > d[i - 1])
+            res += d[i] - d[i - 1];
+    cout << res << endl;
+    
     return 0;
 }
 ```
@@ -302,6 +291,97 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[Luogu [USACO07MAR]Face The Right Way G](https://www.luogu.com.cn/problem/P2882)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 反转问题/开关问题
+> 
+> 贪心 动态维护
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 5010;
+
+int n;
+int d[N], f[N];
+
+int get(int k) {
+    memset(f, 0, sizeof f);
+    
+    // s 维护会影响到i的点击数
+    int s = 0, res = 0;
+    for (int i = 0; i + k <= n; ++ i ) {
+        // 第i头牛 + 之前能影响到它的点击数
+        // &1 说明当前朝后 需要点击
+        if ((d[i] + s) & 1)
+            f[i] = 1, res ++ ;
+        
+        s += f[i];
+        if (i - k + 1 >= 0)
+            s -= f[i - k + 1];
+    }
+    
+    // 检查最后一段
+    for (int i = n - k + 1; i < n; ++ i ) {
+        if ((d[i] + s) & 1)
+            return -1;
+        if (i - k + 1 >= 0)
+            s -= f[i - k + 1];
+    }
+    return res;
+}
+
+int main() {
+    cin >> n;
+    
+    for (int i = 0; i < n; ++ i ) {
+        char c;
+        cin >> c;
+        if (c == 'F')
+            d[i] = 0;
+        else
+            d[i] = 1;
+    }
+    
+    int K = 1, M = n;
+    for (int k = 1; k <= n; ++ k ) {
+        int m = get(k);
+        if (m >= 0 && m < M)
+            M = m, K = k;
+    }
+    cout << K << ' ' << M << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
+### 排序不等式
 
 > [!NOTE] **[AcWing 1395. 产品处理](https://www.acwing.com/problem/content/1397/)**
 > 
@@ -385,7 +465,209 @@ int main() {
 
 * * *
 
-### others TODO
+> [!NOTE] **[AcWing 913. 排队打水](https://www.acwing.com/problem/content/description/915/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 排序不等式
+> 
+> 显然耗时最短的越先打水
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int n, x;
+
+int main() {
+    cin >> n;
+    vector<int> ve;
+    for (int i = 0; i < n; ++i) {
+        cin >> x;
+        ve.push_back(x);
+    }
+    sort(ve.begin(), ve.end());
+    long long res = 0;
+    for (auto x : ve) { res += x * (--n); }
+    cout << res << endl;
+}
+```
+
+##### **Python**
+
+```python
+# 直觉就是：让权重小的人排在前面；最优解是：从小到大排序，那么总时间最小。
+# 证明：(用调整法/反证法证明)
+# 假设最优解不是从小到大排序，那会存在相邻两个点是逆序的；交换两个位置，交换前的值 > 交换后的值。说明交换后总时间会降低。那就和假设矛盾，所以最优解一定是从小到大的排序。
+
+if __name__ == '__main__':
+    n = int(input())
+    arr = list(map(int, input().split()))
+
+    arr.sort()
+    res = 0
+    for i in range(n):
+        res += arr[i] * (n - i - 1)
+    print(res)
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
+### 绝对值不等式
+
+> [!NOTE] **[AcWing 104. 货仓选址](https://www.acwing.com/problem/content/106/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 绝对值不等式
+> 
+> 经典 选择中间的两个点之间的任意位置
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int n, x;
+
+int main() {
+    cin >> n;
+    vector<int> ve;
+    for (int i = 0; i < n; ++i) {
+        cin >> x;
+        ve.push_back(x);
+    }
+    sort(ve.begin(), ve.end());
+    // n为奇数 中间为 3/2=1 (0,1,2)  n为偶数 中间为 4/2=2 (0,1,2,3)
+    int res = 0;
+    for (auto v : ve) res += abs(v - ve[n / 2]);
+    cout << res << endl;
+}
+```
+
+##### **Python**
+
+```python
+if __name__ == '__main__':
+    n = int(input())
+    nums = list(map(int, input().split()))
+    # 踩坑：不是nums=nums.sort()
+    nums.sort()
+    res = 0
+    m = (n - 1) // 2
+    for i in range(n):
+        res += abs(nums[i] - nums[m])
+    print(res)
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 105. 七夕祭](https://www.acwing.com/problem/content/107/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 货仓选址进阶
+> 
+> 操作行和列互不影响
+> 
+> 则总体最小 为 操作行最+操作列最小
+> 
+> 模型：环形纸牌 邮递员问题 视频关于n-1个等式的转化和分解 ==> 取中位数
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+const int N = 100010;
+
+int row[N], col[N], s[N], c[N];
+
+LL work(int n, int a[]) {
+    for (int i = 1; i <= n; ++ i ) s[i] = s[i - 1] + a[i];
+    if (s[n] % n) return -1;
+    
+    int avg = s[n] / n;
+    // 求Ci
+    c[1] = 0;
+    for (int i = 2; i <= n; ++ i ) c[i] = s[i - 1] - (i - 1) * avg;
+    
+    sort(c + 1, c + n + 1);
+    LL res = 0;
+    for (int i = 1; i <= n; ++ i ) res += abs(c[i] - c[(n + 1) / 2]);
+    return res;
+}
+
+int main() {
+    int n, m, cnt;
+    cin >> n>> m >> cnt;
+    while (cnt -- ) {
+        int x, y;
+        cin >> x >> y;
+        ++ row[x], ++ col[y];
+    }
+    LL r = work(n, row);
+    LL c = work(m, col);
+    
+    if (r != -1 && c != -1) cout << "both "<< r + c << endl;
+    else if (r != -1) cout << "row " << r << endl;
+    else if (c != -1) cout << "column " << c << endl;
+    else cout << "impossible" << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 区间问题
 
 > [!NOTE] **[AcWing 803. 区间合并](https://www.acwing.com/problem/content/805/)**
 > 
@@ -761,6 +1043,8 @@ int main() {
 
 * * *
 
+### huffman
+
 > [!NOTE] **[AcWing 148. 合并果子](https://www.acwing.com/problem/content/150/)**
 > 
 > 题意: TODO
@@ -830,206 +1114,7 @@ if __name__ == '__main__':
 
 * * *
 
-
-
-> [!NOTE] **[AcWing 913. 排队打水](https://www.acwing.com/problem/content/description/915/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 排序不等式
-> 
-> 显然耗时最短的越先打水
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int n, x;
-
-int main() {
-    cin >> n;
-    vector<int> ve;
-    for (int i = 0; i < n; ++i) {
-        cin >> x;
-        ve.push_back(x);
-    }
-    sort(ve.begin(), ve.end());
-    long long res = 0;
-    for (auto x : ve) { res += x * (--n); }
-    cout << res << endl;
-}
-```
-
-##### **Python**
-
-```python
-# 直觉就是：让权重小的人排在前面；最优解是：从小到大排序，那么总时间最小。
-# 证明：(用调整法/反证法证明)
-# 假设最优解不是从小到大排序，那会存在相邻两个点是逆序的；交换两个位置，交换前的值 > 交换后的值。说明交换后总时间会降低。那就和假设矛盾，所以最优解一定是从小到大的排序。
-
-if __name__ == '__main__':
-    n = int(input())
-    arr = list(map(int, input().split()))
-
-    arr.sort()
-    res = 0
-    for i in range(n):
-        res += arr[i] * (n - i - 1)
-    print(res)
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[AcWing 104. 货仓选址](https://www.acwing.com/problem/content/106/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 绝对值不等式
-> 
-> 经典 选择中间的两个点之间的任意位置
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int n, x;
-
-int main() {
-    cin >> n;
-    vector<int> ve;
-    for (int i = 0; i < n; ++i) {
-        cin >> x;
-        ve.push_back(x);
-    }
-    sort(ve.begin(), ve.end());
-    // n为奇数 中间为 3/2=1 (0,1,2)  n为偶数 中间为 4/2=2 (0,1,2,3)
-    int res = 0;
-    for (auto v : ve) res += abs(v - ve[n / 2]);
-    cout << res << endl;
-}
-```
-
-##### **Python**
-
-```python
-if __name__ == '__main__':
-    n = int(input())
-    nums = list(map(int, input().split()))
-    # 踩坑：不是nums=nums.sort()
-    nums.sort()
-    res = 0
-    m = (n - 1) // 2
-    for i in range(n):
-        res += abs(nums[i] - nums[m])
-    print(res)
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[AcWing 105. 七夕祭](https://www.acwing.com/problem/content/107/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 货仓选址进阶
-> 
-> 操作行和列互不影响
-> 
-> 则总体最小 为 操作行最+操作列最小
-> 
-> 模型：环形纸牌 邮递员问题 视频关于n-1个等式的转化和分解 ==> 取中位数
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include<bits/stdc++.h>
-using namespace std;
-
-using LL = long long;
-
-const int N = 100010;
-
-int row[N], col[N], s[N], c[N];
-
-LL work(int n, int a[]) {
-    for (int i = 1; i <= n; ++ i ) s[i] = s[i - 1] + a[i];
-    if (s[n] % n) return -1;
-    
-    int avg = s[n] / n;
-    // 求Ci
-    c[1] = 0;
-    for (int i = 2; i <= n; ++ i ) c[i] = s[i - 1] - (i - 1) * avg;
-    
-    sort(c + 1, c + n + 1);
-    LL res = 0;
-    for (int i = 1; i <= n; ++ i ) res += abs(c[i] - c[(n + 1) / 2]);
-    return res;
-}
-
-int main() {
-    int n, m, cnt;
-    cin >> n>> m >> cnt;
-    while (cnt -- ) {
-        int x, y;
-        cin >> x >> y;
-        ++ row[x], ++ col[y];
-    }
-    LL r = work(n, row);
-    LL c = work(m, col);
-    
-    if (r != -1 && c != -1) cout << "both "<< r + c << endl;
-    else if (r != -1) cout << "row " << r << endl;
-    else if (c != -1) cout << "column " << c << endl;
-    else cout << "impossible" << endl;
-
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
+### 相邻交换
 
 > [!NOTE] **[AcWing 125. 耍杂技的牛](https://www.acwing.com/problem/content/description/127/)**
 > 
@@ -1100,6 +1185,206 @@ if __name__ == '__main__':
         res = max(res, prefix_weight - s)
         prefix_weight += w
     print(res)
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 734. 能量石](https://www.acwing.com/problem/content/description/736/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 贪心的假设和推导原则【贪心的微扰（邻项交换）证法】 
+> 
+> 先贪心排序 国王游戏 耍杂技的牛
+> 
+> **[如果表示“恰好”，那么需要把所有非法状态初始化成负无穷。]**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <iostream>
+
+using namespace std;
+
+const int N = 110, M = 10010;
+
+int n;
+struct Stone {
+    int s, e, l;
+} stones[N];
+
+// 优先选择 Si/Li 最小的值
+bool cmp(Stone a, Stone b) { return a.s * b.l < b.s * a.l; }
+
+int f[N][M];
+
+int main() {
+    int T;
+    cin >> T;
+    for (int C = 1; C <= T; C++) {
+        cin >> n;
+        int m = 0;
+        for (int i = 1; i <= n; i++) {
+            int s, e, l;
+            cin >> s >> e >> l;
+            stones[i] = {s, e, l};
+            m += s;
+        }
+
+        sort(stones + 1, stones + 1 + n, cmp);
+
+        for (int i = 1; i <= n; i++)
+            for (int j = 0; j <= m; j++) {
+                f[i][j] = f[i - 1][j];
+                if (j >= stones[i].s) {
+                    int s = stones[i].s, e = stones[i].e, l = stones[i].l;
+                    f[i][j] =
+                        max(f[i][j], f[i - 1][j - s] + max(0, e - l * (j - s)));
+                }
+            }
+
+        int res = 0;
+        for (int i = 0; i <= m; i++) res = max(res, f[n][i]);
+
+        printf("Case #%d: %d\n", C, res);
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+#贪心+dp：所有不同吃法的最优解
+#1）决定可以选择吃哪些（不吃能量变成0的能量石） 2）按照什么顺序吃能量石 （两维变化，不好直接做）
+# 有一个非常巧妙的地方：先做一个贪心，找到最优解的一个小子集里。先证明这个子集的存在，然后考虑这个子集里所有的最大值
+# 复习一下贪心题：耍杂技的牛 & 国王游戏
+
+# 贪心思路：发现有可能存在最优解的某些宝石的贡献为00，我们剔除了这些宝石。
+# 假设最优解的能量石排列长度为k(1<=k<=n) 因为去掉了那些没有贡献的宝石，位置为：a1,a2,a3…aka1,a2,a3…ak。
+# 那么对于任意两个位置i=al,j=al+1(1<=l<k)，在最优解中，交换后两个宝石的贡献总和不会变得更大,(假设之前的总时间为t）：整理后：
+# Si∗Lj<=Sj∗Li，调整一下: Si/Li<=Sj/Lj
+# 这样，我们只要以如上条件作为宝石间排序的条件，进行一次sortsort。
+# 那么最优解的坐标（新的坐标）一定满足：ai<a2<a3<...<ak
+
+# dp: 0/1背包问题，Si 作为费用，max(0,Ei−(t−Si)∗Li) 作为价值 (t为当前花费时长)。
+# f[t] 表示当“恰好”花时间t 得到的最大能量
+
+
+if __name__ == '__main__':
+    T = int(input())
+    for t in range(T):
+        n = int(input())
+        nums = []
+        m = 0
+        for i in range(n):
+            nums.append(list(map(int,input().split())))
+            m += nums[i][0]
+        nums.sort(key = lambda x : x[0] / max(x[2], 1e-10))  # 预处理 排序
+        f = [0] * (m + 1)
+        for i in range(n):
+            s, e, l = nums[i]
+            for j in range(m, s - 1, -1):
+                f[j] = max(f[j], f[j - s] + e - (j - s) * l)  # 这里 f[j + 1] >= f[j] 不一定成立
+        res = f[0]
+        for i in range(1, m + 1):   # 这里 f[M] 不一定是最大值，这是因为 j 更大的情况下，(j - s) * l 也就是损耗更大
+            res = max(res, f[i])
+        print(f'Case #{t + 1}: {res}')
+        # print("Case #{}: {}".format(i+1,r[i]))
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 堆 + 后悔
+
+> [!NOTE] **[Luogu [JSOI2007]建筑抢修](https://www.luogu.com.cn/problem/P4053)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **贪心思路推导 + 堆**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// 核心：贪心策略
+// 先按 t 贪心，中途再更改
+// 1. 按 t 从小到大排序之后，开始轮流遍历每个建筑
+// 2. 如果中途某个建筑 i 无法在 t_i 的时间内修复，
+//    那么在先前选择修复的建筑中拿出 w_j 最大的 j 号建筑
+//    若 w_i < w_j ，则放弃 j 转而修 i。
+
+const int N = 150010;
+
+int n, T;  // T指遍历时经过了多久时间
+struct node {
+    int w, t;
+} a[N];
+priority_queue<int> Q;  //优先队列
+
+bool cmp(node x, node y) {
+    return x.t < y.t;  //按t从小到大排序
+}
+int main() {
+    scanf("%d", &n);
+    for (int i = 1; i <= n; i++)
+        scanf("%d%d", &a[i].w, &a[i].t);
+    sort(a + 1, a + n + 1, cmp);
+
+    int res = 0;
+    for (int i = 1; i <= n; i++)
+        //如果无法修复此楼
+        if (T + a[i].w > a[i].t) {
+            // ai < aj
+            if (a[i].w < Q.top()) {
+                //注意这里要减掉
+                T -= Q.top();
+                Q.pop();
+                Q.push(a[i].w);
+                T += a[i].w;
+            }
+        } else {
+            Q.push(a[i].w);
+            res++;
+            T += a[i].w;
+        }
+
+    printf("%d\n", res);
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
 ```
 
 <!-- tabs:end -->
@@ -1191,60 +1476,6 @@ int main() {
 
 * * *
 
-> [!NOTE] **[Luogu [NOIP2018 提高组] 铺设道路](https://www.luogu.com.cn/problem/P5019)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 经典贪心
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-using LL = long long;
-const int N = 1e6 + 10;
-
-int n;
-LL d[N];
-
-int main() {
-    cin >> n;
-    for (int i = 1; i <= n; ++ i )
-        cin >> d[i];
-    
-    LL res = 0;
-    stack<int> st;
-    // i = 0 -----> d[i] = 0
-    for (int i = 1; i <= n; ++ i )
-        if (d[i] > d[i - 1])
-            res += d[i] - d[i - 1];
-    cout << res << endl;
-    
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
 > [!NOTE] **[Luogu [AHOI2018初中组]分组](https://www.luogu.com.cn/problem/P4447)**
 > 
 > 题意: TODO
@@ -1305,176 +1536,6 @@ int main() {
     }
     cout << res << endl;
     
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[Luogu [USACO07MAR]Face The Right Way G](https://www.luogu.com.cn/problem/P2882)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 反转问题/开关问题
-> 
-> 贪心 动态维护
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int N = 5010;
-
-int n;
-int d[N], f[N];
-
-int get(int k) {
-    memset(f, 0, sizeof f);
-    
-    // s 维护会影响到i的点击数
-    int s = 0, res = 0;
-    for (int i = 0; i + k <= n; ++ i ) {
-        // 第i头牛 + 之前能影响到它的点击数
-        // &1 说明当前朝后 需要点击
-        if ((d[i] + s) & 1)
-            f[i] = 1, res ++ ;
-        
-        s += f[i];
-        if (i - k + 1 >= 0)
-            s -= f[i - k + 1];
-    }
-    
-    // 检查最后一段
-    for (int i = n - k + 1; i < n; ++ i ) {
-        if ((d[i] + s) & 1)
-            return -1;
-        if (i - k + 1 >= 0)
-            s -= f[i - k + 1];
-    }
-    return res;
-}
-
-int main() {
-    cin >> n;
-    
-    for (int i = 0; i < n; ++ i ) {
-        char c;
-        cin >> c;
-        if (c == 'F')
-            d[i] = 0;
-        else
-            d[i] = 1;
-    }
-    
-    int K = 1, M = n;
-    for (int k = 1; k <= n; ++ k ) {
-        int m = get(k);
-        if (m >= 0 && m < M)
-            M = m, K = k;
-    }
-    cout << K << ' ' << M << endl;
-    
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-
-### 堆
-
-> [!NOTE] **[Luogu [JSOI2007]建筑抢修](https://www.luogu.com.cn/problem/P4053)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> **贪心思路推导 + 堆**
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-// 核心：贪心策略
-// 先按 t 贪心，中途再更改
-// 1. 按 t 从小到大排序之后，开始轮流遍历每个建筑
-// 2. 如果中途某个建筑 i 无法在 t_i 的时间内修复，
-//    那么在先前选择修复的建筑中拿出 w_j 最大的 j 号建筑
-//    若 w_i < w_j ，则放弃 j 转而修 i。
-
-const int N = 150010;
-
-int n, T;  // T指遍历时经过了多久时间
-struct node {
-    int w, t;
-} a[N];
-priority_queue<int> Q;  //优先队列
-
-bool cmp(node x, node y) {
-    return x.t < y.t;  //按t从小到大排序
-}
-int main() {
-    scanf("%d", &n);
-    for (int i = 1; i <= n; i++)
-        scanf("%d%d", &a[i].w, &a[i].t);
-    sort(a + 1, a + n + 1, cmp);
-
-    int res = 0;
-    for (int i = 1; i <= n; i++)
-        //如果无法修复此楼
-        if (T + a[i].w > a[i].t) {
-            // ai < aj
-            if (a[i].w < Q.top()) {
-                //注意这里要减掉
-                T -= Q.top();
-                Q.pop();
-                Q.push(a[i].w);
-                T += a[i].w;
-            }
-        } else {
-            Q.push(a[i].w);
-            res++;
-            T += a[i].w;
-        }
-
-    printf("%d\n", res);
-
     return 0;
 }
 ```

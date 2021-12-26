@@ -986,6 +986,8 @@ printf("%d\n", dp[m][K]);
 
 ## 习题
 
+### 一般背包
+
 > [!NOTE] **[AcWing 1024. 装箱问题](https://www.acwing.com/problem/content/1026/)**
 > 
 > 题意: TODO
@@ -1461,6 +1463,137 @@ int main() {
 
 * * *
 
+> [!NOTE] **[Luogu 5倍经验日](https://www.luogu.com.cn/problem/P1802)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **01背包简单变形**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// 0/1背包变形
+
+const int N = 1010;
+
+int n, m;
+int a[N], b[N], c[N], f[N];
+
+int main() {
+    cin >> n >> m;
+    for (int i = 0; i < n; ++ i )
+        cin >> a[i] >> b[i] >> c[i];
+    
+    for (int i = 0; i < n; ++ i ) {
+        // 打赢或打输
+        // =
+        for (int j = m; j >= c[i]; -- j )
+            f[j] = max(f[j] + a[i], f[j - c[i]] + b[i]);
+        // 打输
+        // +
+        for (int j = c[i] - 1; j >= 0; -- j )
+            f[j] += a[i];
+            // f[j] = max(f[j], f[j] + a[i]);
+    }
+    cout << 5ll * f[m] << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu 尼克的任务](https://www.luogu.com.cn/problem/P1280)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 排序 贪心 背包
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 1e4 + 10;
+
+int n, k;
+struct Ks {
+    int k, l;
+} ks[N];
+int s[N], f[N];
+
+int main() {
+    cin >> n >> k;
+    
+    for (int i = 0; i < k; ++ i ) {
+        cin >> ks[i].k >> ks[i].l;
+        s[ks[i].k] ++ ;    // ATTENTION
+    }
+    
+    // ATTENTION
+    sort(ks, ks + k, [](const Ks & a, const Ks & b) {
+        return a.k > b.k;
+    });
+    
+    int p = 0;  // 任务从晚到早遍历
+    for (int i = n; i > 0; -- i ) {
+        if (s[i] == 0)
+            f[i] = f[i + 1] + 1;
+        else
+            // 找出选择哪一个本时刻的任务使空闲时间最大化
+            for (int j = 0; j < s[i]; ++ j) {
+                if (f[i + ks[p].l] > f[i])
+                    f[i] = f[i + ks[p].l];
+                p ++ ;
+            }
+    }
+
+    cout << f[1] << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 二维背包
 
 > [!NOTE] **[AcWing 1020. 潜水员](https://www.acwing.com/problem/content/description/1022/)**
@@ -1554,13 +1687,204 @@ if __name__ == '__main__':
 
 * * *
 
+### 分组背包
+
+> [!NOTE] **[AcWing 487. 金明的预算方案](https://www.acwing.com/problem/content/description/489/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 二进制优化
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ dfs TLE**
+
+dfs 形式在深度较多且数值较大时 TLE
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int n, m;
+    cin >> m >> n;
+    vector<int> v(n + 1), w(n + 1), q(n + 1);
+    vector<vector<int>> es(n + 1);
+    for (int i = 1; i <= n; ++i) {
+        cin >> v[i] >> w[i] >> q[i];
+        // 必须有一个统一的树根，所以把所有不依赖别的节点的父节点都设置为0
+        es[q[i]].push_back(i);
+    }
+    vector<vector<int>> f(n + 1, vector<int>(m + 1));
+    function<void(int)> dfs = [&](int x) {
+        for (int j = m; j >= v[x]; --j) f[x][j] = w[x] * v[x];
+        for (auto& y : es[x]) {
+            dfs(y);
+            for (int j = m; j >= v[x]; --j)
+                for (int k = 0; k <= j - v[x]; ++k)
+                    f[x][j] = max(f[x][j], f[x][j - k] + f[y][k]);
+        }
+    };
+    dfs(0);
+    cout << f[0][m] << endl;
+}
+```
+
+
+##### **C++ 倍缩优化**
+
+倍缩可过【首先除10必定可行，再判断能否再除10（即所有w[i]是否全是100的倍数）】：
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int n, m;
+    cin >> m >> n;
+    vector<int> v(n + 1), w(n + 1), q(n + 1);
+    vector<vector<int>> es(n + 1);
+    m /= 10;  // 倍缩 降低dfs复杂度
+    bool flag = true;
+    for (int i = 1; i <= n; ++i) {
+        cin >> v[i] >> w[i] >> q[i];
+        if (v[i] % 100) flag = false;
+        v[i] /= 10;
+        // 必须有一个统一的树根，所以把所有不依赖别的节点的父节点都设置为0
+        es[q[i]].push_back(i);
+    }
+    if (flag) {
+        // 都是100的倍数 还可以再除10
+        for (int i = 1; i <= n; ++i) v[i] /= 10;
+        m /= 10;
+    }
+    vector<vector<int>> f(n + 1, vector<int>(m + 1));
+    function<void(int)> dfs = [&](int x) {
+        for (int j = m; j >= v[x]; --j) f[x][j] = w[x] * v[x];
+        for (auto& y : es[x]) {
+            dfs(y);
+            for (int j = m; j >= v[x]; --j)
+                for (int k = 0; k <= j - v[x]; ++k)
+                    f[x][j] = max(f[x][j], f[x][j - k] + f[y][k]);
+        }
+    };
+    dfs(0);
+    if (flag)
+        cout << f[0][m] * 100 << endl;
+    else
+        cout << f[0][m] * 10 << endl;
+}
+```
+
+##### **C++**
+
+ yxc 的枚举子集的办法，在每个物品的依赖数量较少以内没问题，但假设数量有 x 个，则对每个体积都需枚举 2^x 次方中子集方案，复杂度较高。
+
+ **需关注数据范围**
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+#include <vector>
+
+#define v first
+#define w second
+
+using namespace std;
+
+typedef pair<int, int> PII;
+
+const int N = 60, M = 32010;
+
+int n, m;
+PII master[N];
+vector<PII> servent[N];
+int f[M];
+
+int main() {
+    cin >> m >> n;
+
+    for (int i = 1; i <= n; i++) {
+        int v, p, q;
+        cin >> v >> p >> q;
+        p *= v;
+        if (!q)
+            master[i] = {v, p};
+        else
+            servent[q].push_back({v, p});
+    }
+
+    for (int i = 1; i <= n; i++)
+        for (int u = m; u >= 0; u--) {
+            for (int j = 0; j < 1 << servent[i].size(); j++) {
+                int v = master[i].v, w = master[i].w;
+                for (int k = 0; k < servent[i].size(); k++)
+                    if (j >> k & 1) {
+                        v += servent[i][k].v;
+                        w += servent[i][k].w;
+                    }
+                if (u >= v) f[u] = max(f[u], f[u - v] + w);
+            }
+        }
+
+    cout << f[m] << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+# 分组背包问题：主件就是一个大组，组与组之间互斥。
+
+if __name__ == '__main__':
+    n, m = map(int, input().split())
+    master, servent = [0 for _ in range(m + 1)], [[] for _ in range(m + 1)]
+    for i in range(1, m + 1):
+        v, p, q = map(int, input().split())
+        if q == 0:
+            master[i] = [v, v * p]
+        else:
+            servent[q].append([v, v * p])
+    f = [0 for _ in range(n + 1)]
+
+    for i in range(1, m + 1):
+        if master[i] == 0:
+            continue
+        for j in range(n, -1, -1):
+            # 使用二进制的思想枚举四种组合， 可以简化代码
+            length = len(servent[i])
+            for k in range(1 << length):  # 坑1:枚举2**n方
+                v, w = master[i][0], master[i][1]  # 坑2:记得加上mater的体积和价值
+                for u in range(length):
+                    if k >> u & 1:  # 第u个物品被选了 才会进入到下面累加
+                        v += servent[i][u][0]
+                        w += servent[i][u][1]
+                if j >= v:
+                    f[j] = max(f[j], f[j - v] + w)
+    print(f[n])
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[AcWing 1013. 机器分配](https://www.acwing.com/problem/content/description/1015/)**
 > 
 > 题意: TODO
 
 > [!TIP] **思路**
 > 
-> 
+> 分组
 
 <details>
 <summary>详细代码</summary>
@@ -1706,6 +2030,99 @@ if __name__ == '__main__':
 <br>
 
 * * *
+
+> [!NOTE] **[Luogu [NOIP2012 普及组] 摆花](https://www.luogu.com.cn/problem/P1077)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 分组背包即可
+> 
+> 重点在于部分情况下分组背包可以前缀和优化
+> 
+> 以及【生成函数】解法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 110, MOD = 1000007;
+
+int n, m;
+int a[N];
+int f1[N], s[N];
+
+// 分组背包即可
+void func1() {
+    f1[0] = 1;
+    for (int i = 1; i <= n; ++ i )
+        for (int j = m; j >= 0; -- j )
+            for (int k = 1; k <= a[i]; ++ k )
+                if (k <= j)
+                    f1[j] = (f1[j] + f1[j - k]) % MOD;
+    cout << f1[m] << endl;
+}
+
+// func1 的前缀和优化
+void func1_more() {
+    s[0] = 1;   // think
+    for (int i = 1; i <= m; ++ i )
+        s[i] += s[i - 1];   // always 1
+    f1[0] = 1;
+    for (int i = 1; i <= n; ++ i ) {
+        for (int j = m; j >= 1; -- j ) {    // 需要修改为 [1, m]
+            int bound = j - a[i] - 1;       // 左侧
+            if (bound >= 0)
+                f1[j] = (f1[j] + s[j - 1] - s[bound] + MOD) % MOD;
+            else
+                f1[j] = (f1[j] + s[j - 1]) % MOD;
+        }
+        for (int j = 1; j <= m; ++ j )
+            s[j] = (s[j - 1] + f1[j]) % MOD;
+    }
+    cout << f1[m] << endl;
+}
+
+// 生成函数
+// https://www.luogu.com.cn/blog/76228/ti-xie-p1077-bai-hua-post
+void func2() {
+    // TODO
+}
+
+int main() {
+    cin >> n >> m;
+    
+    for (int i = 1; i <= n; ++ i )
+        cin >> a[i];
+    
+    // func1();
+    func1_more();
+    // func2();
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+### 有依赖背包 树
 
 > [!NOTE] **[AcWing 10. 有依赖的背包问题](https://www.acwing.com/problem/content/description/10/)**
 > 
@@ -2077,541 +2494,6 @@ if __name__ == '__main__':
 #            print(i, end = ' ')
 #            val -= v[i]
 #        i += 1
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-### 贪心
-
-> [!NOTE] **[AcWing 734. 能量石](https://www.acwing.com/problem/content/description/736/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 贪心的假设和推导原则【贪心的微扰（邻项交换）证法】 
-> 
-> 先贪心排序 国王游戏 耍杂技的牛
-> 
-> **[如果表示“恰好”，那么需要把所有非法状态初始化成负无穷。]**
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include <algorithm>
-#include <iostream>
-
-using namespace std;
-
-const int N = 110, M = 10010;
-
-int n;
-struct Stone {
-    int s, e, l;
-} stones[N];
-
-// 优先选择 Si/Li 最小的值
-bool cmp(Stone a, Stone b) { return a.s * b.l < b.s * a.l; }
-
-int f[N][M];
-
-int main() {
-    int T;
-    cin >> T;
-    for (int C = 1; C <= T; C++) {
-        cin >> n;
-        int m = 0;
-        for (int i = 1; i <= n; i++) {
-            int s, e, l;
-            cin >> s >> e >> l;
-            stones[i] = {s, e, l};
-            m += s;
-        }
-
-        sort(stones + 1, stones + 1 + n, cmp);
-
-        for (int i = 1; i <= n; i++)
-            for (int j = 0; j <= m; j++) {
-                f[i][j] = f[i - 1][j];
-                if (j >= stones[i].s) {
-                    int s = stones[i].s, e = stones[i].e, l = stones[i].l;
-                    f[i][j] =
-                        max(f[i][j], f[i - 1][j - s] + max(0, e - l * (j - s)));
-                }
-            }
-
-        int res = 0;
-        for (int i = 0; i <= m; i++) res = max(res, f[n][i]);
-
-        printf("Case #%d: %d\n", C, res);
-    }
-
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-#贪心+dp：所有不同吃法的最优解
-#1）决定可以选择吃哪些（不吃能量变成0的能量石） 2）按照什么顺序吃能量石 （两维变化，不好直接做）
-# 有一个非常巧妙的地方：先做一个贪心，找到最优解的一个小子集里。先证明这个子集的存在，然后考虑这个子集里所有的最大值
-# 复习一下贪心题：耍杂技的牛 & 国王游戏
-
-# 贪心思路：发现有可能存在最优解的某些宝石的贡献为00，我们剔除了这些宝石。
-# 假设最优解的能量石排列长度为k(1<=k<=n) 因为去掉了那些没有贡献的宝石，位置为：a1,a2,a3…aka1,a2,a3…ak。
-# 那么对于任意两个位置i=al,j=al+1(1<=l<k)，在最优解中，交换后两个宝石的贡献总和不会变得更大,(假设之前的总时间为t）：整理后：
-# Si∗Lj<=Sj∗Li，调整一下: Si/Li<=Sj/Lj
-# 这样，我们只要以如上条件作为宝石间排序的条件，进行一次sortsort。
-# 那么最优解的坐标（新的坐标）一定满足：ai<a2<a3<...<ak
-
-# dp: 0/1背包问题，Si 作为费用，max(0,Ei−(t−Si)∗Li) 作为价值 (t为当前花费时长)。
-# f[t] 表示当“恰好”花时间t 得到的最大能量
-
-
-if __name__ == '__main__':
-    T = int(input())
-    for t in range(T):
-        n = int(input())
-        nums = []
-        m = 0
-        for i in range(n):
-            nums.append(list(map(int,input().split())))
-            m += nums[i][0]
-        nums.sort(key = lambda x : x[0] / max(x[2], 1e-10))  # 预处理 排序
-        f = [0] * (m + 1)
-        for i in range(n):
-            s, e, l = nums[i]
-            for j in range(m, s - 1, -1):
-                f[j] = max(f[j], f[j - s] + e - (j - s) * l)  # 这里 f[j + 1] >= f[j] 不一定成立
-        res = f[0]
-        for i in range(1, m + 1):   # 这里 f[M] 不一定是最大值，这是因为 j 更大的情况下，(j - s) * l 也就是损耗更大
-            res = max(res, f[i])
-        print(f'Case #{t + 1}: {res}')
-        # print("Case #{}: {}".format(i+1,r[i]))
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-### 二进制优化分组背包
-
-> [!NOTE] **[AcWing 487. 金明的预算方案](https://www.acwing.com/problem/content/description/489/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++ dfs TLE**
-
-dfs 形式在深度较多且数值较大时 TLE
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    int n, m;
-    cin >> m >> n;
-    vector<int> v(n + 1), w(n + 1), q(n + 1);
-    vector<vector<int>> es(n + 1);
-    for (int i = 1; i <= n; ++i) {
-        cin >> v[i] >> w[i] >> q[i];
-        // 必须有一个统一的树根，所以把所有不依赖别的节点的父节点都设置为0
-        es[q[i]].push_back(i);
-    }
-    vector<vector<int>> f(n + 1, vector<int>(m + 1));
-    function<void(int)> dfs = [&](int x) {
-        for (int j = m; j >= v[x]; --j) f[x][j] = w[x] * v[x];
-        for (auto& y : es[x]) {
-            dfs(y);
-            for (int j = m; j >= v[x]; --j)
-                for (int k = 0; k <= j - v[x]; ++k)
-                    f[x][j] = max(f[x][j], f[x][j - k] + f[y][k]);
-        }
-    };
-    dfs(0);
-    cout << f[0][m] << endl;
-}
-```
-
-
-##### **C++ 倍缩优化**
-
-倍缩可过【首先除10必定可行，再判断能否再除10（即所有w[i]是否全是100的倍数）】：
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    int n, m;
-    cin >> m >> n;
-    vector<int> v(n + 1), w(n + 1), q(n + 1);
-    vector<vector<int>> es(n + 1);
-    m /= 10;  // 倍缩 降低dfs复杂度
-    bool flag = true;
-    for (int i = 1; i <= n; ++i) {
-        cin >> v[i] >> w[i] >> q[i];
-        if (v[i] % 100) flag = false;
-        v[i] /= 10;
-        // 必须有一个统一的树根，所以把所有不依赖别的节点的父节点都设置为0
-        es[q[i]].push_back(i);
-    }
-    if (flag) {
-        // 都是100的倍数 还可以再除10
-        for (int i = 1; i <= n; ++i) v[i] /= 10;
-        m /= 10;
-    }
-    vector<vector<int>> f(n + 1, vector<int>(m + 1));
-    function<void(int)> dfs = [&](int x) {
-        for (int j = m; j >= v[x]; --j) f[x][j] = w[x] * v[x];
-        for (auto& y : es[x]) {
-            dfs(y);
-            for (int j = m; j >= v[x]; --j)
-                for (int k = 0; k <= j - v[x]; ++k)
-                    f[x][j] = max(f[x][j], f[x][j - k] + f[y][k]);
-        }
-    };
-    dfs(0);
-    if (flag)
-        cout << f[0][m] * 100 << endl;
-    else
-        cout << f[0][m] * 10 << endl;
-}
-```
-
-##### **C++**
-
- yxc 的枚举子集的办法，在每个物品的依赖数量较少以内没问题，但假设数量有 x 个，则对每个体积都需枚举 2^x 次方中子集方案，复杂度较高。
-
- **需关注数据范围**
-
-```cpp
-#include <algorithm>
-#include <cstring>
-#include <iostream>
-#include <vector>
-
-#define v first
-#define w second
-
-using namespace std;
-
-typedef pair<int, int> PII;
-
-const int N = 60, M = 32010;
-
-int n, m;
-PII master[N];
-vector<PII> servent[N];
-int f[M];
-
-int main() {
-    cin >> m >> n;
-
-    for (int i = 1; i <= n; i++) {
-        int v, p, q;
-        cin >> v >> p >> q;
-        p *= v;
-        if (!q)
-            master[i] = {v, p};
-        else
-            servent[q].push_back({v, p});
-    }
-
-    for (int i = 1; i <= n; i++)
-        for (int u = m; u >= 0; u--) {
-            for (int j = 0; j < 1 << servent[i].size(); j++) {
-                int v = master[i].v, w = master[i].w;
-                for (int k = 0; k < servent[i].size(); k++)
-                    if (j >> k & 1) {
-                        v += servent[i][k].v;
-                        w += servent[i][k].w;
-                    }
-                if (u >= v) f[u] = max(f[u], f[u - v] + w);
-            }
-        }
-
-    cout << f[m] << endl;
-
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-# 分组背包问题：主件就是一个大组，组与组之间互斥。
-
-if __name__ == '__main__':
-    n, m = map(int, input().split())
-    master, servent = [0 for _ in range(m + 1)], [[] for _ in range(m + 1)]
-    for i in range(1, m + 1):
-        v, p, q = map(int, input().split())
-        if q == 0:
-            master[i] = [v, v * p]
-        else:
-            servent[q].append([v, v * p])
-    f = [0 for _ in range(n + 1)]
-
-    for i in range(1, m + 1):
-        if master[i] == 0:
-            continue
-        for j in range(n, -1, -1):
-            # 使用二进制的思想枚举四种组合， 可以简化代码
-            length = len(servent[i])
-            for k in range(1 << length):  # 坑1:枚举2**n方
-                v, w = master[i][0], master[i][1]  # 坑2:记得加上mater的体积和价值
-                for u in range(length):
-                    if k >> u & 1:  # 第u个物品被选了 才会进入到下面累加
-                        v += servent[i][u][0]
-                        w += servent[i][u][1]
-                if j >= v:
-                    f[j] = max(f[j], f[j - v] + w)
-    print(f[n])
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[Luogu [NOIP2012 普及组] 摆花](https://www.luogu.com.cn/problem/P1077)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 分组背包即可
-> 
-> 重点在于部分情况下分组背包可以前缀和优化
-> 
-> 以及【生成函数】解法
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int N = 110, MOD = 1000007;
-
-int n, m;
-int a[N];
-int f1[N], s[N];
-
-// 分组背包即可
-void func1() {
-    f1[0] = 1;
-    for (int i = 1; i <= n; ++ i )
-        for (int j = m; j >= 0; -- j )
-            for (int k = 1; k <= a[i]; ++ k )
-                if (k <= j)
-                    f1[j] = (f1[j] + f1[j - k]) % MOD;
-    cout << f1[m] << endl;
-}
-
-// func1 的前缀和优化
-void func1_more() {
-    s[0] = 1;   // think
-    for (int i = 1; i <= m; ++ i )
-        s[i] += s[i - 1];   // always 1
-    f1[0] = 1;
-    for (int i = 1; i <= n; ++ i ) {
-        for (int j = m; j >= 1; -- j ) {    // 需要修改为 [1, m]
-            int bound = j - a[i] - 1;       // 左侧
-            if (bound >= 0)
-                f1[j] = (f1[j] + s[j - 1] - s[bound] + MOD) % MOD;
-            else
-                f1[j] = (f1[j] + s[j - 1]) % MOD;
-        }
-        for (int j = 1; j <= m; ++ j )
-            s[j] = (s[j - 1] + f1[j]) % MOD;
-    }
-    cout << f1[m] << endl;
-}
-
-// 生成函数
-// https://www.luogu.com.cn/blog/76228/ti-xie-p1077-bai-hua-post
-void func2() {
-    // TODO
-}
-
-int main() {
-    cin >> n >> m;
-    
-    for (int i = 1; i <= n; ++ i )
-        cin >> a[i];
-    
-    // func1();
-    func1_more();
-    // func2();
-
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[Luogu 5倍经验日](https://www.luogu.com.cn/problem/P1802)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> **01背包简单变形**
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-// 0/1背包变形
-
-const int N = 1010;
-
-int n, m;
-int a[N], b[N], c[N], f[N];
-
-int main() {
-    cin >> n >> m;
-    for (int i = 0; i < n; ++ i )
-        cin >> a[i] >> b[i] >> c[i];
-    
-    for (int i = 0; i < n; ++ i ) {
-        // 打赢或打输
-        // =
-        for (int j = m; j >= c[i]; -- j )
-            f[j] = max(f[j] + a[i], f[j - c[i]] + b[i]);
-        // 打输
-        // +
-        for (int j = c[i] - 1; j >= 0; -- j )
-            f[j] += a[i];
-            // f[j] = max(f[j], f[j] + a[i]);
-    }
-    cout << 5ll * f[m] << endl;
-    
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[Luogu 尼克的任务](https://www.luogu.com.cn/problem/P1280)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 排序 贪心 背包
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int N = 1e4 + 10;
-
-int n, k;
-struct Ks {
-    int k, l;
-} ks[N];
-int s[N], f[N];
-
-int main() {
-    cin >> n >> k;
-    
-    for (int i = 0; i < k; ++ i ) {
-        cin >> ks[i].k >> ks[i].l;
-        s[ks[i].k] ++ ;    // ATTENTION
-    }
-    
-    // ATTENTION
-    sort(ks, ks + k, [](const Ks & a, const Ks & b) {
-        return a.k > b.k;
-    });
-    
-    int p = 0;  // 任务从晚到早遍历
-    for (int i = n; i > 0; -- i ) {
-        if (s[i] == 0)
-            f[i] = f[i + 1] + 1;
-        else
-            // 找出选择哪一个本时刻的任务使空闲时间最大化
-            for (int j = 0; j < s[i]; ++ j) {
-                if (f[i + ks[p].l] > f[i])
-                    f[i] = f[i + ks[p].l];
-                p ++ ;
-            }
-    }
-
-    cout << f[1] << endl;
-    
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-
 ```
 
 <!-- tabs:end -->

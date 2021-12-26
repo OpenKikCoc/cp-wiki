@@ -148,6 +148,8 @@ $E = \{a_{j_1}a_{j_2}\cdots a_{j_{n-1}}|a_j \in S, 1 \leq j \leq n\}$
 
 - [洛谷 P2731 骑马修栅栏](https://www.luogu.com.cn/problem/P2731)
 
+### 一般欧拉
+
 > [!NOTE] **[AcWing 1123. 铲雪车](https://www.acwing.com/problem/content/1125/)**
 > 
 > 题意: TODO
@@ -407,6 +409,8 @@ int main() {
 <br>
 
 * * *
+
+### 建图
 
 > [!NOTE] **[AcWing 1185. 单词游戏](https://www.acwing.com/problem/content/1187/)**
 > 

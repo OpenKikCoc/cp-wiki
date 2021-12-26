@@ -287,5 +287,3 @@ public:
 ## 习题
 
 [CodeChef - SEGPROD](https://www.codechef.com/NOV17/problems/SEGPROD)
-
-**本页面主要译自 [Sqrt Tree](https://cp-algorithms.com/data_structures/sqrt-tree.html)，版权协议为 CC-BY-SA 4.0。**

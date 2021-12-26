@@ -48,6 +48,8 @@ sta.push(x)
 
 ## 习题
 
+### 一般单调栈
+
 > [!NOTE] **[AcWing 830. 单调栈](https://www.acwing.com/problem/content/832/)**
 > 
 > 题意: TODO
@@ -281,6 +283,75 @@ public:
 
 * * *
 
+### 删数类问题
+
+> [!NOTE] **[Luogu 删数问题](https://www.luogu.com.cn/problem/P1106)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 260;
+
+int n, k;
+string s;
+
+int main() {
+    cin >> s >> k;
+    n = s.size();
+    
+    stack<char> st;
+    for (int i = 0; i < n; ++ i ) {
+        while (st.size() && k && s[st.top()] > s[i]) {
+            st.pop();
+            k -- ;
+        }
+        st.push(i);
+    }
+
+    while (k -- && st.size())
+        st.pop();
+    
+    string res;
+    while (st.size()) {
+        res.push_back(s[st.top()]);
+        st.pop();
+    }
+    // zero in head
+    while (res.size() > 1 && res.back() == '0')
+        res.pop_back();
+    reverse(res.begin(), res.end());
+    cout << res << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[LeetCode 2030. 含特定字母的最小子序列](https://leetcode-cn.com/problems/smallest-k-length-subsequence-with-occurrences-of-a-letter/)**
 > 
 > [weekly-261](https://github.com/OpenKikCoc/LeetCode/blob/master/Contest/2021-10-03_Weekly-261/)
@@ -353,73 +424,6 @@ public:
 ##### **Python**
 
 ```python
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[Luogu 删数问题](https://www.luogu.com.cn/problem/P1106)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int N = 260;
-
-int n, k;
-string s;
-
-int main() {
-    cin >> s >> k;
-    n = s.size();
-    
-    stack<char> st;
-    for (int i = 0; i < n; ++ i ) {
-        while (st.size() && k && s[st.top()] > s[i]) {
-            st.pop();
-            k -- ;
-        }
-        st.push(i);
-    }
-
-    while (k -- && st.size())
-        st.pop();
-    
-    string res;
-    while (st.size()) {
-        res.push_back(s[st.top()]);
-        st.pop();
-    }
-    // zero in head
-    while (res.size() > 1 && res.back() == '0')
-        res.pop_back();
-    reverse(res.begin(), res.end());
-    cout << res << endl;
-    
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-
 ```
 
 <!-- tabs:end -->

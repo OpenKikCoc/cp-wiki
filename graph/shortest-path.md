@@ -536,6 +536,8 @@ $w(s,p_1)+w(p_1,p_2)+ \dots +w(p_k,t)+h_s-h_t$
 
 ## 习题
 
+### 一般 dijkstra
+
 > [!NOTE] **[AcWing 849. Dijkstra求最短路 I](https://www.acwing.com/problem/content/851/)**
 > 
 > 题意: TODO
@@ -1019,6 +1021,194 @@ if __name__ == '__main__':
 
 * * *
 
+### dijkstra 进阶
+
+> [!NOTE] **[AcWing 920. 最优乘车](https://www.acwing.com/problem/content/922/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **学习STL处理输入流**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using PII = pair<int, int>;
+
+const int N = 510, M = N * N, INF = 0x3f3f3f3f;
+
+int m, n;
+int h[N], e[M], w[M], ne[M], idx;
+int d[N];
+bool st[N];
+
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+void dijkstra() {
+    memset(d, 0x3f, sizeof d);
+    memset(st, 0, sizeof st);
+    
+    priority_queue<PII, vector<PII>, greater<PII>> heap;
+    heap.push({0, 1});
+    d[1] = 0;
+    
+    while (heap.size()) {
+        auto [dis, ver] = heap.top(); heap.pop();
+        if (st[ver]) continue;
+        st[ver] = true;
+        
+        for (int i = h[ver]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (d[j] > dis + w[i]) {
+                d[j] = dis + w[i];
+                heap.push({d[j], j});
+            }
+        }
+    }
+}
+
+int main() {
+    memset(h, -1, sizeof h);
+    
+    cin >> m >> n;
+    
+    string line;
+    getline(cin, line);  // \r
+    while (m -- ) {
+        getline(cin, line);
+        stringstream ss(line);
+        int p, cnt;
+        vector<int> stop;
+        while (ss >> p) stop.push_back(p);
+        cnt = stop.size();
+        
+        for (int i = 0; i < cnt; ++ i )
+            for (int j = i + 1; j < cnt; ++ j )
+                add(stop[i], stop[j], 1);
+    }
+    
+    dijkstra();
+    
+    if (d[n] == INF) cout << "NO" << endl;
+    else cout << max(d[n] - 1, 0) << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 903. 昂贵的聘礼](https://www.acwing.com/problem/content/description/905/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> WA 好几次因为没有在 dijkstra 内部初始化
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using PII = pair<int, int>;
+
+const int N = 110, INF = 0x3f3f3f3f;
+
+int n, m;
+int w[N][N], l[N];
+int d[N];
+bool st[N];
+
+int dijkstra(int down, int up) {
+    memset(d, 0x3f, sizeof d);
+    memset(st, 0, sizeof st);
+    
+    priority_queue<PII, vector<PII>, greater<PII>> heap;
+    d[0] = 0;
+    heap.push({0, 0});
+    while (!heap.empty()) {
+        auto [dis, ver] = heap.top(); heap.pop();
+        if (st[ver]) continue;
+        st[ver] = true;
+        
+        for (int v = 1; v <= n; ++ v )
+            if (l[v] >= down && l[v] <= up && d[v] > dis + w[ver][v]) {
+                d[v] = dis + w[ver][v];
+                heap.push({d[v], v});
+            }
+    }
+    return d[1];
+}
+
+int main() {
+    cin >> m >> n;
+    
+    memset(w, 0x3f, sizeof w);
+    for (int i = 1; i <= n; ++ i ) w[i][i] = 0;
+    
+    for (int i = 1; i <= n; ++ i ) {
+        int price, cnt;
+        cin >> price >> l[i] >> cnt;
+        w[0][i] = min(price, w[0][i]);
+        while (cnt -- ) {
+            int id, cost;
+            cin >> id >> cost;
+            w[id][i] = min(w[id][i], cost);
+        }
+    }
+    
+    int res = INF;
+    for (int i = l[1] - m; i <= l[1]; ++ i )
+        res = min(res, dijkstra(i, i + m));
+        
+    cout << res << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
+### spfa
+
 > [!NOTE] **[AcWing 851. spfa求最短路](https://www.acwing.com/problem/content/853/)**
 > 
 > 题意: TODO
@@ -1315,311 +1505,6 @@ if __name__ == '__main__':
         print("Yes")
     else:
         print("No")
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[AcWing 854. Floyd求最短路](https://www.acwing.com/problem/content/856/)**
-> 
-> 题意: TODO
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include <algorithm>
-#include <cstring>
-#include <iostream>
-
-using namespace std;
-
-const int N = 210, INF = 1e9;
-
-int n, m, Q;
-int d[N][N];
-
-void floyd() {
-    for (int k = 1; k <= n; k++)
-        for (int i = 1; i <= n; i++)
-            for (int j = 1; j <= n; j++)
-                d[i][j] = min(d[i][j], d[i][k] + d[k][j]);
-}
-
-int main() {
-    scanf("%d%d%d", &n, &m, &Q);
-
-    for (int i = 1; i <= n; i++)
-        for (int j = 1; j <= n; j++)
-            if (i == j)
-                d[i][j] = 0;
-            else
-                d[i][j] = INF;
-
-    while (m--) {
-        int a, b, c;
-        scanf("%d%d%d", &a, &b, &c);
-        d[a][b] = min(d[a][b], c);
-    }
-
-    floyd();
-
-    while (Q--) {
-        int a, b;
-        scanf("%d%d", &a, &b);
-
-        int t = d[a][b];
-        if (t > INF / 2)
-            puts("impossible");
-        else
-            printf("%d\n", t);
-    }
-
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-"""
-Floyd算法
-
-- 用邻接图存储图
-- 标准的佛洛依德算法，三重循环。循环结束之后，d[i][j]存储的是 **点i--->点j** 的最短距离
-- 需要注意：循环顺序不能变：第一层枚举中间点，第二层和第三层枚举起点和终点：
-  - 初始化d
-  - 用k,i,j 去更新d
-- 可以处理负权，但是不能存在负回路。
-"""
-
-# f[i, j, k]表示从i走到j的路径上除i和j点外只经过1到k的点的所有路径的最短距离。
-# 那么f[i, j, k] = min(f[i, j, k - 1), f[i, k, k - 1] + f[k, j, k - 1]。
-# 因此在计算第k层的f[i, j]的时候必须先将第k - 1层的所有状态计算出来，所以需要把k放在最外层。
-
-# 邻接矩阵存图；
-if __name__ == '__main__':
-    N = 210
-    n, m, q = map(int, input().split())
-    g = [[float('inf')] * (n + 1) for _ in range(n + 1)]  # g[][]存储图的邻接矩阵
-    d = [[0] * N for _ in range(N)]
-
-    for i in range(1, n + 1):
-        for j in range(1, n + 1):
-            if i == j:
-                d[i][j] = 0
-            else:
-                d[i][j] = float('inf')
-
-    for _ in range(m):
-        a, b, w = map(int, input().split())
-        d[a][b] = min(d[a][b], w)  # 存在重边和自回路
-
-    # floyd算法核心
-    # 基于动态规划实现的：d[k,i,j]:从i点出发，只经过1-k这些中间点 到j的最短距离。
-    # 注意：一定要先循环k
-    for k in range(1, n + 1):
-        for i in range(1, n + 1):
-            for j in range(1, n + 1):
-                d[i][j] = min(d[i][j], d[i][k] + d[k][j])
-    for _ in range(q):
-        a, b = map(int, input().split())
-        if d[a][b] == float('inf'):
-            print('impossible')
-        else:
-            print(d[a][b])
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-### dijkstra 进阶
-
-> [!NOTE] **[AcWing 920. 最优乘车](https://www.acwing.com/problem/content/922/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> **学习STL处理输入流**
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-using PII = pair<int, int>;
-
-const int N = 510, M = N * N, INF = 0x3f3f3f3f;
-
-int m, n;
-int h[N], e[M], w[M], ne[M], idx;
-int d[N];
-bool st[N];
-
-void add(int a, int b, int c) {
-    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
-}
-
-void dijkstra() {
-    memset(d, 0x3f, sizeof d);
-    memset(st, 0, sizeof st);
-    
-    priority_queue<PII, vector<PII>, greater<PII>> heap;
-    heap.push({0, 1});
-    d[1] = 0;
-    
-    while (heap.size()) {
-        auto [dis, ver] = heap.top(); heap.pop();
-        if (st[ver]) continue;
-        st[ver] = true;
-        
-        for (int i = h[ver]; ~i; i = ne[i]) {
-            int j = e[i];
-            if (d[j] > dis + w[i]) {
-                d[j] = dis + w[i];
-                heap.push({d[j], j});
-            }
-        }
-    }
-}
-
-int main() {
-    memset(h, -1, sizeof h);
-    
-    cin >> m >> n;
-    
-    string line;
-    getline(cin, line);  // \r
-    while (m -- ) {
-        getline(cin, line);
-        stringstream ss(line);
-        int p, cnt;
-        vector<int> stop;
-        while (ss >> p) stop.push_back(p);
-        cnt = stop.size();
-        
-        for (int i = 0; i < cnt; ++ i )
-            for (int j = i + 1; j < cnt; ++ j )
-                add(stop[i], stop[j], 1);
-    }
-    
-    dijkstra();
-    
-    if (d[n] == INF) cout << "NO" << endl;
-    else cout << max(d[n] - 1, 0) << endl;
-    
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[AcWing 903. 昂贵的聘礼](https://www.acwing.com/problem/content/description/905/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> WA 好几次因为没有在 dijkstra 内部初始化
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-using PII = pair<int, int>;
-
-const int N = 110, INF = 0x3f3f3f3f;
-
-int n, m;
-int w[N][N], l[N];
-int d[N];
-bool st[N];
-
-int dijkstra(int down, int up) {
-    memset(d, 0x3f, sizeof d);
-    memset(st, 0, sizeof st);
-    
-    priority_queue<PII, vector<PII>, greater<PII>> heap;
-    d[0] = 0;
-    heap.push({0, 0});
-    while (!heap.empty()) {
-        auto [dis, ver] = heap.top(); heap.pop();
-        if (st[ver]) continue;
-        st[ver] = true;
-        
-        for (int v = 1; v <= n; ++ v )
-            if (l[v] >= down && l[v] <= up && d[v] > dis + w[ver][v]) {
-                d[v] = dis + w[ver][v];
-                heap.push({d[v], v});
-            }
-    }
-    return d[1];
-}
-
-int main() {
-    cin >> m >> n;
-    
-    memset(w, 0x3f, sizeof w);
-    for (int i = 1; i <= n; ++ i ) w[i][i] = 0;
-    
-    for (int i = 1; i <= n; ++ i ) {
-        int price, cnt;
-        cin >> price >> l[i] >> cnt;
-        w[0][i] = min(price, w[0][i]);
-        while (cnt -- ) {
-            int id, cost;
-            cin >> id >> cost;
-            w[id][i] = min(w[id][i], cost);
-        }
-    }
-    
-    int res = INF;
-    for (int i = l[1] - m; i <= l[1]; ++ i )
-        res = min(res, dijkstra(i, i + m));
-        
-    cout << res << endl;
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-
 ```
 
 <!-- tabs:end -->
@@ -2297,7 +2182,335 @@ int main() {
 
 * * *
 
+### spfa
+
+> [!NOTE] **[AcWing 361. 观光奶牛](https://www.acwing.com/problem/content/363/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 推导 二分 转化为负环判定
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const double eps = 1e-6;
+const int N = 1010, M = 5010;
+
+int n, m;
+int wf[N];
+int h[N], e[M], w[M], ne[M], idx;
+double dist[N];
+int cnt[N];
+
+int q[N];
+bool st[N];
+
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+bool check(double mid) {
+    memset(dist, 0, sizeof dist);
+    memset(cnt, 0, sizeof cnt);
+    memset(st, 0, sizeof st);
+    
+    int hh = 0, tt = 0;
+    for (int i = 1; i <= n; ++ i )
+        q[tt ++ ] = i, st[i] = true;
+    
+    while (hh != tt) {
+        int t = q[hh ++ ];
+        if (hh == N) hh = 0;
+        st[t] = false;
+        
+        for (int i = h[t]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (dist[j] < dist[t] + wf[t] - mid * w[i]) {
+                dist[j] = dist[t] + wf[t] - mid * w[i];
+                cnt[j] = cnt[t] + 1;
+                if (cnt[j] >= n) return true;
+                if (!st[j]) {
+                    q[tt ++ ] = j;
+                    if (tt == N) tt = 0;
+                    st[j] = true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+int main() {
+    memset(h, -1, sizeof h);
+    
+    cin >> n >> m;
+    for (int i = 1; i <= n; ++ i ) cin >> wf[i];
+    
+    while (m -- ) {
+        int a, b, c;
+        cin >> a >> b >> c;
+        add(a, b, c);
+    }
+    
+    double l = 0, r = 1e6;
+    while (r - l > eps) {
+        double mid = (l + r) / 2;
+        if (check(mid)) l = mid;
+        else r = mid;
+    }
+    printf("%.2lf\n", l);
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1165. 单词环](https://www.acwing.com/problem/content/1167/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> STL超时 学习加边方法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 700, M = 100010;
+
+int n;
+int h[N], e[M], w[M], ne[M], idx;
+double dist[N];
+int q[N], cnt[N];
+bool st[N];
+
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+bool check(double mid) {
+    memset(st, 0, sizeof st);
+    memset(cnt, 0, sizeof cnt);
+
+    int hh = 0, tt = 0;
+    for(int i = 0; i < 676; ++i) {
+        q[tt++] = i;
+        st[i] = true;
+    }
+
+    int count = 0;
+    while(hh != tt) {
+        int t = q[hh++];
+        if(hh == N) hh = 0;
+        st[t] = false;
+
+        for(int i = h[t]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (dist[j] < dist[t] + w[i] - mid) {
+                dist[j] = dist[t] + w[i] - mid;
+                cnt[j] = cnt[t] + 1;
+                if(++count > 10000) return true; // 经验上的trick
+                if(cnt[j] >= N) return true;
+                if(!st[j]) {
+                    q[tt++] = j;
+                    if(tt == N) tt = 0;
+                    st[j] = true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+int main() {
+    string str;
+    while(cin >> n, n) {
+        memset(h, -1, sizeof h);
+        for(int i = 0; i < n; ++i) {
+            cin >> str;
+            int len = str.size();
+            if(len > 1) {
+                int l = (str[0]-'a')*26 + str[1]-'a', r = (str[len-2]-'a')*26 + str[len-1]-'a';
+                add(l, r, len);
+            }
+        }
+        if(!check(0)) cout << "No solution" << endl;
+        else {
+            double l = 0, r = 1000;
+            while(r-l > 1e-4) {
+                double mid = l + (r-l)/2;
+                if(check(mid)) l = mid;
+                else r = mid;
+            }
+            cout << l << endl;
+        }
+    }
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
 ### floyd
+
+
+> [!NOTE] **[AcWing 854. Floyd求最短路](https://www.acwing.com/problem/content/856/)**
+> 
+> 题意: TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+const int N = 210, INF = 1e9;
+
+int n, m, Q;
+int d[N][N];
+
+void floyd() {
+    for (int k = 1; k <= n; k++)
+        for (int i = 1; i <= n; i++)
+            for (int j = 1; j <= n; j++)
+                d[i][j] = min(d[i][j], d[i][k] + d[k][j]);
+}
+
+int main() {
+    scanf("%d%d%d", &n, &m, &Q);
+
+    for (int i = 1; i <= n; i++)
+        for (int j = 1; j <= n; j++)
+            if (i == j)
+                d[i][j] = 0;
+            else
+                d[i][j] = INF;
+
+    while (m--) {
+        int a, b, c;
+        scanf("%d%d%d", &a, &b, &c);
+        d[a][b] = min(d[a][b], c);
+    }
+
+    floyd();
+
+    while (Q--) {
+        int a, b;
+        scanf("%d%d", &a, &b);
+
+        int t = d[a][b];
+        if (t > INF / 2)
+            puts("impossible");
+        else
+            printf("%d\n", t);
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+"""
+Floyd算法
+
+- 用邻接图存储图
+- 标准的佛洛依德算法，三重循环。循环结束之后，d[i][j]存储的是 **点i--->点j** 的最短距离
+- 需要注意：循环顺序不能变：第一层枚举中间点，第二层和第三层枚举起点和终点：
+  - 初始化d
+  - 用k,i,j 去更新d
+- 可以处理负权，但是不能存在负回路。
+"""
+
+# f[i, j, k]表示从i走到j的路径上除i和j点外只经过1到k的点的所有路径的最短距离。
+# 那么f[i, j, k] = min(f[i, j, k - 1), f[i, k, k - 1] + f[k, j, k - 1]。
+# 因此在计算第k层的f[i, j]的时候必须先将第k - 1层的所有状态计算出来，所以需要把k放在最外层。
+
+# 邻接矩阵存图；
+if __name__ == '__main__':
+    N = 210
+    n, m, q = map(int, input().split())
+    g = [[float('inf')] * (n + 1) for _ in range(n + 1)]  # g[][]存储图的邻接矩阵
+    d = [[0] * N for _ in range(N)]
+
+    for i in range(1, n + 1):
+        for j in range(1, n + 1):
+            if i == j:
+                d[i][j] = 0
+            else:
+                d[i][j] = float('inf')
+
+    for _ in range(m):
+        a, b, w = map(int, input().split())
+        d[a][b] = min(d[a][b], w)  # 存在重边和自回路
+
+    # floyd算法核心
+    # 基于动态规划实现的：d[k,i,j]:从i点出发，只经过1-k这些中间点 到j的最短距离。
+    # 注意：一定要先循环k
+    for k in range(1, n + 1):
+        for i in range(1, n + 1):
+            for j in range(1, n + 1):
+                d[i][j] = min(d[i][j], d[i][k] + d[k][j])
+    for _ in range(q):
+        a, b = map(int, input().split())
+        if d[a][b] == float('inf'):
+            print('impossible')
+        else:
+            print(d[a][b])
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 > [!NOTE] **[AcWing 343. 排序](https://www.acwing.com/problem/content/345/)**
 > 
@@ -2687,211 +2900,6 @@ int main() {
 
 * * *
 
-### spfa
-
-> [!NOTE] **[AcWing 361. 观光奶牛](https://www.acwing.com/problem/content/363/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 推导 二分 转化为负环判定
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const double eps = 1e-6;
-const int N = 1010, M = 5010;
-
-int n, m;
-int wf[N];
-int h[N], e[M], w[M], ne[M], idx;
-double dist[N];
-int cnt[N];
-
-int q[N];
-bool st[N];
-
-void add(int a, int b, int c) {
-    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
-}
-
-bool check(double mid) {
-    memset(dist, 0, sizeof dist);
-    memset(cnt, 0, sizeof cnt);
-    memset(st, 0, sizeof st);
-    
-    int hh = 0, tt = 0;
-    for (int i = 1; i <= n; ++ i )
-        q[tt ++ ] = i, st[i] = true;
-    
-    while (hh != tt) {
-        int t = q[hh ++ ];
-        if (hh == N) hh = 0;
-        st[t] = false;
-        
-        for (int i = h[t]; ~i; i = ne[i]) {
-            int j = e[i];
-            if (dist[j] < dist[t] + wf[t] - mid * w[i]) {
-                dist[j] = dist[t] + wf[t] - mid * w[i];
-                cnt[j] = cnt[t] + 1;
-                if (cnt[j] >= n) return true;
-                if (!st[j]) {
-                    q[tt ++ ] = j;
-                    if (tt == N) tt = 0;
-                    st[j] = true;
-                }
-            }
-        }
-    }
-    return false;
-}
-
-int main() {
-    memset(h, -1, sizeof h);
-    
-    cin >> n >> m;
-    for (int i = 1; i <= n; ++ i ) cin >> wf[i];
-    
-    while (m -- ) {
-        int a, b, c;
-        cin >> a >> b >> c;
-        add(a, b, c);
-    }
-    
-    double l = 0, r = 1e6;
-    while (r - l > eps) {
-        double mid = (l + r) / 2;
-        if (check(mid)) l = mid;
-        else r = mid;
-    }
-    printf("%.2lf\n", l);
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[AcWing 1165. 单词环](https://www.acwing.com/problem/content/1167/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> STL超时 学习加边方法
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include<bits/stdc++.h>
-using namespace std;
-
-const int N = 700, M = 100010;
-
-int n;
-int h[N], e[M], w[M], ne[M], idx;
-double dist[N];
-int q[N], cnt[N];
-bool st[N];
-
-void add(int a, int b, int c) {
-    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
-}
-
-bool check(double mid) {
-    memset(st, 0, sizeof st);
-    memset(cnt, 0, sizeof cnt);
-
-    int hh = 0, tt = 0;
-    for(int i = 0; i < 676; ++i) {
-        q[tt++] = i;
-        st[i] = true;
-    }
-
-    int count = 0;
-    while(hh != tt) {
-        int t = q[hh++];
-        if(hh == N) hh = 0;
-        st[t] = false;
-
-        for(int i = h[t]; ~i; i = ne[i]) {
-            int j = e[i];
-            if (dist[j] < dist[t] + w[i] - mid) {
-                dist[j] = dist[t] + w[i] - mid;
-                cnt[j] = cnt[t] + 1;
-                if(++count > 10000) return true; // 经验上的trick
-                if(cnt[j] >= N) return true;
-                if(!st[j]) {
-                    q[tt++] = j;
-                    if(tt == N) tt = 0;
-                    st[j] = true;
-                }
-            }
-        }
-    }
-    return false;
-}
-
-int main() {
-    string str;
-    while(cin >> n, n) {
-        memset(h, -1, sizeof h);
-        for(int i = 0; i < n; ++i) {
-            cin >> str;
-            int len = str.size();
-            if(len > 1) {
-                int l = (str[0]-'a')*26 + str[1]-'a', r = (str[len-2]-'a')*26 + str[len-1]-'a';
-                add(l, r, len);
-            }
-        }
-        if(!check(0)) cout << "No solution" << endl;
-        else {
-            double l = 0, r = 1000;
-            while(r-l > 1e-4) {
-                double mid = l + (r-l)/2;
-                if(check(mid)) l = mid;
-                else r = mid;
-            }
-            cout << l << endl;
-        }
-    }
-}
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
 
 ### 拆点最短路
 

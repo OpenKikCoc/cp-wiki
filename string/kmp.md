@@ -240,6 +240,8 @@ $$
 
 ## 习题
 
+### 一般 kmp
+
 > [!NOTE] **[AcWing 831. KMP字符串](https://www.acwing.com/problem/content/833/)**
 > 
 > 题意: TODO

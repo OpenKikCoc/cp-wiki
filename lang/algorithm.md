@@ -97,7 +97,7 @@ cout << a[k - 1];
 
 > [!TIP] **思路**
 > 
-> 
+> `getline` 与 `string.find`
 
 <details>
 <summary>详细代码</summary>

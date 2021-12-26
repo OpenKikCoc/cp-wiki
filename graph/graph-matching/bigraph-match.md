@@ -349,6 +349,8 @@ if __name__ == '__main__':
 
 ## 习题
 
+### 最大匹配及建图
+
 > [!NOTE] **[AcWing 257. 关押罪犯](https://www.acwing.com/problem/content/259/)**
 > 
 > 题意: 最大匹配
@@ -583,6 +585,8 @@ int main() {
 
 * * *
 
+### 最大独立集
+
 > [!NOTE] **[AcWing 378. 骑士放置](https://www.acwing.com/problem/content/380/)**
 > 
 > 题意: 最大独立集
@@ -660,6 +664,8 @@ int main() {
 <br>
 
 * * *
+
+### 最小路径点覆盖
 
 > [!NOTE] **[AcWing 379. 捉迷藏](https://www.acwing.com/problem/content/381/)**
 > 

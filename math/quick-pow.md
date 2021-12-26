@@ -343,7 +343,7 @@ int query(int pows) { return 1LL * pow1[pows & 65535] * pow2[pows >> 16]; }
 - [LA - 3722 Jewel-eating Monsters](https://icpcarchive.ecs.baylor.edu/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=1723)
 -   [SPOJ - Just add it](http://www.spoj.com/problems/ZSUM/)
 
-## 习题
+### 逆元
 
 > [!NOTE] **[AcWing 876. 快速幂求逆元](https://www.acwing.com/problem/content/878/)**
 > 
@@ -436,7 +436,7 @@ int main() {
 * * *
 
 
-## 习题
+### 综合应用
 
 > [!NOTE] **[Luogu NOIP2003 普及组 麦森数](https://www.luogu.com.cn/problem/P1045)**
 > 

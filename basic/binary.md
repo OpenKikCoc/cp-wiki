@@ -1,5 +1,19 @@
 二分查找（英语：binary search），也称折半搜索（英语：half-interval search）、对数搜索（英语：logarithmic search），是用来在一个有序数组中查找某一元素的算法。
 
+## 关于二分 STL
+
+C++ 标准库中实现了查找首个不小于给定值的元素的函数 [`std::lower_bound`](https://zh.cppreference.com/w/cpp/algorithm/lower_bound) 和查找首个大于给定值的元素的函数 [`std::upper_bound`](https://zh.cppreference.com/w/cpp/algorithm/upper_bound)，二者均定义于头文件 `<algorithm>` 中。
+
+二者均采用二分实现，所以调用前必须保证元素有序。
+
+> [!WARNING] 再次提醒: **`lower_bound` 和 `upper_bound` 的时间复杂度**
+> 
+> 在一般的数组里，这两个函数的时间复杂度均为 $O(\log n)$，但在 `set` 等关联式容器中，直接调用 `lower_bound(s.begin(),s.end(),val)` 的时间复杂度是 $O(n)$ 的。
+> 
+> `set` 等关联式容器中已经封装了 `lower_bound` 等函数（像 `s.lower_bound(val)` 这样），这样调用的时间复杂度是 $O(\log n)$ 的。
+
+## 二分应用
+
 ### 一般二分
 
 <details>
@@ -77,18 +91,6 @@ def lower_bound(array, first, last, value): # 返回[first, last)内第一个不
 
 最小值最大化同理。
 
-### STL 的二分查找
-
-C++ 标准库中实现了查找首个不小于给定值的元素的函数 [`std::lower_bound`](https://zh.cppreference.com/w/cpp/algorithm/lower_bound) 和查找首个大于给定值的元素的函数 [`std::upper_bound`](https://zh.cppreference.com/w/cpp/algorithm/upper_bound)，二者均定义于头文件 `<algorithm>` 中。
-
-二者均采用二分实现，所以调用前必须保证元素有序。
-
-> [!WARNING] 再次提醒: **`lower_bound` 和 `upper_bound` 的时间复杂度**
-> 
-> 在一般的数组里，这两个函数的时间复杂度均为 $O(\log n)$，但在 `set` 等关联式容器中，直接调用 `lower_bound(s.begin(),s.end(),val)` 的时间复杂度是 $O(n)$ 的。
-> 
-> `set` 等关联式容器中已经封装了 `lower_bound` 等函数（像 `s.lower_bound(val)` 这样），这样调用的时间复杂度是 $O(\log n)$ 的。
-
 ### 二分答案
 
 解题的时候往往会考虑枚举答案然后检验枚举的值是否正确。若满足单调性，则满足使用二分法的条件。把这里的枚举换成二分，就变成了“二分答案”。
@@ -150,6 +152,8 @@ else
 分数规划可以用二分法来解决。
 
 ## 习题
+
+### 一般二分应用
 
 > [!NOTE] **[AcWing 102. 最佳牛围栏](https://www.acwing.com/problem/content/104/)**
 > 
@@ -532,7 +536,11 @@ int main() {
 * * *
 
 
-### 旋转排序数组 (右端点有意义)
+### 旋转排序数组
+
+> [!WARNING]  右端点有意义
+> 
+> `[l, r]` 而非 `[l, r)` 并且注意和右侧比较（such as `nums[mid] < nums[r]`）
 
 > [!NOTE] **[LeetCode 153. 寻找旋转排序数组中的最小值](https://leetcode-cn.com/problems/find-minimum-in-rotated-sorted-array/)**
 > 

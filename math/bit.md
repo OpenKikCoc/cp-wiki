@@ -211,6 +211,8 @@ GCC 中还有一些用于位运算的内建函数：
 
 ## 习题
 
+### 基础应用
+
 > [!NOTE] **[AcWing 801. 二进制中1的个数](https://www.acwing.com/problem/content/803/)**
 > 
 > 题意: TODO
@@ -283,6 +285,48 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[Luogu 高低位交换](https://www.luogu.com.cn/problem/P1100)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using namespace std;
+int main() {
+    unsigned long long x;
+    cin >> x;
+    cout << ((x & 0x0000ffff) << 16 | (x & 0xffff0000) >> 16)
+         << endl;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 进阶
 
 > [!NOTE] **[AcWing 90. 64位整数乘法](https://www.acwing.com/problem/content/92/)**
 > 
@@ -381,46 +425,6 @@ int main() {
     cout << res << endl;
     
     return 0;
-}
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[Luogu 高低位交换](https://www.luogu.com.cn/problem/P1100)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-using namespace std;
-int main() {
-    unsigned long long x;
-    cin >> x;
-    cout << ((x & 0x0000ffff) << 16 | (x & 0xffff0000) >> 16)
-         << endl;
 }
 ```
 

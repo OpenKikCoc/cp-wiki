@@ -1,4 +1,23 @@
 
+
+### 特殊初始化方式
+
+BIT 的另一种初始化方式：
+
+传统初始化 $O(nlogn)$ 存在一种 $O(n)$ 的初始化方式 核心在于理解 BIT 位的含义
+
+```cpp
+    for (int i = 1; i <= n; ++i) {
+        tr[i] = nums[i - 1];    // 初值
+        for (int j = i - 1; j > i - lowbit(i); j -= lowbit(j))
+            tr[i] += tr[j];
+    }
+```
+
+具体使用参见 [307. 区域和检索 - 数组可修改](https://leetcode-cn.com/problems/range-sum-query-mutable/)
+
+
+
 ## 简介
 
 树状数组和线段树具有相似的功能，但他俩毕竟还有一些区别：树状数组能有的操作，线段树一定有；线段树有的操作，树状数组不一定有。但是树状数组的代码要比线段树短，思维更清晰，速度也更快，在解决一些单点修改的问题时，树状数组是不二之选。
@@ -304,6 +323,8 @@ def getsum(k):
 
 ## 习题
 
+### 一般统计问题
+
 > [!NOTE] **[AcWing 241. 楼兰图腾](https://www.acwing.com/problem/content/243/)**
 > 
 > 题意: TODO
@@ -381,13 +402,15 @@ int main() {
 
 * * *
 
+### 区间加 区间和
+
 > [!NOTE] **[AcWing 242. 一个简单的整数问题](https://www.acwing.com/problem/content/248/)**
 > 
 > 题意: TODO
 
 > [!TIP] **思路**
 > 
-> 
+> 区间加
 
 <details>
 <summary>详细代码</summary>
@@ -563,106 +586,6 @@ int main() {
 
 * * *
 
-> [!NOTE] **[AcWing 244. 谜一样的牛](https://www.acwing.com/problem/content/245/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 1. 在剩下的数里面找到 第ai + 1小的数 作为当前身高
-> 
-> 2. 删除该数
-> 
-> 显然无法爆搜On^2 平衡树也可以但难写 考虑BIT
-> 
-> 维护 a[i] 的前缀和 删除比较好做 考虑如何求第k小 显然可以二分
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include<bits/stdc++.h>
-using namespace std;
-
-const int N = 100010;
-
-int n;
-int h[N];
-int ans[N];
-int tr[N];
-
-int lowbit(int x) {
-    return x & -x;
-}
-
-void add(int x, int c) {
-    for (int i = x; i <= n; i += lowbit(i)) tr[i] += c;
-}
-
-int sum(int x) {
-    int res = 0;
-    for (int i = x; i; i -= lowbit(i)) res += tr[i];
-    return res;
-}
-
-int main() {
-    cin >> n;
-    for (int i = 2; i <= n; ++ i ) cin >> h[i];
-    
-    // 初始化 每一个位置都有1 与add等价
-    // for (int i = 1; i <= n; ++ i ) add(i, 1);
-    for (int i = 1; i <= n; ++ i ) tr[i] = lowbit(i);
-    
-    for (int i = n; i; -- i ) {
-        int k = h[i] + 1;
-        int l = 1, r = n;
-        while (l < r) {
-            int mid = l + (r - l) / 2;
-            if (sum(mid) < k) l = mid + 1;
-            else r = mid;
-        }
-        ans[i] = r;
-        add(r, -1);
-    }
-    for (int i = 1; i <= n; ++ i ) cout << ans[i] << endl;
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-### 特殊初始化方式
-
-BIT 的另一种初始化方式：
-
-传统初始化 $O(nlogn)$ 存在一种 $O(n)$ 的初始化方式 核心在于理解 BIT 位的含义
-
-```cpp
-    for (int i = 1; i <= n; ++i) {
-        tr[i] = nums[i - 1];    // 初值
-        for (int j = i - 1; j > i - lowbit(i); j -= lowbit(j))
-            tr[i] += tr[j];
-    }
-```
-
-具体使用参见 [307. 区域和检索 - 数组可修改](https://leetcode-cn.com/problems/range-sum-query-mutable/)
-
-
-
 > [!NOTE] **[Luogu 【模板】树状数组 1](https://www.luogu.com.cn/problem/P3374)**
 > 
 > 题意: 记录值
@@ -809,6 +732,91 @@ int main() {
 <br>
 
 * * *
+
+### BIT 思想
+
+> [!NOTE] **[AcWing 244. 谜一样的牛](https://www.acwing.com/problem/content/245/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 1. 在剩下的数里面找到 第ai + 1小的数 作为当前身高
+> 
+> 2. 删除该数
+> 
+> 显然无法爆搜On^2 平衡树也可以但难写 考虑BIT
+> 
+> 维护 a[i] 的前缀和 删除比较好做 考虑如何求第k小 显然可以二分
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 100010;
+
+int n;
+int h[N];
+int ans[N];
+int tr[N];
+
+int lowbit(int x) {
+    return x & -x;
+}
+
+void add(int x, int c) {
+    for (int i = x; i <= n; i += lowbit(i)) tr[i] += c;
+}
+
+int sum(int x) {
+    int res = 0;
+    for (int i = x; i; i -= lowbit(i)) res += tr[i];
+    return res;
+}
+
+int main() {
+    cin >> n;
+    for (int i = 2; i <= n; ++ i ) cin >> h[i];
+    
+    // 初始化 每一个位置都有1 与add等价
+    // for (int i = 1; i <= n; ++ i ) add(i, 1);
+    for (int i = 1; i <= n; ++ i ) tr[i] = lowbit(i);
+    
+    for (int i = n; i; -- i ) {
+        int k = h[i] + 1;
+        int l = 1, r = n;
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+            if (sum(mid) < k) l = mid + 1;
+            else r = mid;
+        }
+        ans[i] = r;
+        add(r, -1);
+    }
+    for (int i = 1; i <= n; ++ i ) cout << ans[i] << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 
 ### 经典离线+预处理
 

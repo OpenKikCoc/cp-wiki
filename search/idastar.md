@@ -83,6 +83,10 @@ $IDA*$为采用了迭代加深算法的 $A*$ 算法。由于 $IDA*$改成了深�
 > 
 > 题意: TODO
 
+> [!TIP] **思路**
+> 
+> 转化为图论 估价函数
+
 <details>
 <summary>详细代码</summary>
 <!-- tabs:start -->

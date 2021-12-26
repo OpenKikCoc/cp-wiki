@@ -9,7 +9,9 @@
 
 重构解（输出方案）：转移的时候记录最优子结构的位置。
 
-## 钢条切割
+## 动规思想例题
+
+### 钢条切割
 
 > [!NOTE] **题意**
 > 
@@ -25,7 +27,7 @@
 
 > 最优子结构：问题的最优解由相关子问题的最优解组合而成，而这些子问题可以独立求解。
 
-## 矩阵链乘法
+### 矩阵链乘法
 
 > [!NOTE] **题意**
 > 
@@ -39,7 +41,7 @@
 
 TODO@binacs 细节
 
-## 最长公共子序列
+### 最长公共子序列
 
 > [!NOTE] **题意**
 > 
@@ -57,42 +59,7 @@ TODO@binacs 细节
 > 
 > 可参考此 [交互网页](http://lcs-demo.sourceforge.net/) 来更好地理解 LCS 的实现过程。
 
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-string a, b;
-
-int main() {
-    cin >> n >> m;
-    cin >> a >> b;
-    for (int i = 1; i <= n; ++i)
-        for (int j = 1; j <= m; ++j)
-            if (a[i - 1] == b[j - 1])
-                f[i][j] = f[i - 1][j - 1] + 1;
-            else
-                f[i][j] = max(f[i - 1][j], f[i][j - 1]);
-    cout << f[n][m] << endl;
-}
-```
-
-##### **Python**
-
-```python
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-## 最优二叉搜索树
+### 最优二叉搜索树
 
 > [!NOTE] **题意**
 > 
@@ -108,9 +75,7 @@ int main() {
 > 
 > 状态空间是 $O(n^t)$ 的，每一项依赖其他 $O(n^e)$ 项。
 
-TODO@binacs 细节
-
-## 最长连续不下降子序列
+### 最长连续不下降子序列
 
 > [!NOTE] **题意**
 > 
@@ -120,49 +85,7 @@ TODO@binacs 细节
 > 
 > 因为是连续的，所以只要与上一个元素进行比较即可。
 
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-###### **C++**
-
-```cpp
-// C++ Version
-int a[MAXN];
-int dp() {
-    int now = 1, ans = 1;
-    for (int i = 2; i <= n; i++) {
-        if (a[i] >= a[i - 1])
-            now++;
-        else
-            now = 1;
-        ans = max(now, ans);
-    }
-    return ans;
-}
-```
-
-###### **Python**
-```python
-# Python Version
-a = [0] * MAXN
-def dp():
-    now, ans = 1, 1
-    for i in range(2, n + 1):
-        if a[i] >= a[i + 1]:
-            now += 1
-        else:
-            now = 1
-        ans = max(now, ans)
-    return ans
-```
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-## 最长不下降子序列
+### 最长不下降子序列
 
 > [!NOTE] **题意**
 > 
@@ -173,41 +96,6 @@ def dp():
 > [!TIP] **思路**
 > 
 > LIS 优化版本
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-int main() {
-    int n, v;
-    cin >> n;
-    vector<int> f;
-    for (int i = 0; i < n; ++i) {
-        cin >> v;
-        if (f.empty() || f.back() <= v) // <=
-            f.push_back(v);
-        else
-            *lower_bound(f.begin(), f.end(), v) = v;
-    }
-    cout << f.size() << endl;
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
 
 ## 经典问题（来自习题）
 
@@ -1315,6 +1203,79 @@ int main() {
 
 * * *
 
+> [!NOTE] **[AcWing 314. 低买](https://www.acwing.com/problem/content/316/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **LIS变形 细节清奇**
+> 
+> **严格下降子序列 求数值不同的所有方案数**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 5010;
+
+int n;
+int a[N], f[N], g[N];
+// f 所有以a[i]结尾的下降子序列的集合的最大长度
+// g 数量
+
+int main() {
+    cin >> n;
+    for (int i = 1; i <= n; ++ i ) cin >> a[i];
+    g[0] = 1;
+    
+    int res = 0;
+    for (int i = 1; i <= n; ++ i ) {
+        for (int j = 0; j < i; ++ j )
+            if (!j || a[j] > a[i])
+                f[i] = max(f[i], f[j] + 1);
+        // 考虑 对有相同数字、不同位置方案的情况
+        // 只考虑最后一个位置上的方案
+        for (int j = 1; j < i; ++ j )
+            if (a[j] == a[i])
+                f[j] = -1;      // 删除前面的状态
+        for (int j = 0; j < i; ++ j )
+            if ((!j || a[j] > a[i]) && f[i] == f[j] + 1)
+                g[i] += g[j];
+        res = max(res, f[i]);
+    }
+    
+    int cnt = 0;
+    for (int i = 1; i <= n; ++ i )
+        if (f[i] == res)
+            cnt += g[i];
+    cout << res << ' ' << cnt << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### LIS 与 LCS
+
 > [!NOTE] **[LeetCode 1713. 得到子序列的最少操作次数](https://leetcode-cn.com/problems/minimum-operations-to-make-a-subsequence/)**
 > 
 > [Weekly-222](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-01-03_Weekly-222)
@@ -1514,77 +1475,6 @@ if __name__=='__main__':
 
 * * *
 
-> [!NOTE] **[AcWing 314. 低买](https://www.acwing.com/problem/content/316/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> **LIS变形 细节清奇**
-> 
-> **严格下降子序列 求数值不同的所有方案数**
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int N = 5010;
-
-int n;
-int a[N], f[N], g[N];
-// f 所有以a[i]结尾的下降子序列的集合的最大长度
-// g 数量
-
-int main() {
-    cin >> n;
-    for (int i = 1; i <= n; ++ i ) cin >> a[i];
-    g[0] = 1;
-    
-    int res = 0;
-    for (int i = 1; i <= n; ++ i ) {
-        for (int j = 0; j < i; ++ j )
-            if (!j || a[j] > a[i])
-                f[i] = max(f[i], f[j] + 1);
-        // 考虑 对有相同数字、不同位置方案的情况
-        // 只考虑最后一个位置上的方案
-        for (int j = 1; j < i; ++ j )
-            if (a[j] == a[i])
-                f[j] = -1;      // 删除前面的状态
-        for (int j = 0; j < i; ++ j )
-            if ((!j || a[j] > a[i]) && f[i] == f[j] + 1)
-                g[i] += g[j];
-        res = max(res, f[i]);
-    }
-    
-    int cnt = 0;
-    for (int i = 1; i <= n; ++ i )
-        if (f[i] == res)
-            cnt += g[i];
-    cout << res << ' ' << cnt << endl;
-    
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
 ### 状态机模型
 
 > [!NOTE] **[AcWing 1057. 股票买卖 IV](https://www.acwing.com/problem/content/description/1059/)**
@@ -1766,6 +1656,66 @@ if __name__ == '__main__':
     print(max(f[n][1], f[n][2]))
     # 2的状态可以由1转移过来，不会增加w值；但存在极端情况，如数列递减
     # 这时不交易才是最大收益，就是f[n][2]，所以出口需要加上f[n][2]
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1955. 统计特殊子序列的数目](https://leetcode-cn.com/problems/count-number-of-special-subsequences/)**
+> 
+> [weekly-252](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-08-01_Weekly-252)
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 线性 DP 求方案数，首先明确状态定义和状态转移
+> 
+> 经典求方案，定义及转移、滚动数字压缩空间
+> 
+> 核心在于 状态定义 和 转移
+> 
+> 前 i 个位置分别构成 0 / 01 / 012 形式序列的方案数
+
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const int MOD = 1e9 + 7;
+    
+    int countSpecialSubsequences(vector<int>& nums) {
+        LL a = 0, b = 0, c = 0;
+        for (auto x : nums) {
+            if (x == 0)
+                // 不选本个 a
+                // 选本个 则可以与前面连也可以不连 共a+1
+                // 合计 a*2+1
+                a = (a * 2 + 1) % MOD;
+            if (x == 1)
+                b = (b * 2 + a) % MOD;
+            if (x == 2)
+                c = (c * 2 + b) % MOD;
+        }
+        return c;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
 ```
 
 <!-- tabs:end -->
@@ -1964,66 +1914,6 @@ int main() {
 
     return 0;
 }
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[LeetCode 1955. 统计特殊子序列的数目](https://leetcode-cn.com/problems/count-number-of-special-subsequences/)**
-> 
-> [weekly-252](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-08-01_Weekly-252)
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 线性 DP 求方案数，首先明确状态定义和状态转移
-> 
-> 经典求方案，定义及转移、滚动数字压缩空间
-> 
-> 核心在于 状态定义 和 转移
-> 
-> 前 i 个位置分别构成 0 / 01 / 012 形式序列的方案数
-
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-class Solution {
-public:
-    using LL = long long;
-    const int MOD = 1e9 + 7;
-    
-    int countSpecialSubsequences(vector<int>& nums) {
-        LL a = 0, b = 0, c = 0;
-        for (auto x : nums) {
-            if (x == 0)
-                // 不选本个 a
-                // 选本个 则可以与前面连也可以不连 共a+1
-                // 合计 a*2+1
-                a = (a * 2 + 1) % MOD;
-            if (x == 1)
-                b = (b * 2 + a) % MOD;
-            if (x == 2)
-                c = (c * 2 + b) % MOD;
-        }
-        return c;
-    }
-};
 ```
 
 ##### **Python**

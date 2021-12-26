@@ -128,13 +128,6 @@ $$
 
 ##### **C++**
 
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
 ```cpp
 ```
 
@@ -767,6 +760,71 @@ int main() {
     LL res = n * n - (n - nx) * (n - ny);
     cout << res << endl;
 
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1351. 密码锁](https://www.acwing.com/problem/content/1353/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 暴力枚举显然可以 On^3
+> 
+> 思考如何简化 容斥原理
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 3;
+
+int n;
+int a[N], b[N];
+
+int both() {
+    if (n < 5) return n * n * n;
+    int res = 1;
+    for (int i = 0; i < 3; ++ i ) {
+        int x = a[i], y = b[i];
+        int d = min(abs(x - y), n - abs(x - y));
+        res *= min(n, max(0, 5 - d));
+    }
+    return res;
+}
+
+int single() {
+    int res = 1;
+    for (int i = 0; i < 3; ++ i ) res *= min(n, 5);
+    return res;
+}
+
+int main() {
+    cin >> n;
+    for (int i = 0; i < 3; ++ i ) cin >> a[i];
+    for (int i = 0; i < 3; ++ i ) cin >> b[i];
+    
+    cout << single() + single() - both() << endl;
     return 0;
 }
 ```

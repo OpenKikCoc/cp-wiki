@@ -1,7 +1,7 @@
 
 ## 代码实现
 
-放一个结构体封装的模板：
+TODO: 一个结构体封装的模板：
 
 
 <details>
@@ -398,6 +398,8 @@ int main() {
 
 ## 习题
 
+### 一般 trie
+
 > [!NOTE] **[AcWing 835. Trie字符串统计](https://www.acwing.com/problem/content/837/)**
 > 
 > 题意: TODO
@@ -618,6 +620,82 @@ if __name__ == '__main__':
 
 * * *
 
+> [!NOTE] **[AcWing 1414. 牛异或](https://www.acwing.com/problem/content/1416/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **细节**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 100010, M = N * 21;
+
+int n;
+int s[N];
+int son[M][2], id[M], idx;
+
+void insert(int x, int k) {
+    int p = 0;
+    for (int i = 20; i >= 0; -- i ) {
+        int u = x >> i & 1;
+        if (!son[p][u]) son[p][u] = ++ idx;
+        p = son[p][u];
+    }
+    id[p] = k;  // 如果有重复值 后面的覆盖前面的
+}
+
+int query(int x) {
+    int p = 0;
+    for (int i = 20; i >= 0; -- i ) {
+        int u = x >> i & 1;
+        if (son[p][!u]) p = son[p][!u];
+        else p = son[p][u];
+    }
+    return id[p];
+}
+
+int main() {
+    cin >> n;
+    for (int i = 1; i <= n; ++ i ) {
+        cin >> s[i];
+        s[i] ^= s[i - 1];
+    }
+    
+    int res = -1, a, b;
+    insert(s[0], 0);
+    for (int i = 1; i <= n; ++ i ) {
+        int k = query(s[i]);
+        int t = s[i] ^ s[k];
+        if (t > res) res = t, a = k + 1, b = i;
+        insert(s[i], i);
+    }
+    cout << res << ' ' << a << ' ' << b << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 ### 离线 trie
 
@@ -937,83 +1015,6 @@ public:
         return res;
     }
 };
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[AcWing 1414. 牛异或](https://www.acwing.com/problem/content/1416/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> **细节**
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int N = 100010, M = N * 21;
-
-int n;
-int s[N];
-int son[M][2], id[M], idx;
-
-void insert(int x, int k) {
-    int p = 0;
-    for (int i = 20; i >= 0; -- i ) {
-        int u = x >> i & 1;
-        if (!son[p][u]) son[p][u] = ++ idx;
-        p = son[p][u];
-    }
-    id[p] = k;  // 如果有重复值 后面的覆盖前面的
-}
-
-int query(int x) {
-    int p = 0;
-    for (int i = 20; i >= 0; -- i ) {
-        int u = x >> i & 1;
-        if (son[p][!u]) p = son[p][!u];
-        else p = son[p][u];
-    }
-    return id[p];
-}
-
-int main() {
-    cin >> n;
-    for (int i = 1; i <= n; ++ i ) {
-        cin >> s[i];
-        s[i] ^= s[i - 1];
-    }
-    
-    int res = -1, a, b;
-    insert(s[0], 0);
-    for (int i = 1; i <= n; ++ i ) {
-        int k = query(s[i]);
-        int t = s[i] ^ s[k];
-        if (t > res) res = t, a = k + 1, b = i;
-        insert(s[i], i);
-    }
-    cout << res << ' ' << a << ' ' << b << endl;
-    return 0;
-}
 ```
 
 ##### **Python**

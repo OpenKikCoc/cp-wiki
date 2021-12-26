@@ -483,6 +483,8 @@ def getsum(l, r, s, t, p):
 
 ## 习题
 
+### 一般线段树
+
 > [!NOTE] **[AcWing 245. 你能回答这些问题吗](https://www.acwing.com/problem/content/246/)**
 > 
 > 题意: TODO
@@ -858,153 +860,6 @@ int main() {
 
 * * *
 
-> [!NOTE] **[AcWing 247. 亚特兰蒂斯](https://www.acwing.com/problem/content/249/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 线段树 扫描线
-> 
-> 求所有长方形覆盖的总面积
-> 
-> 本题做法很难拓展 不需要和传统扫描线板子一致
-> 
-> 注意：
-> 
->     扫描线中间的矩阵面积是不变的（参见视频）
-> 
-> 在扫描线方向切割 在垂直方向做线段树 矩形加入段+1 离开段-1 则高度为区间内多少个位置值>0
-> 
-> 
-> 故线段树维护：
-> 
-> - 多少个值大于0 也即 当前区间整个被覆盖次数cnt
-> - len 不考虑祖先节点cnt的前提下 cnt > 0 的区间总长
-> - 【统计信息时线段树节点永远只往下看】
->  
-> 因为扫描线特殊的性质，本题可以不写pushdown
-> 
-> 【求矩形面积并的扫描线可以，其他图形不一定】
-> 
-> 【对于查询：因为每次都是在求根节点1 所以不需要pushdown】
-> 
-> 【对于修改：每次操作都是成对出现的，且先加后减 不管cnt>0还是=0都不需要 故不需要pushdown】、
-> 
-> 如果题目给的是 平行四边形 梯形 ..... 等等非矩形。那么这个方法就不可用了。需要lazy标记。
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include<bits/stdc++.h>
-using namespace std;
-
-const int N = 100010;
-
-int n;
-struct Segment{
-    double x, y1, y2;
-    int k;
-    bool operator< (const Segment &t) const {
-        return x < t.x;
-    }
-}seg[N << 1];
-
-struct Node{
-    int l, r;
-    int cnt;
-    double len;
-}tr[N << 3];
-
-vector<double> ys;
-
-int find(double y) {
-    return lower_bound(ys.begin(), ys.end(), y) - ys.begin();
-}
-
-void pushup(int u) {
-    // tr[u].r + 1 获得的是下标
-    if (tr[u].cnt) tr[u].len = ys[tr[u].r + 1] - ys[tr[u].l];
-    else if (tr[u].l == tr[u].r) tr[u].len = 0;
-    else tr[u].len = tr[u << 1].len + tr[u << 1 | 1].len;
-}
-
-void build(int u, int l, int r) {
-    if (l == r) tr[u] = {l, r, 0, 0};
-    else {
-        // 注意
-        tr[u] = {l, r, 0, 0};
-        int mid = l + (r - l) / 2;
-        build(u << 1, l, mid), build(u << 1 | 1, mid + 1, r);
-    }
-}
-
-void modify(int u, int l, int r, int k) {
-    if (tr[u].l >= l && tr[u].r <= r) {
-        tr[u].cnt += k;
-        pushup(u);
-    } else {
-        int mid = tr[u].l + (tr[u].r - tr[u].l) / 2;
-        if (l <= mid) modify(u << 1, l, r, k);
-        if (r > mid) modify(u << 1 | 1, l, r, k);
-        pushup(u);
-    }
-}
-
-int main() {
-    int t = 0;
-    while (scanf("%d", &n), n) {
-        ys.clear();
-        for (int i = 0, j = 0; i < n; ++ i ) {
-            double x1, y1, x2, y2;
-            scanf("%lf%lf%lf%lf", &x1, &y1, &x2, &y2);
-            seg[j ++ ] = {x1, y1, y2, 1};
-            seg[j ++ ] = {x2, y1, y2, -1};
-            ys.push_back(y1), ys.push_back(y2);
-        }
-        
-        sort(ys.begin(), ys.end());
-        ys.erase(unique(ys.begin(), ys.end()), ys.end());
-        
-        // 保存的区间 比点数size-1还要小1
-        // 结合题面图去理解
-        build(1, 0, ys.size() - 2);
-        
-        sort(seg, seg + 2 * n);
-        
-        double res = 0;
-        for (int i = 0; i < 2 * n; ++ i ) {
-            // 从第二条线开始累计答案
-            // 累计时计算所有区间的总覆盖长度 tr[1].len * x间的宽度
-            if (i > 0) res += tr[1].len * (seg[i].x - seg[i - 1].x);
-            // 加入/消除一个线段
-            // y 表示区间 故 yl yr-1
-            modify(1, find(seg[i].y1), find(seg[i].y2) - 1, seg[i].k);
-        }
-        
-        // POJ %lf 要换成 %f
-        printf("Test case #%d\nTotal explored area: %.2lf\n\n", ++ t, res);
-    }
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
 
 > [!NOTE] **[AcWing 1277. 维护序列](https://www.acwing.com/problem/content/1279/)**
 > 
@@ -1503,274 +1358,6 @@ int main() {
 
 * * *
 
-> [!NOTE] **[Luogu 窗口的星星](https://www.luogu.com.cn/problem/P1502)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> **转化**
-> 
-> 考虑两点同窗 则以每个点坐标为坐下角的矩形重叠
-> 
-> 故转化为求 任意坐标最多有多少个矩形重叠
-> 
-> 也即：区间最值
-> 
-> 另外扫描线是特殊的不需要写pushdown的线段树应用
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-using LL = long long;
-const int N = 1e5 + 10; // 题面数据范围有误 应该是1e5
-
-int t, n, w, h;
-struct Seg {
-    int x, y1, y2;
-    int k;
-    bool operator< (const Seg & t) const {
-        // case
-        if (x != t.x)
-            return x < t.x;
-        return k > t.k; // 先算加入再算退出
-    }
-} seg[N * 2];
-struct Node {
-    int l, r;
-    LL maxv, add;
-} tr[N << 2];
-vector<int> ys;
-
-int find(int y) {
-    return lower_bound(ys.begin(), ys.end(), y) - ys.begin();
-}
-
-void pushup(int u) {
-    tr[u].maxv = max(tr[u << 1].maxv, tr[u << 1 | 1].maxv) + tr[u].add;
-}
-
-void build(int u, int l, int r) {
-    if (l == r)
-        tr[u] = {l, r, 0, 0};
-    else {
-        tr[u] = {l, r, 0, 0};
-        int mid = l + r >> 1;
-        build(u << 1, l, mid), build(u << 1 | 1, mid + 1, r);
-    }
-}
-
-void modify(int u, int l, int r, LL k) {
-    if (tr[u].l >= l && tr[u].r <= r) {
-        tr[u].add += k;
-        pushup(u);
-    } else {
-        int mid = tr[u].l + tr[u].r >> 1;
-        if (l <= mid)
-            modify(u << 1, l, r, k);
-        if (r > mid)
-            modify(u << 1 | 1, l, r, k);
-        pushup(u);
-    }
-}
-
-int main() {
-    cin >> t;
-    while (t -- ) {
-        cin >> n >> w >> h;
-        w -- , h -- ;
-        
-        ys.clear();
-        for (int i = 0, j = 0; i < n; ++ i ) {
-            int x, y, l;
-            cin >> x >> y >> l;
-            seg[j ++ ] = {x, y, y + h, l};
-            seg[j ++ ] = {x + w, y, y + h, -l};
-            ys.push_back(y), ys.push_back(y + h);
-        }
-        sort(ys.begin(), ys.end());
-        ys.erase(unique(ys.begin(), ys.end()), ys.end());
-        
-        build(1, 0, ys.size() - 2);
-        
-        sort(seg, seg + n * 2);
-        LL res = 0;
-        for (int i = 0; i < 2 * n; ++ i ) {
-            // 如果是此处 modify 的 r 是 find(seg[i].y2) - 1 会 WA[9]
-            // https://www.luogu.com.cn/discuss/show/64282
-            // 因为对于当前节点【其影响范围包含右侧闭区间】
-            modify(1, find(seg[i].y1), find(seg[i].y2), seg[i].k);
-            res = max(res, tr[1].maxv);
-        }
-        cout << res << endl;
-    }
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[Luogu [SCOI2007]降雨量](https://www.luogu.com.cn/problem/P2471)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> [线段树 / ST表]的简单应用 数据和细节巨坑
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int N = 5e4 + 10, INF = 0x3f3f3f3f;
-
-int n, m;
-int t[N], w[N];
-unordered_map<int, int> mp;
-struct Node {
-    int l, r;
-    int maxv;
-} tr[N << 2];
-
-int find(int y) {
-    return lower_bound(t, t + n + 1, y) - t;
-}
-
-void pushup(int u) {
-    tr[u].maxv = max(tr[u << 1].maxv, tr[u << 1 | 1].maxv);
-}
-
-void build(int u, int l, int r) {
-    if (l == r)
-        tr[u] = {l, r, w[l]};
-    else {
-        tr[u] = {l, r, -INF};   // ATTENTION -INF
-        int mid = l + r >> 1;
-        build(u << 1, l, mid), build(u << 1 | 1, mid + 1, r);
-        pushup(u);
-    }
-}
-
-int query(int u, int l, int r) {
-    if (tr[u].l >= l && tr[u].r <= r)
-        return tr[u].maxv;
-    else {
-        int mid = tr[u].l + tr[u].r >> 1;
-        int ret = -INF; // ATTENTION -INF
-        if (l <= mid)
-            ret = max(ret, query(u << 1, l, r));
-        if (r > mid)
-            ret = max(ret, query(u << 1 | 1, l, r));
-        return ret;
-    }
-}
-
-int main() {
-    cin >> n;
-    // 【巨坑。。。不加下面这行初始化就挂 加了就过】
-    t[0] = -INF, t[n + 1] = INF;
-    for (int i = 1; i <= n; ++ i ) {
-        int y, r;
-        cin >> t[i] >> w[i];
-    }
-    build(1, 1, n);
-
-    cin >> m;
-    while (m -- ) {
-        int l, r;
-        cin >> l >> r;
-
-        if (l >= r) {
-            cout << "false" << endl;
-            continue;
-        }
-        
-        int fl = find(l), fr = find(r);
-        bool has_l = t[fl] == l, has_r = t[fr] == r;
-
-        if (!has_l && !has_r) {
-            cout << "maybe" << endl;
-        } else if (!has_l && has_r) {
-            if (fl == fr)   // X和Y见的所有降雨量未知
-                cout << "maybe" << endl;
-            else {
-                int t = query(1, fl, fr - 1);
-                if (t >= w[fr])
-                    cout << "false" << endl;
-                else
-                    cout << "maybe" << endl;
-            }
-        } else if (has_l && !has_r) {
-            if (fl + 1 == fr)   // r未知
-                cout << "maybe" << endl;
-            else {
-                int t = query(1, fl + 1, fr - 1);
-                if (w[fl] <= t) // fl不可能作为开头
-                    cout << "false" << endl;
-                else
-                    cout << "maybe" << endl;
-            }
-        } else {
-            if (w[fl] < w[fr]) {
-                cout << "false" << endl;
-            } else {
-                if (fl + 1 == fr) {
-                    if (l + 1 == r)
-                        cout << "true" << endl;
-                    else
-                        cout << "maybe" << endl;
-                } else {
-                    int t = query(1, fl + 1, fr - 1);
-                    if (w[fr] <= t)
-                        cout << "false" << endl;
-                    else if (r - l == fr - fl)
-                        cout << "true" << endl;
-                    else
-                        cout << "maybe" << endl;
-                }
-            }
-        }
-    }
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
 
 > [!NOTE] **[Luogu 楼房重建](https://www.luogu.com.cn/problem/P4198)**
 > 
@@ -1991,6 +1578,427 @@ int main() {
             modify(1, l, r);
         } else {
             cout << query(1, l, r) << endl;
+        }
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 扫描线
+
+> [!NOTE] **[AcWing 247. 亚特兰蒂斯](https://www.acwing.com/problem/content/249/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 线段树 扫描线
+> 
+> 求所有长方形覆盖的总面积
+> 
+> 本题做法很难拓展 不需要和传统扫描线板子一致
+> 
+> 注意：
+> 
+>     扫描线中间的矩阵面积是不变的（参见视频）
+> 
+> 在扫描线方向切割 在垂直方向做线段树 矩形加入段+1 离开段-1 则高度为区间内多少个位置值>0
+> 
+> 
+> 故线段树维护：
+> 
+> - 多少个值大于0 也即 当前区间整个被覆盖次数cnt
+> - len 不考虑祖先节点cnt的前提下 cnt > 0 的区间总长
+> - 【统计信息时线段树节点永远只往下看】
+>  
+> 因为扫描线特殊的性质，本题可以不写pushdown
+> 
+> 【求矩形面积并的扫描线可以，其他图形不一定】
+> 
+> 【对于查询：因为每次都是在求根节点1 所以不需要pushdown】
+> 
+> 【对于修改：每次操作都是成对出现的，且先加后减 不管cnt>0还是=0都不需要 故不需要pushdown】、
+> 
+> 如果题目给的是 平行四边形 梯形 ..... 等等非矩形。那么这个方法就不可用了。需要lazy标记。
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 100010;
+
+int n;
+struct Segment{
+    double x, y1, y2;
+    int k;
+    bool operator< (const Segment &t) const {
+        return x < t.x;
+    }
+}seg[N << 1];
+
+struct Node{
+    int l, r;
+    int cnt;
+    double len;
+}tr[N << 3];
+
+vector<double> ys;
+
+int find(double y) {
+    return lower_bound(ys.begin(), ys.end(), y) - ys.begin();
+}
+
+void pushup(int u) {
+    // tr[u].r + 1 获得的是下标
+    if (tr[u].cnt) tr[u].len = ys[tr[u].r + 1] - ys[tr[u].l];
+    else if (tr[u].l == tr[u].r) tr[u].len = 0;
+    else tr[u].len = tr[u << 1].len + tr[u << 1 | 1].len;
+}
+
+void build(int u, int l, int r) {
+    if (l == r) tr[u] = {l, r, 0, 0};
+    else {
+        // 注意
+        tr[u] = {l, r, 0, 0};
+        int mid = l + (r - l) / 2;
+        build(u << 1, l, mid), build(u << 1 | 1, mid + 1, r);
+    }
+}
+
+void modify(int u, int l, int r, int k) {
+    if (tr[u].l >= l && tr[u].r <= r) {
+        tr[u].cnt += k;
+        pushup(u);
+    } else {
+        int mid = tr[u].l + (tr[u].r - tr[u].l) / 2;
+        if (l <= mid) modify(u << 1, l, r, k);
+        if (r > mid) modify(u << 1 | 1, l, r, k);
+        pushup(u);
+    }
+}
+
+int main() {
+    int t = 0;
+    while (scanf("%d", &n), n) {
+        ys.clear();
+        for (int i = 0, j = 0; i < n; ++ i ) {
+            double x1, y1, x2, y2;
+            scanf("%lf%lf%lf%lf", &x1, &y1, &x2, &y2);
+            seg[j ++ ] = {x1, y1, y2, 1};
+            seg[j ++ ] = {x2, y1, y2, -1};
+            ys.push_back(y1), ys.push_back(y2);
+        }
+        
+        sort(ys.begin(), ys.end());
+        ys.erase(unique(ys.begin(), ys.end()), ys.end());
+        
+        // 保存的区间 比点数size-1还要小1
+        // 结合题面图去理解
+        build(1, 0, ys.size() - 2);
+        
+        sort(seg, seg + 2 * n);
+        
+        double res = 0;
+        for (int i = 0; i < 2 * n; ++ i ) {
+            // 从第二条线开始累计答案
+            // 累计时计算所有区间的总覆盖长度 tr[1].len * x间的宽度
+            if (i > 0) res += tr[1].len * (seg[i].x - seg[i - 1].x);
+            // 加入/消除一个线段
+            // y 表示区间 故 yl yr-1
+            modify(1, find(seg[i].y1), find(seg[i].y2) - 1, seg[i].k);
+        }
+        
+        // POJ %lf 要换成 %f
+        printf("Test case #%d\nTotal explored area: %.2lf\n\n", ++ t, res);
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu 窗口的星星](https://www.luogu.com.cn/problem/P1502)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **转化**
+> 
+> 考虑两点同窗 则以每个点坐标为坐下角的矩形重叠
+> 
+> 故转化为求 任意坐标最多有多少个矩形重叠
+> 
+> 也即：区间最值
+> 
+> 另外扫描线是特殊的不需要写pushdown的线段树应用
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const int N = 1e5 + 10; // 题面数据范围有误 应该是1e5
+
+int t, n, w, h;
+struct Seg {
+    int x, y1, y2;
+    int k;
+    bool operator< (const Seg & t) const {
+        // case
+        if (x != t.x)
+            return x < t.x;
+        return k > t.k; // 先算加入再算退出
+    }
+} seg[N * 2];
+struct Node {
+    int l, r;
+    LL maxv, add;
+} tr[N << 2];
+vector<int> ys;
+
+int find(int y) {
+    return lower_bound(ys.begin(), ys.end(), y) - ys.begin();
+}
+
+void pushup(int u) {
+    tr[u].maxv = max(tr[u << 1].maxv, tr[u << 1 | 1].maxv) + tr[u].add;
+}
+
+void build(int u, int l, int r) {
+    if (l == r)
+        tr[u] = {l, r, 0, 0};
+    else {
+        tr[u] = {l, r, 0, 0};
+        int mid = l + r >> 1;
+        build(u << 1, l, mid), build(u << 1 | 1, mid + 1, r);
+    }
+}
+
+void modify(int u, int l, int r, LL k) {
+    if (tr[u].l >= l && tr[u].r <= r) {
+        tr[u].add += k;
+        pushup(u);
+    } else {
+        int mid = tr[u].l + tr[u].r >> 1;
+        if (l <= mid)
+            modify(u << 1, l, r, k);
+        if (r > mid)
+            modify(u << 1 | 1, l, r, k);
+        pushup(u);
+    }
+}
+
+int main() {
+    cin >> t;
+    while (t -- ) {
+        cin >> n >> w >> h;
+        w -- , h -- ;
+        
+        ys.clear();
+        for (int i = 0, j = 0; i < n; ++ i ) {
+            int x, y, l;
+            cin >> x >> y >> l;
+            seg[j ++ ] = {x, y, y + h, l};
+            seg[j ++ ] = {x + w, y, y + h, -l};
+            ys.push_back(y), ys.push_back(y + h);
+        }
+        sort(ys.begin(), ys.end());
+        ys.erase(unique(ys.begin(), ys.end()), ys.end());
+        
+        build(1, 0, ys.size() - 2);
+        
+        sort(seg, seg + n * 2);
+        LL res = 0;
+        for (int i = 0; i < 2 * n; ++ i ) {
+            // 如果是此处 modify 的 r 是 find(seg[i].y2) - 1 会 WA[9]
+            // https://www.luogu.com.cn/discuss/show/64282
+            // 因为对于当前节点【其影响范围包含右侧闭区间】
+            modify(1, find(seg[i].y1), find(seg[i].y2), seg[i].k);
+            res = max(res, tr[1].maxv);
+        }
+        cout << res << endl;
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 细节
+
+> [!NOTE] **[Luogu [SCOI2007]降雨量](https://www.luogu.com.cn/problem/P2471)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> [线段树 / ST表]的简单应用 数据和细节巨坑
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 5e4 + 10, INF = 0x3f3f3f3f;
+
+int n, m;
+int t[N], w[N];
+unordered_map<int, int> mp;
+struct Node {
+    int l, r;
+    int maxv;
+} tr[N << 2];
+
+int find(int y) {
+    return lower_bound(t, t + n + 1, y) - t;
+}
+
+void pushup(int u) {
+    tr[u].maxv = max(tr[u << 1].maxv, tr[u << 1 | 1].maxv);
+}
+
+void build(int u, int l, int r) {
+    if (l == r)
+        tr[u] = {l, r, w[l]};
+    else {
+        tr[u] = {l, r, -INF};   // ATTENTION -INF
+        int mid = l + r >> 1;
+        build(u << 1, l, mid), build(u << 1 | 1, mid + 1, r);
+        pushup(u);
+    }
+}
+
+int query(int u, int l, int r) {
+    if (tr[u].l >= l && tr[u].r <= r)
+        return tr[u].maxv;
+    else {
+        int mid = tr[u].l + tr[u].r >> 1;
+        int ret = -INF; // ATTENTION -INF
+        if (l <= mid)
+            ret = max(ret, query(u << 1, l, r));
+        if (r > mid)
+            ret = max(ret, query(u << 1 | 1, l, r));
+        return ret;
+    }
+}
+
+int main() {
+    cin >> n;
+    // 【巨坑。。。不加下面这行初始化就挂 加了就过】
+    t[0] = -INF, t[n + 1] = INF;
+    for (int i = 1; i <= n; ++ i ) {
+        int y, r;
+        cin >> t[i] >> w[i];
+    }
+    build(1, 1, n);
+
+    cin >> m;
+    while (m -- ) {
+        int l, r;
+        cin >> l >> r;
+
+        if (l >= r) {
+            cout << "false" << endl;
+            continue;
+        }
+        
+        int fl = find(l), fr = find(r);
+        bool has_l = t[fl] == l, has_r = t[fr] == r;
+
+        if (!has_l && !has_r) {
+            cout << "maybe" << endl;
+        } else if (!has_l && has_r) {
+            if (fl == fr)   // X和Y见的所有降雨量未知
+                cout << "maybe" << endl;
+            else {
+                int t = query(1, fl, fr - 1);
+                if (t >= w[fr])
+                    cout << "false" << endl;
+                else
+                    cout << "maybe" << endl;
+            }
+        } else if (has_l && !has_r) {
+            if (fl + 1 == fr)   // r未知
+                cout << "maybe" << endl;
+            else {
+                int t = query(1, fl + 1, fr - 1);
+                if (w[fl] <= t) // fl不可能作为开头
+                    cout << "false" << endl;
+                else
+                    cout << "maybe" << endl;
+            }
+        } else {
+            if (w[fl] < w[fr]) {
+                cout << "false" << endl;
+            } else {
+                if (fl + 1 == fr) {
+                    if (l + 1 == r)
+                        cout << "true" << endl;
+                    else
+                        cout << "maybe" << endl;
+                } else {
+                    int t = query(1, fl + 1, fr - 1);
+                    if (w[fr] <= t)
+                        cout << "false" << endl;
+                    else if (r - l == fr - fl)
+                        cout << "true" << endl;
+                    else
+                        cout << "maybe" << endl;
+                }
+            }
         }
     }
     return 0;

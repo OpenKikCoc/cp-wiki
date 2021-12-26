@@ -234,13 +234,6 @@ ll Pollard_Rho(ll x) {
 
 ##### **C++**
 
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
 ```cpp
 ```
 
@@ -254,16 +247,9 @@ ll Pollard_Rho(ll x) {
 
 <br>
 
-##### **Python**
+* * *
 
-```python
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
+## 习题
 
 > [!NOTE] **[Luogu [NOIP2001 普及组] 最大公约数和最小公倍数问题](https://www.luogu.com.cn/problem/P1029)**
 > 
