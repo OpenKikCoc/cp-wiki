@@ -252,3 +252,366 @@ dfs(root, EMPTY_NODE);
 通过这个方式，可以对于无向的输入求出所有结点的父结点，以及子结点列表。
 
 **本页面部分内容引用自博文 [二叉树：前序遍历、中序遍历、后续遍历](https://blog.csdn.net/weixin_43357638/article/details/99730284)，遵循 CC 4.0 BY-SA 版权协议。**
+
+## 习题
+
+### 前序
+
+> [!NOTE] **[LeetCode 144. 二叉树的前序遍历](https://leetcode-cn.com/problems/binary-tree-preorder-traversal/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 标准**
+
+```cpp
+class Solution {
+public:
+    vector<int> ans;
+
+    vector<int> preorderTraversal(TreeNode* root) {
+        dfs(root);
+        return ans;
+    }
+
+    void dfs(TreeNode* root) {
+        if (!root) return;
+        ans.push_back(root->val);
+        dfs(root->left);
+        dfs(root->right);
+    }
+};
+
+
+class Solution {
+public:
+    vector<int> preorderTraversal(TreeNode* root) {
+        vector<int> res;
+        stack<TreeNode*> stk;
+        while (root || stk.size()) {
+            while (root) {
+                res.push_back(root->val);
+                stk.push(root);
+                root = root->left;
+            }
+
+            root = stk.top()->right;
+            stk.pop();
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 简单**
+
+```cpp
+class Solution {
+public:
+    vector<int> preorderTraversal(TreeNode* root) {
+        vector<int> res;
+      	if (!root) return res;
+        stack<TreeNode*> s;
+      	TreeNode* t;
+        s.push(root);
+        while (!s.empty()){
+            t = s.top();
+            s.pop();
+            if (t != nullptr){
+                if (t->right) s.push(t->right);  // 右节点先压栈，最后处理
+                if (t->left) s.push(t->left);
+                s.push(t);                       // 当前节点重新压栈（留着以后处理），因为先序遍历所以最后压栈
+                s.push(nullptr);                 // 在当前节点之前加入一个空节点表示已经访问过了
+            } else {
+              	res.push_back(s.top()->val);
+                s.pop();
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+# 递归写法
+class Solution:
+    def preorderTraversal(self, root: TreeNode) -> List[int]:
+        res = []
+        def dfs(root):
+            if not root:return 
+            res.append(root.val)
+            dfs(root.left)
+            dfs(root.right)
+        dfs(root)
+        return res
+      
+# 迭代
+class Solution:
+    def preorderTraversal(self, root: TreeNode) -> List[int]:
+        if not root:return []
+        res = []
+        stack = []
+        p = root 
+        while p or stack:
+            while p:
+                stack.append(p)
+                res.append(p.val)
+                p = p.left 
+            p = stack.pop()
+            p = p.right 
+        return res
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 中序
+
+> [!NOTE] **[LeetCode 94. 二叉树的中序遍历](https://leetcode-cn.com/problems/binary-tree-inorder-traversal/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 1**
+
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<int> inorderTraversal(TreeNode* root) {
+        vector<int> res;
+        if (!root) return res;
+        stack<TreeNode*> s;
+        TreeNode * t;
+        s.push(root);
+        while (!s.empty()) {
+            t = s.top(); s.pop();
+            if (t) {
+                if (t->right) s.push(t->right);
+                s.push(t);
+                s.push(nullptr);
+                if (t->left) s.push(t->left);
+            } else {
+                res.push_back(s.top()->val);
+                s.pop();
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 2**
+
+```cpp
+// yxc
+class Solution {
+public:
+    vector<int> ans;
+    vector<int> inorderTraversal(TreeNode* root) {
+        dfs(root);
+        return ans;
+    }
+
+    void dfs(TreeNode* root) {
+        if (!root) return;
+        dfs(root->left);
+        ans.push_back(root->val);
+        dfs(root->right);
+    }
+};
+
+
+class Solution {
+public:
+    vector<int> inorderTraversal(TreeNode* root) {
+        vector<int> res;
+        stack<TreeNode*> stk;
+
+        while (root || stk.size()) {
+            while (root) {
+                stk.push(root);
+                root = root->left;
+            }
+
+            root = stk.top();
+            stk.pop();
+            res.push_back(root->val);
+            root = root->right;
+        }
+
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+# 递归
+class Solution:
+    def inorderTraversal(self, root: TreeNode) -> List[int]:
+        res = []
+        def dfs(root):
+            if not root:return []  
+            dfs(root.left)
+            res.append(root.val)
+            dfs(root.right)
+        
+        dfs(root)
+        return res
+   
+# 迭代
+class Solution:
+    def inorderTraversal(self, root: TreeNode) -> List[int]:
+        if not root:return []
+        stack, res = [], []
+        p = root 
+        while p or stack:
+            while p:
+                stack.append(p)
+                p = p.left 
+            p = stack.pop()
+            res.append(p.val)
+            p = p.right 
+        return res
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 后序
+
+> [!NOTE] **[LeetCode 145. 二叉树的后序遍历](https://leetcode-cn.com/problems/binary-tree-postorder-traversal/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 标准**
+
+```cpp
+class Solution {
+public:
+    vector<int> postorderTraversal(TreeNode* root) {
+        vector<int> res;
+        stack<TreeNode*> stk;
+        while (root || stk.size()) {
+            while (root) {
+                res.push_back(root->val);
+                stk.push(root);
+                root = root->right;
+            }
+
+            root = stk.top()->left;
+            stk.pop();
+        }
+
+        reverse(res.begin(), res.end());
+        return res;
+    }
+};
+```
+
+##### **C++ 通用**
+
+```cpp
+class Solution {
+public:
+    vector<int> postorderTraversal(TreeNode* root) {
+        vector<int> res;
+        if (!root) return res;
+        stack<TreeNode*> q;
+        q.push(root);
+        while (!q.empty()) {
+            TreeNode* r = q.top(); q.pop();
+            if (r) {
+                q.push(r);
+                q.push(nullptr);
+                if (r->right) q.push(r->right);
+                if (r->left) q.push(r->left);
+            } else {
+                res.push_back(q.top()->val);
+                q.pop();
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+# 递归
+class Solution:
+    def postorderTraversal(self, root: TreeNode) -> List[int]:
+        res = []
+        def dfs(p):
+            if not p:return
+            dfs(p.left)
+            dfs(p.right)
+            res.append(p.val)
+
+        dfs(root)
+        return res
+      
+ # 迭代: 前序遍历写成：父- 右 - 左； 然后return结果的时候 逆序返回
+class Solution:
+    def postorderTraversal(self, root: TreeNode) -> List[int]:
+        res, stack = [], []
+        p = root 
+        while p or stack:
+            while p:
+                stack.append(p)
+                res.append(p.val)
+                p = p.right 
+            p = stack.pop()
+            p = p.left 
+        return res[::-1]
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

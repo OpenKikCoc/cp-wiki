@@ -284,3 +284,152 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 648. 单词替换](https://leetcode-cn.com/problems/replace-words/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 手动hash**
+
+```cpp
+class Solution {
+public:
+    // 手动字符串hash
+    typedef unsigned long long ULL;
+    const int P = 131;
+    string replaceWords(vector<string>& dictionary, string sentence) {
+        unordered_set<ULL> hash;
+        for (auto & d : dictionary) {
+            ULL h = 0;
+            for (auto c : d) h = h * P + c;
+            hash.insert(h);
+        }
+
+        stringstream ss(sentence);
+        string s, res;
+        while (ss >> s) {
+            string t;
+            ULL h = 0;
+            for (auto c : s) {
+                t += c;
+                h = h * P + c;
+                if (hash.count(h)) break;
+            }
+            res += t + ' ';
+        }
+        res.pop_back();
+        return res;
+    }
+```
+
+##### **C++ 原始hash**
+
+```cpp
+    // 原始hash
+    string replaceWords(vector<string>& dictionary, string sentence) {
+        unordered_map<string, bool> hash;
+        for (auto & d : dictionary) hash[d] = true;
+
+        vector<string> ve;
+        stringstream ss(sentence);
+        string s;
+        while (ss >> s) {
+            for (int i = 1; i < s.size(); ++ i ) {
+                string sub = s.substr(0, i);
+                if (hash.count(sub)) {
+                    s = sub;
+                    break;
+                }
+            }
+            ve.push_back(s);
+        }
+
+        string res;
+        for (auto & s : ve) {
+            res += s;
+            res.push_back(' ');
+        }
+        if (res.size()) res.pop_back();
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 796. 旋转字符串](https://leetcode-cn.com/problems/rotate-string/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using ULL = unsigned long long;
+    const static int N = 210, P = 131;
+    ULL h[N], p[N];
+
+    ULL get(int l, int r) {
+        return h[r] - h[l - 1] * p[r - l + 1];
+    }
+    
+    bool rotateString(string A, string B) {
+        if (A == B) // "" 空串
+            return true;
+        string s = ' ' + A + B;
+        int n = s.size() - 1;
+        p[0] = 1;
+        for (int i = 1; i <= n; ++ i ) {
+            p[i] = p[i - 1] * P;
+            h[i] = h[i - 1] * P + s[i];
+        }
+
+        for (int k = 1; k < A.size(); ++ k )
+            if (get(1, k) == get(n - k + 1, n) && 
+                get(k + 1, A.size()) == get(A.size() + 1, n - k))
+                return true;
+        return false;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

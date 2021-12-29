@@ -750,6 +750,72 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 650. 只有两个键的键盘](https://leetcode-cn.com/problems/2-keys-keyboard/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 约数做法
+    // [122...22] [122....22] ... 操作分解
+    // n = p1 * p2 * ... * pn 
+    // res = p1 + p2 + ... + pn
+    int minSteps(int n) {
+        int res = 0;
+        for (int i = 2; i <= n / i; ++ i )
+            while (n % i == 0)
+                res += i, n /= i;
+        if (n > 1) res += n;
+        return res;
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int minSteps(int n) {
+        vector<int> f(n + 1, INT_MAX);
+        f[1] = 0;
+        for (int i = 2; i <= n; ++ i )
+            if (n % i == 0)
+                // 枚举约数
+                for (int j = 1; j * j <= n; ++ j )
+                    if (i % j == 0) {
+                        f[i] = min(f[i], f[j] + i / j);
+                        f[i] = min(f[i], f[i / j] + j);
+                    }
+        return f[n];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 欧几里得
 
 > [!NOTE] **[AcWing 877. 扩展欧几里得算法](https://www.acwing.com/problem/content/879/)**
@@ -863,6 +929,53 @@ int main() {
         else cout << (LL)b / d * x % m << endl;
     }
 }
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 780. 到达终点](https://leetcode-cn.com/problems/reaching-points/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    bool reachingPoints(int sx, int sy, int tx, int ty) {
+        while (tx >= sx && ty >= sy) {
+            if (tx == ty) break;
+            if (tx > ty) {
+                if (ty > sy) tx %= ty;
+                else return (tx - sx) % ty == 0;
+            } else {
+                if (tx > sx) ty %= tx;
+                else return (ty - sy) % tx == 0;
+            }
+        }
+
+        return sx == tx && sy == ty;
+    }
+};
 ```
 
 ##### **Python**

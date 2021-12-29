@@ -371,3 +371,399 @@ int main() {
 [^ref3]: [Mersenne Twister algorithm](https://en.wikipedia.org/wiki/Mersenne_Twister)
 
 [^note1]: 版本号为 GCC 9.2.0
+
+## 习题
+
+> [!NOTE] **[LeetCode 470. 用 Rand7() 实现 Rand10()](https://leetcode-cn.com/problems/implement-rand10-using-rand7/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典题
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// The rand7() API is already defined for you.
+// int rand7();
+// @return a random integer in the range 1 to 7
+
+class Solution {
+public:
+    int rand10() {
+        int t = (rand7() - 1) * 7 + rand7();    // 1 ~ 49
+        if (t > 40) return rand10();
+        return (t - 1) % 10 + 1;
+    }
+};
+```
+
+##### **C++ 优化**
+
+```cpp
+class Solution {
+public:
+    int rand10() {
+        int a, b, idx;
+        while (true) {
+            a = rand7();
+            b = rand7();
+            idx = b + (a - 1) * 7;
+            if (idx <= 40)
+                return 1 + (idx - 1) % 10;
+            a = idx - 40;
+            b = rand7();
+            // get uniform dist from 1 - 63
+            idx = b + (a - 1) * 7;
+            if (idx <= 60)
+                return 1 + (idx - 1) % 10;
+            a = idx - 60;
+            b = rand7();
+            // get uniform dist from 1 - 21
+            idx = b + (a - 1) * 7;
+            if (idx <= 20)
+                return 1 + (idx - 1) % 10;
+        }
+    }
+};
+```
+
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 478. 在圆内随机生成点](https://leetcode-cn.com/problems/generate-random-point-in-a-circle/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// 矩阵内采样
+class Solution {
+public:
+    double r, cx, cy;
+    Solution(double radius, double x_center, double y_center) {
+        r = radius, cx = x_center, cy = y_center;
+    }
+
+    vector<double> randPoint() {
+        double a = (double)rand() / RAND_MAX * 2 - 1;
+        double b = (double)rand() / RAND_MAX * 2 - 1;
+        if (a * a + b * b > 1) return randPoint();
+        return {cx + r * a, cy + r * b};
+    }
+};
+
+// 直接采样
+// 圆内的点有两个参数，距离圆心的距离和角度。
+// 距离圆心的距离是二维的，需要在 [0, r^2] 内采样然后开方，才能保证是均匀分布。
+// 角度直接在 [0, 2 * pi] 内采样就可以。
+class Solution {
+private:
+    double r, x, y;
+
+public:
+    Solution(double radius, double x_center, double y_center) {
+        r = radius, x = x_center, y = y_center;
+    }
+
+    vector<double> randPoint() {
+        double cr = r * sqrt(1.0 * rand() / RAND_MAX);
+        double angle = 2 * M_PI * rand() / RAND_MAX;
+        double cx = x + cr * cos(angle), cy = y + cr * sin(angle);
+        return {cx, cy};
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 497. 非重叠矩形中的随机点](https://leetcode-cn.com/problems/random-point-in-non-overlapping-rectangles/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 用前缀和算出所有矩形面积的累加，在0-最大面积和范围产生随机数，看当前随机数落在哪个矩形的前缀和区间内，
+> 
+> 这样选定矩形，确定矩形是时候使用二分快速确定，确定好当前矩形后，在当前矩形区域生成随机数
+> 
+> 矩形面积越大，前缀和所占面积越大，被选中的概率越大
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int n;
+    vector<vector<int>> rects;
+    vector<int> s;
+
+    Solution(vector<vector<int>>& _rects) {
+        rects = _rects;
+        n = rects.size();
+        s.push_back(0);
+        for (auto& r: rects) {
+            int dx = r[2] - r[0] + 1;
+            int dy = r[3] - r[1] + 1;
+            s.push_back(s.back() + dx * dy);
+        }
+    }
+
+    vector<int> pick() {
+        int k = rand() % s.back() + 1;
+        int l = 1, r = n;
+        while (l < r) {
+            int mid = l + r >> 1;
+            if (s[mid] >= k) r = mid;
+            else l = mid + 1;
+        }
+        auto& t = rects[r - 1];
+        int dx = t[2] - t[0] + 1;
+        int dy = t[3] - t[1] + 1;
+        return {rand() % dx + t[0], rand() % dy + t[1]};
+    }
+};
+
+/**
+ * Your Solution object will be instantiated and called as such:
+ * Solution* obj = new Solution(rects);
+ * vector<int> param_1 = obj->pick();
+ */
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 519. 随机翻转矩阵](https://leetcode-cn.com/problems/random-flip-matrix/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 设计题 思维
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int r, c, k;
+    unordered_map<int, int> hash;
+
+    Solution(int n_rows, int n_cols) {
+        r = n_rows, c = n_cols, k = r * c;
+    }
+    
+    // 核心思想 选一个元素 然后把最后一个数值覆盖该选中的位置 以维持连续性
+    vector<int> flip() {
+        int x = rand() % k;
+        int y = x;
+        // x 里面存的是特殊值 那么就更新为该特殊值
+        if (hash.count(x)) y = hash[x];
+        // 删掉x上存的值 再把最后一个位置的数(k-1)删掉
+        // k-1存的有值 覆盖x
+        // 否则说明不存在值 就是k-1本身
+        if (hash.count(k - 1)) {
+            hash[x] = hash[k - 1];
+            hash.erase(k - 1);
+        } else hash[x] = k - 1;
+        -- k ;
+        return {y / c, y % c};
+    }
+    
+    void reset() {
+        k = r * c;
+        hash.clear();
+    }
+};
+
+/**
+ * Your Solution object will be instantiated and called as such:
+ * Solution* obj = new Solution(n_rows, n_cols);
+ * vector<int> param_1 = obj->flip();
+ * obj->reset();
+ */
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 528. 按权重随机选择](https://leetcode-cn.com/problems/random-pick-with-weight/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<int> s;
+    /*
+    Solution(vector<int>& w):s(std::move(w)) {
+        partial_sum(s.begin(), s.end(), s.begin());
+    }
+    */
+    Solution(vector<int>& w) {
+        s = w;
+        for (int i = 1; i < s.size(); ++ i ) s[i] += s[i - 1];
+    }
+    
+    int pickIndex() {
+        int x = rand() % s.back() + 1;
+        return lower_bound(s.begin(), s.end(), x) - s.begin();
+    }
+};
+
+/**
+ * Your Solution object will be instantiated and called as such:
+ * Solution* obj = new Solution(w);
+ * int param_1 = obj->pickIndex();
+ */
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 710. 黑名单中的随机数](https://leetcode-cn.com/problems/random-pick-with-blacklist/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 删除转化为映射的思维 trick
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 核心在于将黑名单中的数值映射为其他数值
+    int n, len;
+    unordered_map<int, int> hash;
+
+    Solution(int N, vector<int>& blacklist) {
+        n = N, len = blacklist.size();
+        // 可被映射的值 S
+        unordered_set<int> S;
+        for (int i = n - len; i < n; i ++ ) S.insert(i);
+        // 删除黑名单元素
+        for (auto x: blacklist) S.erase(x);
+        // 将黑名单元素设置为对应映射值
+        auto it = S.begin();
+        for (auto x: blacklist)
+            if (x < n - len)
+                hash[x] = *it ++ ;
+    }
+
+    int pick() {
+        int k = rand() % (n - len);
+        if (hash.count(k)) return hash[k];
+        return k;
+    }
+};
+
+/**
+ * Your Solution object will be instantiated and called as such:
+ * Solution* obj = new Solution(N, blacklist);
+ * int param_1 = obj->pick();
+ */
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

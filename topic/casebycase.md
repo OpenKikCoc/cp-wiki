@@ -5,8 +5,18 @@
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
+>
 > 复杂分类讨论
+>
+> 我们分类讨论相交的情况有哪些。一共有三种：
+>
+> 连续的四条边相交：[![QQ图片20180628203655.png](https://camo.githubusercontent.com/5405978e0e0ab8b6bd68a103493561abb0b50a4f105def1458c05c0ba2690ee2/68747470733a2f2f7777772e616377696e672e636f6d2f6d656469612f61727469636c652f696d6167652f323031382f30362f32382f315f303933343038313237612d515125453525394225424525453725383925383732303138303632383230333635352e706e67)](https://camo.githubusercontent.com/5405978e0e0ab8b6bd68a103493561abb0b50a4f105def1458c05c0ba2690ee2/68747470733a2f2f7777772e616377696e672e636f6d2f6d656469612f61727469636c652f696d6167652f323031382f30362f32382f315f303933343038313237612d515125453525394225424525453725383925383732303138303632383230333635352e706e67)
+>
+> 连续的五条边相交：[![QQ图片20180628203840.png](https://camo.githubusercontent.com/50cdd44527f26c43314bd62d6b80be6e9389498a418926e1d4cf1de1910f8d87/68747470733a2f2f7777772e616377696e672e636f6d2f6d656469612f61727469636c652f696d6167652f323031382f30362f32382f315f333566326431663837612d515125453525394225424525453725383925383732303138303632383230333834302e706e67)](https://camo.githubusercontent.com/50cdd44527f26c43314bd62d6b80be6e9389498a418926e1d4cf1de1910f8d87/68747470733a2f2f7777772e616377696e672e636f6d2f6d656469612f61727469636c652f696d6167652f323031382f30362f32382f315f333566326431663837612d515125453525394225424525453725383925383732303138303632383230333834302e706e67)
+>
+> 连续的六条边相交：[![QQ图片20180628203957.png](https://camo.githubusercontent.com/9f7c299ccc9d45556b61f1559726b26793b07db7fec004e889ede44ba95cfc66/68747470733a2f2f7777772e616377696e672e636f6d2f6d656469612f61727469636c652f696d6167652f323031382f30362f32382f315f363433353638666137612d515125453525394225424525453725383925383732303138303632383230333935372e706e67)](https://camo.githubusercontent.com/9f7c299ccc9d45556b61f1559726b26793b07db7fec004e889ede44ba95cfc66/68747470733a2f2f7777772e616377696e672e636f6d2f6d656469612f61727469636c652f696d6167652f323031382f30362f32382f315f363433353638666137612d515125453525394225424525453725383925383732303138303632383230333935372e706e67)
+>
+> 然后遍历整个数组，判断这三种情况即可。
 
 <details>
 <summary>详细代码</summary>
@@ -77,6 +87,216 @@ int main() {
     
     return 0;
 }
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 335. 路径交叉](https://leetcode-cn.com/problems/self-crossing/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    bool isSelfCrossing(vector<int>& x) {
+        int n = x.size();
+        if (n <= 3) return false;
+        for (int i = 3; i < n; i ++ ) {
+            if (x[i - 1] <= x[i - 3] && x[i] >= x[i - 2]) return true;
+            if (i >= 4 && x[i - 3] == x[i - 1] && x[i] + x[i - 4] >= x[i - 2]) return true;
+            if (i >= 5 && x[i - 3] >= x[i - 1] && x[i - 1] + x[i - 5] >= x[i - 3] && x[i - 2] >= x[i - 4] && x[i - 4] + x[i] >= x[i - 2])
+                return true;
+        }
+        return false;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 391. 完美矩形](https://leetcode-cn.com/problems/perfect-rectangle/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+>
+> 所有点次数：
+>
+> |        |      |
+> | ------ | ---- |
+> | 1次    | 4    |
+> | 3      | 0    |
+> | 2 or 4 | inf  |
+>
+> 1次 4个
+>
+> 3   0
+>
+> 2or4 inf
+>
+> 总面积相同
+>
+> ==> 如果是完美矩形 那么一定满足两点：
+>
+> （1）最左下 最左上 最右下 最右上 的四个点只出现一次 其他点成对出现 
+>
+> （2）四个点围城的矩形面积 = 小矩形的面积之和
+>
+> ==> 把每个子矩形的面积累加，四个坐标放进一个vector，然后sort一下，
+>
+> 相同的坐标消去。最后剩下4个出现奇数次的点，且这个四个点围成的矩形面积等于子矩形面积和，则为true
+
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    bool isRectangleCover(vector<vector<int>>& rectangles) {
+        map<pair<int, int>, int> cnt;
+        typedef long long LL;
+        LL sum = 0;
+        for (auto x : rectangles) {
+            LL x1 = x[0], y1 = x[1], x2 = x[2], y2 = x[3];
+            ++ cnt[{x1, y1}], ++ cnt[{x1, y2}];
+            ++ cnt[{x2, y1}], ++ cnt[{x2, y2}];
+            sum += (x2 - x1) * (y2 - y1);
+        }
+        vector<vector<int>> res;
+        for (auto & [k, v] : cnt)
+            if (v == 1) res.push_back({k.first, k.second});
+            else if (v == 3) return false;
+            else if (v > 4) return false;
+        if (res.size() != 4) return false;
+        sort(res.begin(), res.end());
+        return sum == (LL)(res[3][0] - res[0][0]) * (res[3][1] - res[0][1]);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 420. 强密码检验器](https://leetcode-cn.com/problems/strong-password-checker/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 复杂模拟...没啥意思
+> 
+> 分情况讨论后的实现
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int strongPasswordChecker(string s) {
+        int a = 0, b = 0, c = 0, n = s.size(), k = 0;
+        for (auto x: s) {
+            if (x >= '0' && x <= '9') a = 1;
+            else if (x >= 'a' && x <= 'z') b = 1;
+            else if (x >= 'A' && x <= 'Z') c = 1;
+        }
+        k = a + b + c;
+        if (n < 6) return max(6 - n, 3 - k);
+        else {
+            int p = 0;
+            int d[3] = {0};
+            // 1. 不能连续出现三次 否则必然需要每3个改一次
+            //  推导知修改的步数最小 也即修改是最优操作
+            //  插入: (k-1)/2 删除: k-2 修改: k/3
+            for (int i = 0; i < s.size(); i ++ ) {
+                int j = i;
+                while (j < s.size() && s[j] == s[i]) j ++ ;
+                // 1.1 取值
+                int t = j - i;
+                p += t / 3;
+                // 1.2 所有长度大于等与3的连续段
+                // 因为显然有 t/3 是向下取整
+                // 故优先把余0的干掉,其次余1的,再次余2的
+                if (t >= 3) d[t % 3] ++ ;
+                // 更新 i
+                i = j - 1;
+            }
+            if (n <= 20) return max(p, 3 - k);
+
+            // 2. 还需要删
+            //  则此时希望尽可能的用删除来覆盖1.1中的修改操作
+            int del = n - 20, res = del;
+            if (d[0] && del > 0) {
+                // 删1个，同时使p减少相同数量
+                int t = min(d[0], del);
+                del -= t;
+                p -= t;
+            }
+            if (d[1] && del > 0) {
+                // 删2个，同时使p减少一半数量
+                int t = min(d[1] * 2, del);
+                del -= t;
+                p -= t / 2;
+            }
+            if (p && del > 0) {
+                // 特殊
+                // 删3个
+                int t = min(p * 3, del);
+                p -= t / 3;
+            }
+            return res + max(p, 3 - k);
+        }
+    }
+};
 ```
 
 ##### **Python**

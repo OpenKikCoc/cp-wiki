@@ -424,6 +424,143 @@ if __name__ == '__main__':
 
 ## 习题
 
+### 快排 partitiong
+
+> [!NOTE] **[LeetCode 215. 数组中的第K个最大元素](https://leetcode-cn.com/problems/kth-largest-element-in-an-array/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int partition(vector<int>& nums, int l, int r) {
+        int pivot = nums[l];
+        while (l < r) {
+            while (r > l && nums[r] >= pivot) -- r ;
+            nums[l] = nums[r];
+            while (r > l && nums[l] <= pivot) ++ l ;
+            nums[r] = nums[l];
+        }
+        nums[l] = pivot;
+        return l;
+    }
+    int findKthLargest(vector<int>& nums, int k) {
+        int l = 0, r = nums.size() - 1;
+        int tar = r - k + 1;
+        while (l < r) {
+            int idx = partition(nums, l, r);
+            if (idx < tar) l = idx + 1;
+            else r = idx;
+        }
+        return l < nums.size() ? nums[l] : -1;
+    }
+};
+
+// yxc version 1
+class Solution {
+public:
+    int quick_sort(vector<int>& nums, int l, int r, int k) {
+        if (l == r) return nums[k];
+        int x = nums[l], i = l - 1, j = r + 1;
+        while (i < j) {
+            do i ++ ; while (nums[i] > x);
+            do j -- ; while (nums[j] < x);
+            if (i < j) swap(nums[i], nums[j]);
+        }
+        if (k <= j) return quick_sort(nums, l, j, k);
+        else return quick_sort(nums, j + 1, r, k);
+    }
+
+    int findKthLargest(vector<int>& nums, int k) {
+        return quick_sort(nums, 0, nums.size() - 1, k - 1);
+    }
+};
+
+// yxc version 2
+class Solution {
+public:
+    int quick_sort(vector<int> & nums, int l, int r, int k) {
+        if (l >= r)
+            return nums[l];
+        int i = l - 1, j = r + 1, x = nums[l + r >> 1];
+        while (i < j) {
+            do i ++ ; while (nums[i] > x);
+            do j -- ; while (nums[j] < x);
+            if (i < j) swap(nums[i], nums[j]);
+        }
+        if (j - l + 1 >= k)
+            return quick_sort(nums, l, j, k);
+        else
+            return quick_sort(nums, j + 1, r, k - (j - l + 1));
+    }
+
+    int findKthLargest(vector<int>& nums, int k) {
+        return quick_sort(nums, 0, nums.size() - 1, k);
+    }
+};
+```
+
+##### **Python**
+
+```python
+# 用堆: 时间复杂度O(n*logn)
+class Solution:
+    def findKthLargest(self, nums: List[int], k: int) -> int:
+        maxHeap = []
+        for x in nums:
+            heapq.heappush(maxHeap, -x)
+        for _ in range(k - 1):
+            heapq.heappop(maxHeap)
+        return -maxHeap[0]
+
+
+
+# 用快排 O(n)
+class Solution:
+    def findKthLargest(self, arr: List[int], k: int) -> int:
+        def partition(l, r):
+            x = random.randint(l, r)
+            arr[x], arr[r] = arr[r], arr[x]
+            less, more = l - 1, r 
+            while l < more:
+                if arr[l] < arr[r]:
+                    less += 1
+                    arr[l], arr[less] = arr[less], arr[l]
+                    l += 1
+                elif arr[l] > arr[r]:
+                    more -= 1
+                    arr[l], arr[more] = arr[more], arr[l]
+                else:l += 1
+            arr[more], arr[r] = arr[r], arr[more]
+            return less+1 # 返回的这个位置，是这个数的位置一定是确定好的，比这个数小的都在左边，大于或者等于的都在右边
+
+        n = len(arr)
+        l, r = 0, n - 1
+        while l < r:
+            q = partition(l, r)
+            if q < n - k:
+                l = q + 1
+            else:r = q 
+        return arr[l]  # 跳出循环 推出的时候 一定是 l == r == n -k
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 三路排序
 
 > [!NOTE] **[SwordOffer 21. 调整数组顺序使奇数位于偶数前面](https://leetcode-cn.com/problems/diao-zheng-shu-zu-shun-xu-shi-qi-shu-wei-yu-ou-shu-qian-mian-lcof/)**
@@ -476,6 +613,136 @@ class Solution(object):
                 r -= 1
             arr[l], arr[r] = arr[r], arr[l]
         return arr
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 75. 颜色分类](https://leetcode-cn.com/problems/sort-colors/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    void sortColors(vector<int>& nums) {
+        int n = nums.size();
+        // p <= c2 , cause [2,0,1]
+        for (int c0 = 0, p = 0, c2 = n - 1; p <= c2; ) {
+            if (nums[p] == 0)
+                swap(nums[p ++ ], nums[c0 ++ ]);
+            else if (nums[p] == 2)
+                swap(nums[p], nums[c2 -- ]);
+            else
+                p ++ ;
+        }
+    }
+};
+```
+
+##### **Python**
+
+```python
+# 荷兰国旗问题；快排partition部分的思想
+
+# 左神的partition部分思想
+class Solution:
+    def sortColors(self, arr: List[int]) -> None:
+        l, r = 0, len(arr) - 1
+        less, more = l - 1 , r + 1
+        while l < more:
+            if arr[l] < 1:
+                less += 1
+                arr[less], arr[l] = arr[l], arr[less]
+                l += 1
+            elif arr[l] > 1:
+                more -= 1
+                arr[more], arr[l] = arr[l], arr[more]
+            else:
+                l += 1 
+
+
+
+# 3个指针：保证[0, j-1]都是0； [j, i-1]都是1；[k+1,n-1]都是2；然后i 和 k两个指针逼近
+class Solution:
+    def sortColors(self, nums: List[int]) -> None:
+        i, j, k = 0, 0, len(nums) - 1
+        while i <= k:
+            if nums[i] == 0:
+                nums[i], nums[j] = nums[j], nums[i]
+                j += 1
+                i += 1
+            elif nums[i] == 2:
+                nums[i], nums[k] = nums[k], nums[i]
+                k -= 1
+            else:i += 1
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 324. 摆动排序 II](https://leetcode-cn.com/problems/wiggle-sort-ii/)**
+> 
+> 题意: 非常 trick
+
+> [!TIP] **思路**
+> 
+> 我们先用快速选择算法求出中位数mid，C++中可以调用 nth_element()函数。
+> 
+> 将所有数分成三种：小于mid的数、等于mid的数和大于mid的数。 然后对数组排序，使得大于mid的数在最前面，等于mid的数在中间，小于mid的数在最后面。 这一步可以直接利用三数排序，三数排序算法可以参考LeetCode 75. Sort Colors。
+> 
+> 然后我们将排好序的数组重排，将前半段依次放到奇数位置上，将后半段依次放到偶数位置上。此时就会有： nums[0] < nums[1] > nums[2] < nums[3] ...
+> 
+> 这一步重排我们可以在三数排序时做，只需在排序时做一个数组下标映射即可： i => (1 + 2 * i) % (n | 1) 该映射可以将数组前一半映射到奇数位置上，数组后一半映射到偶数位置上。
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    void wiggleSort(vector<int>& nums) {
+        int n = nums.size();
+        auto midptr = nums.begin() + n / 2;
+        nth_element(nums.begin(), midptr, nums.end());
+        int mid = *midptr;
+
+        #define A(i) nums[(1 + 2 * i) % (n | 1)]
+
+        int i = 0, j = 0, k = n - 1;
+        while (j <= k)
+            if (A(j) > mid) swap(A(i ++ ), A(j ++ ));
+            else if (A(j) < mid) swap(A(j), A(k -- ));
+            else j ++ ;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
 ```
 
 <!-- tabs:end -->
@@ -622,6 +889,176 @@ int main() {
     
     return 0;
 }
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 493. 翻转对](https://leetcode-cn.com/problems/reverse-pairs/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 逆序对变种 单独统计再归并
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<int> w;
+    int merge_sort(vector<int> & nums, int l, int r) {
+        if (l >= r) return 0;
+        int m = l + (r - l) / 2;
+        int ret = merge_sort(nums, l, m) + merge_sort(nums, m + 1, r);
+        // 统计
+        for (int i = l, j = m + 1; i <= m; ++ i ) {
+            while (j <= r && nums[j] * 2ll < nums[i]) ++ j ;
+            ret += j - (m + 1);
+        }
+
+        w.clear();
+        int i = l, j = m + 1;
+        while (i <= m && j <= r) {
+            if (nums[i] <= nums[j]) w.push_back(nums[i ++ ]);
+            else w.push_back(nums[j ++ ]);
+        }
+        while (i <= m) w.push_back(nums[i ++ ]);
+        while (j <= r) w.push_back(nums[j ++ ]);
+        for (int i = l, j = 0; j < w.size(); ++ i , ++ j ) nums[i] = w[j];
+        return ret;
+    }
+    int reversePairs(vector<int>& nums) {
+        return merge_sort(nums, 0, nums.size() - 1);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 桶排序
+
+> [!NOTE] **[LeetCode 164. 最大间距](https://leetcode-cn.com/problems/maximum-gap/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 1**
+
+```cpp
+// yxc
+class Solution {
+public:
+    struct Range {
+        int min, max;
+        bool used;
+        Range() : min(INT_MAX), max(INT_MIN), used(false){}
+    };
+
+    int maximumGap(vector<int>& nums) {
+        int n = nums.size();
+        int Min = INT_MAX, Max = INT_MIN;
+        for (auto x: nums) {
+            Min = min(Min, x);
+            Max = max(Max, x);
+        }
+        if (n < 2 || Min == Max) return 0;
+        vector<Range> r(n - 1);
+        int len = (Max - Min + n - 2) / (n - 1);
+        for (auto x: nums) {
+            if (x == Min) continue;
+            int k = (x - Min - 1) / len;
+            r[k].used = true;
+            r[k].min = min(r[k].min, x);
+            r[k].max = max(r[k].max, x);
+        }
+        int res = 0;
+        for (int i = 0, last = Min; i < n - 1; i ++ )
+            if (r[i].used) {
+                res = max(res, r[i].min - last);
+                last = r[i].max;
+            }
+        return res;
+    }
+};
+```
+
+##### **C++ 2**
+
+```cpp
+
+class Solution {
+public:
+    class Bucket {
+    public:
+        bool used = false;
+        int minval = numeric_limits<int>::max();        // same as INT_MAX
+        int maxval = numeric_limits<int>::min();        // same as INT_MIN
+    };
+
+    int maximumGap(vector<int>& nums) {
+        if (nums.empty() || nums.size() < 2)
+            return 0;
+
+        int mini = *min_element(nums.begin(), nums.end()),
+            maxi = *max_element(nums.begin(), nums.end());
+
+        int bucketSize = max(1, (maxi - mini) / ((int)nums.size() - 1));        // bucket size or capacity
+        int bucketNum = (maxi - mini) / bucketSize + 1;                         // number of buckets
+        vector<Bucket> buckets(bucketNum);
+
+        for (auto&& num : nums) {
+            int bucketIdx = (num - mini) / bucketSize;                          // locating correct bucket
+            buckets[bucketIdx].used = true;
+            buckets[bucketIdx].minval = min(num, buckets[bucketIdx].minval);
+            buckets[bucketIdx].maxval = max(num, buckets[bucketIdx].maxval);
+        }
+
+        int prevBucketMax = mini, maxGap = 0;
+        for (auto&& bucket : buckets) {
+            if (!bucket.used)
+                continue;
+
+            maxGap = max(maxGap, bucket.minval - prevBucketMax);
+            prevBucketMax = bucket.maxval;
+        }
+
+        return maxGap;
+    }
+};
 ```
 
 ##### **Python**

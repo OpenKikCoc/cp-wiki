@@ -105,3 +105,53 @@
 > 令 $f_{i,j}$ 表示有 $i$ 个 $1$，方案数为 $j$ 的最小大物品数。
 > 
 > 用 dp 预处理出 $f$，通过计算可知只需预处理 $i\le 20$ 的所有值即可。
+
+## 习题
+
+> [!NOTE] **[LeetCode 667. 优美的排列 II](https://leetcode-cn.com/problems/beautiful-arrangement-ii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思维 构造题 找规律
+> 
+> 结论：【最大值最小值交替出现】
+> 
+> 此时不同 k 达到最大为 n-1
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<int> constructArray(int n, int k) {
+        vector<int> res(n);
+        for (int i = 0; i < n - k - 1; i ++ ) res[i] = i + 1;
+        int u = n - k - 1;
+        int i = n - k, j = n;
+        while (u < n) {
+            res[u ++ ] = i ++ ;
+            if (u < n) res[u ++ ] = j -- ;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

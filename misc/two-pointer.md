@@ -125,7 +125,9 @@ $$
 
 第一次相遇时 $n$ 取最小正整数 1。也就是说 $k=C$。那么利用这个等式，可以在两个指针相遇后，将其中一个指针移到表头，让两者都一步一步走，再度相遇的位置即为环的起点。
 
-### 习题
+## 习题
+
+### 直观双指针
 
 > [!NOTE] **[AcWing 799. 最长连续不重复子序列](https://www.acwing.com/activity/content/11/)**
 > 
@@ -315,10 +317,717 @@ if __name__ == '__main__':
 
 * * *
 
-[leetcode 15. 三数之和](https://leetcode-cn.com/problems/3sum/)
+> [!NOTE] **[LeetCode 167. 两数之和 II - 输入有序数组](https://leetcode-cn.com/problems/two-sum-ii-input-array-is-sorted/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& numbers, int target) {
+        for (int i = 0, j = numbers.size() - 1; i < j; i ++ ) {
+            while (i < j && numbers[i] + numbers[j] > target) j -- ;
+            if (i < j && numbers[i] + numbers[j] == target) return {i + 1, j + 1};
+        }
+        return {};
+    }
+    
+    vector<int> twoSum_2(vector<int>& numbers, int target) {
+        int n = numbers.size();
+        vector<int> res;
+        if (n < 2) return res;
+        int l = 0, r = n - 1, v;
+        while (l < r) {
+            v = numbers[l] + numbers[r];
+            if (v == target) {
+                res.push_back(l + 1);
+                res.push_back(r + 1);
+                break;
+            } else if (v < target) ++ l ;
+            else -- r ;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+class Solution:
+    def twoSum(self, arr: List[int], target: int) -> List[int]:
+        n = len(arr)
+        sumn = 0
+        l, r = 0, n - 1
+        while l < r:
+            sumn = arr[l] + arr[r]
+            if sumn > target:
+                r -= 1
+            elif sumn < target:
+                l += 1
+            else:return [l + 1, r + 1]
+        return [-1, -1]
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 611. 有效三角形的个数](https://leetcode-cn.com/problems/valid-triangle-number/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int triangleNumber(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        int res = 0;
+        // 枚举最大数 次大数 最小数   双指针
+        for (int i = 0; i < nums.size(); ++ i )
+            for (int j = i - 1, k = 0; j > 0 && k < j; -- j ) {
+                while (k < j && nums[k] <= nums[i] - nums[j]) ++ k ;
+                res += j - k;
+            }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 633. 平方数之和](https://leetcode-cn.com/problems/sum-of-square-numbers/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    bool judgeSquareSum(int c) {
+        long l = 0, r = sqrt(c);
+        long res;
+        while (l <= r) {
+            res = l * l + r * r;
+            if (res == c) return true;
+            else if (res > c) -- r ;
+            else ++ l ;
+        }
+        return false;
+    }
+
+    bool judgeSquareSum_2(int c) {
+        // 直角三角形 一个边从1开始小于等于sqrt(c/2)
+        int top = sqrt(c / 2);  // top < 4*10^4
+        int t, j;
+        for (int i = 0; i <= top; ++ i ) {
+            t = c - i * i;
+            j = sqrt(t);
+            if (j * j == t) return true;
+        }
+            
+        return false;
+    }
+};
+```
+
+##### **Python**
+
+```python
+#法一：直接枚举（两种写法）
+class Solution:
+    def judgeSquareSum(self, c: int) -> bool:
+        # i = 0
+        # while i * i <= c:
+        #     j = c - i * i 
+        #     r = int(math.sqrt(j))
+        #     if r * r == j:return True 
+        #     i += 1
+        # return False
+        for i in range(int(c ** 0.5) + 1):
+            j = c - i ** 2
+            r = int(j ** 0.5)
+            if r ** 2 == j:return True 
+        return False
+      
+#法二：双指针算法
+class Solution:
+    def judgeSquareSum(self, c: int) -> bool:
+        # j = int(math.sqrt(c))
+        j = int(c ** 0.5) + 1
+        i = 0
+        while i <=j:
+            if c == i * i + j * j:
+                return True
+            elif i * i + j * j > c:
+                j -= 1
+            else:
+                i += 1
+        return False
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 719. 找出第 k 小的距离对](https://leetcode-cn.com/problems/find-k-th-smallest-pair-distance/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典 二分 + 双指针
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int get(vector<int>& nums, int mid) {
+        int res = 0;
+        for (int l = 0, r = 0; r < nums.size(); ++ r ) {
+            while (nums[r] - nums[l] > mid)
+                ++ l ;
+            res += r - l;
+        }
+        return res;
+    }
+
+    int smallestDistancePair(vector<int>& nums, int k) {
+        sort(nums.begin(), nums.end());
+        int l = 0, r = 1e6;
+        while (l < r) {
+            int mid = l + r >> 1;
+            if (get(nums, mid) >= k) r = mid;
+            else l = mid + 1;
+        }
+        return r;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 [leetcode 1438. 绝对差不超过限制的最长连续子数组](https://leetcode-cn.com/problems/longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit/)
 
+
+### 快慢指针思想
+
+> 链表判环、找中点的快慢指针应用参见链表部分
+
+> [!NOTE] **[LeetCode 202. 快乐数](https://leetcode-cn.com/problems/happy-number/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int get(int x) {
+        int res = 0;
+        while (x) {
+            res += (x % 10) * (x % 10);
+            x /= 10;
+        }
+        return res;
+    }
+
+    bool isHappy(int n) {
+        int fast = get(n), slow = n;
+        while (fast != slow) {
+            fast = get(get(fast));
+            slow = get(slow);
+        }
+        return fast == 1;
+    }
+};
+```
+
+##### **C++ 模拟**
+
+```cpp
+class Solution {
+public:
+    int trans(int n) {
+        int res = 0;
+        while (n) {
+            res += (n % 10) * (n % 10);
+            n /= 10;
+        }
+        return res;
+    }
+
+    bool isHappy(int n) {
+        unordered_map<int, bool> m;
+        m[n] = true;
+        while (n != 1) {
+            n = trans(n);
+            if (m[n]) return false;
+            m[n] = true;
+        }
+        return true;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode ]()**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+>
+> 使用大数标记的思维 优雅实现
+>
+> 另有 **快慢指针做法**
+>
+> 将问题抽象，**每个点最多只有一个出边**，故其一定是一个类似链表环的形式（因为如果还能在环内出去的话一定是在环上某点有两个出边，显然不可能）。
+>
+> 这样显然有一个快慢指针的实现方式。
+>
+> 考虑枚举的思路：
+>
+> >   如果遍历到一个【本次】【在此前遍历到】的点
+> >
+> >   为什么 `last % n` 可以判断是否自环？
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    bool circularArrayLoop(vector<int>& nums) {
+        int n = nums.size(), Base = 10000;
+        for (int i = 0; i < n; ++ i ) {
+            // 已经遍历过
+            if (nums[i] >= Base) continue;
+            int k = i, S = Base + i, t = nums[k] > 0;
+            int last = -1;  // 最后一个位置 用于判断是否自环
+            do {
+                // k + nums[k];
+                int p = ((k + nums[k]) % n + n) % n;
+                last = nums[k], nums[k] = S;
+                k = p;
+            } while (k != i && nums[k] < Base && (t ^ (nums[k] > 0)) == 0);
+            // while 后面访问到 且初次访问 且符号相同
+
+            // last % n 非 0 则没有自环;  nums[k] == S 说明是本次遍历此前遍历到的，长度大于1
+            if (last % n && nums[k] == S) return true;
+        }
+        return false;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 优化双指针
+
+> [!NOTE] **[LeetCode 15. 三数之和](https://leetcode-cn.com/problems/3sum/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 标准写法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        vector<vector<int>> res;
+        sort(nums.begin(), nums.end());
+        for (int i = 0; i < nums.size(); i ++ ) {
+            if (i && nums[i] == nums[i - 1]) continue;
+            for (int j = i + 1, k = nums.size() - 1; j < k; j ++ ) {
+                if (j > i + 1 && nums[j] == nums[j - 1]) continue;
+                // 可以适应三数之和为任意值
+                while (j < k - 1 && nums[i] + nums[j] + nums[k - 1] >= 0) k -- ; // ATTENTION
+                if (nums[i] + nums[j] + nums[k] == 0) {
+                    res.push_back({nums[i], nums[j], nums[k]});
+                }
+            }
+        }
+
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+# 双指针算法 一定要基于有序才能做。一般都是先想暴力怎么求解，然后用双指针进行优化，可以将时间复杂度降低一个维度
+# （本题也可以用哈希表，但是空间复杂度就高一些）
+# 1. 先将nums排序，然后 固定指针i， 遍历数组，对于每一个i， 移动指针L和R， 找到nums[i] + nums[L] + nums[R] == 0
+# 2. 由于nums是有序的，所以当L++， 那么对应的R就会减小（初始设置 L = i + 1; R = n - 1 ) 
+# 3. 至于去重，只需要判断每个指针位置的下一个位置的值 和 该指针当前值是否相等，如果相等 直接跳过即可。
+
+class Solution:
+    def threeSum(self, nums: List[int]) -> List[List[int]]:
+        res = []; n = len(nums)
+        if n < 3:return []
+        nums.sort()
+        sumn = 0
+        for i in range(n - 2):
+            if nums[i] > 0:break
+            if i > 0 and nums[i] == nums[i - 1]:continue  # 去重
+            l = i + 1; r = n - 1
+            while l < r:
+                sumn = nums[i] + nums[l] + nums[r]
+                if sumn == 0:
+                    res.append([nums[i], nums[l], nums[r]])
+                    while l < r and nums[l + 1] == nums[l]:l += 1
+                    while l < r and nums[r - 1] == nums[r]:r -= 1
+                    l += 1
+                    r -= 1
+                elif sumn < 0:
+                    l += 1
+                else:
+                    r -= 1
+        return res
+      
+      
+# 偷懒做法，用set保存结果，最后再变成list类型
+# 可以省掉两个指针的去重判断
+class Solution:
+    def threeSum(self, nums: List[int]) -> List[List[int]]:
+        res = set()
+        nums.sort()
+        for i in range(len(nums) - 2):
+            if i > 0 and nums[i] == nums[i - 1]:
+                continue
+            low, high = i + 1, len(nums) - 1
+            while low < high:
+                s = nums[i] + nums[low] + nums[high]
+                if s > 0:
+                    high -= 1
+                elif s < 0:
+                    low += 1
+                else:
+                    res.add((nums[i], nums[low], nums[high]))
+                    low += 1
+                    high -= 1
+        return list(res)
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 16. 最接近的三数之和](https://leetcode-cn.com/problems/3sum-closest/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 标准写法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int threeSumClosest(vector<int>& nums, int target) {
+        sort(nums.begin(), nums.end());
+        pair<int, int> res(INT_MAX, INT_MAX);
+        for (int i = 0; i < nums.size(); i ++ )
+            for (int j = i + 1, k = nums.size() - 1; j < k; j ++ ) {
+                while (k - 1 > j && nums[i] + nums[j] + nums[k - 1] >= target) k -- ;
+                int s = nums[i] + nums[j] + nums[k];
+                res = min(res, make_pair(abs(s - target), s));
+                if (k - 1 > j) {
+                    s = nums[i] + nums[j] + nums[k - 1];
+                    res = min(res, make_pair(target - s, s));
+                }
+            }
+        return res.second;
+    }
+};
+```
+
+##### **Python**
+
+```python
+# 考虑在target右边/左边；本题只有一个答案，就不需要判重
+
+class Solution:
+    def threeSumClosest(self, nums: List[int], target: int) -> int:
+        # res 初始化一个很大的值
+        res = float('inf')
+        n = len(nums)
+        nums.sort()
+        sumn = 0
+        for i in range(n - 2):
+            l = i + 1; r = n - 1
+            while l < r:
+                sumn = nums[i] + nums[r] + nums[l] 
+                v = target - sumn
+                if abs(v) < abs(target - res):res = sumn
+                if v < 0:r -= 1
+                elif v > 0:l += 1
+                else:return target
+        return res
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 18. 四数之和](https://leetcode-cn.com/problems/4sum/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 标准写法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        sort(nums.begin(), nums.end());
+        vector<vector<int>> res;
+        for (int i = 0; i < nums.size(); i ++ ) {
+            if (i && nums[i] == nums[i - 1]) continue;
+            for (int j = i + 1; j < nums.size(); j ++ ) {
+                if (j > i + 1 && nums[j] == nums[j - 1]) continue;
+                for (int k = j + 1, u = nums.size() - 1; k < u; k ++ ) {
+                    if (k > j + 1 && nums[k] == nums[k - 1]) continue;
+                    while (u - 1 > k && nums[i] + nums[j] + nums[k] + nums[u - 1] >= target) u -- ;
+                    if (nums[i] + nums[j] + nums[k] + nums[u] == target) {
+                        res.push_back({nums[i], nums[j], nums[k], nums[u]});
+                    }
+                }
+            }
+        }
+
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+# 先枚举前两个遍历，后两个遍历用双指针算法进行优化；
+# 去重方法和之前的一样：当前数和下一个数一致，下一个数就直接跳过
+
+class Solution:
+    def fourSum(self, nums: List[int], target: int) -> List[List[int]]:
+        n = len(nums); res = []
+        if n < 4:return []
+        nums.sort()
+        sumn = 0
+        for i in range(n - 3):
+            if i > 0 and nums[i] == nums[i - 1]:continue
+            for j in range(i + 1, n - 2):  # 踩坑： j 是从 i+1 开始遍历的
+                if j > i + 1 and nums[j] == nums[j - 1]:continue
+                l = j + 1; r = n - 1
+                while l < r:
+                    sumn = nums[i] + nums[j] + nums[l] + nums[r]
+                    if sumn == target:
+                        res.append([nums[i], nums[j], nums[l], nums[r]])
+                        while l < r and nums[l] == nums[l + 1]:l += 1
+                        while l < r and nums[r] == nums[r - 1]:r -= 1
+                        l += 1; r -= 1
+                    elif sumn > target:
+                        r -= 1
+                    else:l += 1
+        return res
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 786. 第 K 个最小的素数分数](https://leetcode-cn.com/problems/k-th-smallest-prime-fraction/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 二分 + **双指针单调优化**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const double eps = 1e-8;
+    int A, B, n;
+    vector<int> a;
+
+    // 仍然可优化 显然随着i增加j只会更靠右 具有单调性
+    int get(double m) {
+        int ret = 0;
+        for (int i = 0, j = 0; i < n; ++ i ) {
+            while ((double)a[j + 1] / a[i] <= m)
+                j ++ ;
+            if ((double)a[j] / a[i] <= m)
+                ret += j + 1;
+            if (fabs((double)a[j] / a[i] - m) < eps)
+                A = a[j], B = a[i];
+        }
+        return ret;
+    }
+
+    vector<int> kthSmallestPrimeFraction(vector<int>& arr, int k) {
+        this->a = arr; n = a.size();
+        double l = 0, r = 1;
+        while (r - l > eps) {
+            double m = (l + r) / 2;
+            if (get(m) < k)
+                l = m;
+            else
+                r = m;
+        }
+        get(l);
+        return {A, B};
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 推导进阶
 
 > [!NOTE] **[Luogu [USACO15OPEN]Trapped in the Haybales S](https://www.luogu.com.cn/problem/P3124)**
 > 
@@ -435,6 +1144,136 @@ int main() {
     
     return 0;
 }
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 11. 盛最多水的容器](https://leetcode-cn.com/problems/container-with-most-water/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int maxArea(vector<int>& height) {
+        int n = height.size();
+        int l = 0, r = n - 1, res = 0;
+        while (l < r) {
+            res = max(res, min(height[l], height[r]) * (r - l));
+            if (height[l] < height[r]) ++l;
+            else --r;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+# 这道题不适合用单调栈来做(比较复杂），和接雨水的题做对比
+
+# 思维具有跳跃性，脑筋急转弯类型的题目。（需要记住思路）
+# 做法：用两个指针 l, r 分别指向首尾，如果 al > ar，则 r−−，因为更长的柱子 以后更可能会被用到；否则 l++，直到 l == r为止，每次迭代更新最大值。
+
+class Solution:
+    def maxArea(self, h: List[int]) -> int:
+        n = len(h)
+        l, r = 0, n - 1
+        res = float('-inf')
+        while l < r:
+            if h[l] < h[r]:
+                res = max(res, h[l] * (r - l))
+                l += 1 
+            else:
+                res = max(res, h[r] * (r - l))
+                r -= 1
+        return res
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 532. 数组中的 k-diff 数对](https://leetcode-cn.com/problems/k-diff-pairs-in-an-array/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然有单调性质
+> 
+> 双指针进阶 思想 重复
+> 
+> 思考变种题
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int findPairs(vector<int>& nums, int k) {
+        sort(nums.begin(), nums.end());
+        int res = 0, n = nums.size();
+        for (int l = 0, r = 0; r < n; ++ r ) {
+            while (r + 1 < n && nums[r + 1] == nums[r])
+                r ++ ;
+            while (l < r && nums[r] - nums[l] > k)
+                l ++ ;
+            if (l < r && nums[r] - nums[l] == k)
+                res ++ ;
+        }
+        return res;
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+// yxc
+class Solution {
+public:
+    int findPairs(vector<int>& nums, int k) {
+        sort(nums.begin(), nums.end());
+        int res = 0;
+        for (int i = 0, j = 0; i < nums.size(); ++ i ) {
+            // 枚举后面的 可以保证解决 k = 0 的情况
+            while (i + 1 < nums.size() && nums[i + 1] == nums[i]) ++ i ;
+            while (j < i && nums[i] - nums[j] > k) ++ j ;
+            if (j < i && nums[i] - nums[j] == k) ++ res;
+        }
+        return res;
+    }
+};
 ```
 
 ##### **Python**

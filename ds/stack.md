@@ -182,3 +182,220 @@ stk.pop()
 # 使用 clear 清空栈
 stk.clear()
 ```
+
+## 习题
+
+### 弹出匹配
+
+> [!NOTE] **[LeetCode 20. 有效的括号](https://leetcode-cn.com/problems/valid-parentheses/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 1**
+
+```cpp
+class Solution {
+public:
+    bool match(char a, char b) {
+        if (a == '(') return b == ')';
+        else if (a == '[') return b == ']';
+        else if (a == '{') return b == '}';
+        return false;
+    }
+    bool isValid(string s) {
+        stack<char> st;
+        for (int i = 0; i < s.size(); ++ i ) {
+            char c = s[i];
+            if (!st.empty() && match(st.top(), c)) st.pop();
+            else st.push(c);
+        }
+        return st.empty();
+    }
+};
+```
+
+##### **C++ 2**
+
+```cpp
+class Solution {
+public:
+    bool isValid(string s) {
+        stack<char> stk;
+
+        for (auto c : s) {
+            if (c == '(' || c == '[' || c == '{') stk.push(c);
+            else {
+                if (stk.size() && abs(stk.top() - c) <= 2) stk.pop();
+                else return false;
+            }
+        }
+
+        return stk.empty();
+    }
+};
+```
+
+##### **Python**
+
+```python
+# 把左括号 都加入到stack中，当来了右括号时，右括号的对应值 与 栈顶元素对比：如果相同 就继续对比
+# 如果不同，就直接return False 
+# 如果栈为空，但此时来了一个 左括号，那可以直接返回 False
+
+class Solution:
+    def isValid(self, s: str) -> bool:
+        my_dict = {")":"(", "}":"{", "]":"["}
+        stack = []
+        for c in s:
+            if c not in my_dict:   
+                stack.append(c)
+            # ！！踩坑：需要先判断stack不为空；并且逻辑符号是 or （就是如果栈为空了，还有右括号来的话，那就可以直接return False了）
+            elif not stack or my_dict[c] != stack.pop(): 
+                return False 
+         # 踩坑！最后要判断栈是否为空，栈为空的时候 才能返回True 存在可能还有左扩号没有被匹配完的情况
+        return not stack 
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 591. 标签验证器](https://leetcode-cn.com/problems/tag-validator/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 栈 经典线性处理字符串
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    bool isValid(string code) {
+        stack<string> stk;
+        for (int i = 0; i < code.size(); i ++ ) {
+            if (code[i] == '<' && code.substr(i, 9) != "<![CDATA[") {  // 标签
+                int j = i + 1;
+                string tag_name;
+                bool is_end = false;
+                while (j < code.size() && code[j] != '>') {
+                    char c = code[j ++ ];
+                    if (c == '/' && j == i + 2) {  // 结束标签
+                        is_end = true;
+                        continue;
+                    }
+                    if (c < 'A' || c > 'Z') return false;  // 标签中有非大写英文字母
+                    tag_name += c;
+                }
+                if (j == code.size()) return false;  // 标签没有以 > 结束
+                if (tag_name.size() < 1 || tag_name.size() > 9) return false;  // 标签名长度不在1~9之间
+
+                if (is_end) {
+                    if (stk.empty() || stk.top() != tag_name) return false;  // 结束标签没有匹配
+                    stk.pop();
+                } else {
+                    if (i && stk.empty()) return false;  // 至少有两组标签
+                    stk.push(tag_name);
+                }
+                i = j;
+            } else {  // 处理tag_content
+                if (stk.empty()) return false;  // tag_content 不在标签内
+                if (code.substr(i, 9) == "<![CDATA[") {  // 处理CDATA
+                    int j = i;
+                    while (j < code.size() && code.substr(j, 3) != "]]>") j ++ ;
+                    if (j == code.size()) return false;  // CDATA没有结尾
+                    i = j + 2;
+                }
+            }
+        }
+
+        return stk.empty();
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 栈维护
+
+> [!NOTE] **[LeetCode 636. 函数的独占时间](https://leetcode-cn.com/problems/exclusive-time-of-functions/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 是时间 不是时刻
+    vector<int> exclusiveTime(int n, vector<string>& logs) {
+        vector<int> res(n);
+        stack<int> st;
+        int last;
+        for (auto & log : logs) {
+            int x = log.find(':'), y = log.substr(x + 1).find(':') + x + 1;
+            int id = stoi(log.substr(0, x)), ts = stoi(log.substr(y + 1));
+            if (log[x + 1] == 's') {
+                if (st.size()) res[st.top()] += ts - last;
+                st.push(id);
+                last = ts;
+            } else {
+                // 对于同一个数 开始的时候是作为后一段 结束的时候作为前一段
+                res[st.top()] += ts - last + 1;
+                st.pop();
+                last = ts + 1;
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

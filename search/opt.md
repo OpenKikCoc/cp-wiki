@@ -109,6 +109,218 @@
 
 ## 习题
 
+### 简单预处理优化
+
+> [!NOTE] **[LeetCode 131. 分割回文串](https://leetcode-cn.com/problems/palindrome-partitioning/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<vector<bool>> f;
+    vector<vector<string>> ans;
+    vector<string> path;
+
+    vector<vector<string>> partition(string s) {
+        int n = s.size();
+        f = vector<vector<bool>>(n, vector<bool>(n));
+        for (int j = 0; j < n; j ++ )
+            for (int i = 0; i <= j; i ++ )
+                if (i == j) f[i][j] = true;
+                else if (s[i] == s[j]) {
+                    if (i + 1 > j - 1 || f[i + 1][j - 1]) f[i][j] = true;
+                }
+
+        dfs(s, 0);
+        return ans;
+    }
+
+    void dfs(string& s, int u) {
+        if (u == s.size()) ans.push_back(path);
+        else {
+            for (int i = u; i < s.size(); i ++ )
+                if (f[u][i]) {
+                    path.push_back(s.substr(u, i - u + 1));
+                    dfs(s, i + 1);
+                    path.pop_back();
+                }
+        }
+    }
+};
+```
+
+##### **Python**
+
+```python
+#python3
+#法一：区间dp + dfs
+class Solution:
+    def partition(self, s: str) -> List[List[str]]:
+        res = []
+        path = []
+        
+        def dfs(u, path):
+            if u == n:  # u表示当前搜到第几位，当u ==n: 说明一遍已经搜完，计入答案
+                res.append(path[:])
+                return 
+            for j in range(u, n): # 开始枚举下一段
+                if f[u][j]:
+                    path.append(s[u:j + 1])  # 加入路径中
+                    dfs(j + 1, path)  # 递归到下一层，注意是j + 1, 因为j是上一段最后一个字符
+                    path.pop()
+        n = len(s)
+        f = [[False] * n for _ in range(n)]
+				
+        for j in range(n):   # 由于递推式f[i][j] = (f[i+1][j-1]),在计算f[i][j]时j-1必须先被算出来，那么应该先枚举j
+            for i in range(n):
+                if i == j:  # 只有一个字符的情况下
+                    f[i][j] = True
+                elif s[i] == s[j]:
+                    if i + 1 > j - 1 or ((s[i] == s[j] and f[i + 1][j - 1])): # 两个字符
+                        f[i][j] = True
+        # 区间dp经典写法
+        #f[0][0] = True
+        #for i in range(1, n):
+        #    f[i][i] = True
+        #    f[i-1][i] = (s[i-1] == s[i])
+        #for length in range(2, n):
+        #    for i in range(n - length):
+        #        j = i + length
+        #        if s[i] == s[j] and f[i + 1][j - 1] == 1:
+        #            f[i][j] = True
+    
+        return res
+    
+    
+# 法2: 回溯
+class Solution:
+    def partition(self, s: str) -> List[List[str]]:
+        res = []
+        
+        def dfs(s, tmp):
+            if not s:
+                res.append(tmp)
+                return 
+            for i in range(1, len(s) + 1):
+                if s[:i] == s[:i][::-1]:
+                    dfs(s[i:], tmp + [s[:i]])
+        dfs(s, [])
+        return res
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 132. 分割回文串 II](https://leetcode-cn.com/problems/palindrome-partitioning-ii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int minCut(string s) {
+        int n = s.size();
+        s = ' ' + s;
+        vector<vector<bool>> g(n + 1, vector<bool>(n + 1));
+        vector<int> f(n + 1, 1e8);
+
+        for (int j = 1; j <= n; j ++ )
+            for (int i = 1; i <= n; i ++ )
+                if (i == j) g[i][j] = true;
+                else if (s[i] == s[j]) {
+                    if (i + 1 > j - 1 || g[i + 1][j - 1]) g[i][j] = true;
+                }
+
+        f[0] = 0;
+        for (int i = 1; i <= n; i ++ ) {
+            for (int j = 1; j <= i; j ++ )
+                if (g[j][i])
+                    f[i] = min(f[i], f[j - 1] + 1);
+        }
+
+        return f[n] - 1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+"""
+一共进行两次动态规划。
+
+第一次动规：计算出每个子串是否是回文串。
+状态表示：st[i][j] 表示 s[i…j] 是否是回文串;
+转移方程：s[i…j] 是回文串当且仅当 s[i] 等于s[j] 并且 s[i+1…j−1] 是回文串；
+边界情况：如果s[i…j] 的长度小于等于2，则st[i][j]=(s[i]==s[j]);
+
+在第一次动规的基础上，我们进行第二次动规。
+状态表示：f[i] 表示把前 i 个字符划分成回文串，最少划分成几部分；
+状态转移：枚举最后一段回文串的起点 jj，然后利用 st[j][i] 可知 s[j…i] 是否是回文串，如果是回文串，则 f[i]可以从 f[j−1]+1 转移；
+边界情况：0个字符可以划分成0部分，所以 f[0]=0。
+
+题目让我们求最少切几刀，所以答案是 f[n]−1
+时间复杂度分析：两次动规都是两重循环，所以时间复杂度是 O(n2)。
+
+"""
+class Solution:
+    def minCut(self, s: str) -> int:
+        n=len(s)
+        s=' '+s
+        # step1 先使用g表示g[i][j]是否是回文串
+        g = [[False]*(n+1) for _ in range(n+1)]
+        for j in range(1,n+1):
+            for i in range(j+1):
+                if i==j:
+                    g[i][j]=True
+                else:
+                    if s[i]==s[j]:
+                        if i+1>j-1 or g[i+1][j-1]:
+                            g[i][j]=True
+
+        # step2 使用dp[i]表示到第i个字符结尾，最少的分隔次数
+        f=[float('inf')]*(n+1)
+        f[0]=0
+        for j in range(1,n+1):
+            for i in range(1,j+1):
+                if g[i][j]:
+                    f[j]=min(f[j], f[i-1]+1)
+        return f[n]-1
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+### TODO 整理下列其他优化
+
 > [!NOTE] **[AcWing 165. 小猫爬山](https://www.acwing.com/problem/content/167/)**
 > 
 > 题意: TODO
@@ -1283,6 +1495,165 @@ int main() {
     return 0;
 }
 ```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 473. 火柴拼正方形](https://leetcode-cn.com/problems/matchsticks-to-square/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<int> nums;
+    vector<bool> st;
+    // 最多15根火柴 压缩
+    bool dfs(int start, int cur, int length, int cnt) {
+        if (cnt == 3) return true;
+        if (cur == length) return dfs(0, 0, length, cnt + 1);
+        for (int i = start; i < nums.size(); ++ i ) {
+            if (st[i]) continue;
+            if (cur + nums[i] <= length) {
+                st[i] = true;
+                if (dfs(i + 1, cur + nums[i], length, cnt)) return true;
+                st[i] = false;
+            }
+            // !cur 说明还未使用的最长火柴都不可匹配
+            // cur + nums[i] == length 后面的和都会小于 length
+            if (!cur || cur + nums[i] == length) return false;
+            while (i + 1 < nums.size() && nums[i + 1] == nums[i]) ++ i ;
+        }
+        return false;
+    }
+
+    bool makesquare(vector<int>& nums) {
+        this->nums = nums;
+        if (nums.empty()) return false;
+        int sum = 0, n = nums.size();
+        for (auto v : nums) sum += v;
+        if (sum % 4) return false;
+        
+        st.resize(nums.size());
+        sum /= 4;
+        sort(nums.begin(), nums.end(), greater<int>());
+        return dfs(0, 0, sum, 0);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 491. 递增子序列](https://leetcode-cn.com/problems/increasing-subsequences/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **极好的搜索题 堪称LeetCode最佳**
+> 
+> 需去重
+> 
+> 重点在于递归时枚举的含义
+> 
+> 【每个位置该放什么】进而用 set 去重
+> 
+> > 需判重 枚举path中每个位置应该放什么
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// yxc
+class Solution {
+public:
+    vector<vector<int>> res;
+    vector<int> path;
+    void dfs(vector<int> & nums, int pos) {
+        if (path.size() >= 2) res.push_back(path);
+        if (pos == nums.size()) return;
+        unordered_set<int> S;
+        for (int i = pos; i < nums.size(); ++ i )
+            if (path.empty() || nums[i] >= path.back()) {
+                // if (i > pos && nums[i] == nums[i - 1]) continue; // is wrong cause the `nums` is not sorted
+                if (S.count(nums[i])) continue;
+                S.insert(nums[i]);
+                path.push_back(nums[i]);
+                dfs(nums, i + 1);
+                path.pop_back();
+            }
+    }
+    vector<vector<int>> findSubsequences(vector<int>& nums) {
+        dfs(nums, 0);
+        return res;
+    }
+};
+
+```
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<vector<int>> res;
+    vector<int> stack;
+    bool is_first(vector<int>& nums, int last, int pos) {
+        for (int i = last + 1; i < pos; ++ i )
+            if (nums[i] == nums[pos]) return false;
+        return true;
+    }
+    void dfs(vector<int>& nums, int last, int pos) {
+        if (pos == nums.size()) return;
+        if ((stack.empty() || nums[pos] >= stack.back()) && is_first(nums, last, pos)) {
+            stack.push_back(nums[pos]);
+            if (stack.size() >= 2) res.push_back(stack);
+            dfs(nums, pos, pos + 1);
+            stack.pop_back();
+        }
+        dfs(nums, last, pos + 1);
+    }
+    vector<vector<int>> findSubsequences(vector<int>& nums) {
+        dfs(nums, -1, 0);
+        return res;
+    }
+};
+```
+
 
 ##### **Python**
 

@@ -338,3 +338,538 @@ if __name__ == '__main__':
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 28. 实现 strStr()](https://leetcode-cn.com/problems/implement-strstr/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 1**
+
+```cpp
+class Solution {
+public:
+    int n, m;
+
+    vector<int> get(string & p) {
+        vector<int> f(n + 1);
+        for (int i = 2, j = 0; i <= n; ++ i ) {
+            while (j && p[i] != p[j + 1])
+                j = f[j];
+            if (p[i] == p[j + 1])
+                j ++ ;
+            f[i] = j;
+        }
+        return f;
+    }
+
+    int strStr(string haystack, string needle) {
+        if (needle.empty())
+            return 0;
+
+        // 以下无法处理两个都是空串or第二个是空串的情况
+        string p = ' ' + needle, s = ' ' + haystack;
+        this->n = p.size() - 1;
+        this->m = s.size() - 1;
+        auto f = get(p);
+        for (int i = 1, j = 0; i <= m; ++ i ) {
+            while (j && s[i] != p[j + 1])
+                j = f[j];
+            if (s[i] == p[j + 1])
+                j ++ ;
+            if (j == n) {
+                return i - n;
+                // j = f[j];
+            }
+        }
+        return -1;
+    }
+};
+```
+
+##### **C++ 2**
+
+```cpp
+class Solution {
+public:
+    int strStr(string s, string p) {
+        if (p.empty()) return 0;
+        int n = s.size(), m = p.size();
+        s = ' ' + s, p = ' ' + p;
+
+        vector<int> next(m + 1);
+        for (int i = 2, j = 0; i <= m; i ++ ) {
+            while (j && p[i] != p[j + 1]) j = next[j];
+            if (p[i] == p[j + 1]) j ++ ;
+            next[i] = j;
+        }
+
+        for (int i = 1, j = 0; i <= n; i ++ ) {
+            while (j && s[i] != p[j + 1]) j = next[j];
+            if (s[i] == p[j + 1]) j ++ ;
+            if (j == m) return i - m;
+        }
+
+        return -1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+# # 这竟然是一道KMP的裸题!!!我竟然没想到！！！
+class Solution:
+    def strStr(self, s: str, p: str) -> int:
+        if not p:return 0 # 当输入 s 和 p 都是空字符串时，特判。
+        n, m  = len(s), len(p)
+        s, p  = ' ' + s, ' ' + p
+        ne = [0] * (m + 1)
+
+        j = 0 
+        for i in range(2, m + 1):
+            while j and p[i] != p[j + 1]:
+                j = ne[j]
+            if p[i] == p[j + 1]:
+                j += 1
+            ne[i] = j 
+        
+        j = 0
+        for i in range(1, n + 1):
+            while j and s[i] != p[j + 1]:
+                j = ne[j]
+            if s[i] == p[j + 1]:
+                j += 1
+            if j == m:
+                return i -j
+        return -1
+
+# 法2 不用KMP求解
+class Solution:
+    def strStr(self, s: str, p: str) -> int:
+        n, m = len(s), len(p)
+        for p1 in range(n - m + 1):
+            if s[p1:p1 + m] == p:
+                return p1 
+        else:return -1
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 647. 回文子串](https://leetcode-cn.com/problems/palindromic-substrings/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+
+    int countSubstrings(string s) {
+        string ms = "$#";
+        for (auto c : s) ms.push_back(c), ms.push_back('#');
+
+        int n = ms.size();
+        vector<int> mp(n);
+        int id = 0, mx = 0, maxid = 0;
+        int res = 0;
+        for (int i = 1; i < n; ++ i ) {
+            mp[i] = i < mx ? min(mp[2 * id - i], mx - i) : 1;
+            while (ms[i + mp[i]] == ms[i - mp[i]]) ++ mp[i];
+            if (i + mp[i] > mx) {
+                mx = i + mp[i];
+                id = i;
+            }
+            // diff
+            res += mp[i] / 2;
+        }
+        return res;
+    }
+
+    int countSubstrings_2(string s) {
+        int n = s.size();
+        vector<vector<bool>> f(n + 1, vector<bool>(n + 1));
+
+        int res = n;
+        for (int i = 1; i <= n; ++ i ) f[i][i] = 1;
+        for (int len = 2; len <= n; ++ len )
+            for (int l = 1; l + len - 1 <= n; ++ l ) {
+                int r = l + len - 1;
+                if (s[l - 1] == s[r - 1] && (l + 1 > r - 1 || f[l + 1][r - 1]))
+                    f[l][r] = 1;
+                res += f[l][r];
+            }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+class Solution:
+    def countSubstrings(self, s: str) -> int:
+        self.res = 0 
+        n = len(s)
+
+        def dfs(i, j):
+            while i >= 0 and j < n and s[i] == s[j]:
+                self.res += 1 
+                i -= 1 
+                j += 1 
+            
+        for i in range(n):
+            dfs(i, i)
+            dfs(i, i + 1)
+        return self.res
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 686. 重复叠加字符串匹配](https://leetcode-cn.com/problems/repeated-string-match/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int repeatedStringMatch(string a, string p) {
+        string s;
+        while (s.size() < p.size()) s += a;
+        s += a;
+        int n = s.size(), m = p.size();
+        s = ' ' + s, p = ' ' + p;
+
+        vector<int> next(m + 1);
+        for (int i = 2, j = 0; i <= m; i ++ ) {
+            while (j && p[i] != p[j + 1]) j = next[j];
+            if (p[i] == p[j + 1]) j ++ ;
+            next[i] = j;
+        }
+        for (int i = 1, j = 0; i <= n; i ++ ) {
+            while (j && s[i] != p[j + 1]) j = next[j];
+            if (s[i] == p[j + 1]) j ++ ;
+            if (j == m) return (i + a.size() - 1) / a.size();
+        }
+        return -1;
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<int> get_next(string p, int n) {
+        vector<int> f;
+        f.push_back(0), f.push_back(0);
+        for (int i = 1; i < n; ++ i ) {
+            int j = f[i];
+            if (j && p[j] != p[i]) j = f[j];
+            if (p[j] == p[i])
+                f.push_back(j + 1);
+            else
+                f.push_back(0);
+        }
+        return f;
+    }
+
+    int repeatedStringMatch(string a, string p) {
+        string s;
+        while (s.size() < p.size()) s += a;
+        s += a;
+
+        int n = s.size(), m = p.size();
+        auto f = get_next(p, m);
+
+        int j = 0;
+        for (int i = 0; i < n; ++ i ) {
+            while (j && p[j] != s[i]) j = f[j];
+            if (p[j] == s[i])
+                ++ j ;
+            if (j == m) {
+                return (i + a.size()) / a.size();
+            }
+        }
+        return -1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 循环节
+
+> [!NOTE] **[LeetCode 459. 重复的子字符串]()**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> kmp 循环节问题
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 标准**
+
+```cpp
+class Solution {
+public:
+    bool repeatedSubstringPattern(string s) {
+        int n = s.size();
+        s = ' ' + s;
+        vector<int> next(n + 1);
+        for (int i = 2, j = 0; i <= n; i ++ ) {
+            while (j && s[i] != s[j + 1]) j = next[j];
+            if (s[i] == s[j + 1]) j ++ ;
+            next[i] = j;
+        }
+        int t = n - next[n];
+        return t < n && n % t == 0;
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // kmp 循环节问题
+    bool repeatedSubstringPattern(string s) {
+        int n = s.size();
+        vector<int> f;
+        f.push_back(0), f.push_back(0);
+        for (int i = 1; i < n; ++ i ) {
+            int j = f[i];
+            while (j && s[j] != s[i]) j = f[j];
+            if (s[j] == s[i]) f.push_back(j + 1);
+            else f.push_back(0);
+        }
+        return f[n] && n % (n - f[n]) == 0;    
+    }
+};
+```
+##### **Python**
+
+```python
+# 暴力解法1：就是找前缀，看s是否能有几个这样前缀组成。
+# class Solution:
+#     def repeatedSubstringPattern(self, s: str) -> bool:
+#         n = len(s)
+#         for i in range(1, len(s) // 2 + 1):
+#             a, b = divmod(n, i)
+#             if b == 0 and s[:i] * a  == s:
+#                 return True
+#         return False
+
+# 暴力解法2：我们知道如果s是重复字符串，那么可以由两个子串组成。我们通过ss = s + s就有4个子串组成，
+# 删除首尾字母，那么 ss[1:-1]就有应该有2个子串组成，就是说ss[1:-1]是否存在s
+class Solution:
+    def repeatedSubstringPattern(self, s: str) -> bool:
+        return (s+s)[1:-1].find(s) != -1
+      
+# 解法3：KMP
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 466. 统计重复个数](https://leetcode-cn.com/problems/count-the-repetitions/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 一般类似这样的大规模数据都考虑能否【倍增】或【循环节】
+> 
+> 本题即为循环节优化
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 循环节
+    int getMaxRepetitions(string s1, int n1, string s2, int n2) {
+        vector<int> cnt;
+        // 匹配完后是匹配了s2的多少个字符
+        unordered_map<int, int> hash;
+        for (int i = 0, k = 0; i < n1; ++ i ) {
+            for (int j = 0; j < s1.size(); ++ j )
+                if (s1[j] == s2[k % s2.size()]) ++ k ;
+            cnt.push_back(k);
+            // 判断当前余数有没有出现过
+            if (hash.count(k % s2.size())) {    // 出现循环节
+                int a = i - hash[k % s2.size()];        // 循环节中有多少个s1
+                int b = k - cnt[hash[k % s2.size()]];   // 循环节中匹配了多少个字符
+                int res = (n1 - i - 1) / a * b;
+                // 不完整部分
+                for (int u = 0; u < (n1 - i - 1) % a; ++ u )
+                    for (int j = 0; j < s1.size(); ++ j )
+                        if (s1[j] == s2[k % s2.size()])
+                            ++ k ;
+                res += k;
+                return res / s2.size() / n2;
+            }
+            hash[k % s2.size()] = i;
+        }
+        if (cnt.empty()) return 0;
+        return cnt.back() / s2.size() / n2;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 构造
+
+> [!NOTE] **[LeetCode 214. 最短回文串](https://leetcode-cn.com/problems/shortest-palindrome/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 本质求 s 的最长回文前缀，所以拼接求 next 数组即可。
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 1e5 + 10;  // 2 * 5e4
+
+    int f[N];
+
+    int get(string s) {
+        memset(f, 0, sizeof f); // f[0] = f[1] = 0;
+        int n = s.size();
+        s = ' ' + s;
+        for (int i = 2, j = 0; i <= n; ++ i ) {
+            if (j && s[i] != s[j + 1])
+                j = f[j];
+            if (s[i] == s[j + 1])
+                j ++ ;
+            f[i] = j;
+        }
+        return f[n];
+    }
+
+    string shortestPalindrome(string s) {
+        int n = s.size();
+        string rs(s.rbegin(), s.rend());
+        auto p = s + '#' + rs;
+        int idx = get(p);
+        string res;
+        for (int i = n - 1; i >= idx; -- i )
+            res.push_back(s[i]);
+        return res + s;
+    }
+};
+```
+
+##### **Python**
+
+```python
+# 反转拼接用kmp求解相等前后缀，找出了最长回文前缀
+"""
+(贪心，KMP) O(n)
+求字符串 s 的最长回文前缀，然后剩余的部分就可以逆序拼接到 s 的最前边得到一个回文串。例如 abcbabcab 的最长回文前缀是 abcba，则答案就是 bacb + abcba + bcab = bacbabcbabcab。
+首先将原串逆序复制一份，得到字符串 t。
+将 s + # + t 作为新字符串，求其 next 数组。
+假设下标从 0 开始，则最后位置上的 next 值加 1 就是最长回文前缀的长度，假设重合长度为 l。
+最终答案为 t[0:l] + s。
+"""
+class Solution:
+    def shortestPalindrome(self, s: str) -> str:
+        p = " " + s + "#" + s[::-1]
+        ne = [0 for _ in range(len(p))]
+        j = 0
+        for i in range(2, len(p)):
+            while j and p[j + 1] != p[i]:
+                j = ne[j]
+            if p[j + 1] == p[i]:
+                j += 1
+            ne[i] = j
+        return s[:ne[-1] - 1:-1] + s
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

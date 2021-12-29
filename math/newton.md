@@ -188,3 +188,132 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 69. x 的平方根](https://leetcode-cn.com/problems/sqrtx/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// 牛顿迭代
+class Solution {
+public:
+    int mySqrt(int x) {
+        if (x == 0) return 0;
+        double C = x, x0 = x;
+        while (true) {
+            double xi = 0.5 * (x0 + C / x0);
+            if (fabs(x0 - xi) < 1e-7) {
+                break;
+            }
+            x0 = xi;
+        }
+        return int(x0);
+    }
+};
+
+// 二分略
+```
+
+##### **Python**
+
+```python
+"""
+二分法：
+当前数的平方都小于或者等于目标值时，就全部舍弃（因为我们要找的是第一个大于target的整数）
+最后return的答案是，第一个大于target的整数减去1 即可。 
+"""
+class Solution:
+    def mySqrt(self, x: int) -> int:
+      	if x == 0 or x == 1:return x   # 特殊case判断
+        l, r = 0, x
+        while l < r:
+            m = l + (r - l)//2
+            if m * m <= x:
+                l = m + 1 
+            else:
+                r = m 
+        return l - 1
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 367. 有效的完全平方数](https://leetcode-cn.com/problems/valid-perfect-square/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    bool isPerfectSquare(int num) {
+        if (num < 2) return true;
+        long long x = num / 2;
+        while (x * x > num) x = (x + num / x) / 2;
+        return x * x == num;
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    bool isPerfectSquare(int num) {
+        int l = 1, r = num;
+        while (l < r) {
+            int mid = l + 1ll + r >> 1;
+            if (mid <= num / mid) l = mid;
+            else r = mid - 1;
+        }
+        return r * r == num;
+    }
+};
+```
+
+##### **Python**
+
+```python
+# 也可以用普通的遍历一遍；这里用的是二分查找
+class Solution:
+    def isPerfectSquare(self, num: int) -> bool:
+        l, r = 1, num
+        while l < r:
+            mid = (l + r) // 2
+            if mid * mid < num:
+                l = mid + 1
+            else:
+                r = mid
+        return l * l == num
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

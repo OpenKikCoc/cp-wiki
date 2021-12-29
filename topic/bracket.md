@@ -89,3 +89,120 @@ bool next_balanced_sequence(string& s) {
 对于变种括号序列，方法是类似的，只不过我们需要对每个 $s_i$ 考虑比它小的那些字符进行计算（在上述算法中因为不存在比左括号小的字符，所以我们只考虑了 $s_i$ 为右括号的情况）。
 
 另外，利用 $f$ 数组，我们同样可以求出字典序排名为 $k$ 的合法括号序列。
+
+
+## 习题
+
+> [!NOTE] **[LeetCode 678. 有效的括号字符串](https://leetcode-cn.com/problems/valid-parenthesis-string/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> trick 包含 `*` 符号的括号匹配
+> 
+> 【思维 维护上下界】
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    bool checkValidString(string s) {
+        // 栈存的都是左括号 所以本质上只用常量存左括号数量即可
+        // * 考虑其影响左括号数量的范围
+        // low high 存左括号数量范围
+        int low = 0, high = 0;
+        for (auto c : s) {
+            if (c == '(')
+                ++ low , ++ high ;
+            else if (c == ')')
+                -- low , -- high ;
+            else
+                -- low , ++ high ;
+            low = max(low, 0);
+            if (low > high)
+                return false;
+        }
+        return !low;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
+> [!NOTE] **[LeetCode 761. 特殊的二进制序列](https://leetcode-cn.com/problems/special-binary-string/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 递归 思维题 类似括号匹配
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    string makeLargestSpecial(string S) {
+        if (S.size() <= 2)
+            return S;
+
+        vector<string> q;
+        string s;
+        int cnt = 0;
+        for (auto c : S) {
+            s.push_back(c);
+            if (c == '1')
+                cnt ++ ;
+            else {
+                cnt -- ;
+                if (cnt == 0) {
+                    q.push_back('1' + makeLargestSpecial(s.substr(1, s.size() - 2)) + '0');
+                    s.clear();
+                }
+            }
+        }
+        sort(q.begin(), q.end(), [](string & a, string & b) {
+            return a + b > b + a;
+        });
+        string res;
+        for (auto s : q)
+            res += s;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

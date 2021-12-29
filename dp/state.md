@@ -132,7 +132,7 @@ int main() {
 
 * * *
 
-## 递推计算
+### 递推计算
 
 > [!NOTE] **[AcWing 291. 蒙德里安的梦想](https://www.acwing.com/problem/content/293/)**
 > 
@@ -878,6 +878,84 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 526. 优美的排列](https://leetcode-cn.com/problems/beautiful-arrangement/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 优雅暴力写法
+> 
+> 以及更优的状压写法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int countArrangement(int N) {
+        vector<int> f(1 << N);
+        f[0] = 1;
+        for (int i = 0; i < 1 << N; ++ i ) {
+            // 共有 k 个数
+            int k = 0;
+            for (int j = 0; j < N; ++ j )
+                if (i >> j & 1) ++ k ;
+            // 加上第 j 个数
+            for (int j = 0; j < N; ++ j )
+                if (!(i >> j & 1))
+                    if ((k + 1) % (j + 1) == 0 || (j + 1) % (k + 1) == 0)
+                        f[i | (1 << j)] += f[i];
+        }
+        return f[(1 << N) - 1];
+    }
+};
+
+
+// 远古代码
+class Solution {
+public:
+    int n, tot, res;
+    map<pair<int, int>, int> m;
+    void dfs(int state, int sum, int pos) {
+        if (sum >= tot) {    // if (pos >= n)
+            res ++ ;
+            return;
+        }
+        for (int i = 1; i <= n; ++ i ) {
+            if (((state & (1 << i)) == 0) && ( i % pos == 0 || pos % i == 0)) {
+                dfs(state | 1 << i, sum + i, pos + 1);
+            }
+        }
+    }
+    int countArrangement(int N) {
+        n = N, tot = (1 + n) * n / 2, res = 0;
+        for (int i = 1; i <= n; ++ i ) {
+            // if ((i % 1) == 0 || (1 % i) == 0) // 隐含条件
+            dfs(1 << i, i, 2);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 进阶
 
 > [!NOTE] **[AcWing 524. 愤怒的小鸟](https://www.acwing.com/problem/content/526/)**
@@ -1224,6 +1302,153 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 691. 贴纸拼词](https://leetcode-cn.com/problems/stickers-to-spell-word/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> - 背包进阶+ 双重记忆化搜索
+> 
+>   注意不是按次数是按位
+> 
+>   1. 状态表示字母有没有满足
+> 
+>   2. 剪枝：枚举下一个单词选哪个 加了某个字母之后回到哪个状态【记忆化】
+> 
+>   3. 爆搜已满足的所有字母【同样记忆化】
+> 
+> - 直接状压dp
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+const int N = 1 << 15;
+int f[N], g[N][26];
+
+class Solution {
+public:
+    const int INF = 20;
+    int n;
+    string target;
+    vector<string> strs;
+
+    int fill(int state, char c) {
+        auto& v = g[state][c - 'a'];
+        if (v != -1) return v;
+        v = state;
+        for (int i = 0; i < n; i ++ )
+            if (!(state >> i & 1) && target[i] == c) {
+                v += 1 << i;
+                break;
+            }
+        return v;
+    }
+
+    int dfs(int state) {
+        auto& v = f[state];
+        if (v != -1) return v;
+        if (state == (1 << n) - 1) return v = 0;
+        v = INF;
+        for (auto& str: strs) {
+            int cur = state;
+            for (auto c: str)
+                cur = fill(cur, c);
+            if (cur != state)
+                v = min(v, dfs(cur) + 1);
+        }
+        return v;
+    }
+
+    int minStickers(vector<string>& stickers, string _target) {
+        memset(f, -1, sizeof f);
+        memset(g, -1, sizeof g);
+        target = _target;
+        strs = stickers;
+        n = target.size();
+        int res = dfs(0);
+        if (res == INF) res = -1;
+        return res;
+    }
+};
+```
+
+##### **C++ 状压**
+
+```cpp
+#define N 15
+#define M 50
+
+class Solution {
+private:
+    int f[1 << N], seen[M][26];
+
+public:
+    int minStickers(vector<string>& stickers, string target) {
+        const int n = target.size();
+        vector<vector<int>> pos(26);
+
+        for (int i = 0; i < n; i ++ )
+            pos[target[i] - 'a'].push_back(i);
+
+        vector<int> used;
+        for (int c = 0; c < 26; c ++ )
+            if (!pos[c].empty())
+                used.push_back(c);
+
+        const int m = stickers.size();
+        const int INF = 1000000000;
+
+        for (int i = 0; i < m; i ++ ) {
+            memset(seen[i], 0, sizeof(seen[i]));
+            for (char c : stickers[i])
+                seen[i][c - 'a'] ++ ;
+        }
+
+        for (int s = 1; s < (1 << n); s ++ )
+            f[s] = INF;
+
+        f[0] = 0;
+
+        for (int s = 0; s < (1 << n) - 1; s ++ ) {
+            if (f[s] == INF) continue;
+
+            for (int i = 0; i < m; i ++ ) {
+                int t = s;
+                for (char c : used)
+                    for (int j = 0, k = 0; j < pos[c].size() && k < seen[i][c]; j ++ , k ++ )
+                        if ((s >> pos[c][j]) & 1) k -- ;
+                        else t |= 1 << pos[c][j];
+
+                f[t] = min(f[t], f[s] + 1);
+            }
+        }
+
+        if (f[(1 << n) - 1] == INF)
+            return -1;
+
+        return f[(1 << n) - 1];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 三进制状压
 
 对于三进制的状态压缩题目，可以考虑使用 `limit << 1` 的形式也可以使用 `pow(3, M)` 的形式
@@ -1505,6 +1730,96 @@ public:
         for (auto v : st)
             res = (res + f[n][v]) % MOD;
         return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 八进制状压
+
+> [!NOTE] **[LeetCode 638. 大礼包](https://leetcode-cn.com/problems/shopping-offers/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 7进制背包 记忆化
+> 
+> 枚举大礼包和当前剩余需求
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 本质是一个完全背包问题
+    // 最多有六个维度 大礼包个物品
+    // 直接写 7*10^7 容易超时
+
+    // needs 改为八进制数 方便位运算 避免高维数组
+    
+    int n;
+    vector<vector<int>> f;
+    vector<int> price;
+    vector<vector<int>> special;
+
+    int dp(int x, int y) {
+        if (f[x][y] != -1) return f[x][y];
+        if (!x) {
+            // 剩余物品散装买
+            f[x][y] = 0;
+            for (int i = 0; i < n; ++ i ) {
+                int c = y >> i * 3 & 7;
+                f[x][y] += c * price[i];
+            }
+            return f[x][y];
+        }
+        // 不买当前大礼包
+        f[x][y] = dp(x - 1, y);
+        // 买当前大礼包
+        int state = 0;
+        // 当前大礼包是 s 
+        auto s = special[x - 1];
+        for (int i = n - 1; i >= 0; -- i ) {
+            int c = y >> i * 3 & 7;
+            if (c < s[i]) {
+                // 个数超
+                state = -1;
+                break;
+            }
+            state = state * 8 + c - s[i];
+        }
+        if (state != -1)
+            // 买后 dp(x, state) + s.back() 其中s.back()大礼包价格
+            f[x][y] = min(f[x][y], dp(x, state) + s.back());
+        return f[x][y];
+    }
+
+    int shoppingOffers(vector<int>& price, vector<vector<int>>& special, vector<int>& needs) {
+        this->price = price;
+        this->special = special;
+        n = price.size();
+        f = vector<vector<int>>(special.size() + 1, vector<int>(1 << n * 3, -1));
+        int state = 0;
+        for (int i = needs.size() - 1; i >= 0; -- i )
+            state = state * 8 + needs[i];
+        return dp(special.size(), state);
     }
 };
 ```

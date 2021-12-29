@@ -39,3 +39,92 @@ $21-3\times 3!=3$，$\lfloor\frac {3}{2!}\rfloor=1$，有一个数小于它，�
 让 $3-1\times 2!=1$，有一个数小于它，这一位是剩下来的第二位，$4$，剩下一位就是 $1$。即 $[2,5,3,4,1]$。
 
 实际上我们得到了形如 **有两个数小于它** 这一结论，就知道它是当前第 $3$ 个没有被选上的数，这里也可以用线段树维护，时间复杂度为 $O(n\log n)$。
+
+> [!NOTE] **[LeetCode 60. 排列序列](https://leetcode-cn.com/problems/permutation-sequence/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 1**
+
+```cpp
+class Solution {
+public:
+    string getPermutation(int n, int k) {
+        string res;
+        vector<bool> st(n);
+
+        for (int i = 0; i < n; ++ i ) {
+            // 剩下的个数
+            int f = 1;
+            for (int j = 1; j < n - i; ++ j ) f *= j;
+
+            for (int j = 0; j < n; ++ j )
+                if (!st[j]) {
+                    if (k <= f) {
+                        res += to_string(j + 1);
+                        st[j] = true;
+                        break;
+                    }
+                    k -= f;
+                }
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    string getPermutation(int n, int k) {
+        string res;
+        for (int i = 1; i <= n; i ++ ) res += to_string(i);
+        for (int i = 0; i < k - 1; i ++ ) {
+            next_permutation(res.begin(), res.end());
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 2**
+
+```cpp
+class Solution {
+public:
+    // 康托展开和逆康托展开  https://blog.csdn.net/ajaxlt/article/details/86544074
+    string getPermutation(int n, int k) {
+        int fac[10] = {1};
+        for (int i = 1; i < 10; ++ i ) fac[i] = fac[i - 1] * i;
+        k = k - 1;
+        vector<char> chs = {'1','2','3','4','5','6','7','8','9'};
+        string res;
+        while (n -- ) {
+            int min = k / fac[n]; // 得到小的个数
+            res += chs[min];
+            chs.erase(chs.begin() + min);
+            k %= fac[n];
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

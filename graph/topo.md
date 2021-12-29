@@ -955,3 +955,243 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 207. 课程表](https://leetcode-cn.com/problems/course-schedule/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 旧**
+
+```cpp
+class Solution {
+public:
+    bool dfs(int u, vector<vector<int>>& es, vector<int>& c) {
+        c[u] = -1;
+        for (auto v : es[u]) {
+            if (c[v] < 0) return false;
+            else if(!c[v] && !dfs(v, es, c)) return false;
+        }
+        c[u] = 1;
+        return true;
+    }
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+        vector<vector<int>> es(numCourses);
+        for (auto e : prerequisites) {
+            es[e[1]].push_back(e[0]);
+        }
+        vector<int> c(numCourses);
+        for (int u = 0; u < numCourses; ++ u )
+            if (!c[u])
+                if(!dfs(u, es, c))
+                    return false;
+        
+        return true;
+    }
+};
+```
+
+##### **Python**
+
+```python
+# topsort 排序
+# 在图论中，拓扑排序（Topological Sorting）是一个有向无环图（DAG, Directed Acyclic Graph）的所有顶点的线性序列。且该序列必须满足下面两个条件：
+# 每个顶点出现且只出现一次。
+# 若存在一条从顶点 A 到顶点 B 的路径，那么在序列中顶点 A 出现在顶点 B 的前面。
+
+
+
+class Solution:
+    def canFinish(self, n: int, pre: List[List[int]]) -> bool:
+        N=10**5+10
+        h=[-1]*N
+        ev=[0]*N
+        ne=[0]*N
+        idx=0
+        d=[0]*N 
+        res=[]
+
+        def add(a,b):
+            nonlocal idx
+            ev[idx]=b 
+            ne[idx]=h[a]
+            h[a]=idx
+            idx+=1
+
+        def topsort():
+            from collections import deque
+            q=deque()
+            for i in range(n):
+                if d[i]==0:
+                    q.append(i)
+            while q:
+                t=q.popleft()
+                res.append(t)
+                i=h[t]
+                while i!=-1:
+                    j=ev[i]
+                    d[j]-=1
+                    if d[j]==0:
+                        q.append(j)
+                    i=ne[i]
+            return len(res)==n
+
+        for i in range(len(pre)):
+            a,b=pre[i][0],pre[i][1]
+            add(a,b)
+            d[b]+=1
+        
+        if topsort():
+            return True
+        else:
+            return False
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 210. 课程表 II](https://leetcode-cn.com/problems/course-schedule-ii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 1. 迭代
+    vector<int> findOrder(int n, vector<vector<int>>& edges) {
+        vector<vector<int>> g(n);
+        vector<int> d(n);
+        for (auto& e: edges) {
+            int b = e[0], a = e[1];
+            g[a].push_back(b);
+            d[b] ++ ;
+        }
+        queue<int> q;
+        for (int i = 0; i < n; i ++ )
+            if (d[i] == 0)
+                q.push(i);
+
+        vector<int> res;
+        while (q.size()) {
+            auto t = q.front();
+            q.pop();
+            res.push_back(t);
+            for (int i: g[t])
+                if ( -- d[i] == 0)
+                    q.push(i);
+        }
+        if (res.size() < n) res = {};
+        return res;
+    }
+
+    // 2. 递归
+    int t;
+    bool dfs(int u, vector<vector<int>>& G, vector<int>& c, vector<int>& topo) {
+        c[u] = -1;
+        for (auto v : G[u]) {
+            if (c[v] < 0) return false;
+            else if (!c[v] && !dfs(v, G, c, topo)) return false;
+        }
+        c[u] = 1;
+        topo[ -- t] = u;
+        return true;
+    }
+    vector<int> findOrder_2(int n, vector<vector<int>>& prerequisites) {
+        t = n;
+        vector<vector<int>> G(n);
+        for (auto v : prerequisites) G[v[1]].push_back(v[0]);
+        vector<int> c(n);
+        vector<int> topo(n);
+
+        for (int u = 0; u < n; ++ u )
+            if (!c[u])
+                if(!dfs(u, G, c, topo)) return vector<int>{};
+        
+        return topo;
+    }
+};
+```
+
+##### **Python**
+
+```python
+# topsort 排序
+# 在图论中，拓扑排序（Topological Sorting）是一个有向无环图（DAG, Directed Acyclic Graph）的所有顶点的线性序列。且该序列必须满足下面两个条件：
+# 每个顶点出现且只出现一次。
+# 若存在一条从顶点 A 到顶点 B 的路径，那么在序列中顶点 A 出现在顶点 B 的前面。
+
+
+
+class Solution:
+    def findOrder(self, n: int, pre: List[List[int]]) -> List[int]:
+        N=10**5+10
+        h=[-1]*N
+        ev=[0]*N
+        ne=[0]*N
+        idx=0
+        d=[0]*N 
+        res=[]
+
+        def add(a,b):
+            nonlocal idx
+            ev[idx]=b 
+            ne[idx]=h[a]
+            h[a]=idx
+            idx+=1
+
+        def topsort():
+            from collections import deque
+            q=deque()
+            for i in range(n):
+                if d[i]==0:
+                    q.append(i)
+            while q:
+                t=q.popleft()
+                res.append(t)
+                i=h[t]
+                while i!=-1:
+                    j=ev[i]
+                    d[j]-=1
+                    if d[j]==0:
+                        q.append(j)
+                    i=ne[i]
+            return len(res)==n
+
+        for i in range(len(pre)):
+            a,b=pre[i][1],pre[i][0]
+            add(a,b)
+            d[b]+=1
+        
+        if topsort():
+            return res
+        else:
+            return []
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

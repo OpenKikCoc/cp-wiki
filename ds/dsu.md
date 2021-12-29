@@ -232,6 +232,208 @@ if __name__ == '__main__':
 
 * * *
 
+> [!NOTE] **[LeetCode 684. 冗余连接](https://leetcode-cn.com/problems/redundant-connection/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<int> p;
+    int find(int x) {
+        if (p[x] != x) return p[x] = find(p[x]);
+        return p[x];
+    }
+    vector<int> findRedundantConnection(vector<vector<int>>& edges) {
+        int n = edges.size();
+        p.resize(n + 1);
+        for (int i = 1; i <= n; ++ i ) p[i] = i;
+
+        for (auto & e : edges) {
+            int a = find(e[0]), b = find(e[1]);
+            if (a != b) p[a] = p[b];
+            else return e;
+        }
+        return {};
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
+> [!NOTE] **[LeetCode 685. 冗余连接 II](https://leetcode-cn.com/problems/redundant-connection-ii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> arjan找环 理清楚几种情况
+> 
+> 优雅的实现思路
+> 
+> 1. 出现了环 （有一条边连向了根结点）删掉一边即可
+> 2. 无环 但某个点入度为二（某个一子树节点连向了另一子树节点）去除两个入度的任意一个都可
+> 3. 环且某个点入度为二（某个节点连向了其祖先节点）只能删掉12情况的公共边
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ tarjan**
+
+```cpp
+class Solution {
+public:
+    int n;
+    vector<bool> st1, st2, st, in_k, in_c;
+    vector<vector<int>> g;
+    stack<int> stk;
+
+    bool dfs(int u) {
+        st[u] = true;
+        stk.push(u), in_k[u] = true;
+
+        for (int x : g[u]) {
+            if (!st[x]) {
+                if (dfs(x))
+                    return true;
+            } else if (in_k[x]) {
+                while (stk.top() != x) {
+                    in_c[stk.top()] = true;
+                    stk.pop();
+                }
+                in_c[x] = true;
+                return true;
+            }
+        }
+
+        stk.pop(), in_k[u] = false;
+        return false;
+    }
+
+    void work1(vector<vector<int>> & edges) {
+        for (auto & e : edges) {
+            int a = e[0], b = e[1];
+            g[a].push_back(b);
+        }
+        for (int i = 1; i <= n; ++ i )
+            if (!st[i] && dfs(i))
+                break;
+        for (int i = 0; i < n; ++ i ) {
+            int a = edges[i][0], b = edges[i][1];
+            if (in_c[a] && in_c[b])
+                st1[i] = true;
+        }
+    }
+
+    void work2(vector<vector<int>> & edges) {
+        vector<int> p(n + 1, -1);
+        for (int i = 0; i < n; ++ i ) {
+            int a = edges[i][0], b = edges[i][1];
+            if (p[b] != -1) {
+                st2[p[b]] = st2[i] = true;
+                break;
+            } else
+                p[b] = i;
+        }
+    }
+
+    vector<int> findRedundantDirectedConnection(vector<vector<int>>& edges) {
+        n = edges.size();
+        st1 = st2 = st = in_k = in_c = vector<bool>(n + 1);
+        g.resize(n + 1);
+        work1(edges);
+        work2(edges);
+
+        for (int i = n - 1; i >= 0; -- i )
+            if (st1[i] && st2[i])
+                return edges[i];
+        for (int i = n - 1; i >= 0; -- i )
+            if (st1[i] || st2[i])
+                return edges[i];
+        return {};
+    }
+};
+```
+
+##### **C++ 旧代码 并查集**
+
+```cpp
+struct UnionFind {
+    vector<int> fa;
+    UnionFind(int n) {
+        fa.resize(n);
+        for (int i = 0; i < n; ++ i ) fa[i] = i;
+    }
+    int find(int x) {
+        if (fa[x] == x) return x;
+        return fa[x] = find(fa[x]);
+    }
+    void merge(int u, int v) {
+        fa[find(u)] = find(v);
+    }
+};
+
+class Solution {
+public:
+    vector<int> findRedundantDirectedConnection(vector<vector<int>>& edges) {
+        int n = edges.size();
+        UnionFind uf = UnionFind(n+1);
+        vector<int> pa(n + 1);
+        for (int i = 1; i <= n; ++ i ) pa[i] = i;
+        int conflict = -1, cycle = -1;
+        for (int i = 0; i < n; ++ i ) {
+            int u = edges[i][0], v = edges[i][1];
+            if (pa[v] != v) conflict = i;       // v作为后继已经有了前序
+            else {
+                pa[v] = u;
+                if (uf.find(u) == uf.find(v)) cycle = i;      // 成环
+                else uf.merge(u, v);
+            }
+        }
+        if (conflict < 0) return edges[cycle];
+        else {
+            if (cycle < 0) return edges[conflict];
+            else return vector<int>{pa[edges[conflict][1]], edges[conflict][1]};
+        }
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 ### 带权并查集
 
@@ -300,6 +502,150 @@ int main() {
 ##### **Python**
 
 ```python
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode ]()**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 并查集 OR floyd
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ DSU**
+
+```cpp
+// 带权并查集
+class Solution {
+public:
+    unordered_map<string, string> p;  //记录祖先节点
+    unordered_map<string, double> d;  //到祖先节点的距离
+
+    string find (string x) {
+        if (p[x] != x) {
+            string t = find(p[x]);
+            d[x] *= d[p[x]];  //p[x] / root
+            p[x] = t;
+        }
+        return p[x];
+    }
+
+    vector<double> calcEquation(vector<vector<string>>& equations, vector<double>& values, vector<vector<string>>& queries) {
+        //初始化所有节点
+        for (int i = 0; i < equations.size(); i ++ ) {
+            string a = equations[i][0], b = equations[i][1];
+            p[a] = a, p[b] = b;
+            d[a] = 1, d[b] = 1;
+        }
+        //集合合并
+        for (int i = 0; i < equations.size(); i ++ ) {
+            string a = equations[i][0], b = equations[i][1];
+            // ra -> b
+            string ra = find(a); //找到a的祖先节点
+            //更新ra节点
+            p[ra] = b;
+            d[ra] = values[i] / d[a];
+        }
+        vector<double> res;
+        for (auto q : queries) {
+            string a = q[0], b = q[1];
+            //如果a、b处于同一集合会自动算出d[a]和d[b]
+            if (!p.count(a) || !p.count(b) || find(a) != find(b))
+                res.push_back(-1.0);
+            else
+                res.push_back(d[a] / d[b]);
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ floyd**
+
+```cpp
+// floyd 连通性
+class Solution {
+public:
+    vector<double> calcEquation(vector<vector<string>>& equations, vector<double>& values, vector<vector<string>>& queries) {
+        unordered_set<string> vers;
+        unordered_map<string, unordered_map<string, double>> d;
+        for (int i = 0; i < equations.size(); ++ i ) {
+            auto a = equations[i][0], b = equations[i][1];
+            auto c = values[i];
+            d[a][b] = c, d[b][a] = 1 / c;
+            vers.insert(a), vers.insert(b);
+        }
+        for (auto k : vers)
+            for (auto i : vers)
+                for (auto j : vers)
+                    if (d[i][k] && d[k][j])
+                        d[i][j] = d[i][k] * d[k][j];
+        vector<double> res;
+        for (auto q : queries) {
+            auto a = q[0], b = q[1];
+            if (d[a][b]) res.push_back(d[a][b]);
+            else res.push_back(-1);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+"""
+题解：建立有向图 + BFS。我们可以按照给定的关系去建立一个有向图，如果当前a / b = 2.0，那么w[a][b] = 2.0,w[b][a] = 0.5，询问假设为x / y，如果我们能从x出发通过BFS到达y，那么路径上的乘积就是我们需要的答案。如果待查询的字符串没有遇到过或者无法遍历到，就返回-1。
+
+"""
+
+class Solution(object):
+    def calcEquation(self, equations, values, queries):
+        """
+        :type equations: List[List[str]]
+        :type values: List[float]
+        :type queries: List[List[str]]
+        :rtype: List[float]
+        """
+        vertex = set()
+        path = collections.defaultdict(dict)
+        for (a, b), v in zip(equations, values):
+            path[a][b] = v
+            path[b][a] = 1/v
+            # 把记录过的点加入到vertex里去
+            vertex.add(a)
+            vertex.add(b)
+
+        # 把所有的点之间的距离都求出来，后面遍历就行了
+        for k in vertex:
+            for i in vertex:
+                for j in vertex:
+                    # i/k * j/k = i/k, 得到i ~ k的距离
+                    if k in path[i].keys() and j in path[k].keys():
+                        path[i][j] = path[i][k] * path[k][j]
+
+        res = []
+        for q in queries:
+            up = q[0]
+            down = q[1]
+            # up/down 存在，返回结果
+            if down in path[up].keys():
+                res.append(path[up][down])
+            else:
+                res.append(-1)
+
+        return res
 ```
 
 <!-- tabs:end -->

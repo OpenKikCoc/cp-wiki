@@ -558,10 +558,2035 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 592. 分数加减运算](https://leetcode-cn.com/problems/fraction-addition-and-subtraction/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    string fractionAddition(string expression) {
+        int n = 0;
+        for (auto c :expression)
+            if (c == '/')
+                ++ n;
+        expression = '+' + expression;
+        // 初始 0/1
+        int a = 0, b = 1, offset = 0;
+        int c, d;
+        char e;
+        for (int i = 0; i < n; ++ i ) {
+            // 对于 +-3/15 e读取+ c读-3 d读15
+            // 对于  3/15  e读取+ c读3 d读15
+            sscanf(expression.c_str() + offset, "%c%d/%d", &e, &c, &d);
+            offset += (e + to_string(c) + '/' + to_string(d)).size();
+            if (e == '-') c = -c;
+            // x 分子     y 分母
+            int x = a * d + b * c, y = b * d;
+            int z = __gcd(x, y);
+            a = x / z, b = y / z;
+        }
+        if (b < 0) a = -a, b = -b;
+        return to_string(a) + '/' + to_string(b);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 68. 文本左右对齐](https://leetcode-cn.com/problems/text-justification/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 一行一行处理，每次先求出这一行最多可以放多少个单词，然后分三种情况处理：
+> 
+> - 如果是最后一行，则只实现左对齐：每个单词之间插入一个空格，行尾插入若干空格，使这一行的总长度是 maxWidth；
+> - 如果这一行只有一个单词，则直接在行尾补上空格；
+> - 其他情况，则需计算总共要填补多少空格，然后按题意均分在单词之间；
+> 
+> 时间复杂度分析：每个单词只会遍历一遍，所以总时间复杂度是 O(n)
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    string space(int x) {
+        string res;
+        while (x -- ) res += ' ';
+        return res;
+    }
+
+    vector<string> fullJustify(vector<string>& words, int maxWidth) {
+        vector<string> res;
+        for (int i = 0; i < words.size();) {
+            int j = i + 1, s = words[i].size(), rs = words[i].size();
+            while (j < words.size() && s + 1 + words[j].size() <= maxWidth) {
+                s += 1 + words[j].size();
+                rs += words[j].size();
+                j ++ ;
+            }
+            rs = maxWidth - rs;
+            string line = words[i];
+            if (j == words.size()) {
+                for (i ++; i < j; i ++ )
+                    line += ' ' + words[i];
+                while (line.size() < maxWidth) line += ' ';
+            } else if (j - i == 1) line += space(rs);
+            else {
+                int base = rs / (j - i - 1);
+                int rem = rs % (j - i - 1);
+                i ++ ;
+                for (int k = 0; i < j; i ++, k ++ )
+                    line += space(base + (k < rem)) + words[i];
+            }
+            i = j;
+            res.push_back(line);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 71. 简化路径](https://leetcode-cn.com/problems/simplify-path/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    string simplifyPath(string path) {
+        string res, name;
+        if (path.back() != '/') path += '/'; // ATTENTION
+        for (auto c : path) {
+            if (c != '/') name += c;
+            else {
+                if (name == "..") {
+                    while (res.size() && res.back() != '/') res.pop_back();
+                    if (res.size()) res.pop_back();
+                } else if (name != "." && name != "") {
+                    res += '/' + name;
+                }
+                name.clear();
+            }
+        }
+
+        if (res.empty()) res = "/";
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+"""
+path = "/a/./b/../../c/": 
+解释： 进入a， '.'表示在当前目录不操作，然后进入b, 然后有两个 '..'，把a 和 b 都弹出来的
+
+我们可以把整个路径看作是一个动态的“进入某个子目录”或“返回上级目录”的过程。
+所以我们可以模拟这个过程，用 res 记录当前的路径位置：
+1. 如果遇到 ".."，则返回上级目录；
+2. 如果遇到 "."或多余的斜杠，则不做任何处理：
+3. 其它情况，表示进入某个子目录，我们在 res 后面补上新路径即可；
+
+"""
+class Solution:
+    def simplifyPath(self, path: str) -> str:
+        res = []
+        for c in path.split("/"):
+            if c not in [".", "..", ""]:
+                res.append(c)
+            if res and c == "..":
+                res.pop()
+        return "/" + "/".join(res)
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 80. 删除排序数组中的重复项 II](https://leetcode-cn.com/problems/remove-duplicates-from-sorted-array-ii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 优雅写法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int removeDuplicates(vector<int>& nums) {
+        int k = 0;
+        for (auto x : nums)
+            if (k < 2 || (nums[k - 1] != x || nums[k - 2] != x))
+                nums[k ++ ] = x;
+        return k;
+    }
+};
+```
+
+##### **Python**
+
+```python
+# 一个指针存储的有效数字，一个指针往后走
+# 由于相同的数字可以保存两个，所以可以用当前数和第前2个数相比较
+
+class Solution:
+    def removeDuplicates(self, nums: List[int]) -> int:
+        n = len(nums)
+        if n < 2:return n 
+        p1 = 1 
+        for p2 in range(2, n):
+            if nums[p2] != nums[p1 - 1]:
+                p1 += 1
+                nums[p1] = nums[p2]
+        return p1 + 1
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 149. 直线上最多的点数](https://leetcode-cn.com/problems/max-points-on-a-line/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ new**
+
+```cpp
+class Solution {
+public:
+    int maxPoints(vector<vector<int>>& points) {
+        typedef long double LD;
+
+        int res = 0;
+        for (auto& p: points) {
+            int ss = 0, vs = 0;
+            unordered_map<LD, int> cnt;
+            for (auto& q: points)
+                if (p == q) ss ++ ;
+                else if (p[0] == q[0]) vs ++ ;
+                else {
+                    LD k = (LD)(q[1] - p[1]) / (q[0] - p[0]);
+                    cnt[k] ++ ;
+                }
+            int c = vs;
+            for (auto [k, t]: cnt) c = max(c, t);
+            res = max(res, c + ss);
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ old**
+
+```cpp
+class Solution {
+public:
+    int maxPoints(vector<Point>& points) {
+        if (points.empty()) return 0;
+        int res = 1;
+        for (int i = 0; i < points.size(); i ++ ) {
+            unordered_map<long double, int> map;
+            int duplicates = 0, verticals = 1;
+
+            for (int j = i + 1; j < points.size(); j ++ )
+                if (points[i].x == points[j].x) {
+                    verticals ++ ;
+                    if (points[i].y == points[j].y) duplicates ++ ;
+                }
+
+            for (int j = i + 1; j < points.size(); j ++ )
+                if (points[i].x != points[j].x) {
+                    long double slope = (long double)(points[i].y - points[j].y) / (points[i].x - points[j].x);
+                    if (map[slope] == 0) map[slope] = 2;
+                    else map[slope] ++ ;
+                    res = max(res, map[slope] + duplicates);
+                }
+
+            res = max(res, verticals);
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ abandon**
+
+```cpp
+class Solution {
+public:
+    int maxPoints(vector<vector<int>>& points) {
+        int len = points.size();
+        if (len < 3) return len;
+        int result = 0;
+        for (int i = 0; i < len; ++ i ) {
+            int duplicate = 0;
+            int curMax = 0;
+            unordered_map<string, int> oneline;
+            for (int j = i+1; j < len; ++ j ) {
+                if (points[i][0] == points[j][0] && points[i][1] == points[j][1]) {
+                    duplicate += 1;
+                    continue;
+                }
+                int diffX = points[i][0] - points[j][0];
+                int diffY = points[i][1] - points[j][1];
+                int tmp = gcd(diffX, diffY);
+                string key = to_string(diffX/tmp) + "/" + to_string(diffY/tmp);
+
+                oneline[key] ++ ;
+                curMax = max(curMax, oneline[key]);
+            }
+            result = max(result, curMax + duplicate + 1);
+        }
+        return result;
+    }
+    int gcd(int a, int b) {
+        if (b) return gcd(b, a % b);
+        return a;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 290. 单词规律](https://leetcode-cn.com/problems/word-pattern/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    bool wordPattern(string pattern, string str) {
+        vector<string> ws;
+        string w;
+        stringstream ssin(str);
+        while (ssin >> w) ws.push_back(w);
+        if (pattern.size() != ws.size()) return false;
+        unordered_map<char, string> pw;
+        unordered_map<string, char> wp;
+        for (int i = 0; i < pattern.size(); ++ i ) {
+            auto p = pattern[i];
+            auto w = ws[i];
+            if (pw.count(p) && pw[p] != w) return false;
+            pw[p] = w;
+            if (wp.count(w) && wp[w] != p) return false;
+            wp[w] = p;
+        }
+        return true;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 498. 对角线遍历](https://leetcode-cn.com/problems/diagonal-traverse/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 优雅遍历方式
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<int> findDiagonalOrder(vector<vector<int>>& w) {
+        vector<int> res;
+        if (w.empty() || w[0].empty()) return res;
+        int n = w.size(), m = w[0].size();
+        for (int i = 0; i < n + m -1; ++ i ) {
+            if (i % 2 == 0)
+                for (int j = min(i, n - 1); j >= max(0, 1 - m + i); -- j )
+                    res.push_back(w[j][i - j]);
+            else
+                for (int j = max(0, 1 - m + i); j <= min(i, n - 1); ++ j )
+                    res.push_back(w[j][i - j]);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 649. Dota2 参议院](https://leetcode-cn.com/problems/dota2-senate/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    string predictPartyVictory(string senate) {
+        int n = senate.size();
+        queue<int> r, d;
+        for (int i = 0; i < n; ++ i )
+            if (senate[i] == 'R') r.push(i);
+            else d.push(i);
+
+        while (r.size() && d.size()) {
+            if (r.front() < d.front()) r.push(r.front() + n);
+            else d.push(d.front() + n);
+            // 思想
+            r.pop(), d.pop();
+        }
+        return r.size() ? "Radiant" : "Dire";
+    }
+}
+```
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    string predictPartyVictory(string senate) {
+        set<int> R, D, A;
+        int n = senate.size();
+        for (int i = 0; i < n; ++ i ) {
+            if (senate[i] == 'R') R.insert(i);
+            else D.insert(i);
+            A.insert(i);
+        }
+            
+        for (;;) {
+            for (auto i : A)
+                if (senate[i] == 'R') {
+                    if (D.empty()) return "Radiant";
+                    else {
+                        auto t = D.lower_bound(i);
+                        if (t == D.end()) t = D.begin();
+                        A.erase(*t);
+                        D.erase(*t);
+                    }
+                } else {
+                    if (R.empty()) return "Dire";
+                    else {
+                        auto t = R.lower_bound(i);
+                        if (t == R.end()) t = R.begin();
+                        A.erase(*t);
+                        R.erase(*t);
+                    }
+                }
+        }
+        return "";
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 715. Range 模块](https://leetcode-cn.com/problems/range-module/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 复杂模拟 使用哨兵数值
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+typedef pair<int, int> PII;
+const int INF = 2e9;
+
+#define x first
+#define y second
+
+class RangeModule {
+public:
+    set<PII> S;
+
+    RangeModule() {
+        S.insert({-INF, -INF});
+        S.insert({INF, INF});
+    }
+
+    void addRange(int left, int right) {
+        auto i = S.lower_bound({left, -INF});
+        i -- ;
+        if (i->y < left) i ++ ;
+        if (i->x > right) {
+            S.insert({left, right});
+        } else {
+            // 已有区间的左侧在当前区间的范围内
+            // j 找到所有将要被合并的区间
+            auto j = i;
+            while (j->x <= right) j ++ ;
+            j -- ;
+            // 合并后的新区间
+            PII t(min(i->x, left), max(j->y, right));
+            while (i != j) {
+                // 写法
+                auto k = i;
+                k ++ ;
+                S.erase(i);
+                i = k;
+            }
+            S.erase(i);
+            S.insert(t);
+        }
+    }
+
+    bool queryRange(int left, int right) {
+        auto i = S.upper_bound({left, INF});
+        i -- ;
+        return i->y >= right;
+    }
+
+    vector<PII> get(PII a, PII b) {
+        vector<PII> res;
+        if (a.x < b.x) {
+            if (a.y > b.y) {
+                res.push_back({a.x, b.x});
+                res.push_back({b.y, a.y});
+            } else {
+                res.push_back({a.x, b.x});
+            }
+        } else {
+            if (a.y > b.y) res.push_back({b.y, a.y});
+        }
+        return res;
+    }
+
+    void removeRange(int left, int right) {
+        auto i = S.lower_bound({left, -INF});
+        i -- ;
+        if (i->y < left) i ++ ;
+        if (i->x <= right) {
+            // 已有区间和待删除区间有交集
+            auto j = i;
+            while (j->x <= right) j ++ ;
+            j -- ;
+
+            // 切割区间
+            auto a = get(*i, {left, right});
+            auto b = get(*j, {left, right});
+            while (i != j) {
+                auto k = i;
+                k ++ ;
+                S.erase(i);
+                i = k;
+            }
+            S.erase(i);
+            for (auto t: a) S.insert(t);
+            for (auto t: b) S.insert(t);
+        }
+    }
+};
+
+/**
+ * Your RangeModule object will be instantiated and called as such:
+ * RangeModule* obj = new RangeModule();
+ * obj->addRange(left,right);
+ * bool param_2 = obj->queryRange(left,right);
+ * obj->removeRange(left,right);
+ */
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 721. 账户合并](https://leetcode-cn.com/problems/accounts-merge/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<int> p;
+    int find(int x) {
+        if (p[x] != x) return p[x] = find(p[x]);
+        return p[x];
+    }
+
+    vector<vector<string>> accountsMerge(vector<vector<string>>& accounts) {
+        int n = accounts.size();
+        p.resize(n);
+        for (int i = 0; i < n; ++ i ) p[i] = i;
+
+        unordered_map<string, int> rt;
+        for (int i = 0; i < n; ++ i ) {
+            int sz = accounts[i].size();
+            for (int j = 1; j < sz; ++ j )
+                if (rt.count(accounts[i][j])) p[find(i)] = p[find(rt[accounts[i][j]])];
+                else rt[accounts[i][j]] = i;
+        }
+
+        vector<vector<string>> res;
+        unordered_map<int, vector<string>> ve;
+        for (auto & [e, root] : rt) ve[find(root)].push_back(e);
+        for (auto & [root, es] : ve) {
+            sort(es.begin(), es.end());
+            vector<string> t;
+            t.push_back(accounts[root][0]);
+            for (auto & e : es) t.push_back(e);
+            res.push_back(t);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 794. 有效的井字游戏](https://leetcode-cn.com/problems/valid-tic-tac-toe-state/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 优雅实现细节
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<string> g;
+
+    int get(char c) {
+        int res = 0;
+        for (int i = 0; i < 3; i ++ )
+            for (int j = 0; j < 3; j ++ )
+                if (g[i][j] == c)
+                    res ++ ;
+        return res;
+    }
+
+    bool check(char c) {
+        for (int i = 0; i < 3; i ++ ) {
+            if (g[i][0] == c && g[i][1] == c && g[i][2] == c) return true;
+            if (g[0][i] == c && g[1][i] == c && g[2][i] == c) return true;
+        }
+        if (g[0][0] == c && g[1][1] == c && g[2][2] == c) return true;
+        if (g[0][2] == c && g[1][1] == c && g[2][0] == c) return true;
+        return false;
+    }
+
+    bool validTicTacToe(vector<string>& board) {
+        g = board;
+        bool cx = check('X'), co = check('O');
+        if (cx && co) return false;
+        int sx = get('X'), so = get('O');
+        if (cx && sx != so + 1) return false;
+        if (co && sx != so) return false;
+        if (sx != so && sx != so + 1) return false;
+        return true;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 字符串处理
+
+> [!NOTE] **[LeetCode 388. 文件的最长绝对路径](https://leetcode-cn.com/problems/longest-absolute-file-path/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int lengthLongestPath(string input) {
+        stack<int> stk;
+        int res = 0;
+        for (int i = 0, sum = 0; i < input.size(); i ++ ) {
+            int k = 0;
+            while (i < input.size() && input[i] == '\t') i ++ , k ++ ;
+            while (stk.size() > k) sum -= stk.top(), stk.pop();
+            int j = i;
+            while (j < input.size() && input[j] != '\n') j ++ ;
+            int len = j - i;
+            stk.push(len), sum += len;
+            if (input.substr(i, len).find('.') != -1)
+                res = max(res, sum + (int)stk.size() - 1);
+            i = j;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 393. UTF-8 编码验证](https://leetcode-cn.com/problems/utf-8-validation/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int get(int x, int k) {
+        return x >> k & 1;
+    }
+    bool validUtf8(vector<int>& data) {
+        for (int i = 0; i < data.size(); ++ i ) {
+            // 1 字节
+            if (!get(data[i], 7)) continue;
+            int k = 0;
+            while (k <= 4 && get(data[i], 7 - k)) ++ k ;
+            if (k == 1 || k > 4) return false;
+            // 此时 k = n + 1 应为 0
+            for (int j = 0; j < k - 1; ++ j ) {
+                int t = i + 1 + j;
+                if (t >= data.size()) return false;
+                // 应为 1,0 开头
+                if (!(get(data[t], 7) && !get(data[t], 6))) return false;
+            }
+            i += k - 1;
+        }
+        return true;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 394. 字符串解码](https://leetcode-cn.com/problems/decode-string/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    string dfs(string & s, int & u) {
+        string res;
+        while (u < s.size() && s[u] != ']') {
+            if (s[u] >= 'a' && s[u] <= 'z' || s[u] >= 'A' && s[u] <= 'Z') res += s[u ++ ];
+            else if (s[u] >= '0' && s[u] <= '9') {
+                int k = u;
+                while (s[k] >= '0' && s[k] <= '9') ++ k ;
+                int x = stoi(s.substr(u, k - u));
+                // 左括号
+                u = k + 1;
+                string y = dfs(s, u);
+                u ++ ;  // 过滤右括号
+                while (x -- ) res += y;
+            }
+        }
+        return res;
+    }
+    string decodeString(string s) {
+        int u = 0;
+        return dfs(s, u);
+    }
+```
+
+##### **C++**
+
+```cpp
+    string decodeString(string s) {
+        string res;
+        stack<int> nums;
+        stack<string> strs;
+        int num = 0, len = s.size();
+        for (int i = 0; i < len; ++ i ) {
+            if (s[i] >= '0' && s[i] <= '9') num = num * 10 + s[i] - '0';
+            else if ((s[i] >= 'a' && s[i] <= 'z') || (s[i] >= 'A' && s[i] <= 'Z')) res.push_back(s[i]);
+            else if (s[i] == '[') {
+                nums.push(num);
+                num = 0;
+                strs.push(res);
+                res = "";
+            } else {
+                int times = nums.top();
+                nums.pop();
+                string top = strs.top();
+                strs.pop();
+                while (times -- ) top += res;
+                res = top;
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+# 法一：普通递归
+class Solution:
+    def decodeString(self, s: str) -> str:
+        u = 0
+        def dfs(s):
+            nonlocal u  # 踩坑1：u需要在递归里 进行变化，并且还在本层 有使用到，所有要用nonlocal
+            res = ''
+            while u < len(s) and s[u] != ']':
+                if s[u].isalpha(): #等价于if 'a' <= s[u] <= 'z' or 'A' <= s[u] <= 'Z':
+                    res += s[u]
+                    u += 1
+                elif s[u].isdigit():  #等价于 if '0' <= s[u] <= '1'
+                    k = u
+                    while s[k].isdigit():
+                        k += 1
+
+                    x = int(s[u:k])
+                    u = k + 1#跳过左括号
+                    y = dfs(s, u)
+                    u += 1 #跳过右括号
+
+                    while x:
+                        res += y
+                        x -= 1
+            return res
+        return dfs(s)
+
+#法二：辅助栈法 （ 遇到 “括号”类型的题 都可以想到用 栈 这个数据结构来辅助完成）
+# 栈里每次存储两个信息（左括号前的字符串，左括号前的数字）；比如abc3[def], 当遇到第一个左括号的时候，压入栈中的是("abc", 3), 然后遍历括号里面的字符串def, 当遇到右括号的时候, 从栈里面弹出一个元素(s1, n1), 得到新的字符串为s1+n1*"def", 也就是abcdefdefdef。对于括号里面嵌套的情况也是同样处理方式。
+# 当遇到 左括号 就进行压栈处理；遇到右括号就弹出栈（栈中记录的元素很重要）
+class Solution:
+    def decodeString(self, s: str) -> str:
+        res, multi, stack = '', 0, []
+        for c in s:
+            if c.isdigit():    
+                multi = multi * 10 + int(c)
+            elif c == '[':
+                stack.append([res, multi])
+                res, multi = '', 0 
+            elif c == ']':
+                last = stack.pop()
+                res = last[0] + last[1] * res 
+            else:
+                res += c 
+        return res
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 443. 压缩字符串](https://leetcode-cn.com/problems/string-compression/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 只留下更好的处理
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int compress(vector<char>& s) {
+        int k = 0;
+        for (int i = 0; i < s.size(); i ++ ) {
+            int j = i + 1;
+            while (j < s.size() && s[j] == s[i]) j ++ ;
+            int len = j - i;
+            s[k ++ ] = s[i];
+            if (len > 1) {
+                int t = k;
+                while (len) {
+                    s[t ++ ] = '0' + len % 10;
+                    len /= 10;
+                }
+                reverse(s.begin() + k, s.begin() + t);
+                k = t;
+            }
+            i = j - 1;
+        }
+        return k;
+    }
+};
+```
+
+##### **Python**
+
+```python
+class Solution:
+    def compress(self, chars: List[str]) -> int:
+        # 重新整理字符串的指针
+        k = 0
+        i = 0
+        while i < len(chars):
+            # 相同字符串的右下标
+            j = i + 1
+            while j < len(chars) and chars[i] == chars[j]:
+                j += 1
+            # 得到相同字符串的长度
+            length = j - i
+
+            # 给头字母赋值
+            chars[k] = chars[i]
+            k += 1
+
+            # 假如是length > 1的话，说明要往后面填数字
+            if length > 1:
+                for c in str(length):
+                    chars[k] = c
+                    k += 1
+
+            # 更新左下标
+            i = j
+
+        # 返回我们填完数字的最后一位
+        print(k)
+
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 467. 环绕字符串中唯一的子字符串](https://leetcode-cn.com/problems/unique-substrings-in-wraparound-string/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int findSubstringInWraproundString(string p) {
+        // 本质求 p 中有多少个不同子串 使得子串是连续字符
+        unordered_map<char, int> cnt;
+        for (int i = 0; i < p.size();) {
+            int j = i + 1;
+            // 相连 一直向右
+            while (j < p.size() && (p[j] - p[j - 1] == 1 || p[j] == 'a' && p[j - 1] == 'z')) ++ j ;
+            while (i < j) cnt[p[i]] = max(cnt[p[i]], j - i), ++ i ;
+        }
+        int res = 0;
+        for (auto [k, v] : cnt) res += v;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 468. 验证IP地址](https://leetcode-cn.com/problems/validate-ip-address/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<string> split(string ip, char t) {
+        vector<string> items;
+        for (int i = 0; i < ip.size(); i ++ ) {
+            int j = i;
+            string item;
+            while (ip[j] != t) item += ip[j ++ ];
+            i = j;
+            items.push_back(item);
+        }
+        return items;
+    }
+
+    string check_ipv4(string ip) {
+        auto items = split(ip + '.', '.');
+        if (items.size() != 4) return "Neither";
+        for (auto item: items) {
+            if (item.empty() || item.size() > 3) return "Neither";
+            if (item.size() > 1 && item[0] == '0') return "Neither";
+            for (auto c: item)
+                if (c < '0' || c > '9') return "Neither";
+            int t = stoi(item);
+            if (t > 255) return "Neither";
+        }
+        return "IPv4";
+    }
+
+    bool check(char c) {
+        if (c >= '0' && c <= '9') return true;
+        if (c >= 'a' && c <= 'f') return true;
+        if (c >= 'A' && c <= 'F') return true;
+        return false;
+    }
+
+    string check_ipv6(string ip) {
+        auto items = split(ip + ':', ':');
+        if (items.size() != 8) return "Neither";
+        for (auto item: items) {
+            if (item.empty() || item.size() > 4) return "Neither";
+            for (auto c: item)
+                if (!check(c)) return "Neither";
+        }
+        return "IPv6";
+    }
+
+    string validIPAddress(string ip) {
+        if (ip.find('.') != -1 && ip.find(':') != -1) return "Neither";
+        if (ip.find('.') != -1) return check_ipv4(ip);
+        if (ip.find(':') != -1) return check_ipv6(ip);
+        return "Neither";
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 488. 祖玛游戏](https://leetcode-cn.com/problems/zuma-game/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 复杂模拟 **记录优雅写法**
+> 
+> 剪枝优化
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    unordered_map<string, int> f;
+    unordered_map<char, int> cnt;
+    int res = 6;
+
+    string get() {
+        string ret;
+        for (auto [x, c] : cnt) ret += to_string(c);
+        return ret;
+    }
+
+    // 至少还需要多少次操作 剪枝 常数优化
+    int h(string board) {
+        sort(board.begin(), board.end());
+        int ret = 0;
+        // not ++ i 
+        // or use ++ i and i = j - 1
+        for (int i = 0; i < board.size();) {
+            int j = i + 1;
+            while (j < board.size() && board[j] == board[i]) ++ j ;
+            if (j - i + cnt[board[i]] < 3) return 6;
+            if (j - i <= 2) ret += 3 - (j - i);
+            i = j; 
+        }
+        return ret;
+    }
+
+    void dfs(string board, string hand) {
+        if (f[board + ' ' + hand] + h(board) >= res) return ;
+        for (auto [x, c] : cnt) if (c) {
+            -- cnt[x];
+            for (int i = 0; i <= board.size(); ++ i ) {
+                auto r = clear_up(board.substr(0, i) + x + board.substr(i));
+                auto s = r + ' ' + get();
+                if (f.count(s) == 0 || f[s] > f[board + ' ' + hand] + 1) {
+                    f[s] = f[board + ' ' + hand] + 1;
+                    if (r.empty()) res = min(res, f[s]);
+                    dfs(r, get());
+                }
+            }
+            ++ cnt[x];
+        }
+    }
+
+    int findMinStep(string board, string hand) {
+        for (auto c : hand) ++ cnt[c] ;
+        f[board] = 0;
+        dfs(board, get());
+        if (res == 6) res = -1;
+        return res;
+    }
+
+    string clear_up(string s) {
+        bool is_changed = true;
+        while (is_changed) {
+            is_changed = false;
+            for (int i = 0; i < s.size(); ++ i ) {
+                int j = i + 1;
+                while (j < s.size() && s[j] == s[i]) ++ j ;
+                if (j - i >= 3) {
+                    s = s.substr(0, i) + s.substr(j);
+                    is_changed = true;
+                    break;
+                }
+            }
+        }
+        return s;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 605. 种花问题](https://leetcode-cn.com/problems/can-place-flowers/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    bool canPlaceFlowers(vector<int>& flowerbed, int n) {
+        //if (!n) return true;
+        int res = 0;
+        for (int i = 0; i < flowerbed.size(); ++ i ) {
+            if (flowerbed[i]) continue;
+            int j = i;
+            while (j < flowerbed.size() && !flowerbed[j]) ++ j;
+            // 连续0的长度
+            int k = j - i - 1;
+            if (!i) ++ k;
+            if (j == flowerbed.size()) ++ k;
+            res += k / 2;
+            if (res >= n) return true;
+            i = j;  // j == f.size() || flowerbed[i] = 1
+        }
+        return res >= n;
+    }
+};
+```
+
+##### **Python**
+
+```python
+#一定是在连续若干个0里填入1；找规律：
+#思路1：1）如果当前及左右三个位置中存在1，那么跳过；否则就可以种花，种完花n减1；即flowerbed[i]=1;n-=1
+#2) 当n==0时，说明已经种完花了，返回True；3）如果最后不满足上述条件，就返回False
+
+class Solution:
+    def canPlaceFlowers(self, flowerbed: List[int], n: int) -> bool:
+        if n == 0:return True
+        m = len(flowerbed)
+        for i in range(m):
+             # 判断当前及左右位置是否种植了花
+            if flowerbed[i] == 1: continue
+            if i > 0 and flowerbed[i - 1] == 1: continue
+            if i + 1 < m and flowerbed[i + 1] == 1: continue
+            flowerbed[i] = 1
+            n -= 1
+            #踩坑：在这里就需要判断n是否为0，因为存在“[0,0,1,0,0]---1” 这一类的case，可以放入的1个数大于题目给的n
+            if n == 0:
+                return True
+        return False
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 640. 求解方程](https://leetcode-cn.com/problems/solve-the-equation/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 线性处理 实现
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    pair<int, int> work(string s) {
+        int a = 0, b = 0;
+        if (s[0] != '+' && s[0] != '-') s = '+' + s;
+        for (int i = 0; i < s.size(); ++ i ) {
+            int j = i + 1;
+            while (j < s.size() && isdigit(s[j])) ++ j ;
+            int c = 1;
+            if (i + 1 <= j - 1) c = stoi(s.substr(i + 1, j - 1 - i));
+            if (s[i] == '-') c = -c;
+            if (j < s.size() && s[j] == 'x') {
+                // 系数项
+                a += c;
+                i = j;
+            } else {
+                // 常数项
+                b += c;
+                i = j - 1;
+            }
+        }
+        return {a, b};
+    }
+
+    // ax + b == cx + d pair返回ab cd
+    string solveEquation(string equation) {
+        int k = equation.find('=');
+        auto left = work(equation.substr(0, k)), right = work(equation.substr(k + 1));
+        int a = left.first - right.first, b = right.second - left.second;
+        if (!a) {
+            if (!b) return "Infinite solutions";
+            else return "No solution";
+        }
+        return "x=" + to_string(b / a);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 722. 删除注释](https://leetcode-cn.com/problems/remove-comments/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<string> removeComments(vector<string>& source) {
+        string str;
+        for (auto& s: source) str += s + '\n';
+        vector<string> res;
+        string line;
+
+        int n = str.size();
+        for (int i = 0; i < n; ) {
+            if (i + 1 < n && str[i] == '/' && str[i + 1] == '/') {
+                while (str[i] != '\n') i ++ ;
+            } else if (i + 1 < n && str[i] == '/' && str[i + 1] == '*') {
+                i += 2;
+                while (str[i] != '*' || str[i + 1] != '/') i ++ ;
+                i += 2;
+            } else if (str[i] == '\n') {
+                if (line.size()) {
+                    res.push_back(line);
+                    line.clear();
+                }
+                i ++ ;
+            } else {
+                line += str[i];
+                i ++ ;
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 767. 重构字符串](https://leetcode-cn.com/problems/reorganize-string/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    string reorganizeString(string S) {
+        int n = S.size();
+        vector<int> cnt(26);
+        for (auto c : S) {
+            cnt[c - 'a'] += 100;
+            if (cnt[c - 'a'] / 100 > (n + 1) / 2) return "";
+        }
+        // 加入字符信息
+        for (int i = 0; i < 26; ++ i ) cnt[i] += i;
+        sort(cnt.begin(), cnt.end());
+        // 【先填偶数坑，再填奇数坑l。因为对于某个长度为计数且个数恰好为(len+1)/2的字符 在后面填写的时候会撞】
+        int idx = 1;
+        string res(n, ' ');
+        for (auto v : cnt) {
+            int sz = v / 100;
+            char c = 'a' + v % 100;
+            while (sz -- ) {
+                if (idx >= n) idx = 0;
+                res[idx] = c;
+                idx += 2;
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+// yxc
+class Solution {
+public:
+    string reorganizeString(string S) {
+        unordered_map<char, int> cnt;
+        int maxc = 0;
+        for (auto c: S) {
+            cnt[c] ++ ;
+            maxc = max(maxc, cnt[c]);
+        }
+        int n = S.size();
+        if (maxc > (n + 1) / 2) return "";
+        string res(n, ' ');
+        int i = 1, j = 0;
+        for (char c = 'a'; c <= 'z'; c ++ ) {
+            if (cnt[c] <= n / 2) {
+                while (cnt[c] && i < n) {
+                    res[i] = c;
+                    cnt[c] -- ;
+                    i += 2;
+                }
+            }
+            while (cnt[c] && j < n) {
+                res[j] = c;
+                cnt[c] -- ;
+                j += 2;
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 经典递归处理字符串
+
+> [!NOTE] **[LeetCode 726. 原子的数量](https://leetcode-cn.com/problems/number-of-atoms/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典 递归处理字符串
+> 
+> 利用 map 保存的技巧, 使用 hash 记录的思路
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using MPSI = map<string, int>;
+
+    MPSI dfs(string& str, int& u) {
+        MPSI res;
+        while (u < str.size()) {
+            if (str[u] == '(') {
+                u ++ ;
+                auto t = dfs(str, u);
+                u ++ ;
+                int cnt = 1, k = u;
+                while (k < str.size() && isdigit(str[k])) k ++ ;
+                if (k > u) {
+                    cnt = stoi(str.substr(u, k - u));
+                    u = k;
+                }
+                for (auto& [x, y]: t) res[x] += y * cnt;
+            } else if (str[u] == ')') break;
+            else {
+                int k = u + 1;
+                while (k < str.size() && str[k] >= 'a' && str[k] <= 'z') k ++ ;
+                auto key = str.substr(u, k - u);
+                u = k;
+                int cnt = 1;
+                while (k < str.size() && isdigit(str[k])) k ++ ;
+                if (k > u) {
+                    cnt = stoi(str.substr(u, k - u));
+                    u = k;
+                }
+                res[key] += cnt;
+            }
+        }
+        return res;
+    }
+
+    string countOfAtoms(string formula) {
+        int k = 0;
+        auto t = dfs(formula, k);
+        string res;
+        for (auto& [x, y]: t) {
+            res += x;
+            if (y > 1) res += to_string(y);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 736. Lisp 语法解析](https://leetcode-cn.com/problems/parse-lisp-expression/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典 递归处理字符串
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using MPSI = unordered_map<string, int>;
+
+    int get_value(string & str, int & k, MPSI vars) {
+        int value;
+        if (str[k] == '-' || isdigit(str[k])) {
+            int i = k + 1;
+            while (isdigit(str[i]))
+                i ++ ;
+            value = stoi(str.substr(k, i - k));
+            k = i;
+        } else if (str[k] != '(') {
+            string name;
+            while (str[k] != ' ' && str[k] != ')')
+                name += str[k ++ ];
+            value = vars[name];
+        } else
+            value = dfs(str, k, vars);
+        return value;
+    }
+
+    int dfs(string & str, int & k, MPSI vars) {
+        int value;
+        // 跳过 '('
+        k ++ ;
+        auto type = str.substr(k, 3);
+        if (type == "let") {
+            // 跳过 "let "
+            k += 4;
+            while (str[k] != ')') {
+                if (str[k] == '(' || str[k] == '-' || isdigit(str[k])) {
+                    value = get_value(str, k, vars);
+                    break;
+                }
+                string name;
+                while (str[k] != ' ' && str[k] != ')')
+                    name += str[k ++ ];
+                if (str[k] == ')') {
+                    value = vars[name];
+                    break;
+                }
+                // 跳过 ' '
+                k ++ ;
+                vars[name] = get_value(str, k, vars);
+                // 跳过 ' '
+                k ++ ;
+            }
+        } else if (type == "add") {
+            k += 4;
+            int a = get_value(str, k, vars);
+            k ++ ;
+            int b = get_value(str, k, vars);
+            value = a + b;
+        } else {
+            k += 5;
+            int a = get_value(str, k, vars);
+            k ++ ;
+            int b = get_value(str, k, vars);
+            value = a * b;
+        }
+        // 跳过 ')'
+        k ++ ;
+        return value;
+    }
+
+    int evaluate(string expression) {
+        int k = 0;
+        return dfs(expression, k, MPSI());
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 ### 丑数
 
+> [!NOTE] **[LeetCode 263. 丑数](https://leetcode-cn.com/problems/ugly-number/)**
+> 
+> 题意: TODO
 
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    bool isUgly(int num) {
+        if (num <= 0) return false;
+        while (num % 2 == 0) num /= 2;
+        while (num % 3 == 0) num /= 3;
+        while (num % 5 == 0) num /= 5;
+        return num == 1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+class Solution:
+    def isUgly(self, n: int) -> bool:
+        if n == 0:return False
+        for p in 2, 3, 5:
+            while n and n % p == 0:
+                n //= p
+        return n == 1
+      
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 264. 丑数 II](https://leetcode-cn.com/problems/ugly-number-ii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int nthUglyNumber(int n) {
+        vector<int> q(1, 1);
+        for (int i = 0, j = 0, k = 0; q.size() < n;) {
+            int t = min(q[i] * 2, min(q[j] * 3, q[k] * 5));
+            q.push_back(t);
+            if (q[i] * 2 == t) i ++ ;
+            if (q[j] * 3 == t) j ++ ;
+            if (q[k] * 5 == t) k ++ ;
+        }
+        return q.back();
+    }
+};
+```
+
+##### **Python**
+
+```python
+class Solution:
+    def nthUglyNumber(self, n: int) -> int:
+        nums = [2, 3, 5]
+        m = len(nums)
+        p = [0] * m
+        f = [1] * n 
+        for i in range(1, n):
+            f[i] = min(x * f[y] for x, y in zip(nums, p))
+            for j in range(m):
+                if f[i] == nums[j] * f[p[j]]:
+                    p[j] += 1
+        return f[-1]
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 313. 超级丑数](https://leetcode-cn.com/problems/super-ugly-number/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int nthSuperUglyNumber(int n, vector<int>& primes) {
+        set<int> res={1};
+        vector<set<int>::iterator> points;
+        int k = primes.size();
+        for (int i = 0; i < k; ++ i ) points.push_back(res.begin());
+        while (res.size() < n) {
+            int temp = INT_MAX;
+            // 找最小数
+            for (int i = 0; i < k; ++ i )
+                temp = min(temp, *points[i] * primes[i]);
+            res.insert(temp);
+            // 更新指针 此时可能有多个指针都更新了(计算出的值相同的情况)
+            for (int i = 0; i < k; ++ i )
+                if (temp == *points[i] * primes[i])
+                    ++ points[i] ;
+        }
+        return *res.rbegin();
+    }
+};
+
+// yxc
+// 在 k 较大的时候效果较好
+class Solution {
+public:
+    int nthSuperUglyNumber(int n, vector<int>& primes) {
+        typedef pair<int, int> PII;
+        priority_queue<PII, vector<PII>, greater<PII>> heap;
+        for (int x: primes) heap.push({x, 0});
+        vector<int> q(n);
+        q[0] = 1;
+        for (int i = 1; i < n;) {
+            auto t = heap.top(); heap.pop();
+            if (t.first != q[i - 1]) q[i ++ ] = t.first;
+            int idx = t.second, p = t.first / q[idx];
+            heap.push({p * q[idx + 1], idx + 1});
+        }
+        return q[n - 1];
+    }
+};
+```
+
+##### **Python**
+
+```python
+"""
+动态规划： 记录前面的丑数，根据每个质因数当前对应的丑数进行乘积大小对比，将最小的那个作为新的丑数，并更新对应的丑数。
+"""
+class Solution:
+    def nthSuperUglyNumber(self, n: int, primes: List[int]) -> int:
+        m = len(primes)
+        # dp[i] 代表第i+1个丑数
+        dp = [inf] * n
+        dp[0] = 1
+        # indexes代表每个质因子现在应该跟哪个丑数相乘
+        indexes = [0] * m
+
+        for i in range(1, n):
+            # 哪个质因子相乘的丑数将会变化
+            changeIndex = 0
+            for j in range(m):
+                # 如果当前质因子乘它的丑数小于当前的丑数，更新当前丑数并更新变化坐标
+                if primes[j] * dp[indexes[j]] < dp[i]:
+                    changeIndex = j
+                    dp[i] = primes[j] * dp[indexes[j]]
+                # 如果相等直接变化，这样可以去重复
+                elif primes[j] * dp[indexes[j]] == dp[i]:
+                    indexes[j] += 1
+            # 变化的坐标+1
+            indexes[changeIndex] += 1
+        return dp[-1]
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 > [!NOTE] **[AcWing 1378. 谦虚数字](https://www.acwing.com/problem/content/1380/)**
 > 
@@ -801,6 +2826,314 @@ int main() {
 
 ### 数字相关
 
+> [!NOTE] **[LeetCode 7. 整数反转](https://leetcode-cn.com/problems/reverse-integer/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int reverse(int x) {
+        int res = 0;
+        while (x) {
+            int v = x % 10; x /= 10;
+            if (res > INT_MAX / 10 || res == INT_MAX / 10 && v > 7) return 0;
+            if (res < INT_MIN / 10 || res == INT_MIN / 10 && v < -8) return 0;
+            res = res * 10 + v;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+# 推荐以下写法，直接按照每一位来进行反转，依次把 x 的低位放到 res 的高位
+
+class Solution:
+    def reverse(self, x: int) -> int:
+        sign = 1  # 用sign标记这是个负数 还是个正数，可以省好几行代码
+        if x < 0 : sign = -1
+        x = x * sign
+
+        n = 0
+        while x :
+            n = n * 10 + x % 10
+            x //= 10
+
+        return n * sign if n < 2 ** 31 else 0
+      
+# 这种方法太复杂了...非常不推荐
+class Solution:
+    def reverse(self, x: int) -> int:
+        s = str(x)
+        s_list = list(s)
+        s = s_list
+        n = len(s)
+        flag = False
+        if s[0] == '-':
+            flag = True
+            i = 1 
+        else:i = 0
+        j = n - 1 
+        while i < j:
+            s[i], s[j] = s[j], s[i]
+            i += 1 
+            j -= 1
+        if flag:
+            tmp = ''.join(s[1:])
+            s = str(s[0]) + tmp.lstrip('0')
+        else:
+            tmp = ''.join(s)
+            s = tmp[:-1].lstrip('0') + tmp[-1]
+        if int(s) > (1 << 31) - 1 or int(s) < - ((1 << 31) - 1):return 0
+        return int(s)
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 8. 字符串转换整数 (atoi)](https://leetcode-cn.com/problems/string-to-integer-atoi/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int myAtoi(string s) {
+        int n = s.size();
+        int p = 0, f = 1;
+        while (p < n && s[p] == ' ') ++ p ;
+        if (s[p] == '+') ++ p ;
+        else if (s[p] == '-') f = -1, ++ p ;
+        int res = 0;
+        while (p < n && isdigit(s[p])) {
+            int v = s[p] - '0';
+            if (res > INT_MAX / 10 || res == INT_MAX / 10 && v > 7) return INT_MAX;
+            if (res < INT_MIN / 10 || res == INT_MIN / 10 && v > 8) return INT_MIN; // ATTENTION > 8
+            res = res * 10 + f * v;
+            ++ p ;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+# # python3
+# 该学习的地方：用sign来区分 正负数
+# 用一个 sign 来表示 这是一个 正数 【sign = 1】还是 负数 【sign = -1】 
+# 1. 先去掉前面的空格
+# 2. 再判断 空格 后的第一个字符是不是‘+‘ / ’-‘ ，如果是负数的话，要把 sign = -1
+# 3. 开始循环，只有当 s[i] 在【0，9】之间才会加入到结果中。用num=0【非法情况 也是返回0，所以可以初始化位0】
+# 4. 计算完成后要根据 sign 判断当前数 是 正数 还是 负数；最后再判断是否超出范围。返回结果即可。
+
+class Solution:
+    def strToInt(self, s: str) -> int:
+        i, sign = 0, 1
+        while i < len(s) and s[i] == ' ':i += 1
+
+        if i < len(s) and s[i] == '+':
+            i += 1
+        elif i < len(s) and s[i] == '-':
+            i += 1 
+            sign = -1
+        
+        num = 0
+        while i < len(s) and '0' <= s[i] <= '9':
+            num = num * 10 + int(s[i])
+            i += 1
+        
+
+        num *= sign
+        maxv = (1 << 31)
+
+        if num > 0 and num > maxv - 1:
+            num = maxv - 1 
+        if num < 0 and num < -maxv:
+            num = -maxv
+        return num
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 12. 整数转罗马数字](https://leetcode-cn.com/problems/integer-to-roman/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    string intToRoman(int num) {
+        string res;
+        int nums[]{1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
+        string romans[]{"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
+        int p = 0;
+        while (p < 13) {
+            while (num >= nums[p]) num -= nums[p], res += romans[p];
+            ++p;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+# 使用字典，记录每个数值 对应的 字符，并且是把大数值写在前面
+# 对于 num, 遍历字典的 key, 看当前数是否大于这个key
+
+class Solution:
+    def intToRoman(self, num: int) -> str:
+        my_dict ={1000: 'M', 900:'CM', 500: 'D', 400: 'CD', 100: 'C', 90: 'XC', 50: 'L', 40: 'XL', 10: 'X', 9: 'IX', 5: 'V', 4: 'IV', 1: 'I' }  # 使用哈希表，按照从大到小顺序排列
+        # dic = OrderedDict({1000: 'M', 900: 'CM', 500: 'D', 400: 'CD', 100: 'C', 90: 'XC', 50: 'L', 40: 'XL', 10: 'X', 9: 'IX', 5: 'V', 4: 'IV', 1: 'I'})  #用这个也可以！直接排序！
+        res = ''
+        for key in my_dict:
+            if num // key != 0:
+                cnt = num // key 
+                res += my_dict[key] * cnt 
+                # print('res: {0}'.format(res))
+                num %= key 
+        return res
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 13. 罗马数字转整数](https://leetcode-cn.com/problems/roman-to-integer/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> trick
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int getValue(char c) {
+        if (c == 'I') return 1;
+        else if (c == 'V') return 5;
+        else if (c == 'X') return 10;
+        else if (c == 'L') return 50;
+        else if (c == 'C') return 100;
+        else if (c == 'D') return 500;
+        else return 1000;
+        //else if (c == 'M') return 1000;
+    }
+    int romanToInt(string s) {
+        int len = s.size();
+        int res = 0, tl, tr;
+        for (int i = 0; i < len-1; ++ i ) {
+            tl = getValue(s[i]);
+            tr = getValue(s[i + 1]);
+            if (tl < tr) res -= tl;
+            else res += tl;
+        }
+        res += getValue(s[len-1]);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+# 定义映射，将单一字母映射到数字。
+# 从前往后扫描，如果发现 s[i+1] 的数字比 s[i] 的数字大，res减去当前数；否则直接累计 s[i] 的值。
+# 最后一个数字一定是加上去的，所以第一个if判断里 要加一个条件 i + 1 < n
+
+
+# 更好理解的写法：最后一个数单独拎出来，因为最后一个数字总是要加上去的
+class Solution:
+    def romanToInt(self, s: str) -> int:
+        my_dict = {'I':1, 'V': 5, 'X' :10, 'L' :50, 'C' : 100, 'D':500, 'M':1000}
+        n = len(s)
+        res = 0
+        for i in range(n-1):
+            if my_dict[s[i]] < my_dict[s[i+1]]:
+                res -= my_dict[s[i]]
+            else:
+                res += my_dict[s[i]]
+        res += my_dict[s[n-1]]
+        return res
+
+
+class Solution:
+    def romanToInt(self, s: str) -> int:
+        my_dict = {'I' : 1, 'V' : 5, 'X' : 10, 'L' : 50, 'C' : 100, 'D' : 500, 'M' : 1000}
+        n = len(s)
+        res = 0
+
+        for i in range(n):
+            if i+1 < n and my_dict[s[i]] < my_dict[s[i+1]]:  # 踩坑：i+1 < n这里要记得
+                res -= my_dict[s[i]]
+            else:
+                res += my_dict[s[i]]
+        return res
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[SwordOffer 16. 数值的整数次方](https://leetcode-cn.com/problems/shu-zhi-de-zheng-shu-ci-fang-lcof/)**
 > 
 > 题意: TODO
@@ -971,6 +3304,1026 @@ class Solution:
         while i < n and s[i] == ' ':
             i += 1
         return flag and i == n
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 29. 两数相除](https://leetcode-cn.com/problems/divide-two-integers/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 如果不能用 LL 的 trick
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 1**
+
+```cpp
+class Solution {
+public:
+    int divide(int dividend, int divisor) {
+        if (divisor == 1) return dividend;
+        else if (divisor == -1) {
+            if (dividend == INT_MIN) return INT_MAX;
+            else return -dividend;
+        }
+        int sign = 1;
+        // 或使用异或判断符号
+        if ((dividend > 0 && divisor < 0) || (dividend < 0 && divisor > 0)) sign = -1;
+        // 都转成负数 处理溢出
+        if (dividend > 0) dividend = -dividend;
+        if (divisor > 0) divisor = -divisor;
+        if (dividend > divisor) return 0;
+        int cnt = 0;
+        int a = dividend;
+        // 此时是负数
+        while (a <= divisor) {
+            int b = divisor, p = 1;
+            while (b > INT_MIN - b && a <= b + b) {
+                b += b;
+                p += p;
+            }
+            cnt += p;
+            a -= b;
+        }
+        if (sign == -1) cnt = -cnt;
+        return cnt;
+    }
+};
+```
+
+##### **C++ 2**
+
+```cpp
+class Solution {
+public:
+    int divide(int x, int y) {
+        typedef long long LL;
+        vector<LL> exp;
+        bool is_minus = false;
+        if (x < 0 && y > 0 || x > 0 && y < 0) is_minus = true;
+
+        LL a = abs((LL)x), b = abs((LL)y);
+        for (LL i = b; i <= a; i = i + i) exp.push_back(i);
+
+        LL res = 0;
+        for (int i = exp.size() - 1; i >= 0; i -- )
+            if (a >= exp[i]) {
+                a -= exp[i];
+                res += 1ll << i;
+            }
+
+        if (is_minus) res = -res;
+
+        if (res > INT_MAX || res < INT_MIN) res = INT_MAX;
+
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+"""
+这道题：除数能减去多少个被除数。
+1. 采用倍增的思想
+2. 先确定商的符号，然后把被除数和除数通通转为正数
+3. 然后用被除数不停的减除数，直到小于除数的时候，用一个计数遍历记录总共减了多少次，即为商了。
+"""
+class Solution:
+    def divide(self, dividend: int, divisor: int) -> int:
+        sign = (dividend < 0) != (divisor < 0) 
+        dividend, divisor = abs(dividend), abs(divisor)
+        res = 0
+        tmp = divisor
+        i = 1
+        while dividend >= divisor:
+            i = 1
+            tmp = divisor
+            while dividend >= tmp:
+                dividend -= tmp
+                tmp += tmp
+                res += i
+                # 代表有几个 dividend 
+                i += i   
+           
+"""
+           while divd >= tmp:
+                divd -= tmp
+                res += i
+                i <<= 1
+                tmp <<= 1
+"""
+
+        return min(2**31-1, max(-res if sign else res, -2**31))
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 43. 字符串相乘](https://leetcode-cn.com/problems/multiply-strings/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    string multiply(string num1, string num2) {
+        vector<int> A, B;
+        int n = num1.size(), m = num2.size();
+        for (int i = n - 1; i >= 0; i -- ) A.push_back(num1[i] - '0');
+        for (int i = m - 1; i >= 0; i -- ) B.push_back(num2[i] - '0');
+
+        vector<int> C(n + m);
+        for (int i = 0; i < n; i ++ )
+            for (int j = 0; j < m; j ++ )
+                C[i + j] += A[i] * B[j];
+
+        for (int i = 0, t = 0; i < C.size(); i ++ ) {
+            t += C[i];
+            C[i] = t % 10;
+            t /= 10;
+        }
+
+        int k = C.size() - 1;
+        while (k > 0 && !C[k]) k -- ;
+
+        string res;
+        while (k >= 0) res += C[k -- ] + '0';
+
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+# python
+"""
+高精度乘法：先不考虑进位， 最后再从后向前遍历进位。
+"""
+class Solution:
+    def multiply(self, num1: str, num2: str) -> str:
+        s1, s2 = num1[::-1], num2[::-1]
+        n, m = len(num1), len(num2)
+        c = [0] * (n+m)
+        
+        # 先遍历所有位 
+        for i in range(n): 
+            for j in range(m):
+                c[i+j] += int(s1[i]) * int(s2[j])
+        
+        t = 0
+        # 再统一考虑进位
+        for i in range(len(c)):
+            t += c[i]
+            c[i] = t % 10
+            t //= 10 
+        
+        # 用字符串存储答案，方便去除掉高位0
+        res = ''  
+        for i in range(len(c)-1, -1, -1):
+            res += str(c[i])
+        # 去掉高位0，以及防止最后一个为0
+        res = res[:-1].lstrip('0') + res[-1] 
+        return res
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 65. 有效数字](https://leetcode-cn.com/problems/valid-number/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 标准写法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int n;
+
+    bool scanUnsignedInt(string & s, int & i) {
+        int p = i;
+        while (i < n && isdigit(s[i]))
+            i ++ ;
+        return i > p;
+    }
+
+    bool scanInt(string & s, int & i) {
+        if (i < n && (s[i] == '+' || s[i] == '-'))
+            i ++ ;
+        return scanUnsignedInt(s, i);
+    }
+
+    bool isNumber(string s) {
+        this->n = s.size();
+        int i = 0;
+
+        while (i < n && s[i] == ' ')
+            i ++ ;
+        
+        bool flag = scanInt(s, i);
+        // scanUnsignedInteger scanInteger 必须放前面
+        // 避免短路原则导致 i 没有 ++ 
+        if (i < n && s[i] == '.')
+            flag = scanUnsignedInt(s, ++ i) || flag ;
+        if (i < n && (s[i] == 'e' || s[i] == 'E'))
+            flag = scanInt(s, ++ i) && flag;
+        
+        while (i < n && s[i] == ' ')
+            i ++ ;
+
+        return flag && i == n;
+    }
+};
+```
+
+##### **Python**
+
+```python
+# python3
+# (模拟) O(n)
+# 这道题边界情况很多，首先要考虑清楚的是有效的数字格式是什么，这里用A[.[B]][e|EC]或者.B[e|EC]表示，其中A和C都是整数(可以有正负号也可以没有)，B是无符号整数。
+
+# 那么我们可以用两个辅助函数来检查整数和无符号整数的情况，从头到尾扫一遍字符串然后分情况判断，注意这里要传数字的引用或者用全局变量。
+
+
+class Solution:
+    def isNumber(self, s: str) -> bool:
+        n = len(s)
+        i = 0
+
+        # 用来判断是否存在正数
+        def scanUnsignedInt():
+            # 用 nonlocal 踩坑，不能把 i 放进函数里传递
+            nonlocal i  
+            p = i 
+            while i < n and s[i].isdigit():
+                i += 1
+            return p < i
+        
+        # 用来判断是否存在整数
+        def scanInt():
+            nonlocal i
+            if i < n and (s[i] == '+' or s[i] == '-'):
+                i += 1
+            return scanUnsignedInt()
+
+        while i < n and s[i] == ' ':
+            i += 1
+
+        flag = scanInt()
+        if i < n and s[i] == '.':
+            i += 1
+            flag = scanUnsignedInt() or flag
+        if i < n and (s[i] == 'e' or s[i] == 'E'):
+            i += 1
+            flag = scanInt() and flag
+
+        while i < n and s[i] == ' ':
+            i += 1
+        return flag and i == n
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 66. 加一](https://leetcode-cn.com/problems/plus-one/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<int> plusOne(vector<int>& digits) {
+        reverse(digits.begin(), digits.end());
+        int t = 1;
+        for (auto & x: digits) {
+            t += x;
+            x = t % 10;
+            t /= 10;
+        }
+        if (t) digits.push_back(t);
+
+        reverse(digits.begin(), digits.end());
+
+        return digits;
+    }
+};
+```
+
+##### **Python**
+
+```python
+"""
+模拟人工加法的过程。
+1. 从低位到高位，依次计算出每一位数字，过程中需要记录进位。
+2. 如果最高位进位是1，则需要将整个数组后移一位，并在第0个位置写上1。
+【时间复杂度分析：整个数组只遍历了一遍，所以时间复杂度是 O(n)。】
+"""
+class Solution:
+    def plusOne(self, nums: List[int]) -> List[int]:
+        n = len(nums)
+        nums[n-1] += 1
+        res, t, i = [], 0,  n - 1
+        while i >= 0 or t:
+            if i >= 0:
+                t = t + nums[i]
+            res.append(t % 10)
+            t //= 10 
+            i -= 1
+        return res[::-1]
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 165. 比较版本号](https://leetcode-cn.com/problems/compare-version-numbers/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int compareVersion(string s1, string s2) {
+        int i = 0, j = 0;
+        while (i < s1.size() || j < s2.size()) {
+            int x = i, y = j;
+            while (x < s1.size() && s1[x] != '.') x ++ ;
+            while (y < s2.size() && s2[y] != '.') y ++ ;
+            int a = (i == x) ? 0 : stoi(s1.substr(i, x - i));
+            int b = (j == y) ? 0 : stoi(s2.substr(j, y - j));
+            if (a > b) return 1;
+            else if (a < b) return -1;
+            i = x + 1; j = y + 1;
+        }
+        return 0;
+    }
+};
+```
+
+##### **Python**
+
+```python
+# 借助split分割方法
+class Solution:
+    def compareVersion(self, s1: str, s2: str) -> int:
+        v1, v2 = s1.split('.'), s2.split('.')
+        for i in range(max(len(v1), len(v2))):
+            d1 = int(v1[i]) if i < len(v1) else 0
+            d2 = int(v2[i]) if i < len(v2) else 0
+            if d1 > d2:
+                return 1
+            elif d1 < d2:
+                return -1
+        return 0
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 166. 分数到小数](https://leetcode-cn.com/problems/fraction-to-recurring-decimal/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    typedef long long LL;
+    string fractionToDecimal(int numerator, int denominator) {
+        LL x = numerator, y = denominator;
+        if (x % y == 0) return to_string(x / y);
+        
+        string res;
+        if ((x < 0) ^ (y < 0)) res += '-';
+        x = abs(x), y = abs(y);
+        res += to_string(x / y) + '.', x %= y;
+
+        unordered_map<LL, int> hash;    // 记录下标
+        while (x) {
+            hash[x] = res.size();
+            x *= 10;
+            res += to_string(x / y);
+            x %= y;
+            if(hash.count(x)) {
+                res = res.substr(0, hash[x]) + '(' + res.substr(hash[x]) + ')';
+                break;
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+"""
+为了方便处理，我们先将所有负数运算转化为正数运算。
+然后再算出分数的整数部分，再将精力集中在小数部分。
+
+计算小数部分的难点在于如何判断是否是循环小数，以及找出循环节的位置。
+回忆手工计算除法的过程，每次将余数乘10再除以除数，当同一个余数出现两次时，我们就找到了循环节。
+所以我们可以用一个哈希表 unordered_map<int,int> 记录所有余数所对应的商在小数点后第几位，当计算到相同的余数时，上一次余数的位置和当前位置之间的数，就是该小数的循环节。
+
+时间复杂度分析：计算量与结果长度成正比，是线性的。所以时间复杂度是 O(n)。
+
+"""
+class Solution:
+    def fractionToDecimal(self, x: int, y: int) -> str:
+        res = ''
+        if x % y == 0:
+            return str(x // y)
+        if (x < 0) ^ (y < 0): # 异号
+            x, y = abs(x), abs(y)
+            res += '-'
+        res += str(x // y) + '.'
+        x = x % y
+
+        seen_dict = {}
+        while x:
+            seen_dict[x] = len(res)
+            x *= 10
+            res += str(x // y)
+            x = x % y
+            if x in seen_dict:
+                res = res[:seen_dict[x]] + '(' +  res[seen_dict[x]:] + ')'
+                break
+        return res
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 179. 最大数](https://leetcode-cn.com/problems/largest-number/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// yxc
+class Solution {
+public:
+    string largestNumber(vector<int>& nums) {
+        sort(nums.begin(), nums.end(), [](int x, int y) {
+            string a = to_string(x), b = to_string(y);
+            return a + b > b + a;
+        });
+        string res;
+        for (auto x: nums) res += to_string(x);
+        int k = 0;
+        while (k + 1 < res.size() && res[k] == '0') k ++ ;
+        return res.substr(k);
+    }
+};
+```
+
+##### **Python**
+
+```python
+#1. 先把nums中的所有数字转化为字符串，形成字符串数组 nums_str
+#2. 比较两个字符串x,y的拼接结果x+y和y+x哪个更大，从而确定x和y谁排在前面；将nums_str降序排序
+#3. 把整个数组排序的结果拼接成一个字符串，并且返回
+
+import functools
+class Solution:
+    def largestNumber(self, nums: List[int]) -> str:
+        nums_str = list(map(str,nums))
+        compare = lambda x, y: 1 if x + y < y + x else -1
+        nums_str.sort(key = functools.cmp_to_key(compare))
+        res = ''.join(nums_str)
+        if res[0] == '0':  # 判断最终拼接完的字符串中首位是不是 "0"，因为如果 nums 至少有一个数字不是 0， 那该数字一定会排在所有的 0 的前面
+            res = '0'
+        return res
+
+      
+      # 区别在于cmp函数的写法（熟悉熟悉）
+class Solution:
+    def largestNumber(self, nums):
+        from functools import cmp_to_key
+        temp = list(map(str,nums))
+        temp.sort(key = cmp_to_key(lambda x,y:int(x+y)-int(y+x)),reverse = True )
+        return ''.join(temp if temp[0]!='0' else '0')
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 273. 整数转换英文表示](https://leetcode-cn.com/problems/integer-to-english-words/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    string num0_19[20] = {
+        "Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven",
+        "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen",
+        "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen",
+        "Nineteen",
+    };
+    string num20_90[8] = {
+        "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy",
+        "Eighty", "Ninety",
+    };
+    string num1000[4] = {
+        "Billion ", "Million ", "Thousand ", "",
+    };
+
+    // 返回 1 ~ 999 的英文表示
+    string get(int x) {
+        string res;
+        if (x >= 100) {
+            res += num0_19[x / 100] + " Hundred ";
+            x %= 100;
+        }
+        if (x >= 20) {
+            res += num20_90[x / 10 - 2] + " ";
+            x %= 10;
+            if (x) res += num0_19[x] + ' ';
+        } else if (x) res += num0_19[x] + ' ';
+        return res;
+    }
+
+    string numberToWords(int num) {
+        if (!num) return "Zero";
+        string res;
+        for (int i = 1e9, j = 0; i >= 1; i /= 1000, ++ j )
+            if (num >= i) {
+                res += get(num / i) + num1000[j];
+                num %= i;
+            }
+        res.pop_back();
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 405. 数字转换为十六进制数](https://leetcode-cn.com/problems/convert-a-number-to-hexadecimal/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    string toHex(int num) {
+        unsigned int unum = num;
+        if (!unum) return "0";
+        string res, nums = "0123456789abcdef";
+        while (unum) {
+            res += nums[unum & 0xf];
+            unum >>= 4;
+        }
+        reverse(res.begin(), res.end());
+        return res;
+    }
+
+    string toHex_2(int num) {
+        if (!num) return "0";
+        string res;
+        for (int i = 0; i < 8; ++ i ) {
+            int v = num & 15;
+            //cout << v << endl;
+            if (!num) break;
+            if (v < 10) res.push_back('0' + v);
+            else res.push_back('a' + v - 10);
+            num >>= 4;
+        }
+        reverse(res.begin(), res.end());
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 螺旋矩阵
+
+> [!NOTE] **[LeetCode 54. 螺旋矩阵](https://leetcode-cn.com/problems/spiral-matrix/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<int> spiralOrder(vector<vector<int>>& matrix) {
+        vector<int> res;
+        if (matrix.empty()) return res;
+        int m = matrix.size(), n = matrix[0].size();
+        int u = 0, d = m - 1, l = 0, r = n - 1;
+        for (;;) {
+            for (int i = l; i <= r; ++ i ) res.push_back(matrix[u][i]);
+            if ( ++ u > d) break;
+            for (int i = u; i <= d; ++ i ) res.push_back(matrix[i][r]);
+            if ( -- r < l) break;
+            for (int i = r; i >= l; -- i ) res.push_back(matrix[d][i]);
+            if ( -- d < u) break;
+            for (int i = d; i >= u; -- i ) res.push_back(matrix[i][l]);
+            if ( ++ l > r) break;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+class Solution:
+    def spiralOrder(self, a: List[List[int]]) -> List[int]:
+        n, m = len(a), len(a[0])
+        L, R, T, B = 0, m-1, 0, n-1
+        res = []
+        while True:
+            for i in range(L, R + 1):res.append(a[T][i])
+            T += 1
+            if T > B:break 
+            for i in range(T, B + 1):res.append(a[i][R])
+            R -= 1
+            if L > R:break 
+            for i in range(R, L - 1, -1):res.append(a[B][i])   # 踩坑：细节 L - 1
+            B -= 1
+            if T > B:break
+            for i in range(B, T - 1, -1):res.append(a[i][L])
+            L += 1
+            if L > R:break 
+        return res
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 59. 螺旋矩阵 II](https://leetcode-cn.com/problems/spiral-matrix-ii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<vector<int>> generateMatrix(int n) {
+        vector<vector<int>> res(n, vector<int>(n));
+        int u = 0, d = n - 1, l = 0, r = n - 1;
+        int p = 0;
+        for (;;) {
+            for (int i = l; i <= r; ++ i ) res[u][i] = ++ p ;
+            if ( ++ u > d) break;
+            for (int i = u; i <= d; ++ i ) res[i][r] = ++ p ;
+            if ( -- r < l) break;
+            for (int i = r; i >= l; -- i ) res[d][i] = ++ p ;
+            if ( -- d < u) break;
+            for (int i = d; i >= u; -- i ) res[i][l] = ++ p ;
+            if ( ++ l > r) break;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+# 和上一道题完全一样
+class Solution:
+    def generateMatrix(self, n: int) -> List[List[int]]:
+        L, R, T, B = 0, n-1, 0, n-1
+        p = 0 
+        res = [[0] * n for _ in range(n)]
+        while True:
+            for i in range(L, R + 1):
+                p += 1
+                res[T][i] = p
+            T += 1 
+            if T > B:break 
+            for i in range(T, B + 1):
+                p += 1
+                res[i][R] = p 
+            R -= 1
+            if L > R:break 
+            for i in range(R, L - 1, -1):
+                p += 1
+                res[B][i] = p
+            B -= 1
+            if T > B:break 
+            for i in range(B, T - 1, -1):
+                p += 1
+                res[i][L] = p
+            L += 1
+            if L > R:break 
+        return res 
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### excel 表
+
+> [!NOTE] **[LeetCode 168. Excel表列名称](https://leetcode-cn.com/problems/excel-sheet-column-title/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// yxc
+class Solution {
+public:
+    string convertToTitle(int n) {
+        int k = 1;
+        for (long long p = 26; n > p; p *= 26) {
+            n -= p;
+            k ++ ;
+        }
+
+        n -- ;
+        string res;
+        while (k -- ) {
+            res += n % 26 + 'A';
+            n /= 26;
+        }
+
+        reverse(res.begin(), res.end());
+        return res;
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    string convertToTitle(int n) {
+        string res;
+        while (n) {
+            int mod = (n - 1) % 26;
+            res.push_back('A' + mod);
+            n = (n - 1) / 26;
+        }
+        reverse(res.begin(), res.end());
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+# 进制转换题 ： 【除留余数法】 ==> 参照 一个数字如何从10进制 转化到 10进制的。
+#  每一次循环里，先取 %，得到当前位的（第一次是个位）数；然后进入下一次循环前， 取 // 
+#  10 进制包括数字：0~9； 16 进制包括：0-15；  26 进制应包括：0~25
+#  因为 Excel 取值范围为 1~26，故可将 26 进制 逻辑上的 个位、十位、百位…均减 1 映射到 0~25 即可，最后转换为字符。
+
+class Solution:
+    def convertToTitle(self, n: int) -> str:
+        s = ''
+        while n:
+            n -= 1
+            s = chr(n % 26 + 65) + s
+            n = n // 26
+        return s
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 171. Excel表列序号](https://leetcode-cn.com/problems/excel-sheet-column-number/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int titleToNumber(string s) {
+        int a = 0;
+        for (long long i = 0, p = 26; i < s.size() - 1; i ++, p *= 26)
+            a += p;
+
+        int b = 0;
+        for (auto c: s) b = b * 26 + c - 'A';
+        return a + b + 1;
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int titleToNumber(string s) {
+        int res = 0;
+        for (auto & c : s) {
+            int v = c - 'A' + 1;
+            res = res * 26 + v;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+# 进制转换，类比其他进制怎么转换的。同理，需要注意的是 这里A 代表 1.（而不是0）
+class Solution:
+    def titleToNumber(self, s: str) -> int:
+        res = 0
+        for x in s:
+            res *= 26
+            res += ord(x) - 65 + 1
+        return res
 ```
 
 <!-- tabs:end -->

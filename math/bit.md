@@ -326,6 +326,431 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 190. 颠倒二进制位](https://leetcode-cn.com/problems/reverse-bits/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    uint32_t reverseBits(uint32_t n) {
+        int res = 0;
+        for (int i = 0; i < 32; ++ i )
+            res = (res << 1) + (n >> i & 1);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+# 使用位运算 n >> i & 1 可以取出 n 的第 i 位二进制数。我们从小到大依次取出 n 的所有二进制位，然后逆序累加到另一个无符号整数中。
+class Solution:
+    def reverseBits(self, n: int) -> int:
+        res = 0
+        for i in range(32):
+            res = (res << 1) + (n >> i & 1)
+            # res = (res * 2) + (n >> i & 1)
+        return res
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 191. 位1的个数](https://leetcode-cn.com/problems/number-of-1-bits/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int hammingWeight(uint32_t n) {
+        int res = 0;
+        while (n) n &= (n - 1), res ++ ;
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int hammingWeight(uint32_t n) {
+        int res = 0;
+        while (n) n -= n & -n, res ++ ;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+class Solution:
+    def hammingWeight(self, n: int) -> int:
+        def lowbit(x):
+            return x & (-x)
+
+        cnt = 0
+        if n < 0:
+            n = n & (1 << 32 - 1)
+        while n:
+            n -= lowbit(n)
+            cnt += 1
+        return cnt
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 231. 2的幂](https://leetcode-cn.com/problems/power-of-two/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    bool isPowerOfTwo(int n) {
+        return n > 0 && !(n & (n - 1));
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 326. 3的幂](https://leetcode-cn.com/problems/power-of-three/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    bool isPowerOfThree(int n) {
+        return n > 0 && 1162261467 % n == 0;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 342. 4的幂](https://leetcode-cn.com/problems/power-of-four/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    bool isPowerOfFour(int num) {
+        if (num <= 0) return false;
+        // 判断是否是2的幂
+        if (num & num - 1) return false;
+        // 与运算之后是本身 则是4的幂
+        if ((num & 0x55555555) == num) return true;
+        return false;
+    }
+};
+
+// yxc
+// n 是4的整数次幂，等价于 n 是平方数，且 n 的质因子只有2。
+// n 的质因子只有2，等价于 n 能整除 2^30 。
+class Solution {
+public:
+    bool isPowerOfFour(int num) {
+        if (num <= 0) return false;
+        int t = sqrt(num);
+        return t * t == num && ((1 << 30) % num) == 0;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 693. 交替位二进制数](https://leetcode-cn.com/problems/binary-number-with-alternating-bits/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    bool hasAlternatingBits(int n) {
+        for (int i = 1; 1ll << i <= n; i ++ ) {
+            int a = n >> i - 1 & 1;
+            int b = n >> i & 1;
+            if (a == b) return false;
+        }
+        return true;
+    }
+};
+```
+
+##### **C++ 旧**
+
+```cpp
+class Solution {
+public:
+    bool hasAlternatingBits(int n) {
+        n = (n ^ (n >> 1));               // 若合法 经过本操作变为全1
+        return (n & ((long)n + 1)) == 0;  // +1 首位为1后面全0
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 数值操作
+
+> [!NOTE] **[LeetCode 371. 两整数之和](https://leetcode-cn.com/problems/sum-of-two-integers/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int getSum(int a, int b) {
+        while (b) {
+            int t = a ^ b;
+            // 处理负数 unsigned 形如 a = -1, b = 1
+            int carry = (unsigned)(a & b) << 1;
+            a = t, b = carry;
+        }
+        return a;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 位维护状态
+
+> [!NOTE] **[LeetCode 289. 生命游戏](https://leetcode-cn.com/problems/game-of-life/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    void gameOfLife(vector<vector<int>>& board) {
+        int dx[] = {-1,  0,  1, -1, 1, -1, 0, 1};
+        int dy[] = {-1, -1, -1,  0, 0,  1, 1, 1};
+
+        for (int i = 0; i < board.size(); ++ i) {
+            for (int j = 0 ; j < board[0].size(); j++) {
+                int sum = 0;
+                for (int k = 0; k < 8; k++) {
+                    int nx = i + dx[k], ny = j + dy[k];
+                    if (nx >= 0 && nx < board.size() && ny >= 0 && ny < board[0].size())
+                        sum += (board[nx][ny]&1);   // 只累加最低位
+                }
+                if (board[i][j] == 1) {
+                    if (sum == 2 || sum == 3)
+                        board[i][j] |= 2;   // 使用第二个bit标记是否存活
+                } else {
+                    if (sum == 3)
+                        board[i][j] |= 2;   // 使用第二个bit标记是否存活
+                }
+            }
+        }
+        for (int i = 0; i < board.size(); ++ i )
+            for (int j = 0; j < board[i].size(); ++ j )
+                board[i][j] >>= 1;          //右移一位，用第二bit覆盖第一个bit。
+    }
+};
+```
+
+##### **Python**
+
+```python
+"""
+(原地算法+位运算)
+如何做到不用额外的空间，且把所有位置细胞的状态同时改变呢？因为想到只有0和1两个状态，可以用二进制中的第二位来存储变化后的状态。
+0000：一开始是死细胞，后来还是死细胞
+0101：一开始是活细胞，后来变成死细胞
+1010：一开始是死细胞，后来变成活细胞
+1111：一开始是活细胞，后来还是活细胞
+最后把第二位全部右移一位就是结果数组了
+
+"""
+class Solution:
+    def gameOfLife(self, board: List[List[int]]) -> None:
+        """
+        Do not return anything, modify board in-place instead.
+        """
+        m = len(board)
+        n = len(board[0])
+
+        for i in range(m):
+            for j in range(n):
+                live = 0
+                for x in range(max(0, i-1), min(i+1, m-1)+1):
+                    for y in range(max(0, j-1), min(j+1, n-1)+1):
+                        if i == x and j == y:
+                            continue
+                        if board[x][y] & 1:
+                            live += 1
+
+                next = 0
+                if board[i][j] & 1:
+                    if 2 <= live <= 3:
+                        next = 1
+                else:
+                    if live == 3:
+                        next = 1
+                board[i][j] |= next << 1
+
+        for i in range(m):
+            for j in range(n):
+                board[i][j] = board[i][j] >> 1
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 进阶
 
 > [!NOTE] **[AcWing 90. 64位整数乘法](https://www.acwing.com/problem/content/92/)**
@@ -432,6 +857,448 @@ int main() {
 
 ```python
 
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 458. 可怜的小猪](https://leetcode-cn.com/problems/poor-pigs/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int poorPigs(int buckets, int minutesToDie, int minutesToTest) {
+        // 轮次： minutesToTest / minutesToDie
+        // 第 x 轮死或一直不死 则可表达如下 states 种状态
+        int states = minutesToTest / minutesToDie + 1;
+        // (k + 1) ^ x >= buckets
+        // k+1 即为测试时间除以中毒检验时间再加一（之前说过可以通过排除法确定最后一列）
+        // 把 buckets 转化为 k+1 位进制数
+        return ceil(log(buckets) / log(states));
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 思想
+
+> [!NOTE] **[LeetCode 201. 数字范围按位与](https://leetcode-cn.com/problems/bitwise-and-of-numbers-range/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> TODO: 思考如果**按位或**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int rangeBitwiseAnd(int m, int n) {
+        int cnt = 0;
+        while (m != n) {
+            m >>= 1;
+            n >>= 1;
+            cnt ++ ;
+        }
+        return m <<= cnt; 
+    }
+    
+    int rangeBitwiseAnd(int m, int n) {
+        while (m < n) {
+            n = n & (n - 1);
+        }
+        return n;
+    }
+};
+```
+
+##### **Python**
+
+```python
+class Solution {
+public:
+    int rangeBitwiseAnd(int m, int n) {
+        int res = 0;
+        for (int i = 30; i >= 0; i -- ) {
+            if ((m >> i & 1) != (n >> i & 1)) break;
+            if (m >> i & 1) res += 1 << i;
+        }
+        return res;
+    }
+};
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 经典位划分
+
+> [!NOTE] **[LeetCode 136. 只出现一次的数字](https://leetcode-cn.com/problems/single-number/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+        int res = 0;
+        for (auto v : nums) res ^= v;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+# 1 ^ 1 = 0; 0 ^ 0 = 0; 1 ^ 0 = 1; 0 ^ 1 = 1
+# 两个相同的数字异或值为0 所以res初始化为0 对结果不会产生影响
+
+class Solution:
+    def singleNumber(self, nums: List[int]) -> int:
+        res = 0
+        for x in nums:
+            res ^= x 
+        return res
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 137. 只出现一次的数字 II](https://leetcode-cn.com/problems/single-number-ii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+        int res = 0;
+        for (int i = 0; i < 32; ++i) {
+            int p = 1 << i;
+            int c = 0;
+            for (auto v : nums)
+                if (v & p)
+                    ++ c ;
+            if (c % 3)
+                res |= p;
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ trick**
+
+```cpp
+// 希望看到 1 的个数是模三余几
+//
+// 状态机模型
+// https://www.acwing.com/video/2853/
+class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+        int two = 0, one = 0;
+        for (auto x: nums) {
+            one = (one ^ x) & ~two;
+            two = (two ^ x) & ~one;
+        }
+        return one;
+    }
+};
+```
+
+##### **Python**
+
+```python
+# 特别注意 负数的情况：Python是动态类型语言，在这种情况下其会将符号位置的1看成了值，而不是当作符号“负数”
+# 【只有一个元素出现一次，其他元素都出现三次。】
+# 【位运算】
+# 方法比较跳跃性，需要多思考回顾
+# 1. 建立一个长度为 32 的数组counts ，记录所有数字的各二进制位的 11 的出现次数。
+# 2. 将 counts各元素对 33 求余，则结果为 “只出现一次的数字” 的各二进制位。
+# 3. 利用 左移操作 和 或运算 ，可将 counts数组中各二进位的值恢复到数字 res 上，最后返回 res
+class Solution:
+    def singleNumber(self, nums: List[int]) -> int:
+        res = 0 
+        for i in range(32):
+            p = 1 << i 
+            c = 0 
+            for x in nums:
+                if x & p:
+                    c += 1
+            if c % 3:
+                res |= p
+            if i == 31:
+                if c % 3 == 0:
+                    flag = True 
+                else:
+                    flag = False
+        return res if flag else ~(res ^ 0xffffffff)
+
+
+class Solution:
+    def singleNumber(self, nums: List[int]) -> int:
+        c = [0] * 32
+        for num in nums:
+            for j in range(32):
+                c[j] += num & 1
+                num >>= 1
+        res = 0 
+        for i in range(32):
+            res <<= 1 
+            res |= c[31 - i] % 3
+        return res if c[31] % 3 == 0 else ~(res ^ 0xffffffff) 
+      # 由于 Python 的存储负数的特殊性，需要先将0 - 32位取反（即res ^ 0xffffffff ），再将所有位取反（即 ~ ）; 两个组合操作实质上是将数字 32 以上位取反， 0 - 32 位不变。
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 260. 只出现一次的数字 III](https://leetcode-cn.com/problems/single-number-iii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<int> singleNumber(vector<int>& nums) {
+        int len = nums.size();
+        int t = 0;
+        for (int i = 0; i < len; ++ i ) t ^= nums[i];
+        int mask = t & (-t);
+        vector<int> ans(2, 0);
+        for (int i = 0; i < len; ++ i ) {
+            if ((nums[i] & mask) == 0)
+                ans[0] ^= nums[i];
+            else
+                ans[1] ^= nums[i];
+        }
+        return ans;
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+// yxc
+class Solution {
+public:
+    int get(vector<int>& nums, int k, int t) {
+        int res = 0;
+        for (auto x: nums)
+            if ((x >> k & 1) == t)
+                res ^= x;
+        return res;
+    }
+
+    vector<int> singleNumber(vector<int>& nums) {
+        int ab = 0;
+        for (auto x: nums) ab ^= x;
+        int k = 0;
+        while ((ab >> k & 1) == 0) k ++ ;
+        return {get(nums, k, 0), get(nums, k, 1)};
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 268. 丢失的数字](https://leetcode-cn.com/problems/missing-number/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int missingNumber(vector<int>& nums) {
+        int n = nums.size();
+        int res = n;
+        for (int i = 0; i < n; ++ i )
+            res ^= i ^ nums[i];
+        return res;
+    }
+
+    int missingNumber(vector<int>& nums) {
+        int n = nums.size(), sum = (n + 1) * n / 2, res = 0;
+        for (int i = 0; i < n; ++ i )
+            res += nums[i];
+        return sum - res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+// yxc
+class Solution {
+public:
+    int missingNumber(vector<int>& nums) {
+        int n = nums.size();
+        int res = n * (n + 1) / 2;
+        for (auto x: nums) res -= x;
+        return res;
+    }
+};
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 477. 汉明距离总和](https://leetcode-cn.com/problems/total-hamming-distance/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+/*
+将所有数对距离的计算过程按位分离，固定第 i 个二进制位，
+统计数组中数字 i 位为 1 的个数 ones，则第 i 位贡献的答案为 ones∗(n−ones)
+*/
+    int totalHammingDistance(vector<int>& nums) {
+        int res = 0;
+        for (int i = 0; i <= 30; ++ i ) {
+            int x = 0, y = 0;
+            for (auto v : nums)
+                if (v >> i & 1) ++ y ;
+                else ++ x ;
+            res += x * y;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+# 如果去枚举每个数，再进行计算汉明距离，那根据数据范围，会超时；所以换一种思路：
+# 1. 枚举每个数字的每一位，一共32位
+# 2. 遍历数组，统计每个数字当前位为0个数总和为x，为1的个数总和为y；res += x * y 
+class Solution:
+    def totalHammingDistance(self, nums: List[int]) -> int:
+        res = 0 
+        for i in range(31):
+            x, y = 0, 0 
+            for c in nums:
+                if c >> i & 1:y += 1
+                else:x += 1
+            res += x * y 
+        return res
 ```
 
 <!-- tabs:end -->

@@ -429,6 +429,734 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 4. 寻找两个正序数组的中位数](https://leetcode-cn.com/problems/median-of-two-sorted-arrays/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+        int n1 = nums1.size(), n2 = nums2.size();
+        if (n1 > n2) return findMedianSortedArrays(nums2, nums1);
+        // l 是 nums1 中划分点的右边界 取值范围 [0, n1]
+        // 对应：l 左侧的值为 [空, n1-1]
+        // 也即：l 左侧的值 <= 中点值
+        int l = 0, r = n1;
+        // 找到第一个大于等于 lv2 的位置 l 
+        while (l < r) {
+            // 左侧有 i 个  总共应有(n1+n2)/2个
+            int i = l + (r - l) / 2;
+            // nums2 右边界 因为n1和n2大小关系 j永远不会取0(除非n1=n2)
+            int j = (n1 + n2) / 2 - i;
+            if (nums1[i] < nums2[j-1]) l = i + 1;  // rv1 和 lv2 对比   nums1 选的太少
+            else r = i;
+        }
+        int i = l, j = (n1 + n2) / 2 - i;
+        int lv1 = i ? nums1[i - 1] : INT_MIN;
+        int rv1 = i < n1 ? nums1[i] : INT_MAX;
+        int lv2 = j ? nums2[j - 1] : INT_MIN;
+        int rv2 = j < n2 ? nums2[j] : INT_MAX;
+        if((n1 + n2) & 1) return min(rv1, rv2);
+        return (max(lv1, lv2) + min(rv1, rv2)) / 2.0;
+    }
+};
+```
+
+##### **Python**
+
+```python
+"""
+1. 假设 len(nums1) < len(nums2), 如果不是的话，那就反过来用一遍算法即可【保证 j 不越界】；
+2. 用二分来枚举求解 中位数 在 nums1数列中的位置
+3. i 为 nums1递增数列中，【中位数】划分的右边界：也就是包括 nums1[i]在内，nums1 中后面的数值都是在【中位数】的右边
+   i 的取值范围： [空, n1-1]， 因为可能 nums1 中所有的数都是在 中位数 的右边，也就是 i 左边的值 都是 <= 中位数
+4. 根据 i 的位置, 可以得到 在nums2 中有多少个数被划分到 中位数 的 左侧 j = (n1+n2) // 2 - i, j 表示第几个数，对应的下标是 j-1
+5. 比较 中位数 的右边 的第一个数 nums1[i] 和 中位数左边的第一数的大小 nums2[j-1] ，如果nums1[i]小一些，说明 i 当前还需要再往 r的方向走， 则 l = i + 1
+6. 中位数 一定是在右半部分（向下取整的原因导致的）
+"""
+
+class Solution:
+    def findMedianSortedArrays(self, nums1: List[int], nums2: List[int]) -> float:
+        n1, n2 = len(nums1), len(nums2)
+        if n1 > n2:return self.findMedianSortedArrays(nums2, nums1)
+
+        l, r = 0, n1
+        while l < r:
+            i = l + (r - l) // 2
+            j = (n1 + n2) // 2 - i 
+            if nums1[i] < nums2[j-1]:
+                l = i + 1
+            else:
+                r = i 
+        
+        """
+        i + j 总长度是向下取整，中位数左边的总长度 是 <= 2 // (n1+n2)
+        这里是做一个，边界值的判断
+        """
+        i = l
+        j = (n1 + n2) // 2 - i 
+        
+        lv1 = nums1[i-1] if i > 0 else float('-inf')
+        rv1 = nums1[i] if i < n1 else float('inf')
+        lv2 = nums2[j-1] if j > 0 else float('-inf')
+        rv2 = nums2[j] if j < n2 else float('inf')
+        if (n1 + n2) & 1:
+            return min(rv1, rv2)
+        return (max(lv1, lv2) + min(rv1, rv2)) / 2
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 34. 在排序数组中查找元素的第一个和最后一个位置](https://leetcode-cn.com/problems/find-first-and-last-position-of-element-in-sorted-array/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<int> searchRange(vector<int>& nums, int target) {
+        int n = nums.size();
+        vector<int> res(2);
+        res[0] = res[1] = -1;
+        int l = 0, r = n;
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+            if (nums[mid] < target) l = mid + 1;
+            else r = mid;
+        }
+        res[0] = l < n && nums[l] == target ? l : -1;
+        l = 0, r = n;
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+            if (nums[mid] <= target) l = mid + 1;
+            else r = mid;
+        }
+        res[1] = l > 0 && nums[l - 1] == target ? l - 1 : -1;
+        return res; 
+    }
+};
+```
+
+##### **Python**
+
+```python
+class Solution:
+    def searchRange(self, nums: List[int], target: int) -> List[int]:
+        n = len(nums)
+        l, r = 0, n
+        p1 = 0
+        while l < r:  #找到等于target的目标值的位置;
+            m = l + (r - l) // 2
+            if nums[m] < target:
+                l = m + 1
+            else:r = m
+        if 0 <= l < n and nums[l] == target:
+            p1 = l 
+        else:return [-1, -1]
+
+        l, r = 0, n 
+        while l < r:   #找到第一个比target大的整数
+            m = l + (r - l) // 2
+            if nums[m] <= target:
+                l = m + 1
+            else:r = m
+        p2 = l - 1  #不用再做判断了，因为如果不存在target，第一步已经返回了[-1,-1]
+        return [p1, p2]
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 162. 寻找峰值](https://leetcode-cn.com/problems/find-peak-element/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int findPeakElement(vector<int>& nums) {
+        int n = nums.size();
+        int l = 0, r = n - 1;
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+            if (nums[mid] < nums[mid + 1])
+                l = mid + 1;
+            else
+                r = mid;
+        }
+        return l;
+    }
+};
+```
+
+##### **Python**
+
+```python
+class Solution:
+    def findPeakElement(self, nums: List[int]) -> int:
+        n = len(nums)
+        l, r = 0, n
+        while l < r:
+            m = l + (r - l) // 2 
+            if m + 1 < len(nums) and nums[m] < nums[m+1]:
+                l = m + 1 
+            else:
+                r = m 
+        return l 
+      
+      
+class Solution:
+    def findPeakElement(self, nums: List[int]) -> int:
+        n = len(nums)
+        l, r = 0, n - 1 
+        while l < r:
+            m = l + (r - l) // 2 
+            if nums[m] < nums[m+1]:
+                l = m + 1 
+            else:
+                r = m 
+        return l       
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 274. H 指数](https://leetcode-cn.com/problems/h-index/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int hIndex(vector<int>& citations) {
+        sort(citations.begin(), citations.end(), greater<int>());
+        for (int h = citations.size(); h; -- h )
+            if (citations[h - 1] >= h) return h;
+        return 0;
+    }
+
+    int hIndex_2(vector<int>& citations) {
+        int l = 0, r = citations.size() + 1;
+        while (l < r) {
+            int m = l + (r - l) / 2;
+            
+            int c = 0;
+            for (auto & v : citations)
+                if (v >= m)
+                    c ++ ;
+
+            if (c >= m)
+                l = m + 1;
+            else
+                r = m;
+        }
+        return l - 1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+class Solution:
+    def hIndex(self, citations: List[int]) -> int:
+        citations.sort()
+        l = 0
+        r = n = len(citations)
+        while l<r:
+            mid = l + (r-l)//2
+            if citations[mid] < n - mid:
+                l = mid+1
+            else:
+                r = mid
+        return n-l
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 275. H 指数 II](https://leetcode-cn.com/problems/h-index-ii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int hIndex(vector<int>& citations) {
+        // 对于某个下标 i , 其位置及其右侧的值均大于等于 c[i] 也即个数为 n - i
+        // 故找到最左侧的 i
+        int n = citations.size(), l = 0, r = n;
+        // if (!n) return 0;
+        while (l < r) {
+            int m = l + (r - l) / 2;
+            if (citations[m] < n - m)
+                l = m + 1;
+            else
+                r = m;
+        }
+        return n - l;
+    }
+};
+```
+
+##### **Python**
+
+```python
+class Solution:
+    def hIndex(self, citations: List[int]) -> int:
+        l = 0
+        r = n = len(citations)
+        while l<r:
+            mid = l + (r-l)//2
+            if citations[mid] < n - mid:
+                l = mid+1
+            else:
+                r = mid
+        return n-l
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 540. 有序数组中的单一元素](https://leetcode-cn.com/problems/single-element-in-a-sorted-array/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int singleNonDuplicate(vector<int> & nums) {
+        nums.push_back(nums.back() + 1);
+        int l = 0, r = nums.size() / 2 - 1;
+        while (l < r) {
+            int m = l + (r - l) / 2;
+            if (nums[m * 2] != nums[m * 2 + 1]) r = m;
+            else l = m + 1;
+        }
+        return nums[l * 2];
+    }
+
+    int singleNonDuplicate_2(vector<int>& nums) {
+        int res = 0;
+        for (auto v : nums) res ^= v;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 二分答案
+
+> [!NOTE] **[LeetCode 410. 分割数组的最大值](https://leetcode-cn.com/problems/split-array-largest-sum/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 二分 或 巧妙状态定义
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 状态定义**
+
+```cpp
+class Solution {
+public:
+    const int inf = 0x3f3f3f3f;
+    int splitArray(vector<int>& nums, int m) {
+        int n = nums.size();
+        vector<int> psum(n + 1);
+        for (int i = 1; i <= n; ++ i ) psum[i] = psum[i - 1] + nums[i - 1];
+        vector<vector<int>> f(n + 1, vector<int>(m + 1, inf));
+        f[0][0] = 0;
+        for (int i = 1; i <= n; ++ i ) {
+            for (int j = 1; j <= i && j <= m; ++ j )
+                for (int k = 0; k < i; ++ k )
+                    f[i][j] = min(f[i][j], max(f[k][j - 1], psum[i] - psum[k]));
+                
+        }
+        return f[n][m];
+    }
+};
+```
+
+##### **C++ 二分1**
+
+```cpp
+// 二分
+class Solution {
+public:
+    vector<int> nums;
+    int n, m;
+    
+    bool check(int mid) {
+        int c = 0;
+        for (int i = 0; i < n; ++ i ) {
+            int j = i, s = 0;
+            while (j < n && s + nums[j] <= mid)
+                s += nums[j], j ++ ;
+            if (i == j)
+                return true;
+            c ++ ;
+            i = j - 1;
+        }
+        return c > m;
+    }
+
+    int splitArray(vector<int>& nums, int m) {
+        this->nums = nums;
+        this->n = nums.size(), this->m = m;
+        int l = 0, r = INT_MAX;
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+            // 不合法 要增加
+            if (check(mid))
+                l = mid + 1;
+            else
+                r = mid;
+        }
+        return l;
+    }
+};
+
+```
+
+##### **C++ 二分2**
+
+```cpp
+// yxc 二分
+class Solution {
+public:
+    bool check(vector<int>& nums, int m, int mid) {
+        int sum = 0, cnt = 0;
+        for (auto x: nums) {
+            if (x > mid) return false;
+            if (sum + x > mid) {
+                cnt ++ ;
+                sum = x;
+            } else {
+                sum += x;
+            }
+        }
+        if (sum) cnt ++ ;
+        return cnt <= m;
+    }
+
+    int splitArray(vector<int>& nums, int m) {
+        int l = 0, r = INT_MAX;
+        while (l < r) {
+            int mid = (long long)l + r >> 1;
+            if (check(nums, m, mid)) r = mid;
+            else l = mid + 1;
+        }
+        return r;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 475. 供暖器](https://leetcode-cn.com/problems/heaters/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然二分 注意check函数写法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const int inf = 0x3f3f3f3f;
+    vector<int> cs, ws;
+    bool check(int m) {
+        // not empty
+        int p1 = 0, p2 = 0;
+        while (p1 < cs.size() && p2 < ws.size()) {
+            int x1 = cs[p1], x2 = ws[p2];
+            if (abs(x2 - x1) <= m) ++ p1;
+            else ++ p2;
+        }
+        return p1 == cs.size();
+    }
+    int findRadius(vector<int>& houses, vector<int>& heaters) {
+        cs = houses, ws = heaters;
+        sort(cs.begin(), cs.end());
+        sort(ws.begin(), ws.end());
+        int l = 0, r = inf;
+        while (l < r) {
+            int m = l + (r - l) / 2;
+            if (check(m)) r = m;
+            else l = m + 1;
+        }
+        return l;
+    }
+};
+
+// ----------------------------------------
+// yxc check函数写法
+    bool check(int mid) {
+        for (int i = 0, j = 0; i < houses.size(); i ++ ) {
+            while (j < heaters.size() && abs(heaters[j] - houses[i]) > mid)
+                j ++ ;
+            if (j >= heaters.size()) return false;
+        }
+        return true;
+    }
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 778. 水位上升的泳池中游泳](https://leetcode-cn.com/problems/swim-in-rising-water/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int n;
+    vector<vector<int>> g;
+    vector<vector<bool>> st;
+    int dx[4] = {-1, 0, 1, 0}, dy[4] = {0, 1, 0, -1};
+
+    bool dfs(int x, int y, int mid) {
+        if (x == n - 1 && y == n - 1) return true;
+        st[x][y] = true;
+        for (int i = 0; i < 4; i ++ ) {
+            int a = x + dx[i], b = y + dy[i];
+            if (a >= 0 && a < n && b >= 0 && b < n && g[a][b] <= mid && !st[a][b])
+                if (dfs(a, b, mid)) return true;
+        }
+        return false;
+    }
+
+    bool check(int mid) {
+        if (g[0][0] > mid) return false;
+        st = vector<vector<bool>>(n, vector<bool>(n));
+        return dfs(0, 0, mid);
+    }
+
+    int swimInWater(vector<vector<int>>& grid) {
+        g = grid;
+        n = g.size();
+        int l = 0, r = n * n - 1;
+        while (l < r) {
+            int mid = l + r >> 1;
+            if (check(mid)) r = mid;
+            else l = mid + 1;
+        }
+        return r;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 793. 阶乘函数后 K 个零](https://leetcode-cn.com/problems/preimage-size-of-factorial-zeroes-function/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 二分性质 + 数学
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+
+    LL f(LL x) {
+        LL tot = 0;
+        while (x)
+            tot += x / 5, x /= 5;
+        return tot;
+    }
+
+    int calc(int k) {
+        if (k < 0)
+            return 0;
+        LL l = 0, r = 1e18;
+        while (l < r) {
+            LL m = (l + r) >> 1;
+            // 求第一个大于k的
+            if (f(m) <= k)
+                l = m + 1;
+            else
+                r = m;
+        }
+        return (int)l;
+    }
+
+    int preimageSizeFZF(int k) {
+        return calc(k) - calc(k - 1);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 三分
 
 > [!NOTE] **[AcWing 1420. 通电围栏](https://www.acwing.com/problem/content/1422/)**
@@ -748,6 +1476,216 @@ public:
                 r -- ;
         }
         return nums[l] == target;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 抽象二分思想
+
+> [!NOTE] **[LeetCode 74. 搜索二维矩阵](https://leetcode-cn.com/problems/search-a-2d-matrix/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 根据题目 【每行的第一个整数大于前一行的最后一个整数】可以直接一维二分
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        if (matrix.empty() || matrix[0].empty()) return false;
+        int n = matrix.size(), m = matrix[0].size();
+
+        int l = 0, r = n * m - 1;
+        while (l < r) {
+            int mid = l + r >> 1;
+            if (matrix[mid / m][mid % m] >= target) r = mid;
+            else l = mid + 1;
+        }
+
+        return matrix[r / m][r % m] == target;
+    }
+};
+
+    bool searchMatrix2(vector<vector<int>>& matrix, int target) {
+        int m = matrix.size();
+        if (!m) return false;
+        int n = matrix[0].size();
+        int u = 0, r = n - 1;
+        while (u < m && r >= 0) {
+            if (matrix[u][r] == target) return true;
+            else if (matrix[u][r] < target) ++ u ;
+            else -- r ;
+        }
+        return false;
+    }
+};
+```
+
+##### **Python**
+
+```python
+class Solution:
+    def searchMatrix(self, arr: List[List[int]], target: int) -> bool:
+        if not arr:return False
+        n, m = len(arr), len(arr[0])
+        i, j = 0, m - 1 
+        while i < n and j >= 0:
+            if arr[i][j] == target:
+                return True 
+            elif arr[i][j] > target:
+                j -= 1
+            else:i += 1 
+        return False
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 240. 搜索二维矩阵 II](https://leetcode-cn.com/problems/search-a-2d-matrix-ii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        if (matrix.empty() || matrix[0].empty()) return false;
+        int n = matrix.size(), m = matrix[0].size();
+        int i = 0, j = m - 1;
+        while (i < n && j >= 0) {
+            int t = matrix[i][j];
+            if (t == target) return true;
+            else if (t > target) j -- ;
+            else i ++ ;
+        }
+        return false;
+    }
+};
+```
+
+##### **Python**
+
+```python
+class Solution:
+    def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
+
+        if not matrix:return False
+        i, j = 0, len(matrix[0]) - 1
+        while i < len(matrix) and j >= 0:
+            if matrix[i][j] > target:
+                j -= 1
+            elif matrix[i][j] < target:
+                i += 1
+            else:return True 
+        return False
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 378. 有序矩阵中第K小的元素](https://leetcode-cn.com/problems/kth-smallest-element-in-a-sorted-matrix/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// yxc
+class Solution {
+public:
+    int kthSmallest(vector<vector<int>>& matrix, int k) {
+        int l = INT_MIN, r = INT_MAX;
+        while (l < r) {
+            int mid = (long long)l + r >> 1;
+            int i = matrix[0].size() - 1, cnt = 0;
+            for (int j = 0; j < matrix.size(); j ++ ) {
+                while (i >= 0 && matrix[j][i] > mid) i -- ;
+                cnt += i + 1;
+            }
+            if (cnt >= k) r = mid;
+            else l = mid + 1;
+        }
+        return r;
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    bool check(vector<vector<int>>& mat, int m, int k, int n) {
+        int i = n-1, j = 0;
+        int cnt = 0;
+        while (i >= 0 && j < n) {
+            if (mat[i][j] <= m)
+                cnt += i + 1, ++ j ;
+            else
+                -- i ;
+        }
+        return cnt >= k;
+    }
+    int kthSmallest(vector<vector<int>>& matrix, int k) {
+        int n = matrix.size();
+        int l = matrix[0][0], r = matrix[n - 1][n - 1];
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+            if (check(matrix, mid, k, n)) {
+                // 个数大于等于k
+                r = mid;
+            } else
+                l = mid + 1;   // 个数小于k
+        }
+        return l;
     }
 };
 ```

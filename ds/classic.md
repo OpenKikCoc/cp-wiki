@@ -135,6 +135,244 @@ class MyQueue(object):
 
 * * *
 
+> [!NOTE] **[LeetCode 225. 用队列实现栈](https://leetcode-cn.com/problems/implement-stack-using-queues/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class MyStack {
+public:
+    /** Initialize your data structure here. */
+
+    queue<int> q, w;
+    MyStack() {
+
+    }
+
+    /** Push element x onto stack. */
+    void push(int x) {
+        q.push(x);
+    }
+
+    /** Removes the element on top of the stack and returns that element. */
+    int pop() {
+        while (q.size() > 1) w.push(q.front()), q.pop();
+        int t = q.front();
+        q.pop();
+        while (w.size()) q.push(w.front()), w.pop();
+        return t;
+    }
+
+    /** Get the top element. */
+    int top() {
+        while (q.size() > 1) w.push(q.front()), q.pop();
+        int t = q.front();
+        q.pop();
+        while (w.size()) q.push(w.front()), w.pop();
+        q.push(t);
+        return t;
+    }
+
+    /** Returns whether the stack is empty. */
+    bool empty() {
+        return q.empty();
+    }
+};
+
+/**
+ * Your MyStack object will be instantiated and called as such:
+ * MyStack* obj = new MyStack();
+ * obj->push(x);
+ * int param_2 = obj->pop();
+ * int param_3 = obj->top();
+ * bool param_4 = obj->empty();
+ */
+```
+
+##### **Python**
+
+```python
+class MyStack:
+
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.q=[]
+
+
+    def push(self, x: int) -> None:
+        """
+        Push element x onto stack.
+        """
+        self.q.append(x)
+        n=len(self.q)
+        while n>1:
+            self.q.append(self.q.pop(0))
+            n-=1
+
+
+
+    def pop(self) -> int:
+        """
+        Removes the element on top of the stack and returns that element.
+        """
+        return self.q.pop(0)
+
+
+    def top(self) -> int:
+        """
+        Get the top element.
+        """
+        return self.q[0]
+
+
+    def empty(self) -> bool:
+        """
+        Returns whether the stack is empty.
+        """
+        return not bool(self.q)
+
+
+
+# Your MyStack object will be instantiated and called as such:
+# obj = MyStack()
+# obj.push(x)
+# param_2 = obj.pop()
+# param_3 = obj.top()
+# param_4 = obj.empty()
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 232. 用栈实现队列](https://leetcode-cn.com/problems/implement-queue-using-stacks/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class MyQueue {
+    stack<int> in, out;
+public:
+    /** Initialize your data structure here. */
+    MyQueue() {
+
+    }
+    
+    /** Push element x to the back of queue. */
+    void push(int x) {
+        in.push(x);
+    }
+    
+    /** Removes the element from in front of queue and returns that element. */
+    int pop() {
+        if(out.empty()) {
+            int tot = in.size(), t;
+            while(tot--) {
+                t = in.top();
+                out.push(t);
+                in.pop();
+            }
+        }
+        int t = out.top();
+        out.pop();
+        return t;
+    }
+    
+    /** Get the front element. */
+    int peek() {
+        if(out.empty()) {
+            int tot = in.size(), t;
+            while(tot--) {
+                t = in.top();
+                out.push(t);
+                in.pop();
+            }
+        }
+        int t = out.top();
+        //out.pop();
+        return t;
+    }
+    
+    /** Returns whether the queue is empty. */
+    bool empty() {
+        return in.empty() && out.empty();
+    }
+};
+
+/**
+ * Your MyQueue object will be instantiated and called as such:
+ * MyQueue* obj = new MyQueue();
+ * obj->push(x);
+ * int param_2 = obj->pop();
+ * int param_3 = obj->peek();
+ * bool param_4 = obj->empty();
+ */
+```
+
+##### **Python**
+
+```python
+class MyQueue:
+
+    def __init__(self):
+        self.A = []
+        self.B = []
+
+
+    def push(self, x: int) -> None:
+        while self.B:
+            self.A.append(self.B.pop())
+        self.A.append(x)
+
+
+    def pop(self) -> int:
+        while self.A:
+            self.B.append(self.A.pop())
+        return self.B.pop()
+
+
+    def peek(self) -> int:
+        while self.A:
+            self.B.append(self.A.pop())
+        return self.B[-1]
+
+
+    def empty(self) -> bool:
+        return not self.A and not self.B
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 栈
 
 > [!NOTE] **[SwordOffer 30. 包含min函数的栈](https://leetcode-cn.com/problems/bao-han-minhan-shu-de-zhan-lcof/)**

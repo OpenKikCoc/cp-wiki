@@ -104,3 +104,262 @@ if __name__ == '__main__':
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 329. 矩阵中的最长递增路径](https://leetcode-cn.com/problems/longest-increasing-path-in-a-matrix/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int n, m;
+    vector<vector<int>> f, w;
+    int dx[4] = {-1, 0, 1, 0}, dy[4] = {0, 1, 0, -1};
+
+    int dp(int x, int y) {
+        auto& v = f[x][y];
+        if (v != -1) return v;
+        v = 1;
+        for (int i = 0; i < 4; i ++ ) {
+            int a = x + dx[i], b = y + dy[i];
+            if (a >= 0 && a < n && b >= 0 && b < m && w[x][y] < w[a][b])
+                v = max(v, dp(a, b) + 1);
+        }
+        return v;
+    }
+
+    int longestIncreasingPath(vector<vector<int>>& matrix) {
+        if (matrix.empty() || matrix[0].empty()) return 0;
+        w = matrix;
+        n = w.size(), m = w[0].size();
+        f = vector<vector<int>>(n, vector<int>(m, -1));
+
+        int res = 0;
+        for (int i = 0; i < n; i ++ )
+            for (int j = 0; j < m; j ++ )
+                res = max(res, dp(i, j));
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 403. 青蛙过河](https://leetcode-cn.com/problems/frog-jump/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    unordered_map<int, int> hash;
+    vector<int> stones;
+    map<pair<int, int>, bool> f;
+
+    bool dp(int i, int j) {
+        if (f.count({i, j})) return f[{i, j}];
+        f[{i, j}] = false;
+        for (int k = max(1, j - 1); k <= j + 1; ++ k )
+            if (hash.count(stones[i] - k)) {
+                int p = hash[stones[i] - k];
+                if (dp(p, k)) {
+                    f[{i, j}] = true;
+                    break;
+                }
+            }
+        return f[{i, j}];
+    }
+
+    bool canCross(vector<int>& _stones) {
+        stones = _stones;
+        int n = stones.size();
+        for (int i = 0; i < n; ++ i ) hash[stones[i]] = i;
+        // 从0向【后】跳1初始化合法
+        f[{0, 1}] = true;
+        for (int i = 0; i < n; ++ i )
+            // 遍历可能结果集
+            if (dp(n - 1, i)) return true;
+        return false;
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+// yxc
+const int N = 2010;
+
+int f[N][N];
+
+class Solution {
+public:
+    unordered_map<int, int> hash;
+    vector<int> stones;
+
+    int dp(int x, int y) {
+        if (f[x][y] != -1) return f[x][y];
+        f[x][y] = 0;
+        for (int k = max(1, y - 1); k <= y + 1; k ++ ) {
+            int z = stones[x] - k;
+            if (hash.count(z)) {
+                int p = hash[z];
+                if (dp(p, k)) {
+                    f[x][y] = 1;
+                    break;
+                }
+            }
+        }
+        return f[x][y];
+    }
+
+    bool canCross(vector<int>& _stones) {
+        stones = _stones;
+        int n = stones.size();
+        for (int i = 0; i < n; i ++ ) hash[stones[i]] = i;
+        memset(f, -1, sizeof f);
+        f[0][1] = 1;
+        for (int i = 0; i < n; i ++ )
+            if (dp(n - 1, i))
+                return true;
+        return false;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode ]()**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 优化后的状压搜索实现
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 优化**
+
+```cpp
+class Solution {
+public:
+// 优化 according
+    // f[x] 表示某个状态是必胜还是必败
+    vector<int> f;
+    int n, m;
+    int dp(int x) {
+        if (f[x] != -1) return f[x];
+        int sum = 0;
+        for (int i = 0; i < n; ++ i )
+            if (x >> i & 1)
+                sum += i + 1;
+        for (int i = 0; i < n; ++ i ) {
+            if (x >> i & 1) continue;
+            if (sum + i + 1 >= m) return f[x] = 1;  // 可以拿 i 必胜
+            if (!dp(x + (1 << i))) return f[x] = 1; // 可以导致对方必败 必胜
+        }
+        return f[x] = 0;
+    }
+    bool canIWin(int _n, int _m) {
+        n = _n, m = _m;
+        if (n * (n + 1) / 2 < m) return false;
+        f.resize(1 << n, -1);
+        return dp(0);
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 不能使用重复整数 状态压缩20个位
+    // dp[i][j] 表示剩下整数状态为i时 累积和为j的先手结果
+    // dp[i][j] = 穷举接下来选择每一个数的下一个状态是否可能为true
+    // 如果有任意一个值为true 则当前状态必败 否则必胜
+    int mxInt, tot;
+    //unordered_map<pair<int,int>, int> m;  // hash不可用
+    map<pair<int, int>, int> m;
+    bool dfs(int state, int sum) {
+        if (sum >= tot) return true;
+        if (m.find({state, sum}) != m.end()) return m[{state, sum}];
+        bool f = true;
+        for (int i = 1; i <= mxInt; ++ i )
+            if ((state & (1 << i)) == 0)
+                if (dfs(state | (1 << i), sum + i)) {
+                    f = false;
+                    break;
+                }
+        return m[{state,sum}] = f;
+    }
+    bool canIWin(int maxChoosableInteger, int desiredTotal) {
+        mxInt = maxChoosableInteger, tot = desiredTotal;
+        // 所有数相加仍小于tot false
+        if ((mxInt + 1) * mxInt / 2 < tot) return false;
+        for (int i = 1; i <= mxInt; ++ i )
+            // 选择 i 当前sum为i
+            if (dfs(1 << i, i))
+                return true;
+        return false;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

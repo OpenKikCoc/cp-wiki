@@ -168,3 +168,144 @@ $prime(i)$ 表示第 $i$ 个质数。
 ## 参考资料
 
 方法三参考自博客 [树 hash](https://www.cnblogs.com/huyufeifei/p/10817673.html)。
+
+## 习题
+
+> [!NOTE] **[LeetCode 572. 另一个树的子树](https://leetcode-cn.com/problems/subtree-of-another-tree/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ hash**
+
+```cpp
+// yxc 树hash做法
+class Solution {
+public:
+    const int P = 131, Q = 159, MOD = 1e7 + 7;
+    int T = -1;
+    bool ans = false;
+
+    int dfs(TreeNode* root) {
+        if (!root) return 12345;
+        int left = dfs(root->left), right = dfs(root->right);
+        int x = (root->val % MOD + MOD) % MOD;
+        if (left == T || right == T) ans = true;
+        return (x + left * P % MOD + right * Q) % MOD;
+    }
+
+    bool isSubtree(TreeNode* s, TreeNode* t) {
+        T = dfs(t);
+        if (T == dfs(s)) ans = true;
+        return ans;
+    }
+};
+```
+
+##### **C++ 传统**
+
+```cpp
+class Solution {
+public:
+    bool helper(TreeNode* s, TreeNode* t) {
+        // 注意 需完全一致
+        if (s == nullptr && t == nullptr) return true;
+        else if (s == nullptr || t == nullptr) return false;
+        return s->val == t->val && helper(s->left, t->left) && helper(s->right, t->right);
+    }
+    bool isSubtree(TreeNode* s, TreeNode* t) {
+        if (s == nullptr && t == nullptr) return true;
+        else if (s == nullptr || t == nullptr) return false;
+        if(s->val == t->val) return helper(s, t) || isSubtree(s->left, t) || isSubtree(s->right, t);
+        return isSubtree(s->left, t) || isSubtree(s->right, t);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 652. 寻找重复的子树](https://leetcode-cn.com/problems/find-duplicate-subtrees/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    // 将一颗树唯一【映射】到一个整数
+    vector<TreeNode*> res;
+
+    // 唯一id
+    int cnt = 0;
+    unordered_map<string, int> ids;
+    unordered_map<int, int> hash;
+
+    int dfs(TreeNode * root) {
+        if (!root) return 0;
+        int left = dfs(root->left);
+        int right = dfs(root->right);
+        string key = to_string(root->val) + ' ' + to_string(left) + ' ' + to_string(right);
+        if (ids.count(key) == 0) ids[key] = ++ cnt ;
+        int id = ids[key];
+        if (++ hash[id] == 2) res.push_back(root);
+        return id;
+    }
+
+
+    vector<TreeNode*> findDuplicateSubtrees(TreeNode* root) {
+        dfs(root);
+        return res;        
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

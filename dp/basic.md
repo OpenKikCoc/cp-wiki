@@ -871,6 +871,335 @@ if __name__ == '__main__':
 
 * * *
 
+> [!NOTE] **[LeetCode 174. 地下城游戏](https://leetcode-cn.com/problems/dungeon-game/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 特殊构造转移方式
+> 
+> 也可以二分做
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    /*
+    1.这题不能直接求路径和最大，因为，如果走某一个点和小于等于0，就挂了。
+    2.可以倒着走，遇到公主后，血量最少为1.
+
+    f[i][j] = max(1, min(f[i + 1][j], f[i][j + 1]) - dungeon[i][j]);
+    f[i][j]表示到(i, j)点需要最少的血量。
+
+    方便计算多添加一行一列。使f[n][m - 1] = 1, f[m][m - 1] = 1;
+    */
+    const int inf = 0x3f3f3f3f;
+    int calculateMinimumHP(vector<vector<int>>& dungeon) {
+        int n = dungeon.size(), m = dungeon[0].size();
+        if (!n) return 0;
+        vector<vector<int>> f(n + 1, vector<int>(m + 1, inf));
+        f[n][m - 1] = f[n - 1][m] = 1;
+        for (int i = n - 1; i >= 0; -- i )
+            for (int j = m - 1; j >= 0; -- j )
+                f[i][j] = max(1, min(f[i + 1][j], f[i][j + 1]) - dungeon[i][j]);
+        return f[0][0];
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+// yxc
+class Solution {
+public:
+    int calculateMinimumHP(vector<vector<int>>& w) {
+        int n = w.size(), m = w[0].size();
+        vector<vector<int>> f(n, vector<int>(m, 1e8));
+
+        for (int i = n - 1; i >= 0; i -- )
+            for (int j = m - 1; j >= 0; j -- )
+                if (i == n - 1 && j == m - 1) f[i][j] = max(1, 1 - w[i][j]);
+                else {
+                    if (i + 1 < n) f[i][j] = f[i + 1][j] - w[i][j];
+                    if (j + 1 < m) f[i][j] = min(f[i][j], f[i][j + 1] - w[i][j]);
+                    f[i][j] = max(1, f[i][j]);
+                }
+
+        return f[0][0];
+    }
+};
+```
+
+##### **Python**
+
+```python
+# 1. 这道题不能直接从正向动态规划的原因是：不确定起始点的值，但可以发现，到终点之后 健康值为1 一定是最优解
+# 2. 考虑从终点到起点进行dp
+# 3. f[i,j] 表示从[i,j]成功到达终点，[i,j]处需要具备的最少能量值
+# 4. 初始状态，f[n-1,m-1]即在终点的最小健康值，max(1, 1 - w[n-1][m-1])  上一步 也至少为1
+# 5. 转移，f[i, j] = min(f[i+1, j], f[i, j+1] - w[i][j]) 但是f[i,j]又必须要大于1， 所以最后还要和1比较取min
+# 6. 最终答案 ： f[0][0]
+
+# 转移详解：
+# 从[i,j]往下一步走，加上当前权值，一定要大于等于 到下一步最少具备的能量，也就是：f[i,j] + w[i,j] >= f[i+1][j]
+# f[i][j] >= f[i+1][j] - w[i][j], 由于两个方向要取最小的，所以直接： f[i][j] = f[i+1][j] - w[i][j] 
+class Solution:
+    def calculateMinimumHP(self, w: List[List[int]]) -> int:
+        n, m = len(w), len(w[0])
+        f = [[float('inf')] * (m) for _ in range(n)]
+        f[n-1][m-1] = max(1, 1 - w[n-1][m-1])
+        for i in range(n-1, -1, -1):
+            for j in range(m-1, -1, -1):
+                if i + 1 < n:
+                    f[i][j] = f[i+1][j] - w[i][j]  
+                if j + 1 < m:
+                    f[i][j] = min(f[i][j], f[i][j+1] - w[i][j])
+                f[i][j] = max(1, f[i][j])
+        return f[0][0]
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 221. 最大正方形](https://leetcode-cn.com/problems/maximal-square/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int maximalSquare(vector<vector<char>>& matrix) {
+        if (matrix.empty() || matrix[0].empty()) return 0;
+        int n = matrix.size(), m = matrix[0].size();
+        vector<vector<int>> f(n + 1, vector<int>(m + 1));
+
+        int res = 0;
+        for (int i = 1; i <= n; i ++ )
+            for (int j = 1; j <= m; j ++ )
+                if (matrix[i - 1][j - 1] == '1') {
+                    f[i][j] = min(f[i - 1][j], min(f[i][j - 1], f[i - 1][j - 1])) + 1;
+                    res = max(res, f[i][j]);
+                }
+
+        return res * res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+"""
+f[i, j]表示：所有以(i,j)为右下角的且只包含 1`` 的正方形的边长最大值
+
+状态计算
+如果该位置的值是 0，则 f[i, j] = 0，因为当前位置不可能在由 1 组成的正方形中
+如果该位置的值是 1，则 f[i, j]的值由其上方、左方和左上方的三个相邻位置的状态值决定。具体而言，当前位置的元素值等于三个相邻位置的元素中的最小值加 1，状态转移方程如下：
+
+f[i,j]=min(f[i−1,j−1],f[i−1,j],f[i,j−1])+1
+
+为什么要三者取最小+1 ？
+有个题解解释得也很清楚，继续搬运
+
+若形成正方形（非单 1），以当前为右下角的视角看，则需要：当前格、上、左、左上都是 1
+可以换个角度：当前格、上、左、左上都不能受 0 的限制，才能成为正方形
+
+"""
+
+class Solution:
+    def maximalSquare(self, matrix: List[List[str]]) -> int:
+        if not matrix or not matrix[0]:
+            return 0
+        n = len(matrix)
+        m = len(matrix[0])
+        f = [[0] * (m + 1) for i in range(n + 1)]
+
+        res = 0
+        for i in range(1, n + 1):
+            for j in range(1, m + 1):
+                if matrix[i - 1][j - 1] == '1':
+                    f[i][j] = min(f[i - 1][j], f[i][j - 1], f[i - 1][j - 1]) + 1
+                    res = max(res, f[i][j])
+        return res * res
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 514. 自由之路](https://leetcode-cn.com/problems/freedom-trail/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 优雅实现
+> 
+> `if` 实现合法性判断
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int findRotateSteps(string ring, string key) {
+        int n = ring.size(), m = key.size();
+        ring = ' ' + ring, key = ' ' + key;
+        vector<vector<int>> f(m + 1, vector<int>(n + 1, 1e8));
+        f[0][1] = 0;
+        for (int i = 1; i <= m; i ++ )
+            for (int j = 1; j <= n; j ++ )
+                if (key[i] == ring[j]) {
+                    for (int k = 1; k <= n; k ++ ) {
+                        int t = abs(k - j);
+                        f[i][j] = min(f[i][j], f[i - 1][k] + min(t, n - t) + 1);
+                    }
+                }
+
+        int res = 1e8;
+        for (int i = 1; i <= n; i ++ ) res = min(res, f[m][i]);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 741. 摘樱桃](https://leetcode-cn.com/problems/cherry-pickup/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 比摘花生稍复杂一点点 1A
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const int INF = 2e9;
+    int cherryPickup(vector<vector<int>>& grid) {
+        int n = grid.size(), m = grid[0].size();
+        
+        vector<vector<vector<int>>> f(n + m + 1, vector<vector<int>>(n + 1, vector<int>(m + 1, -INF)));
+        
+        f[1][0][0] = 0;
+
+        for (int k = 2; k <= n + m; ++ k )
+            for (int x1 = 1; x1 <= k ; ++ x1 )
+                for (int x2 = 1; x2 <= k; ++ x2 ) {
+                    int y1 = k - x1, y2 = k - x2;
+                    if (x1 < 1 || x1 > n || y1 < 1 || y1 > m)
+                        continue;
+                    if (x2 < 1 || x2 > n || y2 < 1 || y2 > m)
+                        continue;
+                    
+                    if (grid[x1 - 1][y1 - 1] == -1 || grid[x2 - 1][y2 - 1] == -1)
+                        continue;
+                    
+                    auto & t = f[k][x1][x2];
+                    t = max(t, f[k - 1][x1][x2]);
+                    t = max(t, f[k - 1][x1 - 1][x2]);
+                    t = max(t, f[k - 1][x1][x2 - 1]);
+                    t = max(t, f[k - 1][x1 - 1][x2 - 1]);
+                    int v = 0;
+                    if (grid[x1 - 1][y1 - 1] == 1)
+                        ++ v ;
+                    if (grid[x2 - 1][y2 - 1] == 1)
+                        ++ v ;
+                    if (x1 == x2 && v)
+                        -- v ;
+                    t += v;
+                }
+        return max(f[n + m][n][m], 0);
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+const int N = 55;
+int f[N][N][N * 2];
+
+class Solution {
+public:
+    int cherryPickup(vector<vector<int>>& grid) {
+        int n = grid.size();
+        memset(f, -0x3f, sizeof f);
+        if (grid[0][0] != -1) f[1][1][2] = grid[0][0];
+        for (int k = 3; k <= n * 2; k ++ )
+            for (int i = max(1, k - n); i <= min(n, k - 1); i ++ )
+                for (int j = max(1, k - n); j <= min(n, k - 1); j ++ ) {
+                    if (grid[i - 1][k - i - 1] == -1 || grid[j - 1][k - j - 1] == -1) continue;
+                    int t = grid[i - 1][k - i - 1];
+                    if (i != j) t += grid[j - 1][k - j - 1];
+                    for (int a = i - 1; a <= i; a ++ )
+                        for (int b = j - 1; b <= j; b ++ )
+                            f[i][j][k] = max(f[i][j][k], f[a][b][k - 1] + t);
+                }
+        return max(0, f[n][n][n * 2]);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### LIS 模型
 
 > [!NOTE] **[AcWing 482. 合唱队形](https://www.acwing.com/problem/content/484/)**
@@ -1274,6 +1603,248 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 300. 最长上升子序列](https://leetcode-cn.com/problems/longest-increasing-subsequence/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int lengthOfLIS(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> f;
+        for (int i = 0; i < n; ++ i )
+            if (f.empty() || f.back() < nums[i])
+                f.push_back(nums[i]);
+            else
+                *lower_bound(f.begin(), f.end(), nums[i]) = nums[i];
+        return f.size();
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int lengthOfLIS(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> q;
+        for (auto x: nums) {
+            if (q.empty() || x > q.back()) q.push_back(x);
+            else {
+                if (x <= q[0]) q[0] = x;
+                else {
+                    int l = 0, r = q.size() - 1;
+                    while (l < r) {
+                        int mid = l + r + 1 >> 1;
+                        if (q[mid] < x) l = mid;
+                        else r = mid - 1;
+                    }
+                    q[r + 1] = x;
+                }
+            }
+        }
+        return q.size();
+    }
+};
+```
+
+##### **Python**
+
+```python
+class Solution:
+    def lengthOfLIS(self, nums: List[int]) -> int:
+        if not nums:return 0
+        n=len(nums)
+        dp=[1]*(n+1)
+        res=1
+        for i in range(1,n+1):
+            for j in range(1,i):
+                if nums[i-1]>nums[j-1]:
+                    dp[i]=max(dp[i],dp[j]+1)
+            res=max(res,dp[i])
+        return res
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 354. 俄罗斯套娃信封问题](https://leetcode-cn.com/problems/russian-doll-envelopes/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int maxEnvelopes(vector<vector<int>>& envelopes) {
+        int n = envelopes.size(), res = 0;
+        sort(envelopes.begin(), envelopes.end(), [](const auto& a, const auto& b){
+            return a[0] == b[0] ? a[1] > b[1] : a[0] < b[0];
+        });
+        vector<int> f;
+        for (auto & e : envelopes)
+            if (f.empty() || f.back() < e[1])
+                f.push_back(e[1]);
+            else
+                *lower_bound(f.begin(), f.end(), e[1]) = e[1];
+        return f.size();
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int maxEnvelopes(vector<vector<int>>& w) {
+        int n = w.size();
+        sort(w.begin(), w.end());
+        vector<int> f(n);
+
+        int res = 0;
+        for (int i = 0; i < n; i ++ ) {
+            f[i] = 1;
+            for (int j = 0; j < i; j ++ )
+                if (w[j][0] < w[i][0] && w[j][1] < w[i][1])
+                    f[i] = max(f[i], f[j] + 1);
+            res = max(res, f[i]);
+        }
+
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 类 LIS 思想
+
+> [!NOTE] **[LeetCode 368. 最大整除子集](https://leetcode-cn.com/problems/largest-divisible-subset/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// yxc
+class Solution {
+public:
+    vector<int> largestDivisibleSubset(vector<int>& w) {
+        if (w.empty()) return {};
+        sort(w.begin(), w.end());
+        int n = w.size();
+        vector<int> f(n);
+
+        int k = 0;
+        for (int i = 0; i < n; i ++ ) {
+            f[i] = 1;
+            for (int j = 0; j < i; j ++ )
+                if (w[i] % w[j] == 0)
+                    f[i] = max(f[i], f[j] + 1);
+            if (f[k] < f[i]) k = i;
+        }
+
+        vector<int> res(1, w[k]);
+        while (f[k] > 1) {
+            for (int i = 0; i < k; i ++ )
+                if (w[k] % w[i] == 0 && f[k] == f[i] + 1) {
+                    res.push_back(w[i]);
+                    k = i;
+                    break;
+                }
+        }
+        return res;
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<int> largestDivisibleSubset(vector<int>& nums) {
+        int n = nums.size(), maxl = 0, end = -1;
+        sort(nums.begin(), nums.end());
+        vector<int> f(n, 1), last(n, -1), res;
+        for (int i = 0; i < n; ++ i ) {
+            for (int j = 0; j < i; ++ j ) {
+                if (nums[i] % nums[j] == 0 && f[i] <= f[j]) {
+                    f[i] = f[j] + 1;
+                    last[i] = j;
+                }
+            }
+            if (f[i] > maxl) {
+                maxl = f[i];
+                end = i;
+            }
+        }
+        for (int i = end; i != -1; i = last[i])
+            res.push_back(nums[i]);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### LIS 与 LCS
 
 > [!NOTE] **[LeetCode 1713. 得到子序列的最少操作次数](https://leetcode-cn.com/problems/minimum-operations-to-make-a-subsequence/)**
@@ -1466,6 +2037,99 @@ if __name__=='__main__':
         for j in range(len(f[0])):
             res = max(res, f[i][j])
     print(res)
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 583. 两个字符串的删除操作](https://leetcode-cn.com/problems/delete-operation-for-two-strings/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// yxc
+class Solution {
+public:
+    int minDistance(string word1, string word2) {
+        int n = word1.size(), m = word2.size();
+        vector<vector<int>> f(n + 1, vector<int>(m + 1));
+        for (int i = 1; i <= n; i ++ ) f[i][0] = i;
+        for (int i = 1; i <= m; i ++ ) f[0][i] = i;
+        for (int i = 1; i <= n; i ++ )
+            for (int j = 1; j <= m; j ++ ) {
+                f[i][j] = min(f[i - 1][j], f[i][j - 1]) + 1;
+                if (word1[i - 1] == word2[j - 1])
+                    f[i][j] = min(f[i][j], f[i - 1][j - 1]);
+            }
+        return f[n][m];
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+// LCS
+class Solution {
+public:
+    int minDistance(string word1, string word2) {
+        int n1 = word1.size(), n2 = word2.size();
+        vector<vector<int>> f(n1 + 1, vector<int>(n2 + 1));
+        for (int i = 1; i <= n1; ++ i )
+            for (int j =1; j <= n2; ++ j )
+                if (word1[i - 1] == word2[j - 1])
+                    f[i][j] = f[i - 1][j - 1] + 1;
+                else
+                    f[i][j] = max(f[i - 1][j], f[i][j - 1]);
+        return n1 + n2 - 2 * f[n1][n2];
+    }
+};
+```
+
+##### **Python**
+
+```python
+#也可以看成最长公共子序列问题===>删除字符的最小值 等价于 剩下字符串的最大值
+#等价于1143（最长公共子序列问题）
+#闫式分析法：
+#状态表示：dp[i][j]：集合：使得s1(1~i)和s2(1-j)变成相同字符串的所有方案；属性：min
+#状态计算：分类：根据最后一个字符的情况来氛围若干类===> 根据i和j是否有被剩下来进行分类：一共有四类
+#1）i和j存在：那只需要关注dp[i-1][j-1]
+#2）i存在，j不存在:相当于要将j删掉，dp[i][j-1]+1
+#3）i不存在，j存在:相当于要将i删掉，dp[i-1][j]+1
+#4）i和j都不存在:dp[i-1][j-1]+2===> 这种情况 会在第2类和第3类里被删掉。
+
+class Solution:
+    def minDistance(self, word1: str, word2: str) -> int:
+        m,n=len(word1),len(word2)
+        dp=[[0]*(n+1) for _ in range(m+1)]
+        dp[0][0]=0
+        for i in range(1,m+1):
+            dp[i][0]=i
+        for j in range(1,n+1):
+            dp[0][j]=j
+        for i in range(1,m+1):
+            for j in range(1,n+1):
+                if word1[i-1]==word2[j-1]:
+                    dp[i][j]=dp[i-1][j-1]
+                else:
+                    dp[i][j]=min(dp[i-1][j],dp[i][j-1])+1
+        return dp[-1][-1]
+#代码和编辑距离72题一样...      
 ```
 
 <!-- tabs:end -->
@@ -1914,6 +2578,206 @@ int main() {
 
     return 0;
 }
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 551. 学生出勤记录 I](https://leetcode-cn.com/problems/student-attendance-record-i/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    bool checkRecord(string s) {
+        int a = 0, l = 0;
+        for (auto c : s) {
+            if (c == 'A') ++ a, l = 0;
+            else if (c == 'L') ++ l ;
+            else l = 0;
+            if (a > 1 || l > 2) return false;
+        }
+            
+        return true;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 552. 学生出勤记录 II](https://leetcode-cn.com/problems/student-attendance-record-ii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典 状态机dp
+> 
+> 重复做
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+const int mod = 1e9 + 7, N = 100010;
+int f[N][2][3];
+
+// 技巧：不好根据前面的来计算当前作为后面的
+// 那么 计算当前作为前面的 后面可以转移为什么
+
+class Solution {
+public:
+    int checkRecord(int n) {
+        memset(f, 0, sizeof f);
+        f[0][0][0] = 1;
+        for (int i = 0; i < n; ++ i )
+            for (int j = 0; j < 2; ++ j )
+                for (int k = 0; k < 3; ++ k ) {
+                    // 出现 A
+                    if (!j) f[i + 1][j + 1][0] = (f[i + 1][j + 1][0] + f[i][j][k]) % mod;
+                    // 出现 L
+                    if (k + 1 <= 2) f[i + 1][j][k + 1] = (f[i + 1][j][k + 1] + f[i][j][k]) % mod;
+                    // 出现 P
+                    f[i + 1][j][0] = (f[i + 1][j][0] + f[i][j][k]) % mod;
+                }
+        int res = 0;
+        for (int j = 0; j < 2; ++ j )
+            for (int k = 0; k < 3; ++ k )
+                res = (res + f[n][j][k]) % mod;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### trick
+
+> [!NOTE] **[LeetCode 576. 出界的路径数](https://leetcode-cn.com/problems/out-of-boundary-paths/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> dp 细节 可以四个方向移动
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int m, n, N, mod = 1e9 + 7;
+    int dx[4] = {0, -1, 1, 0}, dy[4] = {-1, 0, 0, 1};
+
+    int findPaths(int m, int n, int N, int i, int j) {
+        if (!N) return 0;
+        vector<vector<int>> pre(m + 2, vector<int>(n + 2)), cur(m + 2, vector<int>(n + 2));
+        for (int i = 1; i <= m; ++ i ) ++ pre[i][1], ++ pre[i][n];    // 向左右
+        for (int i = 1; i <= n; ++ i ) ++ pre[1][i], ++ pre[m][i];    // 向上下
+        int res = pre[i + 1][j + 1];
+        for (int k = 2; k <= N; ++ k ) {
+            for (int x = 1; x <= m; ++ x )
+                for (int y = 1; y <= n; ++ y ) {
+                    cur[x][y] = 0;
+                    cur[x][y] += pre[x - 1][y]; cur[x][y] %= mod;
+                    cur[x][y] += pre[x + 1][y]; cur[x][y] %= mod;
+                    cur[x][y] += pre[x][y - 1]; cur[x][y] %= mod;
+                    cur[x][y] += pre[x][y + 1]; cur[x][y] %= mod;
+                }
+            res = res + cur[i + 1][j + 1];
+            res %= mod;
+            pre = cur;
+        }
+        return res;
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int findPaths(int m, int n, int N, int x, int y) {
+        if (!N) return 0;
+        const int MOD = 1e9 + 7;
+        vector<vector<vector<int>>> f(m, vector<vector<int>>(n, vector<int>(N + 1)));
+        for (int i = 0; i < n; i ++ ) {
+            f[0][i][1] ++ ;
+            f[m - 1][i][1] ++ ;
+        }
+        for (int i = 0; i < m; i ++ ) {
+            f[i][0][1] ++ ;
+            f[i][n - 1][1] ++ ;
+        }
+
+        int dx[4] = {-1, 0, 1, 0}, dy[4] = {0, 1, 0, -1};
+        for (int k = 1; k <= N; k ++ )
+            for (int i = 0; i < m; i ++ )
+                for (int j = 0; j < n; j ++ )
+                    for (int u = 0; u < 4; u ++ ) {
+                        int a = i + dx[u], b = j + dy[u];
+                        if (a >= 0 && a < m && b >= 0 && b < n)
+                            (f[i][j][k] += f[a][b][k - 1]) %= MOD;
+                    }
+
+        int res = 0;
+        for (int k = 1; k <= N; k ++ )
+            (res += f[x][y][k]) %= MOD;
+
+        return res;
+    }
+};
 ```
 
 ##### **Python**

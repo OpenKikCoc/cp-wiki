@@ -697,6 +697,910 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 208. 实现 Trie (前缀树)](https://leetcode-cn.com/problems/implement-trie-prefix-tree/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Trie {
+public:
+    struct Node {
+        bool is_end;
+        Node *son[26];
+        Node() {
+            is_end = false;
+            for (int i = 0; i < 26; i ++ )
+                son[i] = NULL;
+        }
+    }*root;
+
+    /** Initialize your data structure here. */
+    Trie() {
+        root = new Node();
+    }
+
+    /** Inserts a word into the trie. */
+    void insert(string word) {
+        auto p = root;
+        for (auto c: word) {
+            int u = c - 'a';
+            if (!p->son[u]) p->son[u] = new Node();
+            p = p->son[u];
+        }
+        p->is_end = true;
+    }
+
+    /** Returns if the word is in the trie. */
+    bool search(string word) {
+        auto p = root;
+        for (auto c: word) {
+            int u = c - 'a';
+            if (!p->son[u]) return false;
+            p = p->son[u];
+        }
+        return p->is_end;
+    }
+
+    /** Returns if there is any word in the trie that starts with the given prefix. */
+    bool startsWith(string word) {
+        auto p = root;
+        for (auto c: word) {
+            int u = c - 'a';
+            if (!p->son[u]) return false;
+            p = p->son[u];
+        }
+        return true;
+    }
+};
+
+/**
+ * Your Trie object will be instantiated and called as such:
+ * Trie* obj = new Trie();
+ * obj->insert(word);
+ * bool param_2 = obj->search(word);
+ * bool param_3 = obj->startsWith(prefix);
+ */
+```
+
+##### **Python**
+
+```python
+"""
+	1. Trie树，又名字典树or前缀树，是一种有序树。用于保存关联数组，其中的键通常是字符串
+	2. 一个节点的所有子孙都有相同的前缀，也就是这个节点对应的字符串，而根节点对应空字符串
+	3. 优点：可以快速高效实现插入和查找字符串集合的操作：可以最大限度地减少无谓的字符串的比较（经常被搜索引擎系统用于文本词频统计）
+	4. 缺点：trie是用空间换时间
+	5. 一般算法题这类题的字符类型都比较单一，比如全部都是小写/大写字母 或者全部都是数字等		
+	
+	trie树有一个二位数组 son[N ][26] , 表示当前结点的儿子；如果没有的话，就idx++。trie树本质上是一颗多叉树，对于一个字母而言最多有26个子结点；所以这个二位数组包含了两条信息。比如：son[1][0]=2，表示1结点的一个值为a的子结点为结点2；如果son[1][0]=0, 则意味着没有值为a子结点。
+"""
+
+class Trie:
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.root = {}
+    def insert(self, word: str) -> None:
+        """
+        Inserts a word into the trie.
+        """
+        node = self.root
+        for s in word:
+            if s in node.keys():
+                node = node[s]
+            else:
+                node[s] = {}
+                node = node[s]
+        node['is_word'] = True
+
+    def search(self, word: str) -> bool:
+        """
+        Returns if the word is in the trie.
+        """
+        node = self.root
+        for s in word:
+            if s in node.keys():
+                node = node[s]
+            else:
+                return False
+
+        if 'is_word' in node.keys():
+            return True
+        else:
+            return False
+    def startsWith(self, prefix: str) -> bool:
+        """
+        Returns if there is any word in the trie that starts with the given prefix.
+        """
+        node = self.root
+        for s in prefix:
+            if s in node.keys():
+                node = node[s]
+            else:
+                return False
+
+        return True
+
+
+# Your Trie object will be instantiated and called as such:
+# obj = Trie()
+# obj.insert(word)
+# param_2 = obj.search(word)
+# param_3 = obj.startsWith(prefix)
+
+
+class Node:
+    def __init__(self):
+        self.is_end = False
+        self.ne = [None for _ in range(26)]
+
+class Trie:
+
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.root = Node()
+
+    def insert(self, word: str) -> None:
+        """
+        Inserts a word into the trie.
+        """
+        cur = self.root
+        for o in word:
+            if not cur.ne[ord(o) - ord("a")]:
+                cur.ne[ord(o) - ord("a")] = Node()
+            cur = cur.ne[ord(o) - ord("a")]
+        cur.is_end = True
+
+    def search(self, word: str) -> bool:
+        """
+        Returns if the word is in the trie.
+        """
+        cur = self.root
+        for o in word:
+            if not cur.ne[ord(o) - ord("a")]:
+                return False
+            cur = cur.ne[ord(o) - ord("a")]
+        return cur.is_end
+
+    def startsWith(self, prefix: str) -> bool:
+        """
+        Returns if there is any word in the trie that starts with the given prefix.
+        """
+        cur = self.root
+        for o in prefix:
+            if not cur.ne[ord(o) - ord("a")]:
+                return False
+            cur = cur.ne[ord(o) - ord("a")]
+        return True
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 211. 添加与搜索单词 - 数据结构设计](https://leetcode-cn.com/problems/design-add-and-search-words-data-structure/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class WordDictionary {
+public:
+    struct Node {
+        bool is_end;
+        Node *son[26];
+        Node() {
+            is_end = false;
+            for (int i = 0; i < 26; i ++ ) son[i] = nullptr;
+        }
+    }*root;
+
+    /** Initialize your data structure here. */
+    WordDictionary() {
+        root = new Node();
+    }
+    
+    /** Adds a word into the data structure. */
+    void addWord(string word) {
+        auto p = root;
+        for (auto c : word) {
+            int u = c - 'a';
+            if (!p->son[u]) p->son[u] = new Node();
+            p = p->son[u];
+        }
+        p->is_end = true;
+    }
+    
+    /** Returns if the word is in the data structure. A word could contain the dot character '.' to represent any one letter. */
+    bool search(string word) {
+        return dfs(root, word, 0);
+    }
+
+    bool dfs(Node * p, string & word, int i) {
+        if (i == word.size()) return p->is_end;
+        if (word[i] != '.') {
+            int u = word[i] - 'a';
+            if (!p->son[u]) return false;
+            return dfs(p->son[u], word, i + 1);
+        }
+        for (int j = 0; j < 26; j ++ )
+            if (p->son[j] && dfs(p->son[j], word, i + 1)) return true;
+        return false;
+    }
+};
+
+/**
+ * Your WordDictionary object will be instantiated and called as such:
+ * WordDictionary* obj = new WordDictionary();
+ * obj->addWord(word);
+ * bool param_2 = obj->search(word);
+ */
+```
+
+##### **Python**
+
+```python
+#用字典
+class WordDictionary:
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.lookup={}
+
+
+    def addWord(self, word: str) -> None:
+        """
+        Adds a word into the data structure.
+        """
+        tree=self.lookup
+        for a in word:
+            if a not in tree:
+                tree[a]={}
+            tree=tree[a]
+        tree['#']='#'
+        #tree['#']=1
+        
+
+    def search(self, word: str) -> bool:
+        """
+        Returns if the word is in the data structure. A word could contain the dot character '.' to represent any one letter.
+        """
+        tree=self.lookup
+        
+        def dfs(tree,u):
+            if u==len(word):
+                return "#" in tree
+            if word[u]!='.':
+                if word[u] not in tree:
+                    return False
+                tree=tree[word[u]]
+                return dfs(tree,u+1)
+            else:
+                for c in range(ord('a'),ord('z')+1):
+                    c=chr(c)
+                    if c in tree:
+                        n_tree=tree[c]
+                        if dfs(n_tree,u+1):
+                            return True
+                return False
+            return Fasle
+
+        return dfs(tree,0)
+      
+#用结构体/类
+class Node:
+    def __init__(self):
+        self.is_end=False
+        self.son=[None for _ in range(26)]
+
+class WordDictionary:
+
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.root=Node()
+        
+
+    def addWord(self, word: str) -> None:
+        """
+        Adds a word into the data structure.
+        """
+        p=self.root
+        for c in word:
+            if not p.son[ord(c)-ord('a')]:
+                p.son[ord(c)-ord('a')]=Node()
+            p=p.son[ord(c)-ord('a')]
+        p.is_end=True
+
+    def search(self, word: str) -> bool:
+        """
+        Returns if the word is in the data structure. A word could contain the dot character '.' to represent any one letter.
+        """
+        def dfs(i,p):
+            if i==len(word):
+                return p.is_end
+            if word[i]=='.':
+                for j in range(26):
+                    if p.son[j]:
+                        if dfs(i+1,p.son[j]):
+                            return True
+            else:
+                j=ord(word[i])-ord('a')
+                if p.son[j]:
+                    if dfs(i+1,p.son[j]):
+                        return True
+            return False
+        return dfs(0,self.root)
+
+# Your WordDictionary object will be instantiated and called as such:
+# obj = WordDictionary()
+# obj.addWord(word)
+# param_2 = obj.search(word)
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 212. 单词搜索 II](https://leetcode-cn.com/problems/word-search-ii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    struct Node {
+        int id;
+        Node * son[26];
+        Node() {
+            id = -1;
+            for (int i = 0; i < 26; ++ i )
+                son[i] = nullptr;
+        }
+    } * root;
+
+    void insert(string & word, int id) {
+        auto p = root;
+        for (auto c : word) {
+            int u = c - 'a';
+            if (!p->son[u])
+                p->son[u] = new Node();
+            p = p->son[u];
+        }
+        p->id = id;
+    }
+
+    vector<vector<char>> g;
+    int n, m;
+    unordered_set<int> ids;
+    int dx[4] = {-1, 0, 0, 1}, dy[4] = {0, -1, 1, 0};
+
+    void dfs(int x, int y, Node * p) {
+        if (p->id != -1)
+            ids.insert(p->id);
+        char t = g[x][y];
+        g[x][y] = '.';
+        for (int i = 0; i < 4; ++ i ) {
+            int nx = x + dx[i], ny = y + dy[i];
+            if (nx < 0 || nx >= n || ny < 0 || ny >= m || g[nx][ny] == '.')
+                continue;
+            int u = g[nx][ny] - 'a';
+            if (p->son[u])
+                dfs(nx, ny, p->son[u]);
+        }
+        g[x][y] = t;
+    }
+
+    vector<string> findWords(vector<vector<char>>& board, vector<string>& words) {
+        g = board; n = g.size(), m = g[0].size();
+        root = new Node();
+        for (int i = 0; i < words.size(); ++ i )
+            insert(words[i], i);
+        
+        for (int i = 0; i < n; ++ i )
+            for (int j = 0; j < m; ++ j ) {
+                int u = g[i][j] - 'a';
+                if (root->son[u])
+                    dfs(i, j, root->son[u]);
+            }
+        
+        vector<string> res;
+        for (auto id : ids)
+            res.push_back(words[id]);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+class Solution {
+public:
+    struct Node {
+        int id;
+        Node *son[26];
+        Node() {
+            id = -1;
+            for (int i = 0; i < 26; i ++ ) son[i] = nullptr;
+        }
+    }*root;
+
+    void insert(string & word, int id) {
+        auto p = root;
+        for (auto c : word) {
+            int u = c - 'a';
+            if (!p->son[u]) p->son[u] = new Node();
+            p = p->son[u];
+        }
+        p->id = id;
+    }
+
+    vector<vector<char>> g;
+    int n, m;
+    unordered_set<int> ids;
+    int dx[4] = {-1, 0, 0, 1}, dy[4] = {0, -1, 1, 0};
+    void dfs(int x, int y, Node * p) {
+        if (p->id != -1) ids.insert(p->id);
+        char t = g[x][y];
+        g[x][y] = '.';
+        for (int i = 0; i < 4; ++ i ) {
+            int nx = x + dx[i], ny = y + dy[i];
+            if (nx < 0 || nx >= n || ny < 0 || ny >= m || g[nx][ny] == '.') continue;
+            int u = g[nx][ny] - 'a';
+            if (p->son[u]) dfs(nx, ny, p->son[u]);
+        }
+        g[x][y] = t;
+    }
+
+    vector<string> findWords(vector<vector<char>>& board, vector<string>& words) {
+        g = board; n = g.size(), m = g[0].size();
+        root = new Node();
+        for (int i = 0; i < words.size(); ++ i ) insert(words[i], i);
+
+        for (int i = 0; i < n; i ++ )
+            for (int j = 0; j < m; j ++) {
+                int u = g[i][j] - 'a';
+                if (root->son[u])
+                    dfs(i, j, root->son[u]);
+            }
+        
+        vector<string> res;
+        for (auto id : ids) res.push_back(words[id]);
+        return res;
+    }
+};
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 421. 数组中两个数的最大异或值](https://leetcode-cn.com/problems/maximum-xor-of-two-numbers-in-an-array/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> Trie 简单变形
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<vector<int>> s;
+
+    void insert(int x) {
+        int p = 0;
+        for (int i = 30; i >= 0; -- i ) {
+            int u = x >> i & 1;
+            if (!s[p][u]) s[p][u] = s.size(), s.push_back({0, 0});
+            p = s[p][u];
+        }
+    }
+
+    int query(int x) {
+        int p = 0, res = 0;
+        for (int i = 30; i >= 0; -- i ) {
+            int u = x >> i & 1;
+            // if (s[p][!u]) p = s[p][!u], res = res * 2 + !u;
+            // else p = s[p][u], res = res * 2 + u;
+            if (s[p][!u]) p = s[p][!u], res |= 1 << i;
+            else p = s[p][u];
+        }
+        // return res ^ x;
+        return res;
+    }
+
+    int findMaximumXOR(vector<int>& nums) {
+        s.push_back({0, 0});
+        int res = 0;
+        for (auto x : nums) {
+            res = max(res, query(x));
+            insert(x);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 676. 实现一个魔法字典](https://leetcode-cn.com/problems/implement-magic-dictionary/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> trie上搜索 细节 实现
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+const int N = 10010;
+
+int son[N][26], idx;
+bool is_end[N];
+
+class MagicDictionary {
+public:
+    void insert(string& s) {
+        int p = 0;
+        for (auto c: s) {
+            int u = c - 'a';
+            if (!son[p][u]) son[p][u] = ++ idx;
+            p = son[p][u];
+        }
+        is_end[p] = true;
+    }
+
+    /** Initialize your data structure here. */
+    MagicDictionary() {
+        memset(son, 0, sizeof son);
+        idx = 0;
+        memset(is_end, 0, sizeof is_end);
+    }
+
+    void buildDict(vector<string> dictionary) {
+        for (auto& s: dictionary) insert(s);
+    }
+
+    bool dfs(string& s, int p, int u, int c) {
+        if (is_end[p] && u == s.size() && c == 1) return true;
+        if (c > 1 || u == s.size()) return false;
+
+        for (int i = 0; i < 26; i ++ ) {
+            if (!son[p][i]) continue;
+            if (dfs(s, son[p][i], u + 1, c + (s[u] - 'a' != i)))
+                return true;
+        }
+        return false;
+    }
+
+    bool search(string searchWord) {
+        return dfs(searchWord, 0, 0, 0);
+    }
+};
+
+/**
+ * Your MagicDictionary object will be instantiated and called as such:
+ * MagicDictionary* obj = new MagicDictionary();
+ * obj->buildDict(dictionary);
+ * bool param_2 = obj->search(searchWord);
+ */
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 677. 键值映射](https://leetcode-cn.com/problems/map-sum-pairs/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> trie前缀和
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+const int N = 2510;
+
+int son[N][26], V[N], S[N], idx;
+
+class MapSum {
+public:
+    // last 用于修改旧值
+    void add(string& s, int value, int last) {
+        int p = 0;
+        for (auto c: s) {
+            int u = c - 'a';
+            if (!son[p][u]) son[p][u] = ++ idx;
+            p = son[p][u];
+            S[p] += value - last;
+        }
+        V[p] = value;
+    }
+
+    int query(string& s) {
+        int p = 0;
+        for (auto c: s) {
+            int u = c - 'a';
+            if (!son[p][u]) return 0;
+            p = son[p][u];
+        }
+        return p;
+    }
+
+    /** Initialize your data structure here. */
+    MapSum() {
+        memset(son, 0, sizeof son);
+        idx = 0;
+        memset(V, 0, sizeof V);
+        memset(S, 0, sizeof S);
+    }
+
+    void insert(string key, int val) {
+        add(key, val, V[query(key)]);
+    }
+
+    int sum(string prefix) {
+        return S[query(prefix)];
+    }
+};
+
+/**
+ * Your MapSum object will be instantiated and called as such:
+ * MapSum* obj = new MapSum();
+ * obj->insert(key,val);
+ * int param_2 = obj->sum(prefix);
+ */
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 720. 词典中最长的单词](https://leetcode-cn.com/problems/longest-word-in-dictionary/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> Trie 树 + 搜索
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+const int N = 30010;
+
+int son[N][26], idx;
+int id[N];
+
+class Solution {
+public:
+    void insert(string& str, int k) {
+        int p = 0;
+        for (auto c: str) {
+            int u = c - 'a';
+            if (!son[p][u]) son[p][u] = ++ idx;
+            p = son[p][u];
+        }
+        id[p] = k;
+    }
+
+    vector<int> dfs(int p, int len) {
+        vector<int> res{len, id[p]};
+        for (int i = 0; i < 26; i ++ ) {
+            int j = son[p][i];
+            if (j && id[j] != -1) {
+                auto t = dfs(j, len + 1);
+                if (res[0] < t[0]) res = t;
+            }
+        }
+        return res;
+    }
+
+    string longestWord(vector<string>& words) {
+        memset(id, -1, sizeof id);
+        memset(son, 0, sizeof son);
+        idx = 0;
+        for (int i = 0; i < words.size(); i ++ ) insert(words[i], i);
+        auto t = dfs(0, 0);
+        if (t[1] != -1) return words[t[1]];
+        return "";
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 进阶构造和使用
+
+> [!NOTE] **[LeetCode 745. 前缀和后缀搜索](https://leetcode-cn.com/problems/prefix-and-suffix-search/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> trie + trick
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class WordFilter {
+public:
+    const static int N = 2000000;
+    int son[N][27], w[N], idx;
+
+    void insert(string & s, int id) {
+        int p = 0;
+        for (auto c : s) {
+            int t = c == '#' ? 26 : c - 'a';
+            if (!son[p][t])
+                son[p][t] = ++ idx ;
+            p = son[p][t];
+            w[p] = id;
+        }
+    }
+
+    int query(string s) {
+        int p = 0;
+        for (auto c : s) {
+            int t = c == '#' ? 26 : c - 'a';
+            if (!son[p][t])
+                return -1;
+            p = son[p][t];
+        }
+        return w[p];
+    }
+
+    WordFilter(vector<string>& words) {
+        memset(son, 0, sizeof son);
+        idx = 0;
+        for (int i = 0; i < words.size(); ++ i ) {
+            string s = '#' + words[i];
+            insert(s, i);
+            // trick
+            // 生成 [后缀 + '#' + 原串] 的串
+            for (int j = words[i].size() - 1; j >= 0; -- j ) {
+                s = words[i][j] + s;
+                insert(s, i);
+            }
+        }
+    }
+    
+    int f(string prefix, string suffix) {
+        return query(suffix + '#' + prefix);
+    }
+};
+
+/**
+ * Your WordFilter object will be instantiated and called as such:
+ * WordFilter* obj = new WordFilter(words);
+ * int param_1 = obj->f(prefix,suffix);
+ */
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 离线 trie
 
 > [!NOTE] **[LeetCode 1707. 与数组中元素的最大异或值](https://leetcode-cn.com/problems/maximum-xor-with-an-element-from-array/)**

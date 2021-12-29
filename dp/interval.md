@@ -504,6 +504,650 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 87. 扰乱字符串](https://leetcode-cn.com/problems/scramble-string/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 递归**
+
+```cpp
+class Solution {
+public:
+    bool isScramble(string s1, string s2) {
+        if (s1 == s2) return true;
+        string bs1 = s1, bs2 = s2;
+        sort(bs1.begin(), bs1.end()), sort(bs2.begin(), bs2.end());
+        if (bs1 != bs2) return false;
+
+        int n = s1.size();
+        for (int i = 1; i <= n - 1; i ++ ) {
+            if (isScramble(s1.substr(0, i), s2.substr(0, i)) &&
+                isScramble(s1.substr(i), s2.substr(i))) return true;
+            if (isScramble(s1.substr(0, i), s2.substr(n - i)) &&
+                isScramble(s1.substr(i), s2.substr(0, n - i))) return true;
+        }
+
+        return false;
+    }
+};
+```
+
+##### **C++ 1**
+
+```cpp
+class Solution {
+public:
+    bool isScramble(string s1, string s2) {
+        int l1 = s1.size(), l2 = s2.size();
+        if (l1 != l2) return false;
+        if (!l1) return true;
+        vector<vector<vector<bool>>> dp(l1 + 1, vector<vector<bool>>(l1, vector<bool>(l1, false)));
+        for (int i = 0; i < l1; ++ i )
+            for (int j = 0; j < l1; ++ j )
+                dp[1][i][j] = s1[i] == s2[j];
+              
+        for (int len = 2; len <= l1; ++ len ) {
+            for (int i = 0; i < l1 && i + len - 1 < l1; ++ i ) {
+                for (int j = 0; j < l1 && j + len - 1 < l1; ++ j ) {
+                    for (int k = 1; k < len; ++ k ) {
+                        if(dp[k][i][j] && dp[len - k][i + k][j + k]) {
+                            dp[len][i][j] = true;
+                            break;
+                        }
+                        if(dp[k][i][j + len - k] && dp[len - k][i + k][j]) {
+                            dp[len][i][j] = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return dp[l1][0][0];
+    }
+};
+```
+
+##### **C++ 2**
+
+```cpp
+class Solution {
+public:
+    bool isScramble(string s1, string s2) {
+        int n = s1.size();
+        vector<vector<vector<bool>>> f(n, vector<vector<bool>>(n, vector<bool>(n + 1)));
+        for (int k = 1; k <= n; k ++ )
+            for (int i = 0; i + k - 1 < n; i ++ )
+                for (int j = 0; j + k - 1 < n; j ++ ) {
+                    if (k == 1) {
+                        if (s1[i] == s2[j]) f[i][j][k] = true;
+                    } else {
+                        for (int u = 1; u < k; u ++ ) {
+                            if (f[i][j][u] && f[i + u][j + u][k - u] || f[i][j + k - u][u] && f[i + u][j][k - u]) {
+                                f[i][j][k] = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+        return f[0][0][n];
+    }
+};
+```
+
+##### **Python**
+
+```python
+# 枚举所有情况，看看s2是不是s1干扰产生的字符串
+# 做法：递归；如何判断呢？先去枚举s1 第一次分割的情况： （左边：i, 右边：n - i)
+# 1. 如果s1的根节点不翻转，并且左子树有i个，右子树有n-i个节点：
+# 如果s2可以有s1得到的话，那s2的右边(n - i)个字符 可以通过 s1的右边(n-i)个字符干扰得到；s2的左边i个字符可以 通过s1的左边i个字符干扰得到，
+# 2. 如果s1的根节点翻转，就是最后一步 需要s1进行翻转：
+# 如果s2可以有s1得到的话，意味着s2的右边i个字符 可以通过 s1的左边的i个字符干扰得到; s2的左边的(n - i)个字符 可以通过s1的右边(n - i)个字符干扰得到。
+
+import functools
+class Solution:
+    @functools.lru_cache(None)
+    def isScramble(self, s1: str, s2: str) -> bool:
+        if s1 == s2:return True
+        # a1, b1 = s1, s2  # 后续改变了a, b的值，但对原字符串不影响
+        # if sorted(a1) != sorted(b1): # 剪枝：如果s1和s2排序后 不相等 意味着两个字符串 有字符数量不相等，那肯定不能干扰得到。
+        #     return False
+        if sorted(s1) != sorted(s2):
+            return False
+        for i in range(1, len(s1)):
+            if self.isScramble(s1[:i], s2[:i]) and self.isScramble(s1[i:], s2[i:]):
+                return True
+            if self.isScramble(s1[:i], s2[-i:]) and self.isScramble(s1[i:], s2[:-i]):
+                return True
+        return False
+      
+      
+"""
+状态表示：f[i, j, k]
+1.1 集合：s1[i ~ i + k - 1]与s2[j, j + k - 1]所有匹配方案的集合
+1.2 属性：集合是否非空
+状态计算
+将f[i, j, k]表示的集合按s1第一段的长度划分划分成k - 1类。
+设s1第一段的长度为u。则s1[i ~ i + k - 1]与s2[j, j + k - 1]有两种匹配方案，分别判断即可：
+(1) f[i][j][u] && f[i + u][j + u][k - u]
+(2) f[i][j + k - u][u] && f[i + u][j][k - u]
+时间复杂度分析：状态数 O(n3)，状态转移计算量为 O(n)，所以总时间复杂度为 O(n4)。
+
+"""
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 97. 交错字符串](https://leetcode-cn.com/problems/interleaving-string/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 1**
+
+```cpp
+class Solution {
+public:
+    bool isInterleave(string s1, string s2, string s3) {
+        int l1 = s1.size(), l2 = s2.size(), l3 = s3.size();
+        if (l1 + l2 != l3) return false;
+        vector<vector<bool>> f(l1 + 1, vector<bool>(l2 + 1));
+        f[0][0] = true;
+        for (int i = 1; i <= l1; ++ i )
+            if (f[i - 1][0] && s1[i - 1] == s3[i - 1])
+                f[i][0] = true;
+        for (int i = 1; i <= l2; ++ i )
+            if (f[0][i - 1] && s2[i - 1] == s3[i - 1])
+                f[0][i] = true;
+        for (int i = 1; i <= l1; ++ i )
+            for (int j = 1; j <= l2; ++ j )
+                f[i][j] = (f[i - 1][j] && s1[i - 1] == s3[i + j - 1]) || (f[i][j - 1] && s2[j - 1] == s3[i + j - 1]);
+        return f[l1][l2];
+    }
+};
+```
+
+##### **C++ 2**
+
+```cpp
+// yxc
+class Solution {
+public:
+    bool isInterleave(string s1, string s2, string s3) {
+        int n = s1.size(), m = s2.size();
+        if (s3.size() != n + m) return false;
+
+        vector<vector<bool>> f(n + 1, vector<bool>(m + 1));
+        s1 = ' ' + s1, s2 = ' ' + s2, s3 = ' ' + s3;
+        for (int i = 0; i <= n; i ++ )
+            for (int j = 0; j <= m; j ++ )
+                if (!i && !j) f[i][j] = true;
+                else {
+                    if (i && s1[i] == s3[i + j]) f[i][j] = f[i - 1][j];
+                    if (j && s2[j] == s3[i + j]) f[i][j] = f[i][j] || f[i][j - 1];
+                }
+
+        return f[n][m];
+    }
+};
+```
+
+##### **Python**
+
+```python
+# 暴搜方案数太多，考虑用dp
+# 状态表示f[i][j]: 表示所有由s1[1-i] s2[1-j]交错形成s3[1-i+j]的方案；属性：集合是否非空；true/false
+# 状态计算：如果 s3[i+j] 匹配 s1[i] ，则问题就转化成了 f[i−1][j]；如果 s3[i+j] 匹配 s2[j]，则问题就转化成了 f[i][j−1]。两种情况只要有一种为真，则 f[i][j] 就为真
+
+class Solution:
+    def isInterleave(self, s1: str, s2: str, s3: str) -> bool:
+        n, m = len(s1), len(s2)
+        if len(s3) != (n + m):return False
+        f = [[False] * (m+1) for _ in range(n+1)]
+        s1, s2, s3 = ' ' + s1, ' ' + s2, ' ' + s3 
+        f[0][0] = True  # 初始化
+        for i in range(1, n + 1):  # 初始化
+            if f[i-1][0] and s1[i] == s3[i]:
+                f[i][0] = True
+        for i in range(1, m + 1): # 初始化
+            if f[0][i-1] and s2[i] == s3[i]:
+                f[0][i] = True 
+        for i in range(1, n + 1):
+            for j in range(1, m + 1):
+                f[i][j] = (f[i-1][j] and s1[i] == s3[i+j]) or (f[i][j-1] and s2[j] == s3[i+j])
+        return f[n][m]
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 312. 戳气球](https://leetcode-cn.com/problems/burst-balloons/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int maxCoins(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> a(n + 2, 1);
+        for (int i = 1; i <= n; i ++ ) a[i] = nums[i - 1];
+        vector<vector<int>> f(n + 2, vector<int>(n + 2));
+        for (int len = 3; len <= n + 2; len ++ )
+            for (int i = 0; i + len - 1 <= n + 1; i ++ ) {
+                int j = i + len - 1;
+                for (int k = i + 1; k < j; k ++ )
+                    f[i][j] = max(f[i][j], f[i][k] + f[k][j] + a[i] * a[k] * a[j]);
+            }
+
+        return f[0][n + 1];
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int maxCoins(vector<int>& nums) {
+        int n = nums.size();
+        nums.insert(nums.begin(), 1);
+        nums.push_back(1);
+        vector<vector<int>> f(n + 2, vector<int>(n + 2));
+        // for (int i = 1; i <= n; ++ i ) f[i][i] = nums[i]; // NOT
+        for (int len = 1; len <= n; ++ len )
+            for (int l = 1; l + len - 1 <= n; ++ l ) {
+                int r = l + len - 1;
+                for (int k = l; k <= r; ++ k )
+                    f[l][r] = max(f[l][r], f[l][k - 1] + f[k + 1][r] + nums[l - 1] * nums[r + 1] * nums[k]);
+            }
+        return f[1][n];
+    }
+};
+```
+
+
+##### **Python**
+
+```python
+"""
+(动态规划) O(n3)
+状态： dp[i][j]dp[i][j]表示戳爆从第 i 到第 j 个气球得到的最大金币数。
+
+状态转移方程： dp[i][j]=max(dp[i][j], dp[i][k−1] + num[i−1] ∗ nums[k] ∗ nums[j+1] + dp[k+1][j])
+其中，k可以理解成[i,j] 范围里最后戳破的一个气球。
+
+时间复杂度O(n3): 三层循环
+
+空间复杂度O(n2): dp[i][j]数组的大小是(n+2)∗(n+2)
+
+"""
+class Solution(object):
+    def maxCoins(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+
+        nums = [1] + nums + [1]
+        # dp[i,j]表示集合中[i+1,j-1]气球打完的最大值方案
+        dp = [[0] * len(nums) for i in range(len(nums))]
+
+        # 因为我们一个区间，有三个指针，所以初始长度最少为3
+        # 我们这个区间的最大范围是len(num)
+        for midRange in range(3, len(nums) + 1):
+            # i是中间区间的左边界
+            i = 0
+            while i + midRange - 1 < len(nums):
+                # j最多到len(nums) - 1
+                j = i + midRange - 1
+
+                # k的移动范围[i+1, j-1]
+                # 这个区间内i*k*j的最大值 max(nums[i]*nums[k]*nums[j])
+                for k in range(i + 1, j):
+                    dp[i][j] = max(dp[i][j], dp[i][k] + nums[i] * nums[k] * nums[j] + dp[k][j])
+                i += 1
+
+        return dp[0][-1]
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 375. 猜数字大小 II](https://leetcode-cn.com/problems/guess-number-higher-or-lower-ii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const int inf = 1e9;
+    int getMoneyAmount(int n) {
+        int res = 0;
+        vector<vector<int>> f(n + 1, vector<int>(n + 1, inf));
+        for (int i = 0; i <= n; ++i) f[i][i] = 0;
+        for (int len = 2; len <= n; ++ len ) {
+            for (int l = 1; l + len - 1 <= n; ++ l ) {
+                int r = l + len - 1;
+                // 使用这种写法而非：
+                // f[i][j] = INT_MAX;
+                // for (int k = i; k <= j; k ++ )
+                //     f[i][j] = min(f[i][j], max(f[i][k - 1], f[k + 1][j]) + k);
+                // 的好处：不需要数组开到n+2 且 也还算清晰
+                f[l][r] = min(l + f[l + 1][r], r + f[l][r - 1]);
+                for (int k = l + 1; k < r; ++ k )
+                    f[l][r] = min(f[l][r], k + max(f[l][k - 1], f[k + 1][r]));
+            }
+        }
+        return f[1][n];
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int getMoneyAmount(int n) {
+        vector<vector<int>> f(n + 2, vector<int>(n + 2));
+        for (int len = 2; len <= n; len ++ )
+            for (int i = 1; i + len - 1 <= n; i ++ ) {
+                int j = i + len - 1;
+                f[i][j] = INT_MAX;
+                for (int k = i; k <= j; k ++ )
+                    f[i][j] = min(f[i][j], max(f[i][k - 1], f[k + 1][j]) + k);
+            }
+        return f[1][n];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 486. 预测赢家](https://leetcode-cn.com/problems/predict-the-winner/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典
+> 
+> **TODO 为何博弈不可的证明**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    bool PredictTheWinner(vector<int>& nums) {
+        int n = nums.size();
+        vector<vector<int>> f(n, vector<int>(n));
+        for (int len = 1; len <= n; len ++ ) {
+            for (int i = 0; i + len - 1 < n; i ++ ) {
+                int j = i + len - 1;
+                if (len == 1) f[i][j] = nums[i];
+                else {
+                    f[i][j] = max(nums[i] - f[i + 1][j], nums[j] - f[i][j - 1]);
+                }
+            }
+        }
+        return f[0][n - 1] >= 0;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 664. 奇怪的打印机](https://leetcode-cn.com/problems/strange-printer/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典区间dp
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const int INF = 0x3f3f3f3f;
+
+    int strangePrinter(string s) {
+        int n = s.size();
+        vector<vector<int>> f(n + 1, vector<int>(n + 1, INF));
+
+        for (int i = 1; i <= n; ++ i )
+            f[i][i] = 1;
+        
+        for (int len = 2; len <= n; ++ len )
+            for (int l = 1; l + len - 1 <= n; ++ l ) {
+                int r = l + len - 1;
+                if (s[l - 1] == s[r - 1])
+                    f[l][r] = min(f[l][r], f[l][r - 1]);
+                for (int k = l; k < r; ++ k )
+                    f[l][r] = min(f[l][r], f[l][k] + f[k + 1][r]);
+            }
+        return f[1][n];
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const int INF = 0x3f3f3f3f;
+    int strangePrinter(string s) {
+        int n = s.size();
+        if (!n) return 0;
+        vector<vector<int>> f(n + 1, vector<int>(n + 1));
+        for (int i = 1; i <= n; ++ i )
+            f[i][i] = 1;
+        
+        for (int len = 2; len <= n; ++ len )
+            for (int l = 1; l + len - 1 <= n; ++ l ) {
+                int r = l + len - 1;
+                f[l][r] = f[l][r - 1] + 1;
+                for (int i = l; i < r; ++ i )
+                    if (s[i - 1] == s[r - 1])
+                        f[l][r] = min(f[l][r], f[l][i - 1] + f[i + 1][r]);  // not r - 1
+            }
+        return f[1][n];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 730. 统计不同回文子序列](https://leetcode-cn.com/problems/count-different-palindromic-subsequences/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **区间dp进阶 重复做**
+> 
+> **有一个更好的解法**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 更好**
+
+```cpp
+// yxc
+class Solution {
+public:
+    int countPalindromicSubsequences(string s) {
+        int n = s.size(), MOD = 1e9 + 7;
+        vector<vector<int>> f(n + 2, vector<int>(n + 2, 1));
+        for (int i = 1; i <= n; i ++ ) f[i][i] ++ ;
+        for (int len = 2; len <= n; len ++ ) {
+            deque<int> q[4];
+            for (int i = 1; i <= n; i ++ ) {
+                q[s[i - 1] - 'a'].push_back(i);
+                int j = i - len + 1;
+                if (j >= 1) {
+                    for (int k = 0; k < 4; k ++ ) {
+                        while (q[k].size() && q[k].front() < j) q[k].pop_front();
+                        if (q[k].size()) {
+                            f[j][i] ++ ;
+                            int l = q[k].front(), r = q[k].back();
+                            if (l < r)
+                                f[j][i] = (f[j][i] + f[l + 1][r - 1]) % MOD;
+                        }
+                    }
+                }
+            }
+        }
+        return (f[1][n] + MOD - 1) % MOD;
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const int MOD = 1e9 + 7;
+    int countPalindromicSubsequences(string S) {
+        int n = S.size();
+        vector<vector<int>> f(n + 1, vector<int>(n + 1));
+        for (int i = 1; i <= n; ++ i )
+            f[i][i] = 1;
+        for (int len = 2; len <= n; ++ len )
+            for (int l = 1; l + len - 1 <= n; ++ l ) {
+                int r = l + len - 1;
+                if (S[l - 1] == S[r - 1]) {
+                    f[l][r] = 2 * f[l + 1][r - 1];
+                    int L = l + 1, R = r - 1;
+                    while (L <= R && S[L - 1] != S[l - 1])
+                        ++ L ;
+                    while (L <= R && S[R - 1] != S[r - 1])
+                        -- R ;
+                    if (L > R)
+                        f[l][r] += 2;
+                    else if (L == R)
+                        f[l][r] += 1;
+                    else
+                        f[l][r] -= f[L + 1][R - 1];
+                } else
+                    f[l][r] = f[l + 1][r] + f[l][r - 1] - f[l + 1][r - 1];
+                f[l][r] = (f[l][r] % MOD + MOD) % MOD;
+            }
+        return f[1][n];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 二维
 
 > [!NOTE] **[AcWing 321. 棋盘分割](https://www.acwing.com/problem/content/description/323/)**
@@ -1084,6 +1728,166 @@ public:
         for (int i = 1; i <= n; ++ i )
             res = (res + f[n][i]) % MOD;    // add
         return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 546. 移除盒子](https://leetcode-cn.com/problems/remove-boxes/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 区间dp进阶 状态定义
+> 
+> **使用 g 数组本质是区间 dp 的优化**
+> 
+> 重复做
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 标准新理解**
+
+```cpp
+class Solution {
+public:
+    const static int N = 110;
+
+    int f[N][N][N], g[N][N];
+
+    int removeBoxes(vector<int>& boxes) {
+        int n = boxes.size();
+        memset(f, 0xcf, sizeof f);
+        memset(g, 0xcf, sizeof g);
+
+        for (int i = 0; i < n; ++ i )
+            g[i][i] = f[i][i][1] = 1;
+
+        for (int len = 2; len <= n; ++ len )
+            for (int l = 0; l + len - 1 < n; ++ l ) {
+                int r = l + len - 1;
+                for (int k = 1; k <= len; ++ k ) {
+                    if (k == 1)
+                        f[l][r][k] = 1 + g[l + 1][r];
+                    else
+                        // u 可以取到最右侧时为 u + （k - 1) - 1 == r
+                        // 也即 u == r - (k - 1) + 1
+                        for (int u = l + 1; u <= r - (k - 1) + 1; ++ u ) {
+                            if (boxes[u] != boxes[l])
+                                continue;
+                            int t = 0;
+                            if (l + 1 <= u - 1)
+                                t = g[l + 1][u - 1];
+                            f[l][r][k] = max(f[l][r][k], t + f[u][r][k - 1] - (k - 1) * (k - 1) + k * k);
+                        }
+                    g[l][r] = max(g[l][r], f[l][r][k]);
+                }
+            }
+        return g[0][n - 1];
+    }
+};
+```
+
+##### **C++ 标准**
+
+```cpp
+class Solution {
+public:
+    const static int N = 110;
+
+    // f[i][j][k] 所有将区间 [i, j] 清空，且最后删除i，且最后删除时的长度为k的最大取值
+    // g[i][j] = max(f[i][j][0], f[i][j][1] ... f[i][j][k])
+    int f[N][N][N], g[N][N];
+
+    int removeBoxes(vector<int>& boxes) {
+        int n = boxes.size();
+        memset(f, 0xcf, sizeof f);
+        memset(g, 0xcf, sizeof g);
+
+        for (int len = 1; len <= n; ++ len )
+            for (int l = 0; l + len - 1 < n; ++ l ) {
+                int r = l + len - 1;
+                for (int k = 1; k <= len; ++ k ) {
+                    if (len == 1)
+                        f[l][r][k] = 1;
+                    else if (k == 1)
+                        f[l][r][k] = 1 + g[l + 1][r];
+                    else
+                        // 枚举时因为 l 总是第一个被删除的数
+                        // 因此不同点设置为【第二个会被删除的数】并以其作为 u 
+                        // 此时 总取值为
+                        //   `l`    +     `range_l`       +  `u as the beginning of range_r`
+                        //   `l`    +  `g[l + 1][u - 1]`  +  `f[u][r][k - 1]`
+                        // 又因为最终删除时 l 与 range_r 一体
+                        //      其价值为 f[u][r][k-1] - (k-1)*(k-1) + k*k 【思考】
+                        // 综上有以下代码实现
+                        for (int u = l + 1; u <= r - k + 2; ++ u ) {
+                            if (boxes[u] != boxes[l])
+                                continue;
+                            int t = 0;
+                            if (l + 1 <= u - 1)
+                                t = g[l + 1][u - 1];
+                            f[l][r][k] = max(f[l][r][k], t + f[u][r][k - 1] - (k - 1) * (k - 1) + k * k);
+                        }
+                    g[l][r] = max(g[l][r], f[l][r][k]);
+                }
+            }
+        return g[0][n - 1];
+    }
+};
+```
+
+##### **C++ 旧**
+
+```cpp
+class Solution {
+public:
+    // 与射气球类似 注意状态转移
+/*
+我们很容易陷入这样一个错误的思路：用 f(l, r) 来表示移除区间 [l, r] 内所有的盒子能得到的最大积分，
+然后去探索某一种移除盒子的策略来进行状态转移。而实际上，我们并不能直接使用起始节点和结束节点决定最大分数，
+因为这个分数并不只依赖于子序列，也依赖于之前的移动对当前数组的影响，这可能让最终的子序列不是一个连续的子串。
+比如 {3,4,2,4,4}，如果先把 2 移除，3 个 4 会合并在一起，对答案的贡献是 3^2 = 9，
+如果先移除左右两边的 4 再移除 2 这里 3 个 4 的贡献就是 1^2 + 2^2 = 5
+最优的办法当然是先取走 2，但是这样剩下的 3 个 4 其实并不是原串的某个连续子串。
+*/
+    const int INF = 1e8;
+    int removeBoxes(vector<int>& boxes) {
+        int n = boxes.size();
+        vector<vector<vector<int>>> f(n, vector<vector<int>>(n, vector<int>(n + 1, -INF)));
+        vector<vector<int>> g(n, vector<int>(n, -INF));
+
+        for (int len = 1; len <= n; ++ len )
+            for (int l = 0; l + len - 1 < n; ++ l ) {
+                int r = l + len - 1;
+                for (int k = 1; k <= len; ++ k ) {
+                    if (len == 1) f[l][r][k] = 1;
+                    else if (k == 1) f[l][r][k] = 1 + g[l + 1][r];
+                    else for (int u = l + 1; u <= r - k + 2; ++ u ) {
+                        if (boxes[l] != boxes[u]) continue;
+                        int t = 0;
+                        if (l + 1 <= u - 1) t = g[l + 1][u - 1];
+                        f[l][r][k] = max(f[l][r][k], t + f[u][r][k - 1] - (k - 1) * (k - 1) + k * k);
+                    }
+                    g[l][r] = max(g[l][r], f[l][r][k]);
+                }
+            }
+        return g[0][n - 1];
     }
 };
 ```

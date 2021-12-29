@@ -985,6 +985,175 @@ int main() {
 
 * * *
 
+### LeetCode 基础
+
+> [!NOTE] **[LeetCode 233. 数字 1 的个数](https://leetcode-cn.com/problems/number-of-digit-one/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int countDigitOne(int n) {
+        if (n <= 0) return 0;
+        vector<int> nums;
+        while (n) nums.push_back(n % 10), n /= 10;
+        reverse(nums.begin(), nums.end());
+        int res = 0;
+        for (int i = 0; i < nums.size(); i ++ ) {
+            int d = nums[i];
+            int left = 0, right = 0, p = 1;
+            for (int j = 0; j < i; j ++ ) left = left * 10 + nums[j];
+            for (int j = i + 1; j < nums.size(); j ++ ) {
+                right = right * 10 + nums[j];
+                p = p * 10;
+            }
+            if (d == 0) res += left * p;
+            else if (d == 1) res += left * p + right + 1;
+            else res += (left + 1) * p;
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 废弃**
+
+```cpp
+class Solution {
+public:
+    int countDigitOne(int n) {
+        int res = 0;
+        long long base = 1;
+        while (base <= n) {
+            int t = (n / base ) %10;
+            if (t == 0) res += n / (base * 10) * base; // front
+            else if (t == 1) res += n / (base * 10) * base + n % base + 1;
+            else res += (n / (base * 10) + 1) * base;
+            base *= 10;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+class Solution:
+    def countDigitOne(self, n: int) -> int:
+        nums = []
+        while n:
+            nums.append(n % 10)
+            n //= 10 
+        n = len(nums)
+        res = 0
+
+        for i in range(n - 1, -1, -1):
+            l, r, t = 0, 0, 1
+            for j in range(n - 1, i, -1):
+                l = l * 10 + nums[j]
+            for j in range(i - 1, -1, -1):
+                r = r * 10 + nums[j]
+                t *= 10 
+
+        
+            res += l * t
+            if nums[i] ==  1:
+                res += (r + 1)
+            elif nums[i] > 1:
+                res += t
+        return res
+
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 600. 不含连续1的非负整数](https://leetcode-cn.com/problems/non-negative-integers-without-consecutive-ones/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int findIntegers(int num) {
+        vector<int> nums;
+        while (num) nums.push_back(num % 2), num /= 2;
+        vector<vector<int>> f(nums.size() + 1, vector<int>(2));
+        f[1][0] = f[1][1] = 1;
+        for (int i = 2; i <= nums.size(); ++ i ) {
+            f[i][0] = f[i - 1][0] + f[i - 1][1];
+            f[i][1] = f[i - 1][0];
+        }
+
+        int res = 0;
+        for (int i = nums.size(), last = 0; i; -- i ) {
+            int x = nums[i - 1];
+            if (x) {
+                res += f[i][0];
+                // 前面已经是1 必然不合法 直接return
+                if (last) return res;
+            }
+            last = x;
+        }
+        return res + 1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### TODO 汇总
+
+#### 拓展 n以内所有数字 每个数字在各个数位出现多少次
+
+#### 拓展 从 a 到 b 的所有数字 每个数字在各个数位出现多少次
+
+[LibreOJ #10169. 「一本通 5.3 练习 4」数字计数](https://loj.ac/p/10169)
+
+[Luogu P2602 [ZJOI2010]数字计数](https://www.luogu.com.cn/problem/P2602)
+
+[AcWing 338 计数问题](https://www.acwing.com/problem/content/340/)
+
+
+
 ### 多维状态
 
 > [!NOTE] **[AcWing 1411. 二五](https://www.acwing.com/problem/content/1413/)**

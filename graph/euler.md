@@ -410,6 +410,57 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 332. 重新安排行程](https://leetcode-cn.com/problems/reconstruct-itinerary/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    unordered_map<string, multiset<string>> g;
+    vector<string> ans;
+
+    vector<string> findItinerary(vector<vector<string>>& tickets) {
+        for (auto& e: tickets) g[e[0]].insert(e[1]);
+        dfs("JFK");
+        reverse(ans.begin(), ans.end());
+        return ans;
+    }
+
+    void dfs(string u) {
+        while (g[u].size()) {
+            auto ver = *g[u].begin();
+            g[u].erase(g[u].begin());
+            dfs(ver);
+        }
+        ans.push_back(u);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 建图
 
 > [!NOTE] **[AcWing 1185. 单词游戏](https://www.acwing.com/problem/content/1187/)**
@@ -496,6 +547,70 @@ int main() {
     }
     return 0;
 }
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 复杂
+
+> [!NOTE] **[LeetCode 753. 破解保险箱](https://leetcode-cn.com/problems/cracking-the-safe/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> de Bruijn 序列
+> 
+> 在最短串内枚举所有 n 位 k 进制数
+> 
+> 转化为欧拉回路问题
+> 
+> 重复
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 如何在一个最短的串内枚举所有的n位k进制数排列
+    // de Bruijn 序列
+    // 转化为欧拉回路问题
+    unordered_set<string> S;
+    string res;
+    int k;
+    void dfs(string u) {
+        for (int i = 0; i < k; ++ i ) {
+            auto v = u + to_string(i);
+            if (!S.count(v)) {
+                S.insert(v);
+                dfs(v.substr(1));
+                res += to_string(i);
+            }
+        }
+    }
+
+    string crackSafe(int n, int k) {
+        this->k = k;
+        string start(n - 1, '0');
+        dfs(start);
+        return res + start;
+    }
+};
 ```
 
 ##### **Python**

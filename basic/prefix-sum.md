@@ -247,6 +247,295 @@ $$
 
 ## 习题
 
+### 一般前缀和
+
+> [!NOTE] **[LeetCode 303. 区域和检索 - 数组不可变](https://leetcode-cn.com/problems/range-sum-query-immutable/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class NumArray {
+public:
+    vector<int> sum;
+    NumArray(vector<int>& nums) {
+        sum.push_back(0);
+        for (int i = 1; i <= nums.size(); ++ i )
+            sum.push_back(sum[i - 1] + nums[i - 1]);
+    }
+    
+    int sumRange(int i, int j) {
+        return sum[j + 1] - sum[i];
+    }
+};
+
+/**
+ * Your NumArray object will be instantiated and called as such:
+ * NumArray* obj = new NumArray(nums);
+ * int param_1 = obj->sumRange(i,j);
+ */
+```
+
+##### **C++**
+
+```cpp
+class NumArray {
+public:
+    vector<int> s;
+
+    NumArray(vector<int>& nums) {
+        s.resize(nums.size() + 1);
+        for (int i = 1; i <= nums.size(); i ++ ) s[i] = s[i - 1] + nums[i - 1];
+    }
+
+    int sumRange(int i, int j) {
+        ++i, ++j;
+        return s[j] - s[i - 1];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 304. 二维区域和检索 - 矩阵不可变](https://leetcode-cn.com/problems/range-sum-query-2d-immutable/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class NumMatrix {
+public:
+    vector<vector<int>> s;
+
+    NumMatrix(vector<vector<int>>& matrix) {
+        if (matrix.empty() || matrix[0].empty()) return;
+        s = vector<vector<int>>(matrix.size() + 1, vector<int>(matrix[0].size() + 1));
+        for (int i = 1; i <= matrix.size(); i ++ )
+            for (int j = 1; j <= matrix[0].size(); j ++ )
+                s[i][j] = s[i - 1][j] + s[i][j - 1] - s[i - 1][j - 1] + matrix[i - 1][j - 1];
+    }
+
+    int sumRegion(int x1, int y1, int x2, int y2) {
+        ++x1, ++y1, ++x2, ++y2;
+        return s[x2][y2] - s[x1 - 1][y2] - s[x2][y1 - 1] + s[x1 - 1][y1 - 1];
+    }
+};
+
+/**
+ * Your NumMatrix object will be instantiated and called as such:
+ * NumMatrix* obj = new NumMatrix(matrix);
+ * int param_1 = obj->sumRegion(row1,col1,row2,col2);
+ */
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 307. 区域和检索 - 数组可修改](https://leetcode-cn.com/problems/range-sum-query-mutable/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+>
+> 1. 树状数组模板题，树状数组是特殊的前缀和数组，可以维护原数组每次变化的增量。
+> 2. 树状数组在每次修改时，并不总是修改 i 之后的所有点，而是根据 lowbit 操作依次向后修改影响到的点。
+> 3. 同样，在查询时，也是根据 lowbit 序列向前统计前缀和，两次前缀和的差值就是区间和。
+> 4. 注意，树状数组的下标必须从 1 开始。
+> 5. 对于此题，由于题目每次是更新值，并不是更新增量，故需要用原数组记录每次更新后的点的值。
+> 6. 为了节约初始化的时间，仍需要一个普通前缀和数组记录初始数组的每个点的前缀和，树状数组用来维护修改增量的前缀和。
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class NumArray {
+public:
+    int n;
+    vector<int> tr, nums;
+    int lowbit(int x) {
+        return x & -x;
+    }
+    int query(int x) {
+        int res = 0;
+        for (int i = x; i; i -= lowbit(i)) res += tr[i];
+        return res;
+    }
+    void add(int x, int v) {
+        for (int i = x; i <= n; i += lowbit(i)) tr[i] += v;
+    }
+
+    NumArray(vector<int>& nums) {
+        this->nums = nums;
+        n = nums.size();
+        tr.resize(n + 1);
+        for (int i = 1; i <= n; ++i) {
+            tr[i] = nums[i - 1];
+            for (int j = i - 1; j > i - lowbit(i); j -= lowbit(j))
+                tr[i] += tr[j];
+        }
+    }
+    
+    void update(int i, int val) {
+        add(i + 1, val - nums[i]);
+        nums[i] = val;
+    }
+    
+    int sumRange(int i, int j) {
+        return query(j + 1) - query(i);
+    }
+};
+
+/**
+ * Your NumArray object will be instantiated and called as such:
+ * NumArray* obj = new NumArray(nums);
+ * obj->update(i,val);
+ * int param_2 = obj->sumRange(i,j);
+ */
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 437. 路径总和 III](https://leetcode-cn.com/problems/path-sum-iii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int pathSum(TreeNode* root, int sum) {
+        return root ? helper(root, sum) + pathSum(root->left, sum) + pathSum(root->right, sum) : 0;
+    }
+    int helper(TreeNode* root, int sum) {
+        if(!root) return 0;
+        int count = root->val == sum ? 1 : 0;
+        count += helper(root->left, sum - root->val);
+        count += helper(root->right, sum - root->val);
+        return count;
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+// yxc
+class Solution {
+public:
+    unordered_map<int, int> cnt;
+    int res = 0;
+
+    int pathSum(TreeNode* root, int sum) {
+        cnt[0] ++ ;
+        dfs(root, sum, 0);
+        return res;
+    }
+
+    void dfs(TreeNode* root, int sum, int cur) {
+        if (!root) return;
+        cur += root->val;
+        res += cnt[cur - sum];
+        cnt[cur] ++ ;
+        dfs(root->left, sum, cur), dfs(root->right, sum, cur);
+        cnt[cur] -- ;
+    }
+};
+```
+##### **Python**
+
+```python
+# 前缀和的应用；
+# 用哈希表维护 从根节点 到 当前节点路径里 每个前缀和 出现的次数。（这个前缀和 指的是 根节点到当前这个点的路径所有点的 前缀和）
+# 往下递归时，把当前这个点放入哈希表里；当从这个点回溯的时候，把这个点从哈希表弹出就可以了。
+import collections
+class Solution:
+    def pathSum(self, root: TreeNode, target: int) -> int:
+        self.res = 0
+        my_dic = collections.defaultdict(int)
+    
+        def dfs(root, cur):
+            if not root:return 
+            cur += root.val
+            self.res += my_dic[cur - target]
+            my_dic[cur] += 1
+            dfs(root.left, cur)
+            dfs(root.right, cur)
+            my_dic[cur] -= 1
+        
+        my_dic[0] = 1   # 踩坑！作为一个哨兵
+        dfs(root, 0)
+        return self.res
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 前缀和优化
 
 > [!NOTE] **[Luogu ]()**
@@ -370,6 +659,55 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 629. K个逆序对数组](https://leetcode-cn.com/problems/k-inverse-pairs-array/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const int mod = 1e9 + 7;
+    int kInversePairs(int n, int k) {
+        // 用了前i个数字 产生了j个逆序对的方案数
+        vector<vector<int>> f(n + 1, vector<int>(k + 1));
+        f[1][0] = 1;
+        // f[i][j] = f[i-1][j] + f[i-1][j-1] + ... + f[i-1][j-(i-1)]
+        for (int i = 2; i <= n; ++ i ) {
+            long long s = 0;
+            for (int j = 0; j <= k; ++ j ) {
+                s += f[i - 1][j];
+                if (j - i >= 0) s -= f[i - 1][j - i];
+                f[i][j] = s % mod;
+            }
+        }
+        return (f[n][k] + mod) % mod;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 前缀和维护
 
 > [!NOTE] **[Luogu ]()**
@@ -421,6 +759,318 @@ int main() {
     
     return 0;
 }
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 363. 矩形区域不超过 K 的最大数值和](https://leetcode-cn.com/problems/max-sum-of-rectangle-no-larger-than-k/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<vector<int>> s;
+    int get(int x1, int y1, int x2, int y2) {
+        return s[x2][y2] - s[x1 - 1][y2] - s[x2][y1 - 1] + s[x1 - 1][y1 - 1];
+    }
+    int maxSumSubmatrix(vector<vector<int>>& matrix, int K) {
+        int n = matrix.size(), m = matrix[0].size();
+        s = vector<vector<int>>(n + 1, vector<int>(m + 1));
+        for (int i = 1; i <= n; ++ i )
+            for (int j = 1; j <= m; ++ j )
+                s[i][j] = s[i - 1][j] + s[i][j - 1] - s[i - 1][j - 1] + matrix[i - 1][j - 1];
+        int res = INT_MIN;
+        for (int l = 1; l <= m; ++ l )
+            for (int r = l; r <= m; ++ r ) {
+                set<int> S;
+                S.insert(0);
+                for (int k = 1; k <= n; ++ k ) {
+                    int si = get(1, l, k, r);
+                    // *it 得到【当前固定左右边界时】的某前缀和的值
+                    auto it = S.lower_bound(si - K);
+                    if (it != S.end()) res = max(res, si - *it);
+                    S.insert(si);
+                }
+            }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 差分
+
+### 差分思想 比如用map / 区间 / trick
+
+> [!NOTE] **[LeetCode 731. 我的日程安排表 II](https://leetcode-cn.com/problems/my-calendar-ii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 差分的思想
+> 
+> 借助 map 实现差分
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class MyCalendarTwo {
+public:
+    map<int, int> S;
+
+    MyCalendarTwo() {
+    }
+    
+    bool book(int start, int end) {
+        S[start] ++ , S[end] -- ;
+        int sum = 0;
+        for (auto [k, v] : S) {
+            sum += v;
+            if (sum >= 3) {
+                S[start] -- , S[end] ++ ;
+                return false;
+            }
+        }
+        return true;
+    }
+};
+
+/**
+ * Your MyCalendarTwo object will be instantiated and called as such:
+ * MyCalendarTwo* obj = new MyCalendarTwo();
+ * bool param_1 = obj->book(start,end);
+ */
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 732. 我的日程安排表 III](https://leetcode-cn.com/problems/my-calendar-iii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **借助 map 实现差分**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class MyCalendarThree {
+public:
+    map<int, int> S;
+    int ret = 0;
+
+    MyCalendarThree() {
+    }
+    
+    int book(int start, int end) {
+        S[start] ++ , S[end] -- ;
+        int sum = 0;
+        for (auto [k, v] : S) {
+            sum += v;
+            if (sum > ret)
+                ret = sum;
+        }
+        return ret;
+    }
+};
+
+/**
+ * Your MyCalendarThree object will be instantiated and called as such:
+ * MyCalendarThree* obj = new MyCalendarThree();
+ * int param_1 = obj->book(start,end);
+ */
+```
+
+##### **C++**
+
+```cpp
+class MyCalendarThree {
+public:
+    map<int, int> S;
+
+    MyCalendarThree() {
+
+    }
+
+    int book(int start, int end) {
+        S[start] ++ , S[end] -- ;
+        int sum = 0, res = 0;
+        for (auto [k, v]: S) {
+            sum += v;
+            res = max(res, sum);
+        }
+        return res;
+    }
+};
+
+/**
+ * Your MyCalendarThree object will be instantiated and called as such:
+ * MyCalendarThree* obj = new MyCalendarThree();
+ * int param_1 = obj->book(start,end);
+ */
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 795. 区间子数组个数](https://leetcode-cn.com/problems/number-of-subarrays-with-bounded-maximum/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 类似差分的数学思想
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int calc(vector<int> & A, int k) {
+        int res = 0, n = A.size();
+        for (int i = 0; i < n; ++ i ) {
+            if (A[i] > k)
+                continue;
+            int j = i + 1;
+            while (j < n && A[j] <= k)
+                j ++ ;
+            int len = j - i;
+            res += len * (len + 1) / 2;
+            i = j - 1; // i = j 也可 因为 j == n || A[j] > k 必成立
+        }
+        return res;
+    }
+
+    int numSubarrayBoundedMax(vector<int>& nums, int left, int right) {
+        return calc(nums, right) - calc(nums, left - 1);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 798. 得分最高的最小轮调](https://leetcode-cn.com/problems/smallest-rotation-with-highest-score/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 很有意思的题目
+> 
+> 十分trick的差分
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int bestRotation(vector<int>& A) {
+        int n = A.size();
+        vector<int> b(n + 1);   // 记录每个数不得分的区间
+        // i < a[i] 时 a[i] 不得分
+        // 故考虑哪些区间不得分
+        // 下界： i - k < a[i]  上界：i
+        // (i - a[i], i] ==> [i - a[i] + 1, i]
+        for (int i = 0; i < n; ++ i ) {
+            int l = i - A[i] + 1, r = i;
+            if (l >= 0)
+                b[l] ++ , b[r + 1] -- ;
+            else
+                b[0] ++ , b[r + 1] -- , b[l + n] ++ , b[n] -- ;
+        }
+        int res = INT_MAX, k = 0;
+        for (int i = 0, s = 0; i < n; ++ i ) {
+            s += b[i];
+            if (res > s)
+                res = s, k = i;
+        }
+        return k;
+    }
+};
 ```
 
 ##### **Python**

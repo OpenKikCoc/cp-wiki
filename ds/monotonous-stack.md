@@ -283,6 +283,714 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 496. 下一个更大元素 I](https://leetcode-cn.com/problems/next-greater-element-i/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<int> nextGreaterElement(vector<int>& nums1, vector<int>& nums2) {
+        int n = nums2.size();
+        unordered_map<int, int> hash;
+        stack<int> st;
+        for (int i = 0; i < n; ++ i ) {
+            while (!st.empty() && st.top() < nums2[i]) {
+                hash[st.top()] = nums2[i];
+                st.pop();
+            }
+            st.push(nums2[i]);
+        }
+        // while (!st.empty()) hash[st.top()] = -1, st.pop();
+        vector<int> res;
+        for (auto v : nums1)
+            if (hash.count(v)) res.push_back(hash[v]);
+            else res.push_back(-1);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+"""
+# 模板
+# 当前数向右找第一个比自己大的位置：从左向右维护一个单调递减栈
+def nextBiggerElement(nums: list):
+    n=len(nums)
+    #先初始化所有res，只用改变存在的；
+    #小技巧：stack里保存的是数组下标
+    res,stack=[-1]*n,[]
+    for i in range(n):
+        while stack and nums[stack[-1]]<nums[i]:
+            #当前数nums[i]大于栈顶元素时，就把栈顶元素对应的res的值更新为当前元素
+            #然后把栈顶元素pop出去，继续比较
+            res[stack[-1]=nums[i]
+            stack.pop()
+        #当前数小于或者等于栈顶元素时，直接把当前数的下标append到栈中        
+        stack.append(i)
+    return res
+                   
+                
+# 当前数向左找第一个比自己的大的位置：从左边向右边维护一个单调递减栈         
+def nextBiggerElement(nums: list):
+  	n=len(nums)
+    res,stack=[-1]*(n),[]
+    for i in range(n-1，-1，-1):
+      	while stack and nums[stack[-1]]<nums[i]:
+            res[stack[-1]]=nums[i]
+            stack.pop()
+        stack.append(i)
+    return res   
+"""
+
+#写法1:从前向后遍历
+class Solution:
+    def nextGreaterElement(self, nums1: List[int], nums2: List[int]) -> List[int]:
+        my_dic={}
+        n=len(nums2)
+        stack=[]
+        for i in range(n):
+            while stack and nums2[stack[-1]]<nums2[i]:
+                my_dic[nums2[stack[-1]]]=nums2[i]
+                stack.pop()
+            stack.append(i)
+        return [my_dic.get(x,-1)for x in nums1]
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 503. 下一个更大元素 II](https://leetcode-cn.com/problems/next-greater-element-ii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<int> nextGreaterElements(vector<int>& nums) {
+        int n = nums.size();
+        for (int i = 0; i < n; ++ i ) nums.push_back(nums[i]);
+        vector<int> res(n, -1);
+        stack<int> st;  // 记录下标
+        for (int i = 0; i < 2 * n; ++ i ) {
+            while (!st.empty() && nums[st.top()] < nums[i]) {
+                if (i - st.top() < n) res[st.top() % n] = nums[i];
+                st.pop();
+            }
+            st.push(i);
+        }
+        return res;
+    }
+};
+
+
+// yxc
+class Solution {
+public:
+    vector<int> nextGreaterElements(vector<int>& nums) {
+        int n = nums.size();
+        nums.insert(nums.end(), nums.begin(), nums.end());
+        stack<int> stk;
+        vector<int> res(n);
+        for (int i = n * 2 - 1; i >= 0; i -- ) {
+            int x = nums[i];
+            while (stk.size() && x >= stk.top()) stk.pop();
+            if (i < n) {
+                if (stk.empty()) res[i] = -1;
+                else res[i] = stk.top();
+            }
+            stk.push(x);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+"""
+# 模板
+# 当前数向右找第一个比自己大的位置：从左向右维护一个单调递减栈
+def nextBiggerElement(nums: list):
+    n=len(nums)
+    #先初始化所有res，只用改变存在的；
+    #小技巧：stack里保存的是数组下标
+    res,stack=[-1]*n,[]
+    for i in range(n):
+        while stack and nums[stack[-1]]<nums[i]:
+            #当前数nums[i]大于栈顶元素时，就把栈顶元素对应的res的值更新为当前元素
+            #然后把栈顶元素pop出去，继续比较
+            res[stack[-1]=nums[i]
+            stack.pop()
+        #当前数小于或者等于栈顶元素时，直接把当前数的下标append到栈中        
+        stack.append(i)
+    return res
+                   
+                
+# 当前数向左找第一个比自己的大的位置：从左边向右边维护一个单调递减栈         
+def nextBiggerElement(nums: list):
+  	n=len(nums)
+    res,stack=[-1]*(n),[]
+    for i in range(n-1，-1，-1):
+      	while stack and nums[stack[-1]]<nums[i]:
+            res[stack[-1]]=nums[i]
+            stack.pop()
+        stack.append(i)
+    return res   
+"""
+
+class Solution:
+    def nextGreaterElements(self, nums: List[int]) -> List[int]:
+        n=len(nums)
+        for i in range(n):
+            nums.append(nums[i])
+        stack=[]
+        res = [-1] * n
+        for i in range (2*n):
+            while stack and nums[stack[-1]] < nums[i]:
+                #保证是在有效区间内，一定要有这个判断 不然可能会报错
+                if stack[-1] > i - n:
+                    res[stack[-1] % n] = nums[i]
+                		stack.pop()
+            stack.append(i)
+        return res
+   
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 556. 下一个更大元素 III](https://leetcode-cn.com/problems/next-greater-element-iii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int nextGreaterElement(int n) {
+        string s = to_string(n);
+        int k = s.size() - 1;
+        while (k && s[k - 1] >= s[k]) -- k;
+        if (!k) return -1;
+        int t = k;
+        while (t + 1 < s.size() && s[t + 1] > s[k - 1]) ++ t;
+        swap(s[k - 1], s[t]);
+        reverse(s.begin() + k, s.end());
+        long long r = stoll(s);
+        if (r > INT_MAX) return -1;
+        return r;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 735. 行星碰撞](https://leetcode-cn.com/problems/asteroid-collision/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然单调栈 有更简单写法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 单调栈**
+
+```cpp
+class Solution {
+public:
+    vector<int> asteroidCollision(vector<int>& a) {
+        int n = a.size();
+        vector<int> res;
+        stack<int> st;
+        for (int i = 0; i < n; ++ i )
+            if (a[i] < 0) {
+                int t = a[i];
+                while (st.size() && st.top() < -t)
+                    st.pop();
+                if (st.size()) {
+                    if (st.top() == -t)
+                        st.pop();
+                } else
+                    res.push_back(t);
+            } else
+                st.push(a[i]);
+
+        vector<int> t;
+        while (st.size())
+            t.push_back(st.top()), st.pop();
+        reverse(t.begin(), t.end());
+        for (auto v : t)
+            res.push_back(v);
+        return res;
+    }
+};
+```
+
+##### **C++ 简单trick写法**
+
+```cpp
+class Solution {
+public:
+    vector<int> asteroidCollision(vector<int>& asteroids) {
+        vector<int> res;
+        for (auto x : asteroids)
+            if (x > 0) res.push_back(x);
+            else {
+                while (res.size() && res.back() > 0 && res.back() < -x)
+                    res.pop_back();
+                if (res.size() && res.back() == -x)
+                    res.pop_back();
+                else if (res.empty() || res.back() < 0)
+                    res.push_back(x);
+            }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 进阶（推导）
+
+> [!NOTE] **[LeetCode 42. 接雨水](https://leetcode-cn.com/problems/trapping-rain-water/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 和 0084.柱状图中最大的矩形同思路 同思路
+> 
+> **以及纵向计算的双指针优化思路**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 1**
+
+```cpp
+class Solution {
+public:
+    int trap(vector<int>& height) {
+        int n = height.size();
+        stack<int> st;
+        int res = 0;
+        for (int i = 0; i < n; ++ i ) {
+            while (st.size() && height[st.top()] <= height[i]) {
+                int t = st.top(); st.pop();
+                if (st.size()) {
+                    int l = st.top();
+                    res += (min(height[i], height[l]) - height[t]) * (i - l - 1);
+                }
+            }
+            st.push(i);
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 2**
+
+```cpp
+// 考虑某个位置作为最低点可以接的雨水，受到左右两侧第一个比它高的高度的限制
+// 维护单调递减栈，每次考虑顶部元素
+// 则当前【h[i]与新的顶部】即为左右两侧第一个比它高的高度，直接计数即可
+class Solution {
+public:
+    int trap(vector<int>& height) {
+        int n = height.size(), res = 0;
+        stack<int> st;
+        for (int i = 0; i < n; ++ i ) {
+            while (st.size() && height[st.top()] < height[i]) {
+                int t = st.top(); st.pop();
+                if (st.size()) {
+                    res += (min(height[i], height[st.top()]) - height[t]) * (i - st.top() - 1);
+                }
+            }
+            st.push(i);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+# 维护一个【单调递减栈】
+#处理当前数时，需要把栈里小于或者等于它的数值都弹出去
+#高度：栈顶元素和上一个元素的高度差；宽度：是1
+#宽度：当前柱子的左边界到下一个柱子的右边界
+
+
+class Solution:
+    def trap(self, h: List[int]) -> int:
+        stack = []  # 栈里存储的是下标
+        res = 0; n = len(h)
+        for i in range(n):
+            while stack and h[stack[-1]] < h[i]:
+                t = stack.pop()
+                if stack:
+                    res += (min(h[i], h[stack[-1]]) - h[t]) * (i - stack[-1] - 1)
+            stack.append(i)
+        return res
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+> [!TIP] **更进一步的思路**
+> 
+> 前面做法本质是求每行（横向）累积的雨水。
+> 
+> 实际上可以通过记录某位置两侧分别最大的高度，来直接累积每列（纵向）累积的雨水。
+> 
+> 别记录的过程可以双指针优化
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int trap(vector<int>& height) {
+        int l = 0, r = height.size() - 1;
+        int lmax = 0, rmax = 0, res = 0;
+        while (l < r) {
+            if (height[l] < height[r]) {
+                if (height[l] > lmax)
+                    lmax = height[l ++ ];
+                else
+                    res += lmax - height[l ++ ];
+            } else {
+                if (height[r] > rmax)
+                    rmax = height[r -- ];
+                else
+                    res += rmax - height[r -- ];
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 84. 柱状图中最大的矩形](https://leetcode-cn.com/problems/largest-rectangle-in-histogram/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 和 0042 接雨水 同思路
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 1**
+
+```cpp
+class Solution {
+public:
+    int largestRectangleArea(vector<int>& heights) {
+        heights.insert(heights.begin(), 0);
+        heights.push_back(0);
+        int n = heights.size(), res = 0;
+        stack<int> st;
+        for (int i = 0; i < n; ++ i ) {
+            while (st.size() && heights[st.top()] > heights[i]) {
+                int t = st.top(); st.pop();
+                res = max(res, heights[t] * (i - st.top() - 1));
+            }
+            st.push(i);
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 2**
+
+```cpp
+// 考虑某个位置作为最高点的矩形面积，受到左右两侧第一个比它低的高度的限制
+// 维护单调递增栈，每次考虑顶部元素
+// 则当前【h[i]与新的顶部】即为左右两侧第一个比它高的高度，直接计数即可
+// TRICK 在末尾加入0方便处理case
+class Solution {
+public:
+    int largestRectangleArea(vector<int>& heights) {
+        heights.push_back(0);
+        int n = heights.size(), res = 0;
+        stack<int> st;
+        for (int i = 0; i < n; ++ i ) {
+            while (st.size() && heights[st.top()] > heights[i]) {
+                int t = st.top(); st.pop();
+                if (st.empty())
+                    res = max(res, heights[t] * (i - (-1) - 1));
+                else
+                    res = max(res, heights[t] * (i - st.top() - 1));
+            }
+            st.push(i);
+        }
+        return res;
+    }
+};
+
+// TRICK 在起始也加入0简化判断逻辑
+class Solution {
+public:
+    int largestRectangleArea(vector<int>& heights) {
+        heights.insert(heights.begin(), 0);
+        heights.push_back(0);
+        int n = heights.size(), res = 0;
+        stack<int> st;
+        for (int i = 0; i < n; ++ i ) {
+            while (st.size() && heights[st.top()] > heights[i]) {
+                int t = st.top(); st.pop();
+                res = max(res, heights[t] * (i - st.top() - 1));
+            }
+            st.push(i);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+#方法：枚举所有柱形的上边界，作为整个矩形的上边界。
+#然后找出左右边界：1. 找出左边离它最近的并且比它小的柱形；2.找出右边离它最近并且比它小的柱形。
+#这就是要找“在一个数组中，每个数的左边第一个比它小/大的数”，于是可以想到用单调栈来解决这类问题。
+
+class Solution:
+    def largestRectangleArea(self, heights: List[int]) -> int:
+        n=len(heights)
+        left,right=[0]*n,[0]*n
+        #栈里保存的是元素下标
+        stack=[]
+        res=0
+        for i in range(n):
+            while stack and heights[stack[-1]]>=heights[i]:
+                stack.pop()
+            if not stack:
+                left[i]=-1
+            else:
+                left[i]=stack[-1]
+            stack.append(i)
+        while len(stack) > 0: stack.pop() # 先清空单调栈
+        #stack.clear()
+        for i in range(n-1,-1,-1):
+            while stack and heights[stack[-1]]>=heights[i]:
+                stack.pop()
+            if not stack:
+                #右边界的下一个位置    
+                right[i]=n
+            else:
+                right[i]=stack[-1]
+            stack.append(i)
+        #更新答案：
+        for i in range(n):
+            res=max(res,heights[i]*(right[i]-left[i]-1))
+        return res
+      
+"""
+和 接雨水 类似；维护 单调递增栈，找到左右两边 第一个 比当前数 小
+
+"""
+class Solution:
+    def largestRectangleArea(self, heights: List[int]) -> int:
+        # 尾部追加一个0 保证最终可以将栈排空（不会有遗漏某些情况的可能）
+        heights.append(0)
+        n = len(heights)
+        res = 0
+        stack = []  # 维护一个单调递增栈
+        for i in range(n):
+            while stack and heights[stack[-1]] > heights[i]:
+                t = stack[-1]
+                stack.pop()
+                if not stack:
+                    res = max(res, heights[t] * (i - (-1) - 1))
+                else:
+                    res = max(res, heights[t] * (i - stack[-1] - 1))
+            stack.append(i)
+        return res
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 85. 最大矩形](https://leetcode-cn.com/problems/maximal-rectangle/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int maximalRectangle(vector<vector<char>>& matrix) {
+        int m = matrix.size();
+        if (!m) return 0;
+        int n = matrix[0].size();
+        vector<int> h(n + 1); // 默认h[n] = 0;
+        int res = 0;
+        for (int i = 0; i < m; ++ i ) {
+            for (int j = 0; j < n; ++ j )
+                h[j] = matrix[i][j] == '1' ? h[j] + 1 : 0;
+            res = max(res, maxArea(h, n));
+        }
+        return res;
+    }
+    int maxArea(vector<int>& h, int n) {
+        int res = 0;
+        stack<int> s;
+        for (int i = 0; i <= n; ++ i ) {
+            while (!s.empty() && h[s.top()] >= h[i]) {
+                int l = s.top(); s.pop();
+                res = max(res, h[l] * (s.empty() ? i : i - s.top() - 1));
+            }
+            s.push(i);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+"""
+1. 将 Largest Rectangle in Histogram 问题扩展到二维。
+2. 一行一行考虑，类比 Largest Rectangle in Histogram，一行内所有柱形条的高度 heights 就是当前 (i, j) 位置能往上延伸的最大高度。
+3. 直接套用 Largest Rectangle in Histogram 的单调栈算法即可。
+
+枚举每一行的时间复杂度是 O(n)，行内单调栈的时间复杂度是 O(m)，故总时间复杂度为 $O(nm)
+"""
+class Solution:
+    def maximalRectangle(self, matrix: List[List[str]]) -> int:
+        # the same as 84.
+        if not matrix or not matrix[0]: return 0
+        res, n = 0, len(matrix[0])
+        heights = [0] * (n + 1)
+        for row in matrix:
+            for i in range(n):
+                if row[i] == "1":
+                    heights[i] += 1
+                else:
+                    heights[i] = 0
+            stack = [-1]
+            for i in range(len(heights)):
+                while stack and heights[i] < heights[stack[-1]]:
+                    res = max(res, heights[stack.pop()] * (i - stack[-1] - 1)) # height x width
+                stack.append(i)
+        return res
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 删数类问题
 
 > [!NOTE] **[Luogu 删数问题](https://www.luogu.com.cn/problem/P1106)**
@@ -337,6 +1045,77 @@ int main() {
     
     return 0;
 }
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 316. 去除重复字母](https://leetcode-cn.com/problems/remove-duplicate-letters/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    string removeDuplicateLetters(string s) {
+        string stk;
+        unordered_map<char, bool> ins;
+        unordered_map<char, int> last;
+        for (int i = 0; i < s.size(); i ++ ) last[s[i]] = i;
+
+        for (int i = 0; i < s.size(); i ++ ) {
+            if (ins[s[i]]) continue;
+            while (stk.size() && stk.back() > s[i] && last[stk.back()] > i) {
+                ins[stk.back()] = false;
+                stk.pop_back();
+            }
+            stk += s[i];
+            ins[s[i]] = true;
+        }
+
+        return stk;
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    string removeDuplicateLetters(string s) {
+        string stk;
+        size_t i = 0;
+        for (size_t i = 0;i < s.size(); ++ i ) {
+            if (stk.find(s[i]) != string::npos) continue;
+            // 遇到一个新字符 如果比栈顶小 并且在新字符后面还有和栈顶一样的 就把栈顶的字符抛弃了
+            while (!stk.empty() && stk.back() > s[i] && s.find(stk.back(), i) != string::npos)
+                stk.pop_back();
+            stk.push_back(s[i]);
+        }
+        return stk;
+    }
+};
 ```
 
 ##### **Python**
@@ -424,6 +1203,351 @@ public:
 ##### **Python**
 
 ```python
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 321. 拼接最大数](https://leetcode-cn.com/problems/create-maximum-number/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典题 贪心 分治 单调栈 => 综合应用
+> 
+> dp解法数值会溢出
+> 
+> 贪心 + 单调栈:
+> 
+> 原问题直接处理比较困难，我们分成三步来做：
+> 
+> 1. 先枚举从两个数组中分别选多少个数；
+> 2. 然后分别贪心求解每个数组中需要选那些数；
+> 3. 将选出的两个数列合并；
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<int> maxArray(vector<int> & nums, int k) {
+        int n = nums.size();
+        vector<int> res(k);
+        for (int i = 0, j = 0; i < n; ++ i ) {
+            while (n - i + j > k && j && res[j - 1] < nums[i]) -- j;
+            if (j < k) res[j ++ ] = nums[i];
+        }
+        return res;
+    }
+    vector<int> merge(vector<int> & N, vector<int> & M) {
+        vector<int> res;
+        while (N.size() && M.size())
+            if (N > M) res.push_back(N[0]), N.erase(N.begin());
+            else res.push_back(M[0]), M.erase(M.begin());
+        while (N.size()) res.push_back(N[0]), N.erase(N.begin());
+        while (M.size()) res.push_back(M[0]), M.erase(M.begin());
+        return res;
+    }
+
+    vector<int> maxNumber(vector<int>& nums1, vector<int>& nums2, int k) {
+        int n1 = nums1.size(), n2 = nums2.size();
+        vector<int> res(k, INT_MIN);
+        // i 是右边界开区间
+        for (int i = max(0, k - n2); i <= k && i <= n1; ++ i ) {
+            vector<int> N = maxArray(nums1, i);
+            vector<int> M = maxArray(nums2, k - i);
+            vector<int> t = merge(M, N);
+            if (res < t) res = t;
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ dp溢出**
+
+```cpp
+class Solution {
+public:
+    typedef long long LL;
+    // dp
+    vector<int> maxNumber(vector<int>& nums1, vector<int>& nums2, int k) {
+        int n1 = nums1.size(), n2 = nums2.size();
+        vector<int> res;
+        vector<vector<vector<LL>>> f(n1 + 1, vector<vector<LL>>(n2 + 1, vector<LL>(k + 1)));
+        for (int t = 1; t <= k; ++ t)
+            for (int i = 0; i <= n1; ++ i)
+                for (int j = 0; j <= n2; ++ j) {
+                    if (i > 0)
+                        f[i][j][t] = max(f[i][j][t], max(f[i-1][j][t], f[i-1][j][t-1] * 10 + nums1[i-1]));
+                    if (j > 0)
+                        f[i][j][t] = max(f[i][j][t], max(f[i][j-1][t], f[i][j-1][t-1] * 10 + nums2[j-1]));
+                }
+        LL val = f[n1][n2][k];
+        while (val) res.push_back(val % 10), val /= 10;
+        reverse(res.begin(), res.end());
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 402. 移掉K位数字](https://leetcode-cn.com/problems/remove-k-digits/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    string removeKdigits(string num, int k) {
+        int n = num.size();
+        string res;
+        for (int i = 0; i < n; ++ i ) {
+            while (!res.empty() && k && res.back() > num[i]) res.pop_back(), -- k ;
+            res.push_back(num[i]);
+        }
+        while (k -- ) res.pop_back();
+        while (!res.empty() && res[0] == '0') res.erase(res.begin());
+        if (res.empty()) res = "0";
+        return res;
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+// yxc
+class Solution {
+public:
+    string removeKdigits(string num, int k) {
+        k = min(k, (int)num.size());
+        string res;
+        for (auto c: num) {
+            while (k && res.size() && res.back() > c) {
+                k -- ;
+                res.pop_back();
+            }
+            res += c;
+        }
+        while (k -- ) res.pop_back();
+        k = 0;
+        while (k < res.size() && res[k] == '0') k ++ ;
+        if (k == res.size()) res += '0';
+        return res.substr(k);
+    }
+};
+```
+
+##### **Python**
+
+```python
+"""
+贪心：
+题解：如果我们当前遇到的数字比上一个数字要小的话，肯定是删除上一个数字比较划算。我们最多能删除k个字符。所以我们使用一个单调栈来存储每一个字符，如果当前读进来的数字比前一个数字小，我们就将栈顶元素出栈，直至出栈了k个字符或者栈顶元素已经比当前元素还小。这样在我们删除k个元素后，栈中元素就是剩下的数字啦。这时候我们需要考虑的就是删除前导0和空栈的情况啦。字符串有push和pop操作，所以我们可以直接用字符串来模拟栈，效果是一样的。
+"""
+class Solution:
+    def removeKdigits(self, num: str, k: int) -> str:
+        stack = []
+        remain = len(num) - k 
+        for c in num:
+            while stack and stack[-1] > c and k:
+                stack.pop()
+                k -= 1
+            stack.append(c)
+        return ''.join(stack[:remain]).lstrip('0') or '0'
+      
+
+      
+# 以下写法有一个case会过不了：'9',1
+class Solution:
+    def removeKdigits(self, num: str, k: int) -> str:
+        stack = []
+        n = len(num)
+        for i in range(n):
+            while stack and stack[-1] > num[i] and k > 0:
+                stack.pop()
+                k -= 1 
+            stack.append(num[i])
+        res = ''.join(stack).lstrip('0')
+        return res if res else '0'
+# 上述代码的问题在于：需要注意的是，如果给定的数字是一个单调递增的数字，那么我们的算法会永远选择不丢弃。这个题目中要求的，我们要永远确保丢弃 k 个矛盾。
+# 一个简单的思路就是：每次丢弃一次，k 减去 1。当 k 减到 0 ，我们可以提前终止遍历。
+# 而当遍历完成，如果 k 仍然大于 0。不妨假设最终还剩下 x 个需要丢弃，那么我们需要选择删除末尾 x 个元素。修改后，可以通过：
+
+class Solution:
+    def removeKdigits(self, num: str, k: int) -> str:
+        stack = []
+        n = len(num)
+        for i in range(n):
+            while stack and stack[-1] > num[i] and k > 0:
+                stack.pop()
+                k -= 1 
+            stack.append(num[i])
+        while k > 0:   # 判断：是否已经移除了k位！！！
+            stack.pop()
+            k -= 1
+        res = ''.join(stack).lstrip('0')
+        return res if res else '0'
+      
+# 逆向思维，一定需要舍弃k位，那就是需要保留len(num) - k位。这样就不需要对k是否为0进行校验了, 但是在输出的时候，stack还是只能取前remain个数字输出。
+class Solution(object):
+    def removeKdigits(self, num, k):
+        stack = []
+        remain = len(num) - k
+        for c in num:
+            while k and stack and stackresls[-1] > c:
+                stack.pop()
+                k -= 1
+            stack.append(c)
+        return ''.join(stack[:remain]).lstrip('0') or '0' # 踩坑：stack[:remain]
+       
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 132 模式
+
+> [!NOTE] **[LeetCode 456. 132模式](https://leetcode-cn.com/problems/132-pattern/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+>
+> stack-sortable permutation
+>
+> 思维 trick 重复
+>
+> 与之前一个判断二叉树序列的题类比
+>
+> >   注意 维护的是单调递减的栈
+> >
+> >   -   我们可以从右往左遍历数组考虑每个数作为1或3的情况，同时维护一个次大值，这个次大值满足左边有一个数比它大，即是132模式中的2。
+> >
+> >       -   假如我们遇到了小于当前次大值的数说明我们就找到了一个1，构成了一个132模式。
+> >       -   否则我们就把当前数看成3，从当前数开始向右找到比当前数小的数并且更新次大值，这里我们只用向右找到第一个比当前数大的位置x即可，因为从该位置开始再往右的数如果小于当前数那么它也一定会小于这个比当前数大的数，也就是说他们之前已经在考虑x的时候被作为次大值更新过了，没有必要再重新更新一遍。
+> >
+> >   -   我们从右往左扫描数组并维护一个单调递减的栈，初始时次大值设为无穷小。
+> >
+> >       如果当前数小于次大值说明我们找到了一个答案，否则考虑当前数作为3的情况，当当前数大于栈顶时说明我们找到了一个32模式，我们不断的弹出栈顶来更新2，即维护我们当前遇到的次大值，直到栈顶大于当前值为止。
+> >
+> >       注意这时栈顶的右边可能还有之前被弹出过的小于当前数的值，但他们都会比当前的2小，即在扫描过程中这个2是会单调递增的，原因是如果不是单调递增的，那么这个第一次出现下降的数和当前的栈顶以及栈顶右边的数就构成了一个132模式，会在之前就直接返回。
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+/*
+这个问题与Knuth所提出来的 stack-sortable permutation 类似，
+即判断一个数组是否可以只用一个栈来进行排序，当且仅当它不包含231模式。
+而将本问题中的数组逆序，寻找132模式就变成了寻找231模式，
+也即判断数组是否可以仅用一个栈来进行排序。
+*/
+    bool find132pattern(vector<int>& nums) {
+        stack<int> stk;
+        int right = INT_MIN;
+        for (int i = nums.size() - 1; i >= 0; -- i ) {
+            // 考虑当前元素作为1
+            if (nums[i] < right) return true;
+            // 更新2
+            while (!stk.empty() && nums[i] > stk.top()) {
+                right = max(right, stk.top());
+                stk.pop();
+            }
+            stk.push(nums[i]);
+        }
+        return false;
+    }
+};
+```
+
+##### **Python**
+
+```python
+"""
+# 模板
+# 当前数向右找第一个比自己大的位置：从左向右维护一个单调递减栈
+def nextBiggerElement(nums: list):
+    n=len(nums)
+    #先初始化所有res，只用改变存在的；
+    #小技巧：stack里保存的是数组下标
+    res,stack=[-1]*n,[]
+    for i in range(n):
+        while stack and nums[stack[-1]]<nums[i]:
+            #当前数nums[i]大于栈顶元素时，就把栈顶元素对应的res的值更新为当前元素
+            #然后把栈顶元素pop出去，继续比较
+            res[stack[-1]=nums[i]
+            stack.pop()
+        #当前数小于或者等于栈顶元素时，直接把当前数的下标append到栈中        
+        stack.append(i)
+    return res
+                   
+                
+# 当前数向左找第一个比自己的大的位置：从左边向右边维护一个单调递减栈         
+def nextBiggerElement(nums: list):
+  	n=len(nums)
+    res,stack=[-1]*(n),[]
+    for i in range(n-1，-1，-1):
+      	while stack and nums[stack[-1]]<nums[i]:
+            res[stack[-1]]=nums[i]
+            stack.pop()
+        stack.append(i)
+    return res   
+"""
+
+class Solution:
+    def find132pattern(self, nums: List[int]) -> bool:
+        #对于每个数，找到右边比它小的数，左边比它小的数，并且左边的数要比右边的数小。
+        stack = []
+        _MIN = float("-inf")
+        for num in reversed(nums):
+            #[3, 1, 4, 2]
+            if _MIN > num: return True
+            while stack and stack[-1] < num:
+                _MIN = stack.pop()
+            stack.append(num)
+        return False     
 ```
 
 <!-- tabs:end -->

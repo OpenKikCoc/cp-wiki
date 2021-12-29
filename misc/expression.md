@@ -96,7 +96,441 @@ int calc(const std::string &s) {  // 计算转换好的后缀表达式
 
 ### 中缀
 
+#### 基本计算器
+
+> [!NOTE] **[LeetCode 224. 基本计算器](https://leetcode-cn.com/problems/basic-calculator/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    stack<int> num;
+    stack<char> op;
+    void eval() {
+        auto b = num.top(); num.pop();
+        auto a = num.top(); num.pop();
+        auto c = op.top(); op.pop();
+        int r;
+        if (c == '+') r = a + b;
+        else r = a - b;
+        num.push(r);
+    }
+
+    int calculate(string s) {
+        for (int i = 0; i < s.size(); ++i) {
+            auto c = s[i];
+            if (c == ' ') continue;
+            if (isdigit(c)) {
+                int x = 0, j = i;
+                while(j < s.size() && isdigit(s[j])) x = x * 10 + (s[j++] - '0');
+                i = j - 1;
+                num.push(x);
+            } else if (c == '(') op.push(c);
+            else if (c == ')') {
+                while (op.top() != '(') eval();
+                op.pop();
+            } else {
+                while (!op.empty() && op.top() != '(') eval();
+                // 2021 leetcode更新数据
+                // -2+ 1
+                // 如果当前栈空 压入操作符前先加入0
+                if (num.empty()) num.push(0);
+                op.push(c);
+            }
+        }
+        while (op.size()) eval();
+        return num.top();
+    }
+};
+```
+
+##### **Python**
+
+```python
+"""
+(栈,表达式求值) O(n)
+开两个栈，一个记录数字，一个记录操作符。
+然后从前往后扫描整个表达式：
+
+如果遇到 (、+、-，直接入栈；
+如果遇到数字，则判断操作符栈的栈顶元素，如果不是 (，则弹出操作符的栈顶元素，并用相应操作更新数字栈的栈顶元素。从而保证操作符栈的栈顶最多有一个连续的+或-；
+如果遇到 )，此时操作符栈顶一定是 (，将其弹出。然后根据新栈顶的操作符，对数字栈顶的两个元素进行相应操作；
+时间复杂度分析：每个数字和操作进栈出栈一次，所以总时间复杂度是 O(n)。
+"""
+
+class Solution:
+    def calculate(self, s: str) -> int:
+        res = 0
+        stack = []
+        sign = 1
+        i = 0
+        n = len(s)
+        while i < n:
+            if s[i] == " ":
+                i += 1
+            elif s[i] == "-":
+                sign = -1
+                i += 1
+            elif s[i] == "+":
+                sign = 1
+                i += 1
+            elif s[i] == "(":
+                stack.append(res)
+                stack.append(sign)
+                res = 0
+                sign = 1
+                i += 1
+            elif s[i] == ")":
+                # print(stack)
+                res = res * stack.pop() + stack.pop()
+                i += 1
+            elif s[i].isdigit():
+                tmp = int(s[i])
+                i += 1
+                while i < n and s[i].isdigit():
+                    tmp = tmp * 10 + int(s[i])
+                    i += 1
+                res += tmp * sign
+        return res
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 227. 基本计算器 II](https://leetcode-cn.com/problems/basic-calculator-ii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    stack<int> num;
+    stack<char> op;
+
+    void eval() {
+        int b = num.top(); num.pop();
+        int a = num.top(); num.pop();
+        char c = op.top(); op.pop();
+        int r;
+        if (c == '+') r = a + b;
+        else if (c == '-') r = a - b;
+        else if (c == '*') r = a * b;
+        else r = a / b;
+        num.push(r);
+    }
+
+    int calculate(string s) {
+        unordered_map<char, int> pr;
+        pr['+'] = pr['-'] = 1, pr['*'] = pr['/'] = 2;
+        for (int i = 0; i < s.size(); i ++ ) {
+            char c = s[i];
+            if (c == ' ') continue;
+            if (isdigit(c)) {
+                int x = 0, j = i;
+                while (j < s.size() && isdigit(s[j])) x = x * 10 + (s[j ++ ] - '0');
+                num.push(x);
+                i = j - 1;
+            } else {
+                while (op.size() && pr[op.top()] >= pr[c]) eval();
+                op.push(c);
+            }
+        }
+        while (op.size()) eval();
+        return num.top();
+    }
+};
+```
+
+##### **Python**
+
+```python
+"""
+(栈) O(n)
+这道题主要是需要考虑加减和乘除的优先级问题，用栈来处理，遇到加减就把数字压栈，遇到乘除就把栈顶弹出，与数字进行乘除处理。主要注意的是运算符是放在两个数字的中间，而我们想要的是在遇到运算符时，用于运算的两个数字已经被解析出来了，因此用sign来记录前一个运算符，在遇到一个新的运算符或者到字符串的结尾时再考虑对前一个运算符进行处理。
+"""
+class Solution:
+    def calculate(self, s: str) -> int:
+        nums = []
+        ops = []
+        i = 0
+        while i < len(s):
+            if s[i] == " ":
+                i += 1
+            elif s[i] in ["+","-","*","/"]:
+                ops.append(s[i])
+                i += 1
+            else:
+                a = 0
+                while i < len(s) and "0" <= s[i] <= "9":
+                    a *= 10
+                    a += int(s[i])
+                    i += 1
+                if ops:
+                    if ops[-1] == "*":
+                        nums[-1] *= a
+                        ops.pop()
+                    elif ops[-1] == "/":
+                        nums[-1] = int(nums[-1] / a)
+                        ops.pop()
+                    else:
+                        nums.append(a)
+                else:
+                    nums.append(a)
+        for i in range(len(ops)):
+            if ops[i] == "+":
+                nums[0] += nums[i + 1]
+            else:
+                nums[0] -= nums[i + 1]
+        return nums[0]
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 770. 基本计算器 IV](https://leetcode-cn.com/problems/basic-calculator-iv/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **综合题 重复**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    struct Item {
+        int c;  // 系数
+        multiset<string> vars;  // 所有自变量
+        bool operator< (const Item& t) const {
+            if (vars.size() != t.vars.size()) return vars.size() > t.vars.size();
+            return vars < t.vars;
+        }
+        bool operator== (const Item& t) const {
+            return vars == t.vars;
+        }
+        string convert_to_string() {
+            string res = to_string(c);
+            for (auto& var: vars) res += '*' + var;
+            return res;
+        }
+    };  // 项
+    unordered_map<string, int> value;
+    stack<vector<Item>> num;
+    stack<char> op;
+
+    vector<Item> add(vector<Item> a, vector<Item> b, int sign) {
+        vector<Item> res;
+        int i = 0, j = 0;
+        while (i < a.size() && j < b.size()) {  // 二路归并
+            if (a[i] == b[j]) {
+                Item t{a[i].c + b[j].c * sign, a[i].vars};
+                if (t.c) res.push_back(t);
+                i ++, j ++ ;
+            } else if (a[i] < b[j]) {
+                res.push_back(a[i ++ ]);
+            } else {
+                res.push_back({b[j].c * sign, b[j].vars}), j ++ ;
+            }
+        }
+        while (i < a.size()) res.push_back(a[i ++ ]);
+        while (j < b.size()) res.push_back({b[j].c * sign, b[j].vars}), j ++ ;
+        return res;
+    }
+
+    vector<Item> mul(vector<Item> a, vector<Item> b) {
+        vector<Item> res;
+        for (auto& x: a) {
+            vector<Item> items;
+            for (auto& y: b) {
+                Item t{x.c * y.c, x.vars};
+                for (auto& v: y.vars) t.vars.insert(v);
+                items.push_back(t);
+            }
+            res = add(res, items, 1);
+        }
+        return res;
+    }
+
+    void eval() {
+        auto b = num.top(); num.pop();
+        auto a = num.top(); num.pop();
+        auto c = op.top(); op.pop();
+        vector<Item> x;
+        if (c == '+') x = add(a, b, 1);
+        else if (c == '-') x = add(a, b, -1);
+        else x = mul(a, b);
+        num.push(x);
+    }
+
+    vector<Item> calc(string& str) {
+        unordered_map<char, int> pr{{'+', 1}, {'-', 1}, {'*', 2}};
+        for (int i = 0; i < str.size(); i ++ ) {
+            if (str[i] == ' ') continue;
+            if (str[i] >= 'a' && str[i] <= 'z' || isdigit(str[i])) {
+                vector<Item> items;
+                if (str[i] >= 'a' && str[i] <= 'z') {
+                    string var;
+                    int j = i;
+                    while (j < str.size() && str[j] >= 'a' && str[j] <= 'z') var += str[j ++ ];
+                    i = j - 1;
+                    if (value.count(var)) {
+                        if (value[var]) items.push_back({value[var], {}});
+                    } else {
+                        items.push_back({1, {var}});
+                    }
+                } else {
+                    int x = 0, j = i;
+                    while (j < str.size() && isdigit(str[j])) x = x * 10 + str[j ++ ] - '0';
+                    i = j - 1;
+                    if (x) items.push_back({x, {}});
+                }
+                num.push(items);
+            } else if (str[i] == '(') {
+                op.push(str[i]);
+            } else if (str[i] == ')') {
+                while (op.top() != '(') eval();
+                op.pop();
+            } else {
+                while (op.size() && op.top() != '(' && pr[op.top()] >= pr[str[i]]) eval();
+                op.push(str[i]);
+            }
+        }
+        while (op.size()) eval();
+        return num.top();
+    }
+
+    vector<string> basicCalculatorIV(string expression, vector<string>& evalvars, vector<int>& evalints) {
+        for (int i = 0; i < evalvars.size(); i ++ ) value[evalvars[i]] = evalints[i];
+        auto t = calc(expression);
+        vector<string> res;
+        for (auto& item: t) res.push_back(item.convert_to_string());
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 后缀
+
+> [!NOTE] **[LeetCode 150. 逆波兰表达式求值](https://leetcode-cn.com/problems/evaluate-reverse-polish-notation/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int evalRPN(vector<string>& tokens) {
+        stack<int> stk;
+        for (auto &t : tokens)
+            if (t == "+" || t == "-" || t == "*" || t == "/") {
+                int a = stk.top();
+                stk.pop();
+                int b = stk.top();
+                stk.pop();
+                if (t == "+") stk.push(a + b);
+                else if (t == "-") stk.push(b - a);
+                else if (t == "*") stk.push(a * b);
+                else stk.push(b / a);
+            }
+            else stk.push(atoi(t.c_str()));
+            // else stk.push(stoi(t));
+        return stk.top();
+    }
+};
+```
+
+##### **Python**
+
+```python
+# 后续遍历
+# 遍历所有元素。用一个栈来实现整个序列。如果当前元素是整数，那就压入栈；如果是运算符，则将栈顶两个元素弹出作出相应运算，再将结果入栈。
+
+class Solution:
+    def evalRPN(self, tokens: List[str]) -> int:
+        def eval(s):
+            a = int(stack.pop())
+            b = int(stack.pop())
+            if s == '+':
+                stack.append(b+a)
+            elif s == '-':
+                stack.append(b-a)
+            elif s == '*':
+                stack.append(b*a)
+            else:
+                stack.append(int(b/a))
+        
+        stack = []
+        for t in tokens:
+            if t == "+" or t == "-" or t == "*" or t == "/":
+                eval(t)
+            else:
+                stack.append(int(t))
+        return stack[-1]
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 > [!NOTE] **[1896. 反转表达式值的最少操作次数](https://leetcode-cn.com/problems/minimum-cost-to-change-the-final-value-of-expression/)**
 > 
