@@ -1051,6 +1051,52 @@ class Solution:
 
 * * *
 
+> [!NOTE] **[LeetCode 1277. 统计全为 1 的正方形子矩阵](https://leetcode-cn.com/problems/count-square-submatrices-with-all-ones/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> dp 统计以每个点为右下角的正方形矩阵个数，该个数即为以该点为右下角的最大正方形边长
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int countSquares(vector<vector<int>>& matrix) {
+        int m = matrix.size(), n = matrix[0].size();
+        vector<vector<int>> f(m + 1, vector<int>(n + 1));
+        int res = 0;
+        for (int i = 1; i <= m; ++i)
+            for (int j = 1; j <= n; ++j)
+                if (matrix[i - 1][j - 1] == 1) {
+                    f[i][j] =
+                        min(min(f[i - 1][j], f[i][j - 1]), f[i - 1][j - 1]) + 1;
+                    res += f[i][j];
+                }
+        return res;
+    }
+;
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[LeetCode 514. 自由之路](https://leetcode-cn.com/problems/freedom-trail/)**
 > 
 > 题意: TODO
@@ -1183,6 +1229,245 @@ public:
                             f[i][j][k] = max(f[i][j][k], f[a][b][k - 1] + t);
                 }
         return max(0, f[n][n][n * 2]);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1463. 摘樱桃 II](https://leetcode-cn.com/problems/cherry-pickup-ii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> dp 注意非法的状态转移
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int dx[3] = {-1, 0, 1};
+    int cherryPickup(vector<vector<int>>& grid) {
+        int m = grid.size(), n = grid[0].size();
+        vector<vector<vector<int>>> dp(
+            m + 1, vector<vector<int>>(n + 1, vector<int>(n + 1, -1)));
+        dp[0][0][n - 1] = grid[0][0] + grid[0][n - 1];
+        for (int i = 1; i < m; ++i)
+            for (int l = 0; l < n; ++l)
+                for (int r = l + 1; r < n; ++r)
+                    for (int d1 = 0; d1 < 3; ++d1)
+                        for (int d2 = 0; d2 < 3; ++d2) {
+                            int p1 = l + dx[d1], p2 = r + dx[d2];
+                            if (p1 < 0 || p1 >= n || p2 < 0 || p2 >= n)
+                                continue;
+                            if (dp[i - 1][p1][p2] < 0) continue;  // 重要
+                            dp[i][l][r] =
+                                max(dp[i][l][r], dp[i - 1][p1][p2] +
+                                                     grid[i][l] + grid[i][r]);
+                        }
+
+        int res = 0;
+        for (int i = 0; i < n; ++i)
+            for (int j = i + 1; j < n; ++j) res = max(res, dp[m - 1][i][j]);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1301. 最大得分的路径数目](https://leetcode-cn.com/problems/number-of-paths-with-max-score/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 二维dp 记录方案数即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+using PII = pair<int, int>;
+
+class Solution {
+private:
+    static constexpr int mod = (int)1e9 + 7;
+
+public:
+    void update(vector<vector<PII>>& dp, int n, int x, int y, int u, int v) {
+        if (u >= n || v >= n || dp[u][v].first == -1) {
+            return;
+        }
+        if (dp[u][v].first > dp[x][y].first) {
+            dp[x][y] = dp[u][v];
+        }
+        else if (dp[u][v].first == dp[x][y].first) {
+            dp[x][y].second += dp[u][v].second;
+            if (dp[x][y].second >= mod) {
+                dp[x][y].second -= mod;
+            }
+        }
+    }
+
+    vector<int> pathsWithMaxScore(vector<string>& board) {
+        int n = board.size();
+        vector<vector<PII>> dp(n, vector<PII>(n, {-1, 0}));
+        dp[n - 1][n - 1] = {0, 1};
+        for (int i = n - 1; i >= 0; --i) {
+            for (int j = n - 1; j >= 0; --j) {
+                if (!(i == n - 1 && j == n - 1) && board[i][j] != 'X') {
+                    update(dp, n, i, j, i + 1, j);
+                    update(dp, n, i, j, i, j + 1);
+                    update(dp, n, i, j, i + 1, j + 1);
+                    if (dp[i][j].first != -1) {
+                        dp[i][j].first += (board[i][j] == 'E' ? 0 : board[i][j] - '0');
+                    }
+                }
+            }
+        }
+        return dp[0][0].first == -1 ? vector<int>{0, 0} : vector<int>{dp[0][0].first, dp[0][0].second};
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1320. 二指输入的的最小距离](https://leetcode-cn.com/problems/minimum-distance-to-type-a-word-using-two-fingers/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+>
+> 经典 压掉一维状态
+>
+> 减少一维：
+>
+> >   重新设计一种新的状态：**字母下标**（可以代表**第一个**指头键位），**另外一个指头的键位**。
+> >
+> >   每次按下一个字母时，要么是字母下标所在的指头（**第一个指头**）移动，要么是**另外一个指头**移动。
+>
+> >   因此我们可以直接使用 dp[i][rest] 进行状态转移，其表示一只手在 word[i] 的位置，另一只手在 rest 的位置的最小移动距离。
+> >
+> >   我们并不需要关心具体哪只手在 word[i] 的位置，因为两只手是完全对称的。
+> >
+> >   这样一来，我们将三维的动态规划优化至了二维，大大减少了空间的使用。
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 300ms**
+
+```cpp
+class Solution {
+public:
+    int minimumDistance(string word) {
+        int n = word.size();
+        vector<vector<int>> c(26, vector<int>(26));
+        for (int i = 0; i < 26; ++i) {
+            int x1 = i / 6, y1 = i % 6;
+            for (int j = 0; j < 26; ++j) {
+                int x2 = j / 6, y2 = j % 6;
+                c[i][j] = c[j][i] = abs(x1 - x2) + abs(y1 - y2);
+            }
+        }
+        vector<vector<vector<int>>> f(
+            n + 1, vector<vector<int>>(26, vector<int>(26, INT_MAX / 2)));
+        for (int i = 0; i < 26; ++i)
+            for (int j = 0; j < 26; ++j) f[0][i][j] = 0;
+        for (int i = 1; i <= n; ++i) {
+            int x = word[i - 1] - 'A';
+            for (int j = 0; j < 26; ++j)
+                for (int k = 0; k < 26; ++k) {
+                    f[i][j][x] = min(f[i][j][x], f[i - 1][j][k] + c[k][x]);
+                    f[i][x][k] = min(f[i][x][k], f[i - 1][j][k] + c[j][x]);
+                }
+        }
+        int res = INT_MAX;
+        for (int i = 0; i < 26; ++i)
+            for (int j = 0; j < 26; ++j) res = min(res, f[n][i][j]);
+        return res;
+    }
+};
+```
+
+##### **C++ 压缩 4ms**
+
+```cpp
+class Solution {
+public:
+    int getDistance(int p, int q) {
+        int x1 = p / 6, y1 = p % 6;
+        int x2 = q / 6, y2 = q % 6;
+        return abs(x1 - x2) + abs(y1 - y2);
+    }
+
+    int minimumDistance(string word) {
+        int n = word.size();
+        int dp[n][26];
+        fill(&dp[0][0], &dp[0][0] + n * 26, INT_MAX >> 1);
+        fill(&dp[0][0], &dp[0][0] + 26, 0);
+
+        for (int i = 1; i < n; ++i) {
+            int cur = word[i] - 'A';
+            int prev = word[i - 1] - 'A';
+            int d = getDistance(prev, cur);
+            for (int j = 0; j < 26; ++j) {
+                dp[i][j] = min(dp[i][j], dp[i - 1][j] + d);
+                if (prev == j) {
+                    for (int k = 0; k < 26; ++k) {
+                        int d0 = getDistance(k, cur);
+                        dp[i][j] = min(dp[i][j], dp[i - 1][k] + d0);
+                    }
+                }
+            }
+        }
+
+        int ans = *min_element(dp[n - 1], dp[n - 1] + 26);
+        return ans;
     }
 };
 ```
@@ -1755,6 +2040,340 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 1626. 无矛盾的最佳球队][(](https://leetcode-cn.com/problems/best-team-with-no-conflicts/))**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 最长上升子序列模型
+    int bestTeamScore(vector<int>& scores, vector<int>& ages) {
+        vector<pair<int, int>> c;
+        int n = scores.size();
+        for (int i = 0; i < n; ++i) c.push_back({ages[i], scores[i]});
+        sort(c.begin(), c.end());
+        int res = 0;
+        vector<int> f(n + 1);
+        for (int i = 1; i <= n; ++i) {
+            auto [aa, as] = c[i - 1];
+            f[i] = as;
+            for (int j = 1; j < i; ++j) {
+                auto [ba, bs] = c[j - 1];
+                if (ba <= aa && bs <= as) f[i] = max(f[i], f[j] + as);
+            }
+            res = max(res, f[i]);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1671. 得到山形数组的最少删除次数](https://leetcode-cn.com/problems/minimum-number-of-removals-to-make-mountain-array/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 简单 LIS
+> 
+> 必须有上升有下降 所以不统计 1 和 n 的位置， WA 1
+> 
+> > 关于不使用两头的元素 其实更好的判断是
+> > 
+> > ```cpp
+> > if (fu[i] >= 2 && fd[i] >= 2)
+> >     res = max(res, fu[i] + fd[i] - 1);
+> > ```
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+ass Solution {
+public:
+    int minimumMountainRemovals(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> fu(n + 1), fd(n + 1);
+        for (int i = 1; i <= n; ++ i ) {
+            fu[i] = 1;
+            for (int j = 1; j < i; ++ j )
+                if (nums[j - 1] < nums[i - 1]) fu[i] = max(fu[i], fu[j] + 1);
+        }
+        for (int i = n; i >= 1; -- i ) {
+            fd[i] = 1;
+            for (int j = n; j > i; -- j )
+                if (nums[j - 1] < nums[i - 1]) fd[i] = max(fd[i], fd[j] + 1);
+        }
+        int res = 0;
+        for (int i = 2; i <= n - 1; ++ i )
+            res = max(res, fu[i] + fd[i] - 1);
+        return n - res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1840. 最高建筑高度](https://leetcode-cn.com/problems/maximum-building-height/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> LIS + 离散化
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 先上升再下降 LIS问题
+    // 直接求俩LIS超时 注意数据范围是1e9
+    //
+    // restrictions 长度 考虑可以离散化
+    using LL = long long;
+    unordered_map<int, LL> limit;
+    vector<LL> h1, h2, h;
+    vector<int> ids;
+    
+    int get(int i1, int i2) {
+        int id1 = ids[i1], id2 = ids[i2];
+        int len = id2 - id1 + 1;            // 向上向下总计多少个
+        int dis = abs(h[i1] - h[i2]) + 2;   // 向下多少个
+        return (len - dis + 1) / 2 + max(h[i1], h[i2]);
+    }
+    
+    int maxBuilding(int n, vector<vector<int>>& restrictions) {
+        // 无限制要求下 位置x的最大高度为x-1
+        ids.push_back(1);       // case
+        ids.push_back(n + 1);   // case
+        for (auto & r : restrictions) {
+            int id = r[0], mxh = r[1];
+            limit[id] = min(id - 1, mxh);
+            ids.push_back(id);
+        }
+        sort(ids.begin(), ids.end());
+        int l = ids.size() - 2;     // rest_id = [1, l]
+        h1 = h2 = h = vector<LL>(l + 2);
+        
+        h1[0] = 0;
+        for (int i = 1; i <= l; ++ i ) {
+            int id = ids[i];
+            h1[i] = min(h1[i - 1] + id - ids[i - 1], limit[id]);
+        }
+        
+        h2[l + 1] = 2e9;
+        for (int i = l; i >= 1; -- i ) {
+            int id = ids[i];
+            h2[i] = min(h2[i + 1] + ids[i + 1] - id, limit[id]);
+        }
+        
+        for (int i = 1; i <= l; ++ i )
+            h[i] = min(h1[i], h2[i]);
+        
+        int res = 0;
+        if (!l)
+            res = n - 1;
+        else
+            res = n - ids[l] + h[l];
+        for (int i = 1; i <= l; ++ i )
+            res = max(res, get(i -  1, i));
+        
+        return res;
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int maxBuilding(int n, vector<vector<int>>& h) {
+        typedef long long LL;
+        h.push_back({1, 0});
+        sort(h.begin(), h.end());
+        if (h.back()[0] != n) h.push_back({n, n - 1});
+        int m = h.size();
+        vector<LL> f(m + 1, INT_MAX), g(m + 1, INT_MAX);
+        f[0] = -1;
+        for (int i = 1; i < m; i ++ ) {
+            int x = h[i][0], y = h[i][1];
+            f[i] = min(f[i - 1], (LL)y - x);
+        }
+        for (int i = m - 1; i >= 0; i -- ) {
+            int x = h[i][0], y = h[i][1];
+            g[i] = min(g[i + 1], (LL)y + x);
+        }
+        LL res = 0;
+        for (int i = 0; i < m; i ++ ) {
+            int x = h[i][0];
+            if (i) {
+                LL Y = (f[i - 1] + g[i]) / 2;
+                LL X = Y - f[i - 1];
+                if (X >= h[i - 1][0] && X <= h[i][0])
+                    res = max(res, Y);
+            }
+            res = max(res, min(x + f[i], -x + g[i]));
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1964. 找出到每个位置为止最长的有效障碍赛跑路线](https://leetcode-cn.com/problems/find-the-longest-valid-obstacle-course-at-each-position/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> LIS 优化的应用 略
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<int> longestObstacleCourseAtEachPosition(vector<int>& obs) {
+        int n = obs.size();
+        vector<int> res(n), f;
+        for (int i = 0; i < n; ++ i ) {
+            int v = obs[i];
+            if (f.empty() || f.back() <= v) {
+                res[i] = f.size() + 1;
+                f.push_back(v);
+            } else {
+                // 第一个大于该值
+                auto it = upper_bound(f.begin(), f.end(), v);
+                res[i] = it - f.begin() + 1;
+                *it = v;
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+// 比赛时
+class Solution {
+public:
+    vector<int> longestObstacleCourseAtEachPosition(vector<int>& obs) {
+        int n = obs.size();
+        vector<int> res(n), f;
+        for (int i = 0; i < n; ++ i ) {
+            int v = obs[i];
+            if (f.empty() || f.back() <= v) {
+                res[i] = f.size() + 1;
+                f.push_back(v);
+            } else {
+                auto it = lower_bound(f.begin(), f.end(), v + 1);
+                res[i] = it - f.begin() + 1;
+                *it = v;
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<int> longestObstacleCourseAtEachPosition(vector<int>& obstacles) {
+        int n = obstacles.size();
+        vector<int> ans, LIS;
+        for (int obstacle : obstacles) {
+            auto it = upper_bound(LIS.begin(), LIS.end(), obstacle);
+            if (it == LIS.end()) {
+                LIS.emplace_back(obstacle);
+                ans.emplace_back(LIS.size());
+            } else {
+                ans.push_back(it - LIS.begin() + 1);
+                *it = obstacle;
+            }
+        }
+        return ans;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 类 LIS 思想
 
 > [!NOTE] **[LeetCode 368. 最大整除子集](https://leetcode-cn.com/problems/largest-divisible-subset/)**
@@ -1827,6 +2446,53 @@ public:
         }
         for (int i = end; i != -1; i = last[i])
             res.push_back(nums[i]);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1218. 最长定差子序列](https://leetcode-cn.com/problems/longest-arithmetic-subsequence-of-given-difference/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int longestSubsequence(vector<int>& arr, int difference) {
+        unordered_map<int, int> hash;
+        int res = 1, n = arr.size();
+        vector<int> f(n);
+        for (int i = 0; i < n; ++ i ) {
+            int last = arr[i] - difference;
+            f[i] = 1;
+            if (hash.count(last))
+                f[i] = max(f[i], f[hash[last]] + 1);
+            hash[arr[i]] = i;
+        }
+        for (int i = 0; i < n; ++ i ) res = max(res, f[i]);
         return res;
     }
 };
@@ -2130,6 +2796,58 @@ class Solution:
                     dp[i][j]=min(dp[i-1][j],dp[i][j-1])+1
         return dp[-1][-1]
 #代码和编辑距离72题一样...      
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1713. 得到子序列的最少操作次数](https://leetcode-cn.com/problems/minimum-operations-to-make-a-subsequence/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 模板题
+> 
+> 最长公共子序列 LCS 转化为 最长上升子序列 LIS
+> 
+> 复杂度由 O(n^2) -> O(nlogn)
+> 
+> 要求：整数互不相同
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int minOperations(vector<int>& target, vector<int>& arr) {
+        unordered_map<int, int> pos;
+        for (int i = 0; i < target.size(); ++ i ) pos[target[i]] = i;   // target无重复数组
+        vector<int> ve;
+        for (auto & x : arr)
+            if (pos.count(x)) ve.push_back(pos[x]);
+        
+        vector<int> f;
+        for (auto & x : ve)
+            if (f.empty() || f.back() < x) f.push_back(x);
+            else *lower_bound(f.begin(), f.end(), x) = x;
+        return target.size() - f.size();
+    }
+};
+```
+
+##### **Python**
+
+```python
+
 ```
 
 <!-- tabs:end -->

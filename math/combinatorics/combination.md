@@ -812,3 +812,302 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 1569. 将子数组重新排序得到同一个二叉查找树的方案数](https://leetcode-cn.com/problems/number-of-ways-to-reorder-array-to-get-same-bst/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> TODO 重复做
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+    int mod = 1000000007;
+    vector<int> op;
+    long long P[1005], Q[1005];
+
+public:
+    long long mul(long long x, long long y) {
+        if (y == 0) return 1;
+        if (y == 1) return x;
+        long long ret = mul(x, y / 2);
+        if (y % 2 == 0)
+            return ret * ret % mod;
+        else
+            return ret * ret % mod * x % mod;
+    }
+    long long C(long long x, long long y) {
+        return P[x] * Q[y] % mod * Q[x - y] % mod;
+    }
+    int dfs(int l, int r) {
+        if (l > r) return 1;
+        int mid;
+        for (int i = 0; i < op.size(); i++) {
+            if (l <= op[i] && op[i] <= r) {
+                mid = op[i];
+                break;
+            }
+        }
+        long long cnt1 = dfs(l, mid - 1);
+        long long cnt2 = dfs(mid + 1, r);
+        long long ret = C(r - l, (mid - l)) * cnt1 % mod * cnt2 % mod;
+        return ret;
+    }
+    int numOfWays(vector<int>& nums) {
+        op = nums;
+        P[0] = Q[0] = 1;
+        for (int i = 1; i <= 1000; i++) P[i] = P[i - 1] * i % mod;
+        for (int i = 1; i <= 1000; i++) Q[i] = mul(P[i], mod - 2);
+        long long ans = dfs(1, nums.size());
+        ans = (ans - 1 + mod) % mod;
+        return ans;
+    }
+};
+
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1573. 分割字符串的方案数](https://leetcode-cn.com/problems/number-of-ways-to-split-a-string/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 分割 组合数
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const int MOD = 1e9 + 7;
+    int numWays(string s) {
+        long long count1 = 0, n = s.size();
+        unordered_map<long long, long long> mp;  //存储1的位置
+        for (int i = 0; i < n; i++)
+            if (s[i] == '1') {
+                count1++;  //统计1 的个数
+                mp[count1] = i;
+            }
+        if (count1 == 0) return ((n - 1) * (n - 2) / 2) % MOD;
+        if (count1 % 3 != 0) return 0;
+        long long t = count1 / 3;  //确立3等分1的个数
+        return ((mp[t + 1] - mp[t]) * (mp[2 * t + 1] - mp[2 * t])) % MOD;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1735. 生成乘积数组的方案数](https://leetcode-cn.com/problems/count-ways-to-make-array-with-product/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 对每个质因数的幂次求组合数即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+using LL = long long;
+const int N = 10010;
+const int mod = 1e9 + 7;
+
+class Solution {
+public:
+    int f[N], g[N];
+    
+    int qmi(int a, int b) {
+        int res = 1;
+        while (b) {
+            if (b & 1) res = (LL)res * a % mod;
+            a = (LL)a * a % mod;
+            b >>= 1;
+        }
+        return res;
+    }
+
+    // a!  /  [(a - b)! * (b)!]
+    int C(int a, int b) {
+        return (LL)f[a] * g[b] % mod * g[a - b] % mod;
+    }
+    
+    vector<int> waysToFillArray(vector<vector<int>>& queries) {
+        f[0] = g[0] = 1;
+        for (int i = 1; i < N; ++ i ) {
+            f[i] = (LL)f[i - 1] * i % mod;
+            g[i] = qmi(f[i], mod - 2);
+        }
+        
+        vector<int> res;
+        for (auto & q : queries) {
+            int n = q[0], k = q[1];
+            int ret = 1;
+            for (int i = 2; i <= k / i; ++ i )
+                if (k % i == 0) {
+                    int s = 0;
+                    while (k % i == 0)
+                        k /= i, ++ s ;
+                    ret = (LL)ret * C(n + s - 1, n - 1) % mod;
+                }
+            if (k > 1) ret = (LL)ret * C(n, n - 1) % mod;
+            res.push_back(ret);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 建信04. 电学实验课](https://leetcode-cn.com/contest/ccbft-2021fall/problems/lSjqMF/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 非常好的组合计数题
+> 
+> 重复做 TODO
+> 
+> 1. 由于每一列只允许防止一个插孔，所以将所有目标插孔按照列从小到大排序后，考虑每两个目标插孔之间的方案数，然后求乘积就是答案。
+> 
+> 2. 设 v 是一个长度为 row 的数组，v(j) 表示到达第 j 行的方案数。设二维转移矩阵 T，其中 T(i,j)=1 表示可以从前一列的第 i 行到达当前列的第 j 行。
+所以每移动一列，v 就可以更新为 T⋅v。移动 k 列时，vk=T^k⋅v0。
+> 
+> 3. 可以提前预处理出来所有二进制位的矩阵乘积结果，即 T1，T2，T4 直到 T29，然后根据两个目标插孔之间的距离进行组合，计算出方案数。
+
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 33, MOD = 1e9 + 7;
+    
+    int n, A[N][N][N];
+    int t[N], g[N];
+    
+    void mul(int c[N][N], int a[N][N], int b[N][N]){
+        for (int i = 0; i < n; i ++ )
+            for (int j = 0; j < n; j ++ ){
+                c[i][j] = 0;
+                for (int k = 0; k < n; k ++ )
+                    c[i][j] = (c[i][j] + 1ll * a[i][k] * b[k][j]) % MOD;
+            }
+    }
+    
+    void mul2(int c[N], int a[N], int b[N][N]){
+        for (int i = 0; i < n; i ++ ) c[i] = 0;
+        for (int i = 0; i < n; i ++ )
+            for (int j = 0; j < n; j++)
+                c[j] = (c[j] + 1ll * a[i] * b[i][j]) % MOD;
+    }
+    
+    int electricityExperiment(int row, int col, vector<vector<int>>& p) {
+        // Step 1: sorting
+        this->n = row;
+        sort(p.begin(), p.end(), [](vector<int> & a, vector<int> & b){
+            return a[1] < b[1];
+        });
+        
+        // Step 2: return 0 if impossible
+        int len = p.size();
+        for (int i = 1; i < len; i ++ )
+            if (p[i][1] == p[i-1][1])
+                return 0;
+        
+        // Step 3.1: init A[0]
+        for (int i = 0; i < n; i ++ )
+            for (int j = -1; j <= 1; j ++ )
+                if (i + j >= 0 && i + j < n)
+                    A[0][i + j][i] = 1;
+        // Step 3.2: calc the A
+        for (int k = 1; k <= 30; k ++ )
+            mul(A[k], A[k - 1], A[k - 1]);
+        
+        // Step 4: calc the result
+        int res = 1;
+        for (int i = 1; i < len; i ++ ){
+            memset(t, 0, sizeof t);
+            t[p[i - 1][0]] = 1;
+            int d = p[i][1] - p[i - 1][1];
+            for (int k = 0; (1 << k) <= d; k ++ )
+                if ((d >> k) & 1) {
+                    mul2(g, t, A[k]);
+                    memcpy(t, g, sizeof(g));
+                }
+            res = 1ll * res * t[p[i][0]] % MOD;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

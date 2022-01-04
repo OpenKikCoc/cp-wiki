@@ -90,6 +90,8 @@ i = min(i, j)
 
 ## 习题
 
+### 最小表示法
+
 > [!NOTE] **[AcWing 1410. 隐藏密码](https://www.acwing.com/problem/content/1412/)**
 > 
 > 题意: TODO
@@ -138,6 +140,58 @@ int main() {
     cout << get_min() << endl;
     return 0;
 }
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 最大表示法
+
+> [!NOTE] **[LeetCode 1163. 按字典序排在最后的子串](https://leetcode-cn.com/problems/last-substring-in-lexicographical-order/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 字符串最大表示法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int get_max(string s) {
+        int i = 0, j = 1, n = s.size();
+        while (i < n && j < n) {
+            int k = 0;
+            while (k < n && s[i + k] == s[j + k]) ++ k ;
+            if (k == n) break;
+            // `>` ---> `<`
+            if (s[i + k] < s[j + k]) i += k + 1;
+            else j += k + 1;
+            if (i == j) ++ j ;
+        }
+        return min(i, j);
+    }
+
+    string lastSubstring(string s) {
+        return s.substr(get_max(s));
+    }
+};
 ```
 
 ##### **Python**

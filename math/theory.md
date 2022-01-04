@@ -227,6 +227,113 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 1375. 灯泡开关 III](https://leetcode-cn.com/problems/bulb-switcher-iii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 左边连续亮 则左边的都变成蓝色 求所有灯变成蓝色的时刻的数目
+> 
+> 其实就是求 亮的个数 == 最靠右的灯的序号 的数目
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int numTimesAllBlue(vector<int>& light) {
+        int res = 0;
+        int maxv = 0, cnt = 0;
+        for (auto k : light) {
+            maxv = max(maxv, k);
+            ++cnt;
+            if (maxv == cnt) ++res;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1529. 灯泡开关 IV](https://leetcode-cn.com/problems/bulb-switcher-iv/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> - 显然需要从最左侧考虑 边处理边记录整个右侧的状态 扫一遍即可
+> 
+> - 赛榜有别的做法 都是从最右侧考虑得到：从左向右扫相邻数值不等则加1
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 1**
+
+```cpp
+class Solution {
+public:
+    int minFlips(string target) {
+        int n = target.size();
+        int now = 0, res = 0;  // now表示整个处理点右侧的状态 res为改动次数
+        for (int i = 0; i < n; ++i) {
+            if (target[i] == '1' && now & 1)
+                continue;
+            else if (target[i] == '0' && !(now & 1))
+                continue;
+            now ^= 1, ++res;
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 2**
+
+```cpp
+class Solution {
+public:
+    int minFlips(string s) {
+        s = "0" + s;
+        int res = 0;
+        for (int i = 1; i < s.size(); ++i)
+            if (s[i] != s[i - 1]) ++res;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[LeetCode 365. 水壶问题](https://leetcode-cn.com/problems/water-and-jug-problem/)**
 > 
 > 题意: TODO

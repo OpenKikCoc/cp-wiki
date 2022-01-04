@@ -363,3 +363,149 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 1240. 铺瓷砖](https://leetcode-cn.com/problems/tiling-a-rectangle-with-the-fewest-squares/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 有 横切、纵切、横纵切中间留方形 的 dp 做法 正确性持疑 ==> TODO
+> 
+> 有打表
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+vector<vector<int>> v = {{1},
+                         {2, 1},
+                         {3, 3, 1},
+                         {4, 2, 4, 1},
+                         {5, 4, 4, 5, 1},
+                         {6, 3, 2, 3, 5, 1},
+                         {7, 5, 5, 5, 5, 5, 1},
+                         {8, 4, 5, 2, 5, 4, 7, 1},
+                         {9, 6, 3, 6, 6, 3, 6, 7, 1},
+                         {10, 5, 6, 4, 2, 4, 6, 5, 6, 1},
+                         {11, 7, 6, 6, 6, 6, 6, 6, 7, 6, 1},
+                         {12, 6, 4, 3, 6, 2, 6, 3, 4, 5, 7, 1},
+                         {13, 8, 7, 7, 6, 6, 6, 6, 7, 7, 6, 7, 1}};
+
+int tilingRectangle(int n, int m) {
+    if (n < m) swap(n, m);
+    return v[n - 1][m - 1];
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1553. 吃掉 N 个橘子的最少天数](https://leetcode-cn.com/problems/minimum-number-of-days-to-eat-n-oranges/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 记忆化dfs or 记忆化bfs
+> 
+> 原先写的bfs加个 map 就过了
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ dfs**
+
+```cpp
+class Solution {
+public:
+    // f[n] n个橘子可以吃的最小天数
+    // f[0] = 0, f[1] = 1;
+    // f[x] = v
+    //          f[x+1] = min(f[x+1], f[x]+1);
+    //          f[x*2] = min(f[x*2], f[x]+1);
+    //          f[x*3] = min(f[x*3], f[x]+1);
+    // n范围比较大 说明可以找规律
+    // ====> 找规律失败 说明考虑记忆化
+    // 记忆化的策略由推理可知 尽可能吃2/3
+
+    // 12ms
+    unordered_map<int, int> m;
+    int find(int x) {
+        if (m.count(x)) return m[x];
+        if (x == 0)
+            return 0;
+        else if (x == 1)
+            return 1;
+        else if (x == 2)
+            return 2;
+        return m[x] = min(find(x / 3) + x % 3, find(x / 2) + x % 2) + 1;
+    }
+    int minDays(int n) { return find(n); }
+};
+```
+
+##### **C++ bfs**
+
+```cpp
+class Solution {
+public:
+    // 广搜
+    // 156ms
+    int minDays(int n) {
+        unordered_map<int, bool> m;
+        queue<int> q;
+        q.push(n);
+        int d = 0;
+        while (!q.empty()) {
+            int sz = q.size();
+            while (sz--) {
+                int nv = q.front();
+                q.pop();
+                if (!nv) return d;
+                if (nv % 3 == 0 && !m[nv / 3]) {
+                    q.push(nv / 3);
+                    m[nv / 3] = true;
+                }
+                if (nv % 2 == 0 && !m[nv / 2]) {
+                    q.push(nv / 2);
+                    m[nv / 2] = true;
+                }
+                if (!m[nv - 1]) {
+                    q.push(nv - 1);
+                    m[nv - 1] = true;
+                }
+            }
+            ++d;
+        }
+        return d;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

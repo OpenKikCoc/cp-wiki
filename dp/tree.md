@@ -883,6 +883,190 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 1372. 二叉树中的最长交错路径](https://leetcode-cn.com/problems/longest-zigzag-path-in-a-binary-tree/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 只记录优雅写法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int maxAns;
+    /* 0 => left, 1 => right */
+    void dfs(TreeNode* o, bool dir, int len) {
+        maxAns = max(maxAns, len);
+        if (!dir) {		// left		
+            if (o->left) dfs(o->left, 1, len + 1);
+            if (o->right) dfs(o->right, 0, 1);
+        } else {
+            if (o->right) dfs(o->right, 0, len + 1);
+            if (o->left) dfs(o->left, 1, 1);
+        }
+    } 
+
+    int longestZigZag(TreeNode* root) {
+        if (!root) return 0;
+        maxAns = 0;
+        dfs(root, 0, 0);
+        dfs(root, 1, 0);
+        return maxAns;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1373. 二叉搜索子树的最大键值和](https://leetcode-cn.com/problems/maximum-sum-bst-in-binary-tree/)** [TAG]
+> 
+> 题意: 
+> 
+> 求满足二叉搜索树性质的最大节点和
+
+> [!TIP] **思路**
+> 
+> 记录优雅写法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    struct Node {
+        int sum, lo, hi;
+        Node(int sum, int lo, int hi) : sum(sum), lo(lo), hi(hi) {}
+    };
+    int res;
+    Node dfs(TreeNode* root) {
+        Node l = Node(0, root->val, INT_MIN), r = Node(0, INT_MAX, root->val);
+        if (root->left) l = dfs(root->left);
+        if (root->right) r = dfs(root->right);
+
+        if (root->val > l.hi && root->val < r.lo) {
+            res = max(res, root->val + l.sum + r.sum);
+            return Node(l.sum + r.sum + root->val, l.lo, r.hi);
+        }
+        return Node(INT_MIN, INT_MIN, INT_MAX);
+    }
+
+    int maxSumBST(TreeNode* root) {
+        res = 0;
+        dfs(root);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode LCP 34. 二叉树染色](https://leetcode-cn.com/problems/er-cha-shu-ran-se-UGC/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 标准树 dp 略
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    using LL = long long;
+    int k;
+    LL res;
+    
+    vector<LL> dfs(TreeNode * root) {
+        if (!root)
+            return vector<LL>(k + 1, 0);
+        
+        auto l = dfs(root->left);
+        auto r = dfs(root->right);
+        
+        // ret[0]为不选当前
+        vector<LL> ret(k + 1, 0);
+        
+        ret[0] = l[k] + r[k];
+        
+        for (int i = 1; i <= k; ++ i )
+            for (int j = 0; j < i; ++ j )
+                ret[i] = max(ret[i], (LL)root->val + l[j] + r[i - j - 1]);
+        for (int i = 1; i <= k; ++ i )
+            ret[i] = max(ret[i - 1], ret[i]);
+        
+        res = max(res, ret[k]);
+        
+        return ret;
+    }
+    
+    int maxValue(TreeNode* root, int k) {
+        this->k = k, this->res = 0;
+        dfs(root);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 换根
 
 - [POJ 3585 Accumulation Degree](http://poj.org/problem?id=3585)

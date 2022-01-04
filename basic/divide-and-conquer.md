@@ -333,3 +333,55 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 1274. 矩形内船只的数目](https://leetcode-cn.com/problems/number-of-ships-in-a-rectangle/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+>
+> 二维 分治+四分查找
+>
+> > 对于当前查找的矩形区域，如果 API 返回 False ，我们得到区域内没有船只，可以舍弃该区域。
+> >
+> > 但如果 API 返回 True，我们得到区域内有船只，为了确定船只的位置，我们需要将区域划分成若干个互不相交的小区域，分别调用 API 继续进行查找。
+> >
+> > 直到某一次查找的区域为一个点，即满足 topRight == bottomLeft 时，如果 API 返回 True，我们就确定了一艘船只的位置，可以将计数器增加 1。
+> >
+> > 在查找完成后，计数器中的值即为船只的数目。
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int countShips(Sea sea, vector<int> topRight, vector<int> bottomLeft) {
+        int x1 = topRight[0], y1 = topRight[1], x2 = bottomLeft[0],
+            y2 = bottomLeft[1];
+        if (x1 < x2 || y1 < y2 || !sea.hasShips(topRight, bottomLeft)) return 0;
+        if (x1 == x2 && y1 == y2) return 1;
+        int mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+        return countShips(sea, {mx, my}, {x2, y2}) +
+               countShips(sea, {mx, y1}, {x2, my + 1}) +
+               countShips(sea, {x1, my}, {mx + 1, y2}) +
+               countShips(sea, {x1, y1}, {mx + 1, my + 1});
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

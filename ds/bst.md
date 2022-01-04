@@ -509,6 +509,114 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 1825. 求出 MK 平均值]()** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然平衡树
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class MKAverage {
+public:
+    using LL = long long;
+
+    struct Range {
+        multiset<int> s;
+        LL sum = 0;
+        void insert(int x) {
+            s.insert(x);
+            sum += x;
+        }
+        void remove(int x) {
+            s.erase(s.find(x));
+            sum -= x;
+        }
+    } L, M, R;
+
+    int m, k;
+    vector<int> q;
+
+    MKAverage(int m, int k) {
+        this->m = m, this->k = k;
+    }
+    
+    void addElement(int num) {
+        q.push_back(num);
+        if (q.size() < m)
+            return;
+        if (q.size() == m) {
+            auto w = q;
+            sort(w.begin(), w.end());
+            for (int i = 0; i < k; ++ i )
+                L.insert(w[i]);
+            for (int i = k; i < m - k; ++ i )
+                M.insert(w[i]);
+            for (int i = m - k; i < m; ++ i )
+                R.insert(w[i]);
+        } else {
+            M.insert(num);
+            if (*M.s.begin() < *L.s.rbegin()) {
+                int x = *M.s.begin(), y = *L.s.rbegin();
+                M.remove(x), L.insert(x);
+                L.remove(y), M.insert(y);
+            }
+            if (*M.s.rbegin() > *R.s.begin()) {
+                int x = *M.s.rbegin(), y = *R.s.begin();
+                M.remove(x), R.insert(x);
+                R.remove(y), M.insert(y);
+            }
+
+            num = q[q.size() - 1 - m];
+            if (M.s.count(num))
+                M.remove(num);
+            else if (L.s.count(num)) {
+                L.remove(num);
+                int x = *M.s.begin();
+                M.remove(x), L.insert(x);
+            } else {
+                R.remove(num);
+                int x = *M.s.rbegin();
+                M.remove(x), R.insert(x);
+            }
+        }
+    }
+    
+    int calculateMKAverage() {
+        if (q.size() < m)
+            return -1;
+        return M.sum / M.s.size();
+    }
+};
+
+/**
+ * Your MKAverage object will be instantiated and called as such:
+ * MKAverage* obj = new MKAverage(m, k);
+ * obj->addElement(num);
+ * int param_2 = obj->calculateMKAverage();
+ */
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### BST
 
 > [!NOTE] **[LeetCode 98. 验证二叉搜索树](https://leetcode-cn.com/problems/validate-binary-search-tree/)**

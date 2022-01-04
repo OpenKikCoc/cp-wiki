@@ -158,3 +158,59 @@ std::sort(da + 1, da + 1 + 10, cmp);  // 使用 cmp 函数进行比较，从大�
 ## 补充
 
 - [浅谈邻项交换排序的应用以及需要注意的问题](https://ouuan.github.io/浅谈邻项交换排序的应用以及需要注意的问题/)
+
+## 习题
+
+> [!NOTE] **[LeetCode 1451. 重新排列句子中的单词](https://leetcode-cn.com/problems/rearrange-words-in-a-sentence/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 按长度稳定排序。
+> 
+> `stringstream` + `stable_sort`
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    string arrangeWords(string text) {
+        vector<string> ws;
+        stringstream ss(text);
+        string t;
+        while (ss >> t) ws.push_back(t);
+        if (!ws.empty()) ws[0][0] = tolower(ws[0][0]);
+
+        stable_sort(ws.begin(), ws.end(), [](const string& a, const string& b) {
+            return a.size() < b.size();
+        });
+        string res;
+        for (auto s : ws) {
+            res += s;
+            res += " ";
+        }
+        if (!res.empty()) res[0] = toupper(res[0]);
+        res.pop_back();
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

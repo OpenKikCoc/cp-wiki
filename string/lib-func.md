@@ -43,3 +43,134 @@ C++ 标准库操作字符串对象，同时也提供对字符数组的兼容。
 - `erase(pos, n)` 删除从 `pos` 开始的 `n` 个字符。
 - `insert(pos, s)` 在 `pos` 位置插入字符串 `s`。
 - `std::string` 重载了比较逻辑运算符，复杂度是 $\Theta(N)$ 的。
+
+## 习题
+
+
+> [!NOTE] **[Luogu NOIP2011 普及组 统计单词数](https://www.luogu.com.cn/problem/P1308)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> `getline` 与 `string.find`
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    string a, b;
+
+    getline(cin, a); // 读入一行
+    getline(cin, b);
+
+    transform(a.begin(), a.end(), a.begin(), ::tolower); //转小写
+    transform(b.begin(), b.end(), b.begin(), ::tolower);
+
+    a = ' ' + a + ' ';  // 防止识别在单词内
+    b = ' ' + b + ' ';
+
+    int pos = b.find(a); //find()函数找到返回第一次下标，否则返回-1
+
+    int idx = 0, res = 0;
+    if(pos != -1){
+        idx = pos;
+
+        while (pos != -1){
+            res ++ ;
+            pos = b.find(a, pos + 1);
+        }
+    } else {
+        cout << -1 << endl;
+        return 0;
+    }
+
+    cout << res << " " << idx <<endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1910. 删除一个字符串中所有出现的给定子字符串](https://leetcode-cn.com/problems/remove-all-occurrences-of-a-substring/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> STL `string.find` 和 `s.npos`
+> 
+> `substr`
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    string removeOccurrences(string s, string part) {
+        int m = part.size();
+        while (s.find(part) != s.npos) {
+            int n = s.size();
+            int x = s.find(part);
+            string ns;
+            for (int i = 0; i < n; ++ i )
+                if (i < x || i >= x + m)
+                    ns.push_back(s[i]);
+            s = ns;
+        }
+        return s;
+    }
+};
+```
+
+##### **C++ 更优雅**
+
+```cpp
+class Solution {
+public:
+    string removeOccurrences(string s, string p) {
+        while (true) {
+            int k = s.find(p);
+            if (k == -1) break;
+            s = s.substr(0, k) + s.substr(k + p.size());
+        }
+        return s;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

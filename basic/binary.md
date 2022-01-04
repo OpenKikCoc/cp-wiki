@@ -839,6 +839,65 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 1818. 绝对差值和]()**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然二分
+> 
+> 注意再开个数组排序 如果直接用 `set<int>` 超时
+> 
+> 注意取左右两侧的写法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const int MOD = 1e9 + 7;
+    int minAbsoluteSumDiff(vector<int>& nums1, vector<int>& nums2) {
+        int n = nums1.size();
+        LL s = 0;
+        vector<int> ve;
+        for (int i = 0; i < n; ++ i ) {
+            s += abs(nums1[i] - nums2[i]);
+            ve.push_back(nums1[i]);
+        }
+        sort(ve.begin(), ve.end());
+        
+        LL res = s;
+        for (int i = 0; i < n; ++ i ) {
+            int t = lower_bound(ve.begin(), ve.end(), nums2[i]) - ve.begin();
+            if (t < n)
+                res = min(res, s - abs(nums1[i] - nums2[i]) + abs(ve[t] - nums2[i]));
+            if (t > 0)
+                res = min(res, s - abs(nums1[i] - nums2[i]) + abs(ve[t - 1] - nums2[i]));
+        }
+        return res % MOD;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 二分答案
 
 > [!NOTE] **[LeetCode 410. 分割数组的最大值](https://leetcode-cn.com/problems/split-array-largest-sum/)**
@@ -1157,6 +1216,430 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 1292. 元素和小于等于阈值的正方形的最大边长](https://leetcode-cn.com/problems/maximum-side-length-of-a-square-with-sum-less-than-or-equal-to-threshold/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 简单二分check + 前缀和
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int m, n;
+    bool check(vector<vector<int>>& sum, int l, int tar) {
+        // 遍历右下角坐标
+        for (int i = l; i <= m; ++i)
+            for (int j = l; j <= n; ++j) {
+                int v = sum[i][j] - sum[i - l][j] - sum[i][j - l] +
+                        sum[i - l][j - l];
+                if (v <= tar) return true;
+            }
+        return false;
+    }
+    int maxSideLength(vector<vector<int>>& mat, int threshold) {
+        m = mat.size(), n = mat[0].size();
+        vector<vector<int>> sum(m + 1, vector<int>(n + 1));
+        for (int i = 1; i <= m; ++i)
+            for (int j = 1; j <= n; ++j)
+                sum[i][j] = sum[i - 1][j] - sum[i - 1][j - 1] + sum[i][j - 1] +
+                            mat[i - 1][j - 1];
+        int l = 0, r = min(m, n) + 1;
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+            if (check(sum, mid, threshold))
+                l = mid + 1;
+            else
+                r = mid;
+        }
+        return l ? l - 1 : 0;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1300. 转变数组后最接近目标值的数组和](https://leetcode-cn.com/problems/sum-of-mutated-array-closest-to-target/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+>
+> 显然二分check
+>
+> 需要注意：
+>
+> **1) 题目要求返回的方案值最小，因而右边界 r 需要设置为数组最大值而非任意大。**
+>
+> **2) 题目要求比较的是绝对值，因而使用 `<` 以及 `l = m + 1` ，求出比 target 大的方案**
+>
+> **3) 比较比 target 小的方案和 2) 中方案何种最有并返回**
+> 
+> 题解区在计算 check 的时候有 排序 / 前缀和 的小优化，可以参考，但不关键。
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int check(vector<int>& arr, int m) {
+        int sum = 0;
+        for (auto v : arr) {
+            if (v >= m)
+                sum += m;
+            else
+                sum += v;
+        }
+        return sum;
+    }
+    int findBestValue(vector<int>& arr, int target) {
+        int n = arr.size(), maxv = 0;
+        for (auto v : arr) maxv = max(maxv, v);
+        int l = 0, r = maxv;
+        while (l < r) {
+            int m = l + (r - l) / 2;
+            // sum < target 说明m需要变大
+            if (check(arr, m) < target)
+                l = m + 1;
+            else
+                r = m;
+        }
+        if (check(arr, l) - target < target - check(arr, l - 1)) return l;
+        return l - 1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1552. 两球之间的磁力](https://leetcode-cn.com/problems/magnetic-force-between-two-balls/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int check(vector<int>& pos, int dis) {
+        int cnt = 0, l = INT_MIN / 2;
+        for (auto v : pos) {
+            if (v - dis >= l) {
+                ++cnt;
+                l = v;
+            }
+        }
+        return cnt;
+    }
+    int maxDistance(vector<int>& position, int m) {
+        sort(position.begin(), position.end());
+        int n = position.size();
+        int minl = INT_MAX, maxl = INT_MIN;
+        for (int i = 1; i < n; ++i) {
+            minl = min(minl, position[i] - position[i - 1]);
+            maxl = max(maxl, position[i] - position[0]);  // not pos[i] - pos[i-1]
+        }
+        int l = minl, r = maxl + 1, checkv;
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+            int checkv = check(position, mid);
+            if (checkv >= m)
+                l = mid + 1;
+            else
+                r = mid;
+        }
+        return l - 1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1648. 销售价值减少的颜色球](https://leetcode-cn.com/problems/sell-diminishing-valued-colored-balls/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 使用 `堆` 找到可选最大值，复杂度 $O(orders * log n)$ ，数据较大会超
+> 
+> 考虑：必然存在一个阈值 T 使得结束后所有颜色球个数 x <= T。
+> 
+> 故二分先查找 T，随后统计即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    typedef long long LL;
+    const int mod = 1e9 + 7;
+    int maxProfit(vector<int>& inventory, int orders) {
+        int n = inventory.size();
+        int l = 0, r = 1e9 + 1;
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+            // 大于等于 mid 的总个数 二分结束时 s<=orders 也即 l=r=T
+            long long s = 0;
+            for (int i = 0; i < n; ++i)
+                if (inventory[i] >= mid) s += (inventory[i] - mid + 1);
+            if (s > orders)
+                l = mid + 1;
+            else
+                r = mid;
+        }
+        LL res = 0;
+        for (auto& rv : inventory)
+            if (rv >= l) {
+                LL lv = l, cnt = rv - lv + 1;
+                (res += ((lv + rv) * cnt / 2) % mod) %= mod;
+                orders -= cnt;
+            }
+        (res += LL(orders) * (l - 1) % mod) %= mod;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1870. 准时到达的列车最小时速](https://leetcode-cn.com/problems/minimum-speed-to-arrive-on-time/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 二分即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<int> d;
+    int n;
+    double h;
+    
+    bool check(int m) {
+        double ret = 0;
+        for (int i = 0; i < n - 1; ++ i )
+            ret += (int)((d[i] + m - 1) / m);
+        return ret + double(d[n - 1]) / m <= h;
+    }
+    
+    int minSpeedOnTime(vector<int>& dist, double hour) {
+        this->d = dist;
+        this->n = d.size();
+        this->h = hour;
+        
+        int l = 1, r = 1e7;
+        while (l < r) {
+            int m = l + r >> 1;
+            if (check(m))
+                r = m;
+            else
+                l = m + 1;
+        }
+        return check(l) ? l : -1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 二分套二分
+
+> [!NOTE] **[LeetCode 2040. 两个有序数组的第 K 小乘积](https://leetcode-cn.com/problems/kth-smallest-product-of-two-sorted-arrays/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 比较显然的 二分套二分即可
+> 
+> 需要注意的点是数据有负数
+> 
+> **细节综合题**
+> 
+> - **在选取左右边界时需要事先考虑计算最小最大值（计算方式）**
+> 
+> - **check 中 v 的值不可知 不好二分 根据正负划分情况即可解决**
+> 
+> 【**非常好的二分综合应用题**】
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    
+    vector<int> ns1, ns2;
+    int n1, n2;
+    LL k;   // ATTENTION
+    
+    bool check(LL mid) {
+        LL c = 0;
+        for (auto v : ns1) {
+            int l = 0, r = n2;
+            // 无法直接二分 故根据v的正负性质来二分
+            if (v > 0) {
+                // 找到 > mid 的第一个数
+                // 左侧的所有即为所求（不包括当前）
+                while (l < r) {
+                    int m = l + (r - l) / 2;
+                    if ((LL)ns2[m] * v <= mid)
+                        l = m + 1;
+                    else
+                        r = m;
+                }
+                c += l;
+            } else if (v < 0) {
+                // 找到 <= mid 的第一个数
+                // 右侧的所有即为所求（包括当前）
+                while (l < r) {
+                    int m = l + (r - l) / 2;
+                    if ((LL)ns2[m] * v > mid)
+                        l = m + 1;
+                    else
+                        r = m;
+                }
+                c += (n2 - l);
+            } else {
+                // v == 0
+                if (mid >= 0)
+                    c += n2;
+            }
+        }
+        return c >= k;
+    }
+    
+    // 经典求两数组乘积最值
+    pair<LL, LL> getMinMax() {
+        LL lv1 = ns1[0], rv1 = ns1[n1 - 1];
+        LL lv2 = ns2[0], rv2 = ns2[n2 - 1];
+        vector<LL> ve = {lv1 * lv2, lv1 * rv2, lv2 * rv1, rv1 * rv2};
+        LL minv = LONG_MAX, maxv = LONG_MIN;
+        for (auto v : ve)
+            minv = min(minv, v), maxv = max(maxv, v);
+        return {minv, maxv};
+    }
+    
+    long long kthSmallestProduct(vector<int>& nums1, vector<int>& nums2, long long k) {
+        this->ns1 = nums1, this->ns2 = nums2;
+        this->n1 = ns1.size(), this->n2 = ns2.size(), this->k = k;
+        auto [l, r] = getMinMax();
+        while (l < r) {
+            LL m = l + (r - l) / 2;
+            if (check(m))
+                r = m;
+            else
+                l = m + 1;
+        }
+        return l;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 三分
 
 > [!NOTE] **[AcWing 1420. 通电围栏](https://www.acwing.com/problem/content/1422/)**
@@ -1263,6 +1746,76 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 1515. 服务中心的最佳位置](https://leetcode-cn.com/problems/best-position-for-a-service-centre/)** [TAG]
+> 
+> 题意: POJ2420 原题
+
+> [!TIP] **思路**
+> 
+> 求凸函数极值，有多种算法
+> 
+> - 三分
+> - 模拟退火
+> - 梯度下降
+> - 还有大佬直接调scipy的优化库
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 模拟退火**
+
+```cpp
+class Solution {
+public:
+    using ld = double;
+    const ld pi = 3.1415926535897932384626;
+    double getMinDistSum(vector<vector<int>>& p) {
+        ld x = 0, y = 0;
+        int n = p.size();
+        for (int i = 0; i < n; ++i) {
+            x += p[i][0];
+            y += p[i][1];
+        }
+        x /= n;
+        y /= n;
+
+        auto go = [&](ld x, ld y) {
+            ld ret = 0;
+            for (int i = 0; i < n; ++i)
+                ret += sqrt((x - p[i][0]) * (x - p[i][0]) +
+                            (y - p[i][1]) * (y - p[i][1]));
+            return ret;
+        };
+
+        ld T = 100;
+        const ld eps = 1e-8;
+        while (T > eps) {
+            T *= 0.99;
+            ld rd = (rand() % 10000 + 1) / 10000.0;
+            ld a = 2 * pi * rd;
+            ld tx = x + T * cos(a), ty = y + T * sin(a);
+            auto d = go(tx, ty) - go(x, y);
+            if (d < 0) { x = tx, y = ty; }
+        }
+
+        return go(x, y);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 ### 旋转排序数组
 

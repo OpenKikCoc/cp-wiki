@@ -1098,6 +1098,68 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 1514. 概率最大的路径](https://leetcode-cn.com/problems/path-with-maximum-probability/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    double maxProbability(int n, vector<vector<int>>& edges,
+                          vector<double>& succProb, int start, int end) {
+        vector<vector<pair<int, double>>> g(n);
+        int m = edges.size();
+        for (int i = 0; i < m; i++) {
+            g[edges[i][0]].push_back({edges[i][1], succProb[i]});
+            g[edges[i][1]].push_back({edges[i][0], succProb[i]});
+        }
+        vector<double> d(n, 0);
+        d[start] = 1.0;
+        priority_queue<pair<double, int>> pq;
+        pq.push({1.0, start});
+        while (!pq.empty()) {
+            auto u = pq.top();
+            pq.pop();
+            int v = u.second;
+            double p = u.first;
+            if (v == end) break;
+            for (auto x : g[v]) {
+                int y = x.first;
+                double pp = x.second;
+                if (pp * p > d[y]) {
+                    d[y] = pp * p;
+                    pq.push({d[y], y});
+                }
+            }
+        }
+        return d[end];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### dijkstra 进阶
 
 > [!NOTE] **[AcWing 920. 最优乘车](https://www.acwing.com/problem/content/922/)**
@@ -1268,6 +1330,445 @@ int main() {
     cout << res << endl;
     return 0;
 }
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1466. 重新规划路线](https://leetcode-cn.com/problems/reorder-routes-to-make-all-paths-lead-to-the-city-zero/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> - 如果 connections 的起点比终点距离近说明需要反向
+> 
+> - 可以直接压入方向 在跑最短路时统计
+> 
+> - 并查集 实现略
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int minReorder(int n, vector<vector<int>>& connections) {
+        vector<vector<int>> G(n);
+        for (auto e : connections) {
+            G[e[0]].push_back(e[1]);
+            G[e[1]].push_back(e[0]);
+        }
+        vector<int> d(n, -1);
+        d[0] = 0;
+        queue<int> q;
+        q.push(0);
+        while (!q.empty()) {
+            int u = q.front();
+            q.pop();
+            for (int v : G[u])
+                if (d[v] == -1) {
+                    d[v] = d[u] + 1;
+                    q.push(v);
+                }
+        }
+        int res = 0;
+        for (auto e : connections) res += d[e[0]] < d[e[1]];
+        return res;
+    }
+};
+```
+
+##### **C++ 压入方向**
+
+```cpp
+class Solution {
+public:
+    int minReorder(int n, vector<vector<int>>& connections) {
+        int ans = 0;
+        vector<vector<int>> edges(n), dir(n);
+        for (auto& c : connections) {
+            edges[c[0]].push_back(c[1]);
+            dir[c[0]].push_back(1);
+            edges[c[1]].push_back(c[0]);
+            dir[c[1]].push_back(0);
+        }
+
+        queue<int> q;
+        q.push(0);
+        vector<int> seen(n);
+        seen[0] = 1;
+        while (!q.empty()) {
+            int u = q.front();
+            q.pop();
+            for (int i = 0; i < edges[u].size(); ++i) {
+                int v = edges[u][i], d = dir[u][i];
+                if (!seen[v]) {
+                    q.push(v);
+                    seen[v] = 1;
+                    ans += d;
+                }
+            }
+        }
+        return ans;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1786. 从第一个节点出发到最后一个节点的受限路径数](https://leetcode-cn.com/problems/number-of-restricted-paths-from-first-to-last-node/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> - 注意 dijkstra auto 不能写引用 会出问题 // todo
+> - 因为必然可达，所以可以直接 sort
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 20010, M = 100010, MOD = 1e9 + 7, INF = 0x3f3f3f3f;
+    using PII = pair<int, int>;
+    
+    // gragh
+    int h[N], e[M], w[M], ne[M], idx;
+    
+    void add(int a, int b, int c) {
+        e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    // val
+    int n;
+    int dist[N], f[N];
+    bool st[N];
+    
+    void init() {
+        memset(h, -1, sizeof h);
+        memset(st, 0, sizeof st);
+        idx = 0;
+    }
+    
+    void dijkstra(int s) {
+        memset(dist, 0x3f, sizeof dist);
+        memset(st, 0, sizeof st);
+        priority_queue<PII, vector<PII>, greater<PII>> heap;
+        heap.push({0, s});
+        dist[s] = 0;
+        while (!heap.empty()) {
+            auto [d, u] = heap.top(); heap.pop();
+            if (st[u]) continue;
+            st[u] = true;
+            for (int i = h[u]; ~i; i = ne[i]) {
+                int j = e[i];
+                if (dist[j] > d + w[i]) {
+                    dist[j] = d + w[i];
+                    heap.push({dist[j], j});
+                }
+            }
+        }
+    }
+    
+    void dfs(int u) {
+        if (f[u] != -1) return;
+        
+        f[u] = 0;
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (dist[u] > dist[j]) {
+                dfs(j);
+                f[u] = (f[u] + f[j]) % MOD;
+            }
+        }
+    }
+    
+    int countRestrictedPaths(int n, vector<vector<int>>& edges) {
+        init();
+        this->n = n;
+        for (auto & e : edges)
+            add(e[0], e[1], e[2]), add(e[1], e[0], e[2]);
+        
+        dijkstra(n);
+        
+        memset(f, -1, sizeof f);
+        memset(st, 0, sizeof st);
+        f[n] = 1;
+        dfs(1);
+        return f[1];
+    }
+};
+```
+
+##### **C++ 直接sort**
+
+```cpp
+using PII = pair<int, int>;
+#define x first
+#define y second
+
+class Solution {
+public:
+    const int INF = 0x3f3f3f3f, MOD = 1e9 + 7;
+    vector<vector<PII>> g;
+    vector<int> f, dist;
+    vector<bool> st;
+    
+    int countRestrictedPaths(int n, vector<vector<int>>& edges) {
+        g.resize(n + 1), f.resize(n + 1), dist.resize(n + 1, INF), st.resize(n + 1);
+        for(auto& e: edges) {
+            int a = e[0], b = e[1], c = e[2];
+            g[a].push_back({b, c});
+            g[b].push_back({a, c});
+        }
+        queue<int> q;
+        q.push(n);
+        dist[n] = 0;
+        while (q.size()) {
+            auto t = q.front();
+            q.pop();
+            st[t] = false;
+            
+            for (auto& v: g[t]) {
+                int j = v.x, w = v.y;
+                if (dist[j] > dist[t] + w) {
+                    dist[j] = dist[t] + w;
+                    if (!st[j]) {
+                        q.push(j);
+                        st[j] = true;
+                    }
+                }
+            }
+        }
+        
+        vector<PII> vs;
+        for (int i = 1; i <= n; i ++ ) vs.push_back({dist[i], i});
+        sort(vs.begin(), vs.end());
+        
+        f[n] = 1;
+        for (auto& v: vs) {
+            int d = v.x, u = v.y;
+            for (auto p: g[u]) {
+                int j = p.x;
+                if (d > dist[j])
+                    f[u] = (f[u] + f[j]) % MOD;
+            }
+        }
+        return f[1];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode LCP 35. 电动车游城市](https://leetcode-cn.com/problems/DFPeFJ/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 踩坑。。比赛按照传统写法 TLE
+> 
+> **其实充电的情况可以同样认为是边拓展，这样写会减少一些 `多次入队` 的情况**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+const int N = 110, M = N << 2;
+int h[N], e[M], w[M], ne[M], idx;
+
+void add(int a, int b, int c) {
+   e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+int dist[N][N];
+bool st[N][N];
+
+class Solution {
+public:
+    using TIII = tuple<int, int, int>;
+    
+    int n, start, end, cnt;
+    vector<int> ch;
+    
+    void dijkstra() {
+        memset(dist, 0x3f, sizeof dist);
+        memset(st, 0, sizeof st);
+        
+        priority_queue<TIII, vector<TIII>, greater<TIII>> heap;
+        
+        dist[start][0] = 0;
+        heap.push({dist[start][0], start, 0});
+        
+        while (heap.size()) {
+            auto [dis, ver, oil] = heap.top();
+            heap.pop();
+            if (st[ver][oil])
+                continue;
+            st[ver][oil] = true;
+            
+            for (int i = oil + 1; i <= cnt; ++ i ) {
+                if (dist[ver][i] > dis + ch[ver] * (i - oil)) {
+                    dist[ver][i] = dis + ch[ver] * (i - oil);
+                    heap.push({dist[ver][i], ver, i});
+                }
+            }
+            
+            for (int i = h[ver]; ~i; i = ne[i]) {
+                int j = e[i];
+                if (w[i] > oil)
+                    continue;
+                if (dist[j][oil - w[i]] > dis + w[i]) {
+                    dist[j][oil - w[i]] = dis + w[i];
+                    heap.push({dist[j][oil - w[i]], j, oil - w[i]});
+                }
+            }
+        }
+    }
+    
+    int electricCarPlan(vector<vector<int>>& paths, int cnt, int start, int end, vector<int>& charge) {
+        this->n = charge.size(), this->start = start, this->end = end, this->cnt = cnt, this->ch = charge;
+        memset(h, -1, sizeof h);
+        idx = 0;
+        
+        for (auto & e : paths) {
+            int u = e[0], v = e[1], w = e[2];
+            add(u, v, w), add(v, u, w);
+        }
+        
+        dijkstra();
+        
+        int res = INT_MAX;
+        for (int i = 0; i <= cnt; ++ i )
+            res = min(res, dist[end][i]);
+        
+        return res;
+    }
+};
+```
+
+##### **C++ TLE**
+
+```cpp
+// TLE
+// 63 / 63 个通过测试用例
+
+const int N = 110, M = N << 2;
+int h[N], e[M], w[M], ne[M], idx;
+
+void add(int a, int b, int c) {
+   e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+int dist[N][N];
+bool st[N][N];
+
+class Solution {
+public:
+    using TIII = tuple<int, int, int>;
+    
+    int n, start, end, cnt;
+    vector<int> ch;
+    
+    void dijkstra() {
+        memset(dist, 0x3f, sizeof dist);
+        memset(st, 0, sizeof st);
+        
+        priority_queue<TIII, vector<TIII>, greater<TIII>> heap;
+        
+        for (int i = 0; i <= cnt; ++ i ) {
+            dist[start][i] = ch[start] * i;
+            heap.push({dist[start][i], start, i});
+        }
+        
+        while (heap.size()) {
+            auto [dis, ver, oil] = heap.top();
+            heap.pop();
+            if (st[ver][oil])
+                continue;
+            st[ver][oil] = true;
+            
+            
+            for (int i = h[ver]; ~i; i = ne[i]) {
+                int j = e[i];
+                if (w[i] > oil)
+                    continue;
+                int rest = oil - w[i];
+                for (int k = rest; k <= cnt; ++ k ) {
+                    int add = k - rest;
+                    if (dist[j][k] > dis + w[i] + add * ch[j]) {
+                        dist[j][k] = dis + w[i] + add * ch[j];
+                        heap.push({dist[j][k], j, k});
+                    }
+                }
+            }
+        }
+    }
+    
+    int electricCarPlan(vector<vector<int>>& paths, int cnt, int start, int end, vector<int>& charge) {
+        this->n = charge.size(), this->start = start, this->end = end, this->cnt = cnt, this->ch = charge;
+        memset(h, -1, sizeof h);
+        idx = 0;
+        
+        for (auto & e : paths) {
+            int u = e[0], v = e[1], w = e[2];
+            add(u, v, w), add(v, u, w);
+        }
+        
+        dijkstra();
+        
+        int res = INT_MAX;
+        for (int i = 0; i <= cnt; ++ i )
+            res = min(res, dist[end][i]);
+        
+        return res;
+    }
+};
 ```
 
 ##### **Python**
@@ -2936,6 +3437,97 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 1761. 一个图中连通三元组的最小度数](https://leetcode-cn.com/problems/minimum-degree-of-a-connected-trio-in-a-graph/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 无向图最小环 floyd 模板题
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+bool st[1000000];
+
+class Solution {
+public:
+    int minTrioDegree(int n, vector<vector<int>>& edges) {
+        memset(st, 0, sizeof st);
+        vector<int> d(n + 1);
+        for (auto & e : edges) {
+            int a = e[0], b = e[1];
+            if (a > b) swap(a, b);
+            d[a] ++ , d[b] ++ ;
+            st[a * 1000 + b] = true;
+        }
+        
+        int res = INT_MAX;
+        for (int i = 1; i <= n; ++ i )
+            for (int j = i + 1; j <= n; ++ j )
+                if (st[i * 1000 + j])
+                    for (int k = j + 1; k <= n; ++ k )
+                        if (st[i * 1000 + k] && st[j * 1000 + k])
+                            res = min(res, d[i] + d[j] + d[k] - 6);
+        if (res == INT_MAX) res = -1;
+        return res;
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int f[501][501];
+    int deg[501];
+    
+    int minTrioDegree(int n, vector<vector<int>>& edges) {
+        int m = edges.size();
+        for (int i = 1; i <= n; i ++) deg[i] = 0;
+        int ans = 0x3f3f3f3f;
+        for (int i = 1; i <= n; i ++)
+            for (int j = i + 1; j <= n; j ++)
+                f[i][j] = false;
+        for (int i = 0; i < m; i ++) {
+            int x = edges[i][0], y = edges[i][1];
+            if (x > y) swap(x, y);
+            ++ deg[x]; ++ deg[y];
+            f[x][y] = true;
+        }
+        for (int i = 1; i <= n; i ++) {
+            for (int j = i + 1; j <= n; j ++) {
+                if (f[i][j] == false) continue;
+                for (int k = j + 1; k <= n; k ++) {
+                    if (f[i][k] == false || f[j][k] == false) continue;
+                    ans = min(ans, deg[i] + deg[j] + deg[k] - 6);
+                }
+            }
+        }
+        if (ans == 0x3f3f3f3f) return -1;
+        return ans;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[AcWing 345. 牛站](https://www.acwing.com/problem/content/347/)**
 > 
 > 题意: TODO
@@ -3028,7 +3620,7 @@ int main() {
 * * *
 
 
-### 拆点最短路
+### 拆点最短路 -> TODO 放到graph子章节
 
 > [!NOTE] **[LeetCode 1928. 规定时间内到达终点的最小花费](https://leetcode-cn.com/problems/minimum-cost-to-reach-destination-in-time/)**
 > 
@@ -3115,6 +3707,134 @@ public:
 ```
 
 ##### **C++ 拆点dp 学习**
+
+```cpp
+class Solution {
+    const int INF = 0x3f3f3f3f;
+
+public:
+    int minCost(int T, vector<vector<int>>& edges, vector<int> a) {
+        int n = a.size();
+        std::vector<std::vector<std::pair<int, int>>> E(n);
+        for (int i = 0; i < (int)edges.size(); ++i) {
+            int u = edges[i][0], v = edges[i][1], w = edges[i][2];
+            E[u].emplace_back(v, w);
+            E[v].emplace_back(u, w);
+        }
+        std::vector<std::vector<int>> f(T + 1, std::vector<int>(n, INF));
+        f[0][0] = a[0];
+        int ans = INF;
+        for (int i = 1; i <= T; ++i) {
+            for (int u = 0; u < n; ++u) {
+                for (auto [v, w] : E[u]) {
+                    if (i >= w) {
+                        f[i][u] = std::min(f[i][u], f[i - w][v] + a[u]);
+                    }
+                }
+            }
+            ans = std::min(ans, f[i][n - 1]);
+        }
+        return ans == INF ? -1 : ans;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1928. 规定时间内到达终点的最小花费](https://leetcode-cn.com/problems/minimum-cost-to-reach-destination-in-time/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> - 经典问题：无向连通图（有无自环无所谓），二维最短路问题
+> 
+>   ===> 拆点，每个点在每个时间下的状态单独作为一个点
+> 
+>   对于本题共计 1e6 个点，直接拆点跑最短路即可
+> 
+> - 也可以 dp 拆状态然后递推
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using PII = pair<int, int>;
+    const static int N = 1010, M = N << 1;
+    const int INF = 0x3f3f3f3f;
+    
+    vector<int> c;
+    int n, mt;
+    int h[N], e[M], w[M], ne[M], idx;
+    bool st[N][N];
+    int d[N][N];
+    
+    void init() {
+        memset(h, -1, sizeof h);
+        memset(st, 0, sizeof st);//
+        memset(d, 0x3f, sizeof d);
+        idx = 0;
+    }
+    void add(int a, int b, int c) {
+        e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    int minCost(int maxTime, vector<vector<int>>& edges, vector<int>& passingFees) {
+        init();
+        
+        this->c = passingFees;
+        this->n = c.size();
+        this->mt = maxTime;
+        for (auto & eg : edges) {
+            int a = eg[0], b = eg[1], c = eg[2];
+            add(a, b, c), add(b, a, c);
+        }
+        
+        d[0][0] = c[0];
+        queue<PII> q;
+        q.push({0, 0});
+        
+        while (q.size()) {
+            auto [x, y] = q.front(); q.pop();
+            st[x][y] = false;
+            
+            for (int i = h[x]; ~i; i = ne[i]) {
+                int nx = e[i], ny = y + w[i];
+                if (ny > mt)
+                    continue;
+                if (d[nx][ny] > d[x][y] + c[nx]) {
+                    d[nx][ny] = d[x][y] + c[nx];
+                    if (!st[nx][ny])
+                        st[nx][ny] = true, q.push({nx, ny});
+                }
+            }
+        }
+        
+        int res = INF;
+        for (int i = 0; i <= mt; ++ i )
+            res = min(res, d[n - 1][i]);
+        return res == INF ? -1 : res;
+    }
+};
+```
+
+##### **C++ dp 递推**
 
 ```cpp
 class Solution {
@@ -3506,6 +4226,113 @@ int main() {
     
     return 0;
 }
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 建信03. 地铁路线规划](https://leetcode-cn.com/contest/ccbft-2021fall/problems/zQTFs4/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典最短路变形
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 10010, M = 20010;
+    
+    int n;
+    int h[N], e[M], w[M], ne[M], idx;
+    int belong[N];
+    int st, ed;
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+        
+        memset(belong, -1, sizeof belong);
+    }
+    void add(int a, int b) {
+        e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    // TLE vector
+    vector<int> res, path;
+    bool vis[N];
+    int ans;
+    //         当前点    次数     当前线路
+    void dfs(int u, int cost, int last) {
+        // 剪枝
+        if (cost > ans)
+            return;
+        if (u == ed) {
+            if (cost < ans || (cost == ans && path < res)) {
+                ans = cost;
+                res = path;
+            }
+            return;
+        }
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i], next = belong[i];
+            if (!vis[j]) {
+                vis[j] = true;
+                path.push_back(j);
+                dfs(j, cost + (next != last), next);
+                path.pop_back();
+                vis[j] = false;
+            }
+        }
+    }
+    
+    vector<int> metroRouteDesignI(vector<vector<int>>& lines, int start, int end) {
+        init();
+        this->n = lines.size(), this->st = start, this->ed = end;
+        for (int i = 0; i < n; ++ i ) {
+            auto line = lines[i];
+            int len = line.size();
+            for (int j = 1; j < len; ++ j ) {
+                belong[idx] = i;
+                add(line[j - 1], line[j]);
+                belong[idx] = i;
+                add(line[j], line[j - 1]);
+            }
+        }
+        
+        memset(vis, 0, sizeof vis);
+        this->ans = INT_MAX;
+        this->res = this->path = vector<int>();
+        
+        // 起点可以选择不同的线路
+        for (int i = h[st]; ~i; i = ne[i]) {
+            int next = belong[i];
+            vis[st] = true;
+            path.push_back(st);
+            dfs(st, 0, next);
+            path.pop_back();
+            vis[st] = false;
+        }
+        
+        return res;
+    }
+};
 ```
 
 ##### **Python**

@@ -96,6 +96,296 @@ int calc(const std::string &s) {  // 计算转换好的后缀表达式
 
 ### 中缀
 
+#### 表达式
+
+> [!NOTE] **[LeetCode 1896. 反转表达式值的最少操作次数](https://leetcode-cn.com/problems/minimum-cost-to-change-the-final-value-of-expression/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **中缀表达式 + 树形DP**
+> 
+> 最终变成：要求表达式树的值，但对于中缀表达式的形式可以直接借助栈，无需完整建树
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    stack<vector<int>> num; // 取0 取1分别需要操作多少次
+    stack<char> op;
+    
+    int get_min(vector<int> s) {
+        int x = INT_MAX;
+        for (auto v : s)
+            x = min(x, v);
+        return x;
+    }
+    
+    void eval() {
+        auto a = num.top(); num.pop();
+        auto b = num.top(); num.pop();
+        char c = op.top(); op.pop();
+        
+        if (c == '&') {
+            // 得到 0 需 {0, 0}, {0, 1}, {1, 0}, 或改变符号后 {0, 0} + 1
+            vector<int> s0 = {a[0] + b[0], a[0] + b[1], a[1] + b[0], a[0] + b[0] + 1};
+            // 得到 1 ...
+            vector<int> s1 = {a[1] + b[1], a[1] + b[0] + 1, a[0] + b[1] + 1, a[1] + b[1] + 1};
+            num.push({get_min(s0), get_min(s1)});
+        } else {
+            vector<int> s0 = {a[0] + b[0], a[0] + b[1] + 1, a[1] + b[0] + 1, a[0] + b[0] + 1};
+            vector<int> s1 = {a[1] + b[1], a[0] + b[1], a[1] + b[0], a[1] + b[1] + 1};
+            num.push({get_min(s0), get_min(s1)});
+        }
+    }
+    
+    int minOperationsToFlip(string expression) {
+        for (auto c : expression)
+            if (isdigit(c)) {
+                if (c == '0')
+                    num.push({0, 1});
+                else
+                    num.push({1, 0});
+            } else if (c == '(') {
+                op.push(c);
+            } else if (c == ')') {
+                while (op.top() != '(')
+                    eval();
+                op.pop();   // (
+            } else {
+                // 一般字符
+                // 中缀表达式 故先把前面算完
+                while (op.size() && op.top() != '(')
+                    eval();
+                op.push(c);
+            }
+        
+        while (op.size())
+            eval();
+        // 一定有一个是0(即什么都不修改时的值) 而非0的较大的数即为所求
+        return max(num.top()[0], num.top()[1]);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 2019. 解出数学表达式的学生分数](https://leetcode-cn.com/problems/the-score-of-students-solving-math-expression/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **带优先级的表达式求值 + 区间DP**
+> 
+> 重点在于区间DP细节及剪枝
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    stack<int> num;
+    stack<char> op;
+    void eval() {
+        auto a = num.top(); num.pop();
+        auto b = num.top(); num.pop();
+        auto c = op.top(); op.pop();
+        int r;
+        if (c == '+')
+            r = a + b;
+        else
+            r = a * b;
+        num.push(r);
+    }
+    int calc(string s) {
+        unordered_map<char, int> pr;
+        pr['+'] = pr['-'] = 1, pr['*'] = pr['/'] = 2;
+        for (int i = 0; i < s.size(); ++ i ) {
+            char c = s[i];
+            if (c == ' ')
+                continue;
+            if (isdigit(c)) {
+                int x = 0, j = i;
+                while (j < s.size() && isdigit(s[j]))
+                    x = x * 10 + s[j] - '0', j ++ ;
+                num.push(x);
+                i = j - 1;
+            } else {
+                while (op.size() && pr[op.top()] >= pr[c])
+                    eval();
+                op.push(c);
+            }
+        }
+        while (op.size())
+            eval();
+        return num.top();
+    }
+
+    int scoreOfStudents(string s, vector<int>& answers) {
+        int tar = calc(s), n = s.size();
+
+        unordered_set<int> f[32][32];
+        for (int len = 1; len <= n; ++ len )
+            for (int l = 0; l + len - 1 < n; l += 2 ) {
+                int r = l + len - 1;
+                if (l == r)
+                    f[l][r].insert(s[l] - '0');
+                else {
+                    for (int k = l; k < r; k += 2)
+                        for (auto v1 : f[l][k])
+                            for (auto v2 : f[k + 2][r]) {
+                                int t = 0;
+                                if (s[k + 1] == '+')
+                                    t = v1 + v2;
+                                else
+                                    t = v1 * v2;
+                                if (t > 1000)
+                                    continue;
+                                f[l][r].insert(t);
+                            }
+                }
+            }
+        
+        int res = 0;
+        for (auto v : answers)
+            if (v == tar)
+                res += 5;
+            else if (f[0][n - 1].count(v))
+                res += 2;
+        return res;
+    }
+};
+```
+
+##### **C++ TLE**
+
+```cpp
+// TLE
+class Solution {
+public:
+    using PON = pair<vector<char>, vector<int>>;
+    using PONI = pair<PON, int>;
+        
+    int n, tar;
+    unordered_set<int> S;
+    set<PONI> hash;
+    
+    PON parse(string s) {
+        vector<char> ops;
+        vector<int> nums;
+        int n = s.size();
+        for (int i = 0; i < n; ++ i ) {
+            int j = i, v = 0;
+            while (j < n && isdigit(s[j]))
+                v = v * 10 + s[j] - '0', j ++ ;
+            nums.push_back(v);
+            if (j < n)
+                ops.push_back(s[j]);
+            i = j;
+        }
+        return {ops, nums};
+    }
+    
+    int op(char c, int a, int b) {
+        if (c == '+')
+            return a + b;
+        return a * b;
+    }
+    
+    void dfs(vector<char> ops, vector<int> nums, int cnt) {
+        // MEM
+        PONI t = {{ops, nums}, cnt};
+        if (hash.count(t))
+            return;
+        hash.insert(t);
+        
+        if (ops.empty()) {
+            // cout << "cnt = " << cnt << " nums[0] = " << nums[0] << endl;
+            if (cnt == 0)
+                this->tar = nums[0];
+            else
+                S.insert(nums[0]);
+            return;
+        }
+        
+        int n = ops.size(), p = 0;
+        for (int i = 0; i < n; ++ i )
+            if (ops[i] == '*') {
+                p = i;
+                break;
+            }
+        
+        for (int i = 0; i < n; ++ i ) {
+            int v = op(ops[i], nums[i], nums[i + 1]);
+            // ATTENTION 增加一个剪枝
+            if (v >= 1000)
+                continue;
+            
+            vector<char> t_ops;
+            vector<int> t_nums;
+            for (int j = 0; j < i; ++ j )
+                t_ops.push_back(ops[j]), t_nums.push_back(nums[j]);
+            t_nums.push_back(v);
+            for (int j = i + 1; j < n; ++ j )
+                t_ops.push_back(ops[j]), t_nums.push_back(nums[j + 1]);
+            dfs(t_ops, t_nums, cnt + (i != p));
+        }
+    }
+    
+    int scoreOfStudents(string s, vector<int>& answers) {
+        this->n = s.size();
+        auto [ops, nums] = parse(s);
+        
+        dfs(ops, nums, 0);
+        
+        // cout << "tar = " << tar << endl;
+        
+        int res = 0;
+        for (auto v : answers)
+            if (v == tar)
+                res += 5;
+            else if (S.count(v))
+                res += 2;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 #### 基本计算器
 
 > [!NOTE] **[LeetCode 224. 基本计算器](https://leetcode-cn.com/problems/basic-calculator/)**

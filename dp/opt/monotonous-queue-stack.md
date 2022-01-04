@@ -490,4 +490,126 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 1687. 从仓库到码头运输箱子](https://leetcode-cn.com/problems/delivering-boxes-from-storage-to-ports/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 单调队列优化dp 注意细节
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int n;
+    vector<int> s;
+    
+    // (l, r] 有多少个不同段
+    int cost(int l, int r) {
+        // l + 1 是分界点
+        if (s[l] != s[l + 1]) return s[r] - s[l];
+        return s[r] - s[l] + 1;
+    }
+    
+    int boxDelivering(vector<vector<int>>& boxes, int portsCount, int maxBoxes, int maxWeight) {
+        n = boxes.size();
+        s.resize(n + 2);
+        for (int i = 1; i <= n; ++ i ) {
+            s[i] = s[i - 1];
+            // 是分段的起始
+            if (i == 1 || boxes[i - 1][0] != boxes[i - 2][0]) ++ s[i] ;
+        }
+        
+        vector<int> f(n + 1);
+        deque<int> q;
+        q.push_back(0);
+        for (int i = 1, j = 1, w = 0; i <= n; ++ i ) {
+            w += boxes[i - 1][1];
+            while (w > maxWeight || i - j + 1 > maxBoxes) {
+                w -= boxes[j - 1][1];
+                ++ j ;
+            }
+            while (q.front() < j - 1)
+                q.pop_front();
+            
+            int k = q.front();
+            f[i] = f[k] + cost(k, i) + 1;
+            
+            // (i, i + 1] 与 (q.back(), i] 无论右区间取哪里都是一样的 所以直接用 i+1
+            while (!q.empty() && f[q.back()] >= f[i] + cost(i, i + 1) - cost(q.back(), i))
+                q.pop_back();
+            q.push_back(i);
+        }
+        return f[n];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1696. 跳跃游戏 VI](https://leetcode-cn.com/problems/jump-game-vi/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 简单单调队列优化dp
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const int inf = 0x3f3f3f3f;
+    int maxResult(vector<int>& nums, int k) {
+        int n = nums.size();
+        vector<int> f(n + 1);
+        vector<int> q(n + 1);
+        int hh = 0, tt = -1;
+        f[0] = 0;
+        for (int i = 1; i <= n; ++ i ) {
+            if (hh <= tt && q[hh] < i - k) ++ hh;
+            f[i] = f[q[hh]] + nums[i - 1];
+            while (hh <= tt && f[q[tt]] <= f[i]) -- tt;
+            q[ ++ tt] = i;
+        }
+        return f[n];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 单调栈 主要结合其他优化

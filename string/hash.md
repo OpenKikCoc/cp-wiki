@@ -433,3 +433,178 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 1147. 段式回文](https://leetcode-cn.com/problems/longest-chunked-palindrome-decomposition/) TAG**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 字符串 hash + 双指针
+> 
+> O(n^2) dp 方法超时，考虑双指针向中间收缩
+> 
+> l r 维护已合法的两侧外部区间边界即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // O(n^2)的dp会超时
+    using ULL = unsigned long long;
+    const static int P = 131, N = 1010;
+    ULL h[N], p[N];
+    int f[N][N];
+    
+    ULL get(int l, int r) {
+        return h[r] - h[l - 1] * p[r - l + 1];
+    }
+    
+    int longestDecomposition(string text) {
+        int n = text.size();
+        
+        p[0] = 1;
+        for (int i = 1; i <= n; ++ i ) {
+            h[i] = h[i - 1] * P + text[i - 1];
+            p[i] = p[i - 1] * P;
+        }
+        
+        int res = 0, l = 1, r = n;;
+        for (int i = 1, j = n; i < j; ++ i , -- j )
+            if (get(l, i) == get(j, r)) {
+                res += 2;
+                l = i + 1, r = j - 1;
+            }
+        if (l <= r)
+            ++ res;
+        
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1316. 不同的循环子字符串](https://leetcode-cn.com/problems/distinct-echo-substrings/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using ll = long long;
+    int distinctEchoSubstrings(string text) {
+        int n = text.size();
+        ll mod = 1e9 + 7, B = 31;
+        vector<ll> h(n + 1);
+        for (int i = 0; i < n; ++i) h[i + 1] = (h[i] * B + text[i]) % mod;
+        vector<ll> p(n + 1);
+        p[0] = 1;
+        for (int i = 1; i <= n; ++i) p[i] = p[i - 1] * B % mod;
+        auto get = [&](int x, int y) {
+            return (h[y] - h[x - 1] * p[y - x + 1] % mod + mod) % mod;
+        };
+        unordered_set<ll> H;
+        for (int i = 1; i <= n; ++i) {
+            for (int j = i + 1; j <= n; j += 2) {
+                int l = (j - i + 1) / 2;
+                int k = i + l - 1;
+                ll h1 = get(i, k), h2 = get(k + 1, j);
+                if (h1 == h2) H.insert(h1);
+            }
+        }
+        return H.size();
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1392. 最长快乐前缀](https://leetcode-cn.com/problems/longest-happy-prefix/)** [TAG]
+> 
+> 题意: 
+> 
+> 求字符串的最长快乐前缀(既是前缀也是后缀)
+
+> [!TIP] **思路**
+> 
+> 字符串hash
+> 
+> **记录这种每次追加到前面来更新后缀的写法**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    string longestPrefix(string s) {
+        int n = s.size();
+        int prefix = 0, suffix = 0;
+        int base = 31, mod = 1000000007, mul = 1;
+        int happy = 0;
+        for (int i = 1; i < n; ++i) {
+            prefix = ((long long)prefix * base + (s[i - 1] - 97)) % mod;
+            suffix = (suffix + (long long)(s[n - i] - 97) * mul) % mod;
+            if (prefix == suffix) {
+                happy = i;
+            }
+            mul = (long long)mul * base % mod;
+        }
+        return s.substr(0, happy);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

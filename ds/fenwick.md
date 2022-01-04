@@ -1013,6 +1013,170 @@ class Solution:
 
 * * *
 
+> [!NOTE] **[LeetCode 1649. 通过指令创建有序数组](https://leetcode-cn.com/problems/create-sorted-array-through-instructions/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 记这个模版
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+template<typename T>
+class BIT_opsum {
+public:
+    T operator() (const T& u, const T& v) const {
+        return u + v;
+    }
+};
+
+template<typename T, typename Accumulate = BIT_opsum<T>>
+class BIT {
+private:
+    vector<T> tree;
+    Accumulate op;
+    int n;
+
+public:
+    BIT(int _n, Accumulate _op = Accumulate{}): n(_n), tree(_n + 1), op(_op) {}
+
+    static int lowbit(int x) {
+        return x & (-x);
+    }
+    
+    void update(int x, T value) {
+        while (x <= n) {
+            tree[x] = op(tree[x], value);
+            x += lowbit(x);
+        }
+    }
+
+    T query(int x) const {
+        T ans{};
+        while (x) {
+            ans = op(ans, tree[x]);
+            x -= lowbit(x);
+        }
+        return ans;
+    }
+};
+
+class Solution {
+public:
+    int createSortedArray(vector<int>& a) {
+        BIT<int> bit(*max_element(a.begin(), a.end()));
+        long long op = 0;
+        int cnt = 0;
+        for (auto num : a) {
+            int u = bit.query(num - 1);
+            int v = cnt - bit.query(num);
+            op += min(u, v);
+            bit.update(num, 1);
+            ++cnt;
+        }
+        return op % 1000000007;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1845. 座位预约管理系统](https://leetcode-cn.com/problems/seat-reservation-manager/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> BIT维护即可 略
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class SeatManager {
+public:
+    const static int N = 1e5 + 10;
+    int n;
+    int tr[N];
+    
+    int lowbit(int x) {
+        return x & -x;
+    }
+    void add(int x, int c) {
+        for (int i = x; i <= n; i += lowbit(i))
+            tr[i] += c;
+    }
+    int sum(int x) {
+        int res = 0;
+        for (int i = x; i; i -= lowbit(i))
+            res += tr[i];
+        return res;
+    }
+    
+    SeatManager(int n) {
+        this->n = n;
+        memset(tr, 0, sizeof tr);
+    }
+    
+    int reserve() {
+        int l = 1, r = n;
+        while (l < r) {
+            int m = l + r >> 1;
+            if (sum(m) >= m)
+                l = m + 1;
+            else
+                r = m;
+        }
+        add(l, 1);
+        return l;
+    }
+    
+    void unreserve(int seatNumber) {
+        add(seatNumber, -1);
+    }
+};
+
+/**
+ * Your SeatManager object will be instantiated and called as such:
+ * SeatManager* obj = new SeatManager(n);
+ * int param_1 = obj->reserve();
+ * obj->unreserve(seatNumber);
+ */
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 经典离线+预处理
 
 > [!NOTE] **[Luogu [GZOI2017]配对统计](https://www.luogu.com.cn/problem/P5677)**

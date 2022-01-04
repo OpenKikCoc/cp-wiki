@@ -1601,6 +1601,171 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 1268. 搜索推荐系统](https://leetcode-cn.com/problems/search-suggestions-system/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 模拟题， Trie 标准解法，暴力略加优化也可以过。
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+struct Trie {
+    unordered_map<char, Trie*> child;
+    priority_queue<string> words;
+};
+
+class Solution {
+private:
+    void addWord(Trie* root, const string& word) {
+        Trie* cur = root;
+        for (const char& ch: word) {
+            if (!cur->child.count(ch)) {
+                cur->child[ch] = new Trie();
+            }
+            cur = cur->child[ch];
+            cur->words.push(word);
+            if (cur->words.size() > 3) {
+                cur->words.pop();
+            }
+        }
+    }
+    
+public:
+    vector<vector<string>> suggestedProducts(vector<string>& products, string searchWord) {
+        Trie* root = new Trie();
+        for (const string& word: products) {
+            addWord(root, word);
+        }
+        
+        vector<vector<string>> ans;
+        Trie* cur = root;
+        bool flag = false;
+        for (const char& ch: searchWord) {
+            if (flag || !cur->child.count(ch)) {
+                ans.emplace_back();
+                flag = true;
+            }
+            else {
+                cur = cur->child[ch];
+                vector<string> selects;
+                while (!cur->words.empty()) {
+                    selects.push_back(cur->words.top());
+                    cur->words.pop();
+                }
+                reverse(selects.begin(), selects.end());
+                ans.push_back(move(selects));
+            }
+        }
+        
+        return ans;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1803. 统计异或值在范围内的数对有多少](https://leetcode-cn.com/problems/count-pairs-with-xor-in-a-range/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然 Trie 注意求区间变为区间减 以及在 query 中的实现
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 16;
+    int son[1 << N][2], v[1 << N], cnt;
+    
+    void insert(int x) {
+        int p = 0;
+        for (int i = 15; i >= 0; -- i ) {
+            int t = x >> i & 1;
+            if (!son[p][t])
+                son[p][t] = ++ cnt ;
+            p = son[p][t];
+            v[p] ++ ;
+        }
+    }
+    
+    // 求小于等于 hi 的节点个数
+    int query(int x, int hi) {
+        int p = 0, res = 0;
+        for (int i = 15; i >= 0; -- i ) {
+            int t = x >> i & 1, k = hi >> i & 1;
+            if (k) {
+                // k = 1 则当前位可以和以前的数值异或 0/1 均合法
+                // 相同值产生异或结果为0 直接累加即可
+                if (son[p][t])
+                    res += v[son[p][t]];
+                // 不同值不存在 直接返回
+                if (!son[p][!t])
+                    return res;
+                p = son[p][!t];
+            } else {
+                // k = 0 只能选择异或结果为0的分支
+                if (!son[p][t])
+                    return res;
+                p = son[p][t];
+            }
+        }
+        res += v[p];
+        return res;
+    }
+    
+    int countPairs(vector<int>& nums, int low, int high) {
+        memset(son, 0, sizeof son);
+        memset(v, 0, sizeof v);
+        cnt = 0;
+        
+        int res = 0;
+        for (auto v : nums) {
+            insert(v);
+            res += query(v, high) - query(v, low - 1);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 离线 trie
 
 > [!NOTE] **[LeetCode 1707. 与数组中元素的最大异或值](https://leetcode-cn.com/problems/maximum-xor-with-an-element-from-array/)**
@@ -1703,6 +1868,219 @@ public:
 > 另开一个 cnt 数组计数累计出现过的数量，为 0 时即便 son 数组非 0 也无效。
 > 
 > 结合 dfs 回溯离线处理答案
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using PII = pair<int, int>;
+    const static int N = 1e5 + 10, M = 2e5 * 18 + 10;
+    
+    int n, m, root;
+    
+    // ------------------ es ------------------
+    int h[N], e[N], ne[N], idx;
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+        tot = 0;    // trie
+    }
+    void add(int a, int b) {
+        e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    // ------------------ trie ------------------
+    int son[M][2], cnt[M], tot; // cnt for count
+    void insert(int x) {
+        int p = 0;
+        for (int i = 30; i >= 0; -- i ) {
+            int t = x >> i & 1;
+            if (!son[p][t])
+                son[p][t] = ++ tot ;
+            p = son[p][t];
+            cnt[p] ++ ; // ATTENTION
+        }
+    }
+    void remove(int x) {
+        int p = 0;
+        for (int i = 30; i >= 0; -- i ) {
+            int t = x >> i & 1;
+            p = son[p][t];
+            cnt[p] -- ;
+        }
+    }
+    int query(int x) {
+        int p = 0, res = 0;
+        for (int i = 30; i >= 0; -- i ) {
+            int t = x >> i & 1;
+            // ATTENTION
+            if (son[p][!t] && cnt[son[p][!t]]) {
+                res |= 1 << i;
+                p = son[p][!t];
+            } else
+                p = son[p][t];
+        }
+        return res;
+    }
+    
+    // ------------------ dfs ------------------
+    unordered_map<int, vector<PII>> qs;
+    vector<int> res;
+    void dfs(int u, int pa) {
+        insert(u);
+        
+        for (auto [val, id] : qs[u])
+            res[id] = query(val);
+        
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (j == pa)
+                continue;
+            dfs(j, u);
+        }
+        remove(u);
+    }
+    
+    vector<int> maxGeneticDifference(vector<int>& parents, vector<vector<int>>& queries) {
+        init();
+        
+        this->n = parents.size();
+        for (int i = 0; i < n; ++ i ) {
+            if (parents[i] == -1)
+                root = i;
+            else
+                add(parents[i], i);
+        }
+        
+        this->m = queries.size();
+        for (int i = 0; i < m; ++ i ) {
+            int node = queries[i][0], val = queries[i][1];
+            qs[node].push_back({val, i});
+        }
+        
+        res = vector<int>(m);
+        
+        dfs(root, -1);
+        
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1707. 与数组中元素的最大异或值](https://leetcode-cn.com/problems/maximum-xor-with-an-element-from-array/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 在线 Trie 做法贪心选择前面为 1 的时候结果会错，形如：
+> 
+> [536870912,0,534710168,330218644,142254206] [[558240772,1000000000],[307628050,1000000000],[3319300,1000000000],[2751604,683297522],[214004,404207941]] WRONG: [1050219420,844498962,540190212,539622516,-1] CORRECT: [1050219420,844498962,540190212,539622516,330170208]
+> 
+> 正确做法，离线 Trie
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+struct Node {
+    int x, m, k;
+    bool operator< (const Node& t) const {
+        return m < t.m;
+    }
+}q[100010];
+
+int son[3100000][2];
+
+class Solution {
+public:
+    int idx = 0;
+    void insert(int v) {
+        int p = 0;
+        for (int i = 30; i >= 0; -- i ) {
+            int u = (v >> i) & 1;
+            if (!son[p][u]) son[p][u] = ++ idx;
+            p = son[p][u];
+        }
+    }
+    int query(int v) {
+        if (!idx) return -1;
+        int p = 0, ret = 0;
+        for (int i = 30; i >= 0; -- i ) {
+            int u = (v >> i) & 1;
+            if(!son[p][!u]) {
+                // 相反的不存在 走相同的 当前这一位不产生异或增益
+                p = son[p][u];
+            } else {
+                // 相反的存在 该位异或值为1
+                p = son[p][!u];
+                ret |= 1 << i;
+            }
+        }
+        return ret;
+    }
+    vector<int> maximizeXor(vector<int>& nums, vector<vector<int>>& queries) {
+        idx = 0;
+        memset(son, 0, sizeof son);
+        
+        int n = nums.size(), m = queries.size();
+        for (int i = 0; i < m; ++ i )
+            q[i] = {queries[i][0], queries[i][1], i};
+        sort(q, q + m);
+        sort(nums.begin(), nums.end());
+        vector<int> res(m);
+        for (int i = 0, j = 0; j < m; ++ j ) {
+            while (i < n && nums[i] <= q[j].m) insert(nums[i ++ ]);
+            res[q[j].k] = query(q[j].x);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1938. 查询最大基因差](https://leetcode-cn.com/problems/maximum-genetic-difference-query/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 离线处理即可
+> 
+> **涉及到 Trie 中删除元素 思路**
 
 <details>
 <summary>详细代码</summary>

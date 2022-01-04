@@ -569,6 +569,149 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 1213. 三个有序数组的交集](https://leetcode-cn.com/problems/intersection-of-three-sorted-arrays/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 多种方法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 分解两次操作**
+
+```cpp
+class Solution {
+public:
+    vector<int> get(vector<int> & a1, vector<int> & a2) {
+        vector<int> res;
+        for (int i = 0, j = 0; i < a1.size() && j < a2.size(); ) {
+            if (a1[i] == a2[j]) {
+                res.push_back(a1[i]);
+                ++ i, ++ j;
+            } else if (a1[i] < a2[j]) ++ i;
+            else ++ j;
+        }
+        return res;
+    }
+    vector<int> arraysIntersection(vector<int>& arr1, vector<int>& arr2, vector<int>& arr3) {
+        auto t = get(arr1, arr2);
+        return get(t, arr3);
+    }
+};
+```
+
+##### **C++ hashTable**
+
+```cpp
+class Solution {
+public:
+    vector<int> arraysIntersection(vector<int>& arr1, vector<int>& arr2, vector<int>& arr3) {
+        unordered_map<int, int> cnt;
+        vector<int> res;
+        for (int v : arr1) ++ cnt[v];
+        for (int v : arr2) ++ cnt[v];
+        for (int v : arr3) ++ cnt[v];
+        for (auto & [k, v] : cnt)
+            if (v == 3) res.push_back(k);
+        return res;
+    }
+};
+```
+
+##### **C++ 三指针**
+
+```cpp
+class Solution {
+public:
+    vector<int> arraysIntersection(vector<int>& arr1, vector<int>& arr2,
+                                   vector<int>& arr3) {
+        int n1 = arr1.size(), n2 = arr2.size(), n3 = arr3.size();
+        vector<int> res;
+        for (int i = 0, j = 0, k = 0; i < n1; i++) {
+            for (; j < n2 && arr2[j] < arr1[i]; j++)
+                ;
+            if (j == n2) break;
+            for (; k < n3 && arr3[k] < arr1[i]; k++)
+                ;
+            if (k == n3) break;
+            if (arr2[j] == arr1[i] && arr3[k] == arr1[i])
+                res.push_back(arr1[i]);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1638. 统计只差一个字符的子串数目](https://leetcode-cn.com/problems/count-substrings-that-differ-by-one-character/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 向两侧扩展的双指针
+> 
+> 枚举优化：【枚举不同点 向两端扩展】
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+    int countSubstrings(string s, string t) {
+        int n = s.size(), m = t.size();
+        int mlen = min(n, m);
+        int ans = 0;
+        for (int i = 0; i < n; ++i)
+            for (int j = 0; j < m; ++j) {
+                if (s[i] == t[j]) continue;
+                int l = 0;
+                while (i - (l + 1) >= 0 && j - (l + 1) >= 0 &&
+                       s[i - (l + 1)] == t[j - (l + 1)])
+                    l++;
+                int r = 0;
+                while (i + (r + 1) < n && j + (r + 1) < m &&
+                       s[i + (r + 1)] == t[j + (r + 1)])
+                    r++;
+                ans += (l + 1) * (r + 1);
+            }
+        return ans;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 [leetcode 1438. 绝对差不超过限制的最长连续子数组](https://leetcode-cn.com/problems/longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit/)
 
 
@@ -1027,6 +1170,116 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 1610. 可见点的最大数目](https://leetcode-cn.com/problems/maximum-number-of-visible-points/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+>
+> 思路：计算所有点到location的角度，排序再在后面补，方便循环查找。
+>
+> 需要注意：
+>
+> 1.  自己写的处理大 case 超时，原因在于 for 内部再二分仍然很大。实际上，可以用双指针替代二分搜索，进一步降低复杂度。
+> 2.  关于 pi 的处理，直接写 3.1415926 还会有精度问题，使用 acos(-1.0)
+>
+> c++ 三角函数:
+>
+> cos 余弦 sin 正弦 tan 正切 acos 反余弦 asin 反正弦 atan 反正切 atan2 取值范围为 (-pi, pi]
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int visiblePoints(vector<vector<int>>& points, int angle,
+                      vector<int>& location) {
+        double pi = acos(-1.0);
+        int x = location[0], y = location[1];
+        vector<double> ps;
+        int same = 0;
+        for (auto& p : points) {
+            if (p[0] == x && p[1] == y) {
+                ++same;
+                continue;
+            }
+            ps.push_back(atan2(p[1] - y, p[0] - x));
+        }
+        sort(ps.begin(), ps.end());
+        int n = ps.size();
+        for (int i = 0; i < n; ++i) ps.push_back(ps[i] + acos(-1.) * 2);
+        double t = 1.0 * angle * pi / 180;
+        int res = 0;
+        for (int i = 0, j = 0; i < n; ++i) {
+            while (j < 2 * n && ps[j] - ps[i] <= t) ++j;
+            res = max(res, j - i);
+        }
+        return same + res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1855. 下标对中的最大距离](https://leetcode-cn.com/problems/maximum-distance-between-a-pair-of-values/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 双指针就可以 很好的双指针题目
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// 更优的写法
+class Solution {
+public:
+    int maxDistance(vector<int>& nums1, vector<int>& nums2) {
+        int res = 0;
+        for (int i = 0, j = 0; i < nums1.size() && j < nums2.size(); ++ i ) {
+            while (j < nums2.size() && nums2[j] >= nums1[i])
+                j ++ ;
+            if (j - 1 >= i && nums2[j - 1] >= nums1[i])
+                res = max(res, j - 1 - i);                
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 推导进阶
 
 > [!NOTE] **[Luogu [USACO15OPEN]Trapped in the Haybales S](https://www.luogu.com.cn/problem/P3124)**
@@ -1271,6 +1524,260 @@ public:
             while (j < i && nums[i] - nums[j] > k) ++ j ;
             if (j < i && nums[i] - nums[j] == k) ++ res;
         }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1537. 最大得分](https://leetcode-cn.com/problems/get-the-maximum-score/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+>
+> 两个递增有序数组 从任意一个头部起遇相同数字可换位置 求最终总和：
+>
+> [![img](https://camo.githubusercontent.com/e2552b955a88c82b9b08ba7b330444ad9e274fd4d925b26ea127b5cbfffabd24/68747470733a2f2f6173736574732e6c656574636f64652d636e2e636f6d2f616c6979756e2d6c632d75706c6f61642f75706c6f6164732f323032302f30382f30322f73616d706c655f315f313839332e706e67)](https://camo.githubusercontent.com/e2552b955a88c82b9b08ba7b330444ad9e274fd4d925b26ea127b5cbfffabd24/68747470733a2f2f6173736574732e6c656574636f64652d636e2e636f6d2f616c6979756e2d6c632d75706c6f61642f75706c6f6164732f323032302f30382f30322f73616d706c655f315f313839332e706e67)
+>
+> 如图 2+4+6+8+10 = 30
+>
+> **考虑：** 每一个相同数字相当于分界点 相同数字间取最大即可
+>
+> 双指针解决
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int maxSum(vector<int>& nums1, vector<int>& nums2) {
+        int n1 = nums1.size(), n2 = nums2.size();
+        long long s1 = 0, s2 = 0, mod = 1e9 + 7;
+        int i = n1 - 1, j = n2 - 1;
+        while (~i && ~j) {
+            if (nums1[i] > nums2[j]) {
+                s1 += nums1[i];
+                --i;
+            } else if (nums1[i] < nums2[j]) {
+                s2 += nums2[j];
+                --j;
+            } else {
+                s1 = s2 = max(s1, s2) + nums1[i];
+                --i, --j;
+            }
+        }
+        while (~i) s1 += nums1[i--];
+        while (~j) s2 += nums2[j--];
+        return max(s1, s2) % mod;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1712. 将数组分成三个子数组的方案数](https://leetcode-cn.com/problems/ways-to-split-array-into-three-subarrays/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 注意枚举方法 **单调性证明**【j k 只会随 i 向右】
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const int mod = 1e9 + 7;
+    using LL = long long;
+    int waysToSplit(vector<int>& nums) {
+        int n = nums.size();
+        vector<LL> s(n + 1);
+        for (int i = 1; i <= n; ++ i )
+            s[i] = s[i - 1] + nums[i - 1];
+        
+        int res = 0;
+        // [0, x - 1], [x, i - 1], [i, n]
+        // j 为最左，k为最右
+        for (int i = 3, j = 2, k = 2; i <= n; ++ i ) {
+            while (s[n] - s[i - 1] < s[i - 1] - s[j - 1]) j ++ ;
+            while (k + 1 < i && s[i - 1] - s[k] >= s[k]) k ++ ;
+            if (j <= k && s[n] - s[i - 1] >= s[i - 1] - s[j - 1] && s[i - 1] - s[k - 1] >= s[k - 1])
+                res = (res + k - j + 1) % mod;
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 二分**
+
+最初二分写法修正：
+
+二分搜索时应从 `s.begin() + 1` 开始
+
+```cpp
+class Solution {
+public:
+    const int mod = 1e9 + 7;
+    using LL = long long;
+    int waysToSplit(vector<int>& nums) {
+        int n = nums.size();
+        vector<LL> s(n + 1);
+        for (int i = 1; i <= n; ++ i )
+            s[i] = s[i - 1] + nums[i - 1];
+        
+        LL res = 0;
+        for (int i = 2; i < n; ++ i ) {
+            LL rv = s[n] - s[i];
+            if (rv * 2 < s[i]) break;
+            int ridx = upper_bound(s.begin() + 1, s.begin() + i, s[i] / 2) - s.begin();     // 保证 left <= mid
+            int lidx = lower_bound(s.begin() + 1, s.begin() + i, s[i] - rv) - s.begin();    // 保证 mid <= right
+            res = (res + ridx - lidx) % mod;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode ]()**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 直观单调栈 重复TODO
+> 
+> **有线性做法 推导**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 双指针**
+
+```cpp
+class Solution {
+public:
+    int maximumScore(vector<int>& nums, int k) {
+        int n = nums.size(), res = 0;
+        for (int i = nums[k], l = k, r = k; i >= 1; -- i ) {
+            while (l - 1 >= 0 && nums[l - 1] >= i) -- l;
+            while (r + 1 < n && nums[r + 1] >= i) ++ r;
+            res = max(res, (r - l + 1) * i);
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 单调栈1**
+
+```cpp
+class Solution {
+public:
+    int maximumScore(vector<int>& nums, int k) {
+        int n = nums.size();
+        vector<int> left(n, -1), right(n, n);
+        stack<int> st;
+        for (int i = 0; i < n; ++i) {
+            while (!st.empty() && nums[st.top()] > nums[i]) {
+                right[st.top()] = i;
+                st.pop();
+            }
+            st.push(i);
+        }
+        st = stack<int>();
+        for (int i = n - 1; i >= 0; --i) {
+            while (!st.empty() && nums[st.top()] > nums[i]) {
+                left[st.top()] = i;
+                st.pop();
+            }
+            st.push(i);
+        }
+        int ans = 0;
+        for (int i = 0; i < n; ++i) {
+            int l = left[i] + 1, r = right[i] - 1;
+            if (l <= k && r >= k)
+                ans = max(ans, (r - l + 1) * nums[i]);
+        }
+        return ans;
+    }
+};
+```
+
+##### **C++ 单调栈2**
+
+```cpp
+class Solution {
+public:
+    int maximumScore(vector<int>& nums, int k) {
+        int n = nums.size();
+        vector<int> h(n + 2, -1), l(n + 2), r(n + 2), stk(n + 2);
+        for (int i = 1; i <= n; i ++ ) h[i] = nums[i - 1];
+        int tt = 0;
+        stk[0] = 0;
+        for (int i = 1; i <= n; i ++ ) {
+            while (h[stk[tt]] >= h[i]) tt -- ;
+            l[i] = stk[tt];
+            stk[ ++ tt] = i;
+        }
+        tt = 0, stk[0] = n + 1;
+        for (int i = n; i; i -- ) {
+            while (h[stk[tt]] >= h[i]) tt -- ;
+            r[i] = stk[tt];
+            stk[ ++ tt] = i;
+        }
+        k ++ ;
+        int res = 0;
+        for (int i = 1; i <= n; i ++ )
+            if (l[i] < k && r[i] > k)
+                res = max(res, (r[i] - l[i] - 1) * h[i]);
         return res;
     }
 };

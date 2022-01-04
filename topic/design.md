@@ -404,6 +404,63 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 1286. 字母组合迭代器](https://leetcode-cn.com/problems/iterator-for-combination/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 这题复杂度接受直接一次性生成所有可能字符串
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int cur;
+    vector<string> v;
+    string t;
+    int n;
+    void dfs(int p, string cur) {
+        if (cur.size() == n) {
+            v.push_back(cur);
+            return;
+        }
+        if (p == t.size()) return;
+        dfs(p + 1, cur);
+        dfs(p + 1, cur + t[p]);
+    }
+    CombinationIterator(string characters, int combinationLength) {
+        t = characters;
+        n = combinationLength;
+        dfs(0, "");
+        sort(v.begin(), v.end());
+        cur = 0;
+    }
+
+    string next() { return v[cur++]; }
+
+    bool hasNext() { return cur < v.size(); }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[LeetCode 380. 常数时间插入、删除和获取随机元素](https://leetcode-cn.com/problems/insert-delete-getrandom-o1/)**
 > 
 > 题意: TODO
@@ -1274,6 +1331,597 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 1146. 快照数组](https://leetcode-cn.com/problems/snapshot-array/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 构造 二分
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class SnapshotArray {
+public:
+    using PII = pair<int, int>;
+    vector<vector<PII>> all;
+    vector<int> t;
+    int times, snapcnt;
+    
+    SnapshotArray(int length) {
+        times = snapcnt = 0;
+        t.clear(); all.resize(length);
+        for (int i = 0; i < length; ++ i )
+            all[i].push_back({0, 0});
+    }
+    
+    void set(int index, int val) {
+        ++ times;
+        all[index].push_back({times, val});
+    }
+    
+    int snap() {
+        ++ snapcnt;
+        t.push_back(times);
+        return snapcnt - 1;
+    }
+    
+    int get(int index, int snap_id) {
+        int time = t[snap_id];
+        auto it = upper_bound(all[index].begin(), all[index].end(), PII{time + 1, -1});
+        -- it;
+        return it->second;
+    }
+};
+
+/**
+ * Your SnapshotArray object will be instantiated and called as such:
+ * SnapshotArray* obj = new SnapshotArray(length);
+ * obj->set(index,val);
+ * int param_2 = obj->snap();
+ * int param_3 = obj->get(index,snap_id);
+ */
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1166. 设计文件系统](https://leetcode-cn.com/problems/design-file-system/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 模拟 略
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class FileSystem {
+public:
+    unordered_map<string, int> hash;
+    
+    FileSystem() { }
+    
+    bool createPath(string path, int value) {
+        string fa = path;
+        while (fa.back() != '/') fa.pop_back();
+        fa.pop_back();
+        
+        if (fa != "" && !hash.count(fa) || hash.count(path))
+            return false;
+        hash[path] = value;
+        return true;
+    }
+    
+    int get(string path) {
+        return hash.count(path) ? hash[path] : -1;
+    }
+};
+
+/**
+ * Your FileSystem object will be instantiated and called as such:
+ * FileSystem* obj = new FileSystem();
+ * bool param_1 = obj->createPath(path,value);
+ * int param_2 = obj->get(path);
+ */
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1172. 餐盘栈](https://leetcode-cn.com/problems/dinner-plate-stacks/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> BIT 维护即可，注意换静态变量防止超时
+> 
+> 本质: 快速找到以下数据
+> 
+> 1. 从左往右第一个未满的栈  push
+> 2. 从右往左第一个非空的栈  pop
+
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// 静态 否则TLE
+const int N = 100010;
+static int tr[N];           // 维护栈中元素数目
+static stack<int> stks[N];  // 替换很慢的 vector<stack<int>> stks;
+
+class DinnerPlates {
+public:
+    // BIT
+    void init() {
+        memset(tr, 0, sizeof tr);
+    }
+    int lowbit(int x) {
+        return x & -x;
+    }
+    void add(int x, int v) {
+        for (int i = x; i < N; i += lowbit(i)) tr[i] += v;
+    }
+    int sum(int x) {
+        int res = 0;
+        for (int i = x; i; i -= lowbit(i)) res += tr[i];
+        return res;
+    }
+    // END OF BIT
+    // 左侧第一个未满的栈
+    int getL() {
+        int l = 1, r = N;
+        while (l < r) {
+            int m = l + r >> 1;
+            if (sum(m) >= m * cap) l = m + 1;
+            else r = m;
+        }
+        return l;
+    }
+    // 右侧第一个非空的栈
+    int getR() {
+        int l = 1, r = N;
+        while (l < r) {
+            int m = l + r >> 1;
+            if (sum(m) < tot) l = m + 1;
+            else r = m;
+        }
+        return l;
+    }
+    
+    int cap, tot;
+    
+    DinnerPlates(int capacity) {
+        init();
+        cap = capacity; tot = 0;
+        // TLE stks = vector<stack<int>>(N);
+        for (int i = 0; i < N; ++ i )
+            while (!stks[i].empty())
+                stks[i].pop();
+    }
+    
+    void push(int val) {
+        int idx = getL();
+        stks[idx].push(val);
+        ++ tot ; add(idx, 1);
+    }
+    
+    int pop() {
+        if (!tot) return -1;
+        int idx = getR();
+        int ret = stks[idx].top(); stks[idx].pop();
+        -- tot ; add(idx, -1);
+        return ret;
+    }
+    
+    int popAtStack(int index) {
+        int idx = index + 1;
+        if (stks[idx].empty()) return -1;
+        int ret = stks[idx].top(); stks[idx].pop();
+        -- tot ; add(idx, -1);
+        return ret;
+    }
+};
+
+/**
+ * Your DinnerPlates object will be instantiated and called as such:
+ * DinnerPlates* obj = new DinnerPlates(capacity);
+ * obj->push(val);
+ * int param_2 = obj->pop();
+ * int param_3 = obj->popAtStack(index);
+ */
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1348. 推文计数](https://leetcode-cn.com/problems/tweet-counts-per-frequency/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> stl
+> 
+> 比赛的时候没有直接申请指定数量的res数组长度 导致实现复杂很多
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class TweetCounts {
+public:
+    map<string, vector<int>> mp;
+    TweetCounts() {}
+
+    void recordTweet(string n, int time) { mp[n].push_back(time); }
+
+    vector<int> getTweetCountsPerFrequency(string freq, string name, int s,
+                                           int t) {
+        int d;
+        if (freq[0] == 'm') d = 60;
+        if (freq[0] == 'h') d = 3600;
+        if (freq[0] == 'd') d = 24 * 3600;
+        int n = (t - s) / d + 1;
+        vector<int> ret(n);
+        for (int i : mp[name])
+            if (s <= i && i <= t) ret[(i - s) / d]++;
+
+        return ret;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1670. 设计前中后队列](https://leetcode-cn.com/problems/design-front-middle-back-queue/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class FrontMiddleBackQueue {
+public:
+    // q1.size < q1.size
+    deque<int> q1, q2;
+    
+    FrontMiddleBackQueue() {
+        q1.clear(), q2.clear();
+    }
+    
+    void pushFront(int val) {
+        q1.push_front(val);
+        if (q1.size() >= q2.size()) {
+            q2.push_back(q1.back());
+            q1.pop_back();
+        }
+    }
+    
+    void pushMiddle(int val) {
+        if (q1.size() + 2 <= q2.size()) {
+            q1.push_back(q2.back());
+            q2.pop_back();
+        }
+        q1.push_back(val);
+        if (q1.size() >= q2.size() && q1.size()) {
+            q2.push_back(q1.back());
+            q1.pop_back();
+        }
+    }
+    
+    void pushBack(int val) {
+        q2.push_front(val);
+        if (q2.size() > q1.size() + 2) {
+            q1.push_back(q2.back());
+            q2.pop_back();
+        }
+    }
+    
+    int popFront() {
+        if (q1.empty() && q2.empty()) return -1;
+        if (q1.size()) {
+            int res = q1.front();
+            q1.pop_front();
+            if (q2.size() > q1.size() + 2) {
+                q1.push_back(q2.back());
+                q2.pop_back();
+            }
+            return res;
+        } else {
+            int res = q2.back();
+            q2.pop_back();
+            return res;
+        }
+    }
+    
+    int popMiddle() {
+        if (q2.empty()) return -1;
+        int res = q2.back();
+        q2.pop_back();
+        if (q1.size() >= q2.size() && q1.size()) {
+            q2.push_back(q1.back());
+            q1.pop_back();
+        }
+        return res;
+    }
+    
+    int popBack() {
+        if (q2.empty()) return -1;
+        int res = q2.front();
+        q2.pop_front();
+        if (q1.size() >= q2.size() && q1.size()) {
+            q2.push_back(q1.back());
+            q1.pop_back();
+        }
+        return res;
+    }
+};
+
+/**
+ * Your FrontMiddleBackQueue object will be instantiated and called as such:
+ * FrontMiddleBackQueue* obj = new FrontMiddleBackQueue();
+ * obj->pushFront(val);
+ * obj->pushMiddle(val);
+ * obj->pushBack(val);
+ * int param_4 = obj->popFront();
+ * int param_5 = obj->popMiddle();
+ * int param_6 = obj->popBack();
+ */
+```
+
+##### **C++ Heltion**
+
+```cpp
+class FrontMiddleBackQueue {
+public:
+    vector<int> v;
+    FrontMiddleBackQueue() {
+
+    }
+    
+    void pushFront(int val) {
+        v.insert(v.begin(), val);
+    }
+    
+    void pushMiddle(int val) {
+        v.insert(v.begin() + v.size() / 2, val);
+    }
+    
+    void pushBack(int val) {
+        v.push_back(val);
+    }
+    
+    int popFront() {
+        if(v.empty()) return -1;
+        int res = v[0];
+        v.erase(v.begin());
+        return res;
+    }
+    
+    int popMiddle() {
+        if(v.empty()) return -1;
+        int res = v[(v.size() - 1) / 2];
+        v.erase(v.begin() + (v.size() - 1) / 2);
+        return res;
+    }
+    
+    int popBack() {
+        if(v.empty()) return -1;
+        int res = v.back();
+        v.pop_back();
+        return res;
+    }
+};
+
+/**
+ * Your FrontMiddleBackQueue object will be instantiated and called as such:
+ * FrontMiddleBackQueue* obj = new FrontMiddleBackQueue();
+ * obj->pushFront(val);
+ * obj->pushMiddle(val);
+ * obj->pushBack(val);
+ * int param_4 = obj->popFront();
+ * int param_5 = obj->popMiddle();
+ * int param_6 = obj->popBack();
+ */
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 2034. 股票价格波动](https://leetcode-cn.com/problems/stock-price-fluctuation/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> - 自己两个 map 的直观解法
+> 
+>   容易看到 对于 hash 来说每次只是用到它的 key 也即价格
+> 
+>   我们当然可以用一个 multiset 代替 map 来实现统计效果
+> 
+> - 使用一个 map 和 一个 multiset 的解法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 两个map**
+
+```cpp
+class StockPrice {
+public:
+    map<int, int> hash; // price->count
+    map<int, int> data; // ts->price
+    
+    
+    StockPrice() {
+        hash.clear();
+        data.clear();
+    }
+    
+    void update(int ts, int p) {
+        if (data.count(ts)) {
+            int ori_p = data[ts];
+            hash[ori_p] -- ;
+            if (hash[ori_p] == 0)
+                hash.erase(ori_p);
+        }
+        hash[p] ++ ;
+        data[ts] = p;
+    }
+    
+    int current() {
+        auto it = -- data.end();
+        auto [k, v] = *it;
+        return v;
+    }
+    
+    int maximum() {
+        auto it = -- hash.end();
+        auto [k, v] = *it;
+        return k;
+    }
+    
+    int minimum() {
+        auto it = hash.begin();
+        auto [k, v] = *it;
+        return k;
+    }
+};
+
+/**
+ * Your StockPrice object will be instantiated and called as such:
+ * StockPrice* obj = new StockPrice();
+ * obj->update(timestamp,price);
+ * int param_2 = obj->current();
+ * int param_3 = obj->maximum();
+ * int param_4 = obj->minimum();
+ */
+```
+
+##### **C++ map+multiset**
+
+```cpp
+class StockPrice {
+    multiset<int> prices;
+    map<int, int> history;
+    
+public:
+    StockPrice() {}
+    
+    void update(int timestamp, int price) {
+        if (history.count(timestamp))
+            prices.erase(prices.find(history[timestamp]));
+        history[timestamp] = price;
+        prices.insert(price);
+    }
+    
+    int current() {
+        return history.rbegin()->second;
+    }
+    
+    int maximum() {
+        return *prices.rbegin();
+    }
+    
+    int minimum() {
+        return *prices.begin();
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 四叉树
 
 > [!NOTE] **[LeetCode 427. 建立四叉树](https://leetcode-cn.com/problems/construct-quad-tree/)**
@@ -1713,6 +2361,262 @@ public:
 // Your Solution object will be instantiated and called as such:
 // Solution solution;
 // solution.decode(solution.encode(url));
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1396. 设计地铁系统](https://leetcode-cn.com/problems/design-underground-system/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 主要是建模
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class UndergroundSystem {
+    unordered_map<int, pair<string, int>> checkRecord;
+    unordered_map<string, pair<double, int>> count;    
+    string getStationName(string startStation, string endStation) {
+        return startStation + "," + endStation;
+    }
+
+public:
+    UndergroundSystem() {
+    }
+    
+    void checkIn(int id, string stationName, int t) {
+        checkRecord[id] = {stationName, t};
+    }
+    
+    void checkOut(int id, string stationName, int t) {
+        string name = getStationName(checkRecord[id].first, stationName);
+        t -= checkRecord[id].second;
+        count[name].first += (double)t;
+        count[name].second += 1;
+    }
+    
+    double getAverageTime(string startStation, string endStation) {
+        string name = getStationName(startStation, endStation);
+        double ans = count[name].first / (double)count[name].second;
+        return ans;
+    }
+};
+
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1472. 设计浏览器历史记录](https://leetcode-cn.com/problems/design-browser-history/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 模拟即可
+> 
+> 赛榜大多用的数组，自己用栈
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 栈**
+
+```cpp
+class Solution {
+public:
+    stack<string> b, f;
+    string now;
+    BrowserHistory(string homepage) { this->now = homepage; }
+
+    void visit(string url) {
+        b.push(now);
+        while (!f.empty()) f.pop();
+        now = url;
+    }
+
+    string back(int steps) {
+        string res = now;
+        while (steps && !b.empty()) {
+            f.push(res);
+            res = b.top();
+            b.pop();
+            --steps;
+        }
+        now = res;
+        return res;
+    }
+
+    string forward(int steps) {
+        string res = now;
+        while (steps && !f.empty()) {
+            b.push(res);
+            res = f.top();
+            f.pop();
+            --steps;
+        }
+        now = res;
+        return res;
+    }
+};
+```
+
+##### **C++ 数组**
+
+```cpp
+class Solution {
+public:
+    int n, m;
+    string a[5005];
+    BrowserHistory(string homepage) {
+        n = m = 0;
+        a[0] = homepage;
+    }
+
+    void visit(string url) {
+        a[n = m = m + 1] = url;
+    }
+
+    string back(int steps) {
+        steps = min(steps, m);
+        m -= steps;
+        return a[m];
+    }
+
+    string forward(int steps) {
+        steps = min(steps, n - m);
+        m += steps;
+        return a[m];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1912. 设计电影租借系统](https://leetcode-cn.com/problems/design-movie-rental-system/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 模拟 略
+> 
+> 注意使用引用
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class MovieRentingSystem {
+public:
+    using PII = pair<int, int>;
+    using TIII = tuple<int, int, int>;
+    
+    int n;
+    vector<vector<int>> es;
+    
+    unordered_map<int, set<PII>> movies;
+    map<PII, int> mprice;
+    set<TIII> outs;
+    
+    MovieRentingSystem(int n, vector<vector<int>>& entries) {
+        this->n = n;
+        this->es = entries;
+        for (auto & e : es) {
+            int s = e[0], m = e[1], p = e[2];
+            movies[m].insert({p, s});
+            mprice[{s, m}] = p;
+        }
+    }
+    
+    vector<int> search(int movie) {
+        auto s = movies[movie];
+        auto it = s.begin();
+        vector<int> res;
+        for (int i = 0; i < 5 && i < s.size(); ++ i ) {
+            res.push_back((*it).second);
+            it ++ ;
+        }
+        return res;
+    }
+    
+    void rent(int shop, int movie) {
+        int price = mprice[{shop, movie}];
+        auto & s = movies[movie];       // ATTENTION 这里注意加引用... WA1并排错很久
+        s.erase({price, shop});
+        outs.insert({price, shop, movie});
+    }
+    
+    void drop(int shop, int movie) {
+        int price = mprice[{shop, movie}];
+        auto & s = movies[movie];
+        s.insert({price, shop});
+        outs.erase({price, shop, movie});
+    }
+    
+    vector<vector<int>> report() {
+        vector<vector<int>> res;
+        auto it = outs.begin();
+        for (int i = 0; i < 5 && i < outs.size(); ++ i ) {
+            auto [p, s, m] = *it;
+            res.push_back({s, m});
+            it ++ ;
+        }
+        return res;
+    }
+};
+
+/**
+ * Your MovieRentingSystem object will be instantiated and called as such:
+ * MovieRentingSystem* obj = new MovieRentingSystem(n, entries);
+ * vector<int> param_1 = obj->search(movie);
+ * obj->rent(shop,movie);
+ * obj->drop(shop,movie);
+ * vector<vector<int>> param_4 = obj->report();
+ */
 ```
 
 ##### **Python**

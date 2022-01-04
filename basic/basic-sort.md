@@ -962,6 +962,65 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 1850. 邻位交换的最小次数](https://leetcode-cn.com/problems/minimum-adjacent-swaps-to-reach-the-kth-smallest-number/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 转化为归并排序
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int getMinSwaps(string num, int k) {
+        string ori = num;
+        while (k -- )
+            next_permutation(num.begin(), num.end());
+        
+        int n = ori.size();
+        vector<int> c(n);
+        int cnt[10] = {0};
+        for (int i = 0; i < n; ++ i ) {
+            int x = ori[i] - '0';
+            cnt[x] ++ ;
+            int y = cnt[x];
+            // 找对应的该数的位置
+            for (int j = 0; j < n; ++ j )
+                if (num[j] - '0' == x && -- y == 0) {
+                    c[i] = j;
+                    break;
+                }
+        }
+        int res = 0;
+        for (int i = 0; i < n; ++ i )
+            for (int j = i + 1; j < n; ++ j )
+                if (c[i] > c[j])
+                    res ++ ;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 桶排序
 
 > [!NOTE] **[LeetCode 164. 最大间距](https://leetcode-cn.com/problems/maximum-gap/)**

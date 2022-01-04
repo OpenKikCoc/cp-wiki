@@ -1170,6 +1170,336 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 1254. 统计封闭岛屿的数目](https://leetcode-cn.com/problems/number-of-closed-islands/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> dfs 注意写法和判断
+> 
+> 如果发现 f 为 true 直接返回的话显然没有完全遍历 小细节[不能有true直接返回]
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int n, m;
+    bool f;
+    vector<vector<int>> g;
+    vector<vector<bool>> v;
+    // 能否走到边界 不能说明被水包围
+    vector<int> dx = {-1, 0, 0, 1}, dy = {0, -1, 1, 0};
+    void dfs(int x, int y) {
+        v[x][y] = true;
+        for (int i = 0; i < 4; ++i) {
+            int nx = x + dx[i], ny = y + dy[i];
+            if (nx < 0 || nx >= n || ny < 0 || ny >= m) {
+                f = true;
+                continue;
+            }
+            if (v[nx][ny] || g[nx][ny] == 1) continue;
+            dfs(nx, ny);
+        }
+    }
+    int closedIsland(vector<vector<int>>& grid) {
+        n = grid.size(), m = grid[0].size();
+        g = grid;
+        v = vector<vector<bool>>(n, vector<bool>(m));
+        int res = 0;
+        for (int i = 0; i < n; ++i)
+            for (int j = 0; j < m; ++j)
+                if (!v[i][j] && g[i][j] == 0) {
+                    f = false;
+                    dfs(i, j);
+                    if (!f) ++res;
+                }
+        return res;
+    }
+}
+```
+
+##### **C++ trick**
+
+```cpp
+class Solution {
+public:
+    int check(int x, int y, vector<vector<int>>& grid,
+              vector<vector<int>>& vis) {
+        if (x < 0 || x >= grid.size() || y < 0 || y >= grid[0].size()) return 0;
+        if (grid[x][y] || vis[x][y]) return 1;
+        vis[x][y] = 1;
+        return check(x + 1, y, grid, vis) & check(x - 1, y, grid, vis) &
+               check(x, y + 1, grid, vis) & check(x, y - 1, grid, vis);
+    }
+    int closedIsland(vector<vector<int>>& grid) {
+        vector<vector<int>> vis(grid.size(), vector<int>(grid[0].size(), 0));
+        int res = 0;
+        for (int i = 0; i < grid.size(); ++i) {
+            for (int j = 0; j < grid[i].size(); ++j) {
+                if (vis[i][j] || grid[i][j]) continue;
+                res += check(i, j, grid, vis);
+            }
+        }
+        return res;
+    }
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1559. 二维网格图中探测环](https://leetcode-cn.com/problems/detect-cycles-in-2d-grid/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> dfs 记录写法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int move[5] = {-1, 0, 1, 0, -1};
+    int m, n;
+    bool containsCycle(vector<vector<char>>& grid) {
+        n = grid.size();
+        m = grid[0].size();
+        vector<vector<bool>> visited(n, vector<bool>(m));
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < m; j++)
+                if (!visited[i][j])
+                    if (dfs(grid, i, j, -1, -1, visited)) return true;
+        return false;
+    }
+
+    bool dfs(vector<vector<char>>& grid, int r, int c, int fr, int fc,
+             vector<vector<bool>>& visited) {
+        visited[r][c] = true;
+        for (int i = 0; i < 4; i++) {
+            int nr = r + move[i];
+            int nc = c + move[i + 1];
+            if (nr < 0 || nr >= n || nc < 0 || nc >= m ||
+                grid[nr][nc] != grid[r][c])
+                continue;
+            if (visited[nr][nc]) {
+                if (nr != fr || nc != fc)
+                    return true;
+                else
+                    continue;
+            }
+            if (dfs(grid, nr, nc, r, c, visited)) return true;
+        }
+        return false;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1905. 统计子岛屿](https://leetcode-cn.com/problems/count-sub-islands/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 简单 dfs 注意判断子岛屿的全局标记方式即可
+> 
+> 重点在于简化的原因：
+> 
+> > dfs g2过程中不会出现碰到两个g1岛屿的情况（否则g1这两块必然联通或出现了非岛屿的点）
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<vector<int>> g1, g2, num, st;
+    int n, m;
+    int dx[4] = {-1, 0, 0, 1}, dy[4] = {0, -1, 1, 0};
+    
+    bool f;
+    
+    void dfs1(int x, int y, int k) {
+        num[x][y] = k;
+        for (int i = 0; i < 4; ++ i ) {
+            int nx = x + dx[i], ny = y + dy[i];
+            if (nx >= 0 && nx < n && ny >= 0 && ny < m && g1[nx][ny] && !num[nx][ny])
+                dfs1(nx, ny, k);
+        }
+    }
+    
+    void dfs2(int x, int y, int k) {
+        if (num[x][y] != k)
+            f = false;
+        
+        st[x][y] = k;
+        for (int i = 0; i < 4; ++ i ) {
+            int nx = x + dx[i], ny = y + dy[i];
+            if (nx >= 0 && nx < n && ny >= 0 && ny < m && g2[nx][ny] && !st[nx][ny])
+                dfs2(nx, ny, k);
+        }
+    }
+    
+    int countSubIslands(vector<vector<int>>& grid1, vector<vector<int>>& grid2) {
+        this->g1 = grid1, this->g2 = grid2;
+        n = g1.size(), m = g1[0].size();
+        num = st = vector<vector<int>>(n, vector<int>(m, 0));
+        
+        {
+            int cnt = 0;
+            for (int i = 0; i < n; ++ i )
+                for (int j = 0; j < m; ++ j )
+                    if (g1[i][j] && !num[i][j])
+                        dfs1(i, j, ++ cnt);
+        }
+        
+        int res = 0;
+        for (int i = 0; i < n; ++ i )
+            for (int j = 0; j < m; ++ j )
+                if (g2[i][j] && !st[i][j] && num[i][j]) {
+                    f = true;
+                    dfs2(i, j, num[i][j]);
+                    
+                    if (f)
+                        res ++ ;
+                }
+        
+        return res;
+    }
+};
+```
+
+##### **C++ 简化**
+
+```cpp
+class Solution {
+public:
+    int n, m;
+    vector<vector<int>> g1, g2;
+    int dx[4] = {-1, 0, 1, 0}, dy[4] = {0, 1, 0, -1};
+    
+    bool dfs(int x, int y) {
+        bool f = true;
+        if (!g1[x][y]) f = false;
+        g2[x][y] = 0;
+        for (int i = 0; i < 4; i ++ ) {
+            int a = x + dx[i], b = y + dy[i];
+            if (a >= 0 && a < n && b >= 0 && b < m && g2[a][b]) {
+                if (!dfs(a, b)) f = false;
+            }
+        }
+        return f;
+    }
+    
+    int countSubIslands(vector<vector<int>>& grid1, vector<vector<int>>& grid2) {
+        g1 = grid1, g2 = grid2;
+        n = g1.size(), m = g1[0].size();
+        int res = 0;
+        for (int i = 0; i < n; i ++ )
+            for (int j = 0; j < m; j ++ )
+                if (g2[i][j]) {
+                    if (dfs(i, j)) res ++ ;
+                }
+        
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+# python
+class Solution:
+    def countSubIslands(self, g1: List[List[int]], g2: List[List[int]]) -> int:
+        n, m = len(g1), len(g1[0])
+        dx, dy = [1, -1, 0, 0], [0, 0, 1, -1]
+        num = [[0] * m for _ in range(n)]
+        st = [[0] * m for _ in range(n)]
+        
+        self.f = False
+        
+        def dfs1(x, y, k):
+            num[x][y] = k 
+            for i in range(4):
+                nx, ny = x + dx[i], y + dy[i]
+                if 0 <= nx < n and 0 <= ny < m and g1[nx][ny] and not num[nx][ny]:
+                    dfs1(nx, ny, k)
+                    
+        def dfs2(x, y, k):
+            if num[x][y] != k:
+                self.f = False 
+            
+            st[x][y] = k
+            for i in range(4):
+                nx, ny = x + dx[i], y + dy[i]
+                if 0 <= nx < n and 0 <= ny < m and g2[nx][ny] and not st[nx][ny]:
+                    dfs2(nx, ny, k)
+            
+                    
+        cnt = 0
+        for i in range(n):
+            for j in range(m):
+                if g1[i][j] and not num[i][j]:
+                    cnt += 1
+                    dfs1(i, j, cnt)
+        
+        res = 0 
+        for i in range(n):
+            for j in range(m):
+                if g2[i][j] and not st[i][j] and num[i][j]:
+                    self.f = True 
+                    dfs2(i, j, num[i][j])
+                    
+                    if (self.f):
+                        res += 1
+        return res       
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 进阶
 
 > [!NOTE] **[LeetCode 749. 隔离病毒](https://leetcode-cn.com/problems/contain-virus/)**
@@ -1260,6 +1590,84 @@ public:
             res += cnt;
         }
         return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1568. 使陆地分离的最少天数](https://leetcode-cn.com/problems/minimum-number-of-days-to-disconnect-island/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> floodfill + tarjan
+> 
+> 关键在于想通 在只有一个岛屿的情况下，最多经过两天一定可以分割成两个岛屿。tarjan 求割点，存在则为 1 否则 2
+> 
+> 如果不用 tarjan 由上述结论可以每次替换一个 1->0 如果成功就返回1 否则结束时返回2
+> 
+> 复杂度 O(n^4)
+> 
+> 这题本质只需改一个点，所以不用tarjan的复杂度可以接受，直接改即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int n, m;
+    int dx[4] = {-1, 0, 0, 1}, dy[4] = {0, -1, 1, 0};
+    void dfs(vector<vector<int>>& g, int x, int y) {
+        g[x][y] = 0;
+        for (int i = 0; i < 4; ++i) {
+            int nx = x + dx[i], ny = y + dy[i];
+            if (nx < 0 || nx >= m || ny < 0 || ny >= n || g[nx][ny] == 0)
+                continue;
+            g[nx][ny] = 0;
+            dfs(g, nx, ny);
+        }
+    }
+    int cal(vector<vector<int>> g) {
+        int cnt = 0;
+        for (int i = 0; i < m; ++i)
+            for (int j = 0; j < n; ++j)
+                if (g[i][j] == 1) {
+                    ++cnt;
+                    if (cnt > 1) return 2;
+                    dfs(g, i, j);
+                }
+        return cnt;
+    }
+    int minDays(vector<vector<int>>& grid) {
+        m = grid.size(), n = grid[0].size();
+        int t = cal(grid);
+        if (t == 0 || t == 2) return 0;
+        for (int i = 0; i < m; ++i)
+            for (int j = 0; j < n; ++j)
+                if (grid[i][j] == 1) {
+                    grid[i][j] = 0;
+                    t = cal(grid);
+                    if (t == 2) return 1;
+                    grid[i][j] = 1;
+                }
+        return 2;
     }
 };
 ```

@@ -171,3 +171,59 @@ void huffmanCoding(Htree root, int len, int arr[]) {  // 计算霍夫曼编码
     }
 }
 ```
+
+## 习题
+
+### 进阶 huffman 思想
+
+> [!NOTE] **[LeetCode 1199. 建造街区的最短时间](https://leetcode-cn.com/problems/minimum-time-to-build-blocks/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+>
+> 贪心: 哈夫曼树合并
+>
+> >   分裂工人的操作，实际上就等价于把这两个街区合并为了一个建造时间为
+> >
+> >   split + max(blocks[0], blocks[1])
+> >
+> >   的新街区。
+>
+> 贪婪: 挑最小的两个合并(取大值+split)成新节点
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int minBuildTime(vector<int>& blocks, int split) {
+        priority_queue<int, vector<int>, greater<int>> heap;
+        for (auto v : blocks) heap.push(v);
+        
+        while (heap.size() > 1) {
+            int minv = heap.top(); heap.pop();  // 最小值
+            int secv = heap.top(); heap.pop();  // 次小值
+            heap.push(split + secv);
+        }
+        return heap.top();
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

@@ -132,6 +132,392 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 1255. 得分最高的单词集合](https://leetcode-cn.com/problems/maximum-score-words-formed-by-letters/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 状压dp
+> 
+> 一开始在想线性dp 这样写的话每次统计字母容量较麻烦
+>
+> 考虑单词数量不多 直接状压遍历所有选择状态
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int maxScoreWords(vector<string>& words, vector<char>& letters,
+                      vector<int>& score) {
+        int n = words.size();
+        vector<int> cnt(26);
+        for (auto& c : letters) ++cnt[c - 'a'];
+        int lim = 1 << n;
+        int res = 0;
+        for (int st = 0; st < lim; ++st) {
+            vector<int> ct(26);
+            for (int i = 0; i < n; ++i)
+                if (st & (1 << i))
+                    for (auto& c : words[i]) ++ct[c - 'a'];
+            bool f = true;
+            int tot = 0;
+            for (int i = 0; i < 26; ++i) {
+                if (ct[i] > cnt[i]) {
+                    f = false;
+                    break;
+                }
+                tot += ct[i] * score[i];
+            }
+            if (f) res = max(res, tot);
+        }
+        return res;
+    }
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1601. 最多可达成的换楼请求数目](https://leetcode-cn.com/problems/maximum-number-of-achievable-transfer-requests/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 数据范围可以暴力枚举
+> 
+> 使用状态压缩 遍历所有情况
+> 
+> 注意判断合法的方法仅仅只是 in==out 不需要考虑图以及流
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int maximumRequests(int n, vector<vector<int>>& requests) {
+        int sz = requests.size(), res = 0;
+        for (int st = 0; st < 1 << sz; ++st) {
+            int c = 0;
+            vector<int> in(n), out(n);
+            for (int i = 0; i < sz; ++i)
+                if (st & (1 << i))
+                    ++out[requests[i][0]], ++in[requests[i][1]], ++c;
+            for (int i = 0; i < n; ++i)
+                if (in[i] != out[i]) {
+                    c = -1;
+                    break;
+                }
+            res = max(res, c);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1617. 统计子树中城市之间最大距离](https://leetcode-cn.com/problems/count-subtrees-with-max-distance-between-cities/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然需要暴力遍历所有状态，对每个状态检查是否合法：
+> 
+> 子集所使用的边数 = 子集点数 - 1
+> 
+> 随后计算当前状态下的城市间最大距离：
+> 
+> 树 dp
+> 
+> floyd 预处理
+> 
+> 注意写法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const int inf = 0x3f3f3f3f;
+    vector<int> countSubgraphsForEachDiameter(int n,
+                                              vector<vector<int>>& edges) {
+        // 预处理所有点的距离
+        vector<vector<int>> dis(n + 1, vector<int>(n + 1, inf));
+        for (int i = 0; i <= n; ++i) dis[i][i] = 0;
+        for (auto& e : edges) dis[e[0]][e[1]] = dis[e[1]][e[0]] = 1;
+        for (int k = 1; k <= n; ++k)
+            for (int i = 1; i <= n; ++i)
+                for (int j = 1; j <= n; ++j)
+                    dis[i][j] = min(dis[i][j], dis[i][k] + dis[k][j]);
+        // 状压dp
+        vector<int> res(n - 1, 0);
+        for (int i = 0; i < (1 << n); ++i) {
+            vector<int> now;
+            vector<bool> vis(n + 1, 0);
+            int cnt = 0;
+            for (int j = 0; j < n; ++j)
+                if (i & (1 << j)) {
+                    now.push_back(j + 1);
+                    vis[j + 1] = 1;
+                    ++cnt;
+                }
+            // 计算用的边数 为了判断子集是否合法（是否是连通的子树）
+            int ss = 0;
+            for (auto& e : edges)
+                if (vis[e[0]] && vis[e[1]]) ++ss;
+            if (ss != cnt - 1) continue;
+            // 计算该合法子树任意两点间距离最大值
+            int cur = 0;
+            for (int j = 0; j < now.size(); ++j)
+                for (int k = j + 1; k < now.size(); ++k)
+                    cur = max(cur, dis[now[j]][now[k]]);
+            if (cur > 0 && cur < n) ++res[cur - 1];
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1681. 最小不兼容性](https://leetcode-cn.com/problems/minimum-incompatibility/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 核心在枚举子集的时间复杂度 3 ^ n 以及枚举枚举思路：
+> 
+> ```cpp
+> for (int i = 1; i < 1 << n; ++ i )
+>     for (int j = i; j; j = j - 1 & i)
+>         if (g[j] != -1)
+>             f[i] = min(f[i], f[i - j] + g[j]);
+> ```
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const int INF = 1e8;
+    int minimumIncompatibility(vector<int>& nums, int k) {
+        int n = nums.size();
+        vector<int> f(1 << n, INF);     // f[i]表示选取下标组合是i的二进制表示的最小兼容性和
+        vector<int> g(1 << n);          // g[i]表示一种合法组合的兼容性
+        // 预处理 g  复杂度 2^16 * (n + nlogn) = 2^16 * 5n = 5 * 2^20 = 5e6
+        int d[16];
+        for (int i = 1; i < 1 << n; ++ i ) {
+            g[i] = -1;
+            if (__builtin_popcount(i) == n / k) {
+                int cnt = 0;
+                for (int j = 0; j < n; ++ j )
+                    if (i >> j & 1)
+                        d[cnt ++ ] = nums[j];
+                sort(d, d + cnt);
+                int flag = 1;
+                for (int j = 1; j < cnt; ++ j )
+                    // 存在相同的两个数则不合法
+                    if (d[j] == d[j - 1]) {
+                        flag = 0;
+                        break;
+                    }
+                if (flag)
+                    g[i] = d[cnt - 1] - d[0];
+            }
+        }
+
+        // 枚举所有子集的时间是3^n次  通过二项式定理能够证明出来
+        f[0] = 0;
+        for (int i = 1; i < 1 << n; ++ i )
+            for (int j = i; j; j = j - 1 & i)   // 枚举 i 的所有子集
+                if (g[j] != -1)                 // i 的子集 j 是合法的【包含n/k个】 则转移
+                    f[i] = min(f[i], f[i - j] + g[j]);
+        int res = f[(1 << n) - 1];
+        if (res == INF) res = -1;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 2002. 两个回文子序列长度的最大乘积](https://leetcode-cn.com/problems/maximum-product-of-the-length-of-two-palindromic-subsequences/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 二进制枚举即可 ==> 枚举子集
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 13;
+    
+    string s;
+    int n;
+    int hash[1 << N];
+    
+    int get(int st) {
+        if (hash[st] != -1)
+            return hash[st];
+        string t;
+        for (int i = 0; i < n; ++ i )
+            if (st >> i & 1)
+                t.push_back(s[i]);
+        int len = t.size();
+        for (int i = 0, j = len - 1; i < j; ++ i , -- j )
+            if (t[i] != t[j])
+                return hash[st] = 0;
+        return hash[st] = len;
+    }
+    
+    int maxProduct(string s) {
+        this->s = s;
+        this->n = s.size();
+        
+        memset(hash, -1, sizeof hash);
+        
+        int res = 0;
+        
+        for (int i = 0; i < 1 << n; ++ i ) {
+            // 枚举i的一半 240ms
+            int t = i & (i - 1);
+            for (int j = t; j; j = (j - 1) & i)
+                res = max(res, get(j) * get(i ^ j));
+            
+            // 枚举全局  时间多一点点 差别不大
+            // for (int j = i; j; j = (j - 1) & i)
+            //    res = max(res, get(j) * get(i ^ j));
+        }
+        
+        return res;
+    }
+};
+```
+
+##### **C++**
+
+显然判断是否回文有较多的重复操作 可以把判断回文放到前面来
+
+```cpp
+class Solution {
+public:
+    int maxProduct(string s) {
+        const int n = s.size();
+
+        vector<int> st(1 << n);
+        for (int mask = 0; mask < (1 << n); mask++) {
+            string t;
+            for (int i = 0; i < n; i++)
+                if ((mask >> i) & 1)
+                    t += s[i];
+
+            bool ok = true;
+            for (int i = 0, j = t.size() - 1; i < j; i++, j--)
+                if (t[i] != t[j]) {
+                    ok = false;
+                    break;
+                }
+
+            st[mask] = ok ? t.size() : 0;
+        }
+
+        int ans = 0;
+        for (int mask = 0; mask < (1 << n); mask++)
+            for (int m1 = mask; m1 > 0; m1 = (m1 - 1) & mask) {
+                int m2 = mask ^ m1;
+                ans = max(ans, st[m1] * st[m2]);
+            }
+
+        return ans;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 递推计算
 
 > [!NOTE] **[AcWing 291. 蒙德里安的梦想](https://www.acwing.com/problem/content/293/)**
@@ -649,6 +1035,303 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 1434. 每个人戴不同帽子的方案数](https://leetcode-cn.com/problems/number-of-ways-to-wear-different-hats-to-each-other/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    typedef long long ll;
+    const ll MOD = 1e9 + 7;
+    int numberWays(vector<vector<int>>& hats) {
+        int n = hats.size();
+        vector<ll> dp(1 << n);
+        dp[0] = 1;
+        vector<set<int>> s(41);
+        for (int i = 0; i < n; ++i)
+            for (int hat : hats[i]) s[hat].insert(i);
+        for (int i = 1; i <= 40; ++i) {
+            for (int state = (1 << n) - 1; state >= 0; --state) {
+                for (int person : s[i]) {
+                    if (state & (1 << person)) continue;
+                    int next = state + (1 << person);
+                    dp[next] += dp[state];
+                    dp[next] %= MOD;
+                }
+            }
+        }
+        return dp[(1 << n) - 1];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1655. 分配重复整数](https://leetcode-cn.com/problems/distribute-repeating-integers/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 枚举子集加速
+> 
+> ```cpp
+> for (int k = t; k; k = (k - 1) & t)
+> ```
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    bool canDistribute(vector<int>& nums, vector<int>& q) {
+        unordered_map<int, int> hash;
+        for (auto x: nums) hash[x] ++ ;
+        vector<int> w(1);
+        for (auto [x, y]: hash) w.push_back(y);
+        int n = w.size() - 1, m = q.size();
+        vector<vector<int>> f(n + 1, vector<int>(1 << m));
+        vector<int> s(1 << m);
+        for (int i = 0; i < 1 << m; i ++ )
+            for (int j = 0; j < m; j ++ )
+                if (i >> j & 1)
+                    s[i] += q[j];
+        
+        f[0][0] = 1;
+        for (int i = 0; i < n; i ++ )
+            for (int j = 0; j < 1 << m; j ++ )
+                if (f[i][j]) {
+                    f[i + 1][j] = 1;
+                    for (int t = j ^ ((1 << m) - 1), k = t; k; k = (k - 1) & t) {
+                        if (s[k] <= w[i + 1])
+                            f[i + 1][j | k] = 1;
+                    }
+                }
+        
+        return f[n][(1 << m) - 1];        
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1799. N 次操作后的最大分数和](https://leetcode-cn.com/problems/maximize-score-after-n-operations/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然状压 dp 注意实现
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int maxScore(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> f(1 << n);
+        for (int i = 0; i < 1 << n; ++ i ) {
+            int cnt = n - __builtin_popcount(i);
+            cnt = cnt / 2 + 1;
+            
+            for (int j = 0; j < n; ++ j )
+                if (i >> j & 1)
+                    for (int k = j + 1; k < n; ++ k )
+                        if (i >> k & 1)
+                            f[i] = max(f[i], f[i - (1 << j) - (1 << k)] + __gcd(nums[j], nums[k]) * cnt);
+        }
+        return f[(1 << n) - 1];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1947. 最大兼容性评分和](https://leetcode-cn.com/problems/maximum-compatibility-score-sum/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 爆搜即可 也可状压DP 略
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 10, M = 260;
+    
+    int m, n;
+    vector<int> st, mt;
+    int g[N][N], f[M];
+    
+    int maxCompatibilitySum(vector<vector<int>>& students, vector<vector<int>>& mentors) {
+        this->m = students.size(), this->n = students[0].size();
+        st.clear(); mt.clear();
+        for (auto & sts : students) {
+            int s = 0;
+            for (int i = 0; i < n; ++ i )
+                if (sts[i] & 1)
+                    s ^= 1 << i;
+            st.push_back(s);
+        }
+        for (auto mts : mentors) {
+            int s = 0;
+            for (int i = 0; i < n; ++ i )
+                if (mts[i] & 1)
+                    s ^= 1 << i;
+            mt.push_back(s);
+        }
+        
+        memset(g, 0, sizeof g);
+        for (int i = 0; i < m; ++ i )
+            for (int j = 0; j < m; ++ j ) {
+                int a = st[i], b = mt[j];
+                int s = 0;
+                for (int k = 0; k < n; ++ k )
+                    if ((a >> k & 1) == (b >> k & 1))
+                        s ++ ;
+                g[i][j] = s;
+            }
+        
+        memset(f, 0, sizeof f);
+        for (int i = 0; i < 1 << m; ++ i ) {
+            int sz = __builtin_popcount(i);
+            for (int j = 0; j < m; ++ j )
+                if (i >> j & 1)
+                    f[i] = max(f[i], f[i ^ (1 << j)] + g[j][sz - 1]);
+        }
+        
+        return f[(1 << m) - 1];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1986. 完成任务的最少工作时间段](https://leetcode-cn.com/problems/minimum-number-of-work-sessions-to-finish-the-tasks/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然需枚举方案 以及【枚举子集】
+> 
+> 注意需要提前预处理消耗 否则 TLE
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const int INF = 1e9;
+    int minSessions(vector<int>& tasks, int sessionTime) {
+        int n = tasks.size();
+        vector<int> f(1 << n, INF), cost(1 << n, 0);
+        for (int i = 0; i < 1 << n; ++ i ) {
+            int s = 0;
+            for (int j = 0; j < n; ++ j )
+                if (i >> j & 1)
+                    s += tasks[j];
+            cost[i] = s;
+        }
+        
+        f[0] = 0;
+        for (int i = 1; i < 1 << n; ++ i )
+            for (int j = i; j; j = (j - 1) & i)
+                if (cost[j] <= sessionTime)
+                    f[i] = min(f[i], f[i ^ j] + 1);
+        return f[(1 << n) - 1];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 线性递推
 
 > [!NOTE] **[AcWing 327. 玉米田](https://www.acwing.com/problem/content/description/329/)**
@@ -939,6 +1622,256 @@ public:
             dfs(1 << i, i, 2);
         }
         return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1349. 参加考试的最大学生数](https://leetcode-cn.com/problems/maximum-students-taking-exam/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然放了和没放的可以转化为状态 每一行2^8 = 256
+> 
+> 状压dp
+> 
+> $dp[row][state]=max(dp[row−1][last]+state.count())$
+> 
+> 以及检查合法性 最后结果为 $max(dp[m][state])$
+> 
+> 也可以网络流
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int n, m;
+    int mat[8];
+    int dp[8][1 << 8];
+    int sum(int x) {  // 计算该行有多少个1 即多少个人
+        int s = 0;
+        while (x > 0) s += 1 & x, x >>= 1;
+        return s;
+    }
+    bool judge(int s1, int s2) { return (s1 & (s2 << 1)) || (s1 & (s2 >> 1)); }
+    int maxStudents(vector<vector<char>>& seats) {
+        m = seats.size(), n = seats[0].size();
+        for (int i = 0; i < m; i++) {
+            int s = 0;
+            for (int j = 0; j < n; j++) {
+                if (seats[i][j] == '#') s |= 1 << j;
+            }
+            mat[i] = s;
+        }
+
+        memset(dp, 0, sizeof(dp));
+        // 第0行
+        for (int s = 0; s < 1 << n; s++) {
+            if (!(s & mat[0] || s & (s >> 1))) dp[0][s] = sum(s);
+            // if(!(s & mat[0] || s & (s >> 1) || s & (s << 1))) dp[0][s] =
+            // sum(s);
+        }
+        for (int i = 1; i < m; i++) {
+            for (int s1 = 0; s1 < 1 << n; s1++) {
+                // 判断状态是否合法【i 有人或右边有人 -> 不合法 continue】
+                if (s1 & mat[i] || (s1 & (s1 >> 1))) continue;
+                // if(s1 & mat[i] || (s1 & (s1 >> 1)) || (s1 & (s1 << 1)))
+                // continue;
+                for (int s2 = 0; s2 < 1 << n; s2++) {
+                    // 如果合法 更新dp[i][s1]; 其初值自然是0
+                    if (!judge(s1, s2))
+                        dp[i][s1] = max(dp[i][s1], dp[i - 1][s2]);
+                }
+                // 加上本行的人数 经过判断 这里的s1必定不包含落在#上的情况
+                dp[i][s1] += sum(s1);
+            }
+        }
+        return *max_element(dp[m - 1], dp[m - 1] + (1 << n));
+    }
+};
+```
+
+##### **C++ 网络流**
+
+首先我们只关心可以坐人的座位，我们把作为按照列下标的奇偶建二分图，S向奇数下标的座位连边，偶数下标的座位向T连边，有冲突的座位奇数座位向偶数座位连边。
+
+图中所有边流量都是1。直接跑二分图最大点独立集就行，即可以坐人的座位数-最大流。 时间复杂度：O(n^3) 空间复杂度：O(n^2)
+
+作者：LighTcml
+
+```cpp
+class Solution {
+    const int INF = 1 << 29;
+    int tot, head[110];
+    struct Edge {
+        int to, net, v;
+    } E[10010];
+    void addedge(int x, int y, int v) {
+        E[++tot].to = y;
+        E[tot].net = head[x];
+        head[x] = tot;
+        E[tot].v = v;
+        E[++tot].to = x;
+        E[tot].net = head[y];
+        head[y] = tot;
+        E[tot].v = 0;
+    }
+    int n, m, S, T, Q[110], depth[110];
+    int getp(int x, int y) { return x * m + y + 1; }
+    bool bfs() {
+        for (int i = S; i <= T; ++i) depth[i] = -1;
+        int L = 0, R = 1;
+        Q[1] = S;
+        depth[S] = 0;
+        while (L < R) {
+            int x = Q[++L];
+            for (int i = head[x]; i; i = E[i].net)
+                if (E[i].v > 0 && depth[E[i].to] == -1) {
+                    depth[E[i].to] = depth[x] + 1;
+                    Q[++R] = E[i].to;
+                }
+        }
+        return depth[T] != -1;
+    }
+    int dfs(int x, int flow) {
+        if (x == T || !flow) return flow;
+        int w = 0;
+        for (int i = head[x]; i; i = E[i].net)
+            if (E[i].v > 0 && depth[E[i].to] == depth[x] + 1) {
+                int v = dfs(E[i].to, min(flow - w, E[i].v));
+                E[i].v -= v;
+                E[i ^ 1].v += v;
+                w += v;
+            }
+        if (!w) depth[x] = -1;
+        return w;
+    }
+    int Dinic() {
+        int sum = 0;
+        while (bfs()) sum += dfs(S, INF);
+        return sum;
+    }
+
+public:
+    int maxStudents(vector<vector<char>>& seats) {
+        tot = 1;
+        n = seats.size();
+        m = seats[0].size();
+        S = 0;
+        T = n * m + 1;
+        int cnt = 0;
+        for (int i = 0; i < n; ++i)
+            for (int j = 0; j < m; ++j)
+                if (seats[i][j] == '.') {
+                    ++cnt;
+                    int x = i * m + j + 1;
+                    if (j & 1)
+                        addedge(S, x, 1);
+                    else
+                        addedge(x, T, 1);
+                    if (j - 1 >= 0 && seats[i][j - 1] == '.') {
+                        if (j & 1)
+                            addedge(x, getp(i, j - 1), 1);
+                        else
+                            addedge(getp(i, j - 1), x, 1);
+                    }
+                    if (j + 1 < m && seats[i][j + 1] == '.') {
+                        if (j & 1)
+                            addedge(x, getp(i, j + 1), 1);
+                        else
+                            addedge(getp(i, j + 1), x, 1);
+                    }
+                    if (i && j + 1 < m && seats[i - 1][j + 1] == '.') {
+                        if (j & 1)
+                            addedge(x, getp(i - 1, j + 1), 1);
+                        else
+                            addedge(getp(i - 1, j + 1), x, 1);
+                    }
+                    if (i && j && seats[i - 1][j - 1] == '.') {
+                        if (j & 1)
+                            addedge(x, getp(i - 1, j - 1), 1);
+                        else
+                            addedge(getp(i - 1, j - 1), x, 1);
+                    }
+                }
+        return cnt - Dinic();
+    }
+};
+```
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1494. 并行课程 II](https://leetcode-cn.com/problems/parallel-courses-ii/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 状压dp
+> 
+> 逆序拓扑的思路是对的
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+int f[1 << 15];
+class Solution {
+public:
+    const int inf = 1e9;
+    int minNumberOfSemesters(int n, vector<vector<int>>& dependencies, int k) {
+        vector<vector<int>> es(n);
+        for (auto e : dependencies) es[e[1] - 1].push_back(e[0] - 1);
+        for (int s = 0; s < 1 << n; ++s) f[s] = inf;
+        f[0] = 0;
+        for (int s = 0; s < 1 << n; ++s) {
+            if (f[s] == inf) continue;
+            int can = 0;
+            for (int v = 0; v < n; ++v) {
+                if (s & 1 << v) continue;
+                bool f = 0;
+                for (auto u : es[v])
+                    if (!(s & 1 << u)) f = 1;
+                if (!f) can |= 1 << v;
+            }
+            for (int t = can; t; t = (t - 1) & can) {
+                if (__builtin_popcount(t) > k) continue;
+                f[s | t] = min(f[s | t], f[s] + 1);
+            }
+        }
+        return f[(1 << n) - 1];
     }
 };
 ```
@@ -1449,6 +2382,327 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 1595. 连通两组点的最小成本](https://leetcode-cn.com/problems/minimum-cost-to-connect-two-groups-of-points/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> - 最简单直接的显然状压 DP + 枚举子集
+> 
+>   因为已知第二组点的数量较少，所以对第二组点的连通状态进行状态压缩，然后依次处理第一组中的点即可。
+> 
+>   对于第一组中的每个点，第一种做法是直接连一条边，第二种做法是连接若干个第二组中当前还没有连通的点。
+> 
+>   - 对于第一种做法，直接枚举MM个点；
+> 
+>   - 对于第二种做法，假设当前未连通的点为maskmask，我们需要枚举它的子集，这里可以用位运算枚举子集的方法来进行优化。
+> 
+> - 也可以二分图过 参考 [2020-09-20_Weekly-207](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2020-09-20_Weekly-207) 但是太麻烦了实现略
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+    int f[15][5005], sum[5005];
+
+public:
+    int connectTwoGroups(vector<vector<int>>& cost) {
+        memset(f, 0x3f, sizeof(f));
+        f[0][0] = 0;
+        int n = cost.size(), m = cost[0].size();
+        int lim = (1 << m) - 1;
+        for (int i = 1; i <= n; ++i) {
+            for (int j = 0; j <= lim; ++j) {
+                sum[j] = 0;
+                for (int u = 1, v = 1; u <= m; ++u, v <<= 1) {
+                    if (v & j) sum[j] += cost[i - 1][u - 1];
+                }
+            }
+            for (int j = 0; j <= lim; ++j) {
+                // with a connected
+                for (int u = 1, v = 1; u <= m; ++u, v <<= 1) {
+                    if (!(v & j)) continue;
+                    f[i][j] = min(f[i][j], f[i - 1][j] + cost[i - 1][u - 1]);
+                }
+                // with unconnected
+                int jj = (lim ^ j);
+                for (int u = jj; u > 0; u = (u - 1) & jj) {
+                    f[i][j | u] = min(f[i][j | u], f[i - 1][j] + sum[u]);
+                }
+            }
+        }
+        return f[n][lim];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1723. 完成所有工作的最短时间](https://leetcode-cn.com/problems/find-minimum-time-to-finish-all-jobs/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 爆搜优化即可 [斯特林数 TODO](https://www.acwing.com/problem/content/3169/)
+> 
+> 赛榜有 DP 做法学习下
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 暴搜**
+
+```cpp
+class Solution {
+public:
+    vector<int> js, sum;
+    int n, m, k, cnt, res;
+    
+    
+    void dfs(int p) {
+        if (cnt > res) return;
+        if (p == n) {
+            if (cnt <= k) {
+                res = cnt;
+            }
+            return;
+        }
+        
+        for (int i = 0; i < cnt; ++ i ) {
+            if (sum[i] + js[p] <= m) {
+                sum[i] += js[p];
+                dfs(p + 1);
+                sum[i] -= js[p];
+            }
+        }
+        // 写的时候超时 加一行 if cnt < k 就AC
+        if (cnt < k) {
+            sum[cnt ++ ] = js[p];
+            dfs(p + 1);
+            sum[ -- cnt] = 0;
+        }
+        
+    }
+    
+    // 最大工作时间m
+    int check() {
+        sum = vector<int>(15);
+        cnt = 0;
+        res = 1e9;
+        dfs(0);
+        return res <= k;
+    }
+    
+    int minimumTimeRequired(vector<int>& jobs, int k) {
+        js = jobs;
+        n = js.size();
+        this->k = k;
+        sort(js.begin(), js.end());
+        reverse(js.begin(), js.end());
+        
+        int l = 0, r = 0;
+        for (auto & v : js) r += v, l = max(l, v);
+        while (l < r) {
+            m = l + r >> 1;
+            if (check()) r = m;
+            else l = m + 1;
+        }
+        return l;
+    }
+};
+```
+
+##### **C++ 暴搜 yxc**
+
+```cpp
+class Solution {
+public:
+    vector<int> s, js;
+    int res = 1e9;
+    
+    // a位置 b使用的工人 c最大值
+    void dfs(int a, int b, int c) {
+        if (c > res) return;
+        if (a == js.size()) {
+            res = c;
+            return;
+        }
+        
+        for (int i = 0; i < b; ++ i ) {
+            s[i] += js[a];
+            dfs(a + 1, b, max(c, s[i]));
+            s[i] -= js[a];
+        }
+        
+        if (b < s.size()) {
+            s[b] = js[a];
+            dfs(a + 1, b + 1, max(c, s[b]));
+            s[b] = 0;
+        }
+    }
+    
+    int minimumTimeRequired(vector<int>& jobs, int k) {
+        js = jobs, s.resize(k);
+        dfs(0, 0, 0);
+        return res;
+    }
+};
+```
+
+##### **C++ dp**
+
+```cpp
+class Solution {
+public:
+    int minimumTimeRequired(vector<int>& jobs, int k) {
+        int n = jobs.size();
+        // 一个任务子集的总时间
+        vector<int> tot(1 << n);
+        
+        // 写法1
+        // 【学习记忆 这种写法更好】
+        for (int i = 1; i < (1 << n); ++ i ) {
+            // o = 最右侧0的数量
+            int o = __builtin_ctz(i & (-i));
+            tot[i] = tot[i ^ (i & (-i))] + jobs[o];
+        }
+        
+        /* 写法2
+        for (int i = 1; i < (1 << n); ++ i )
+            for (int j = 0; j < n; ++ j )
+                if ((i & (1 << j))) {
+                    int left = i - (1 << j);
+                    tot[i] = tot[left] + jobs[j];
+                    break;
+                }
+        */
+        
+        vector<int> f(1 << n, INT_MAX / 2);
+        f[0] = 0;
+        for (int j = 1; j <= k; ++ j )
+            for (int mask = (1 << n) - 1; mask; -- mask)
+                // 枚举子集
+                for (int sub = mask; sub; sub = (sub - 1) & mask)
+                    f[mask] = min(f[mask], max(f[mask ^ sub], tot[sub]));
+        return f[(1 << n) - 1];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1879. 两个数组最小的异或值之和](https://leetcode-cn.com/problems/minimum-xor-sum-of-two-arrays/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 数据范围 n = 14
+> 
+> dp 或 爆搜
+> 
+> > 标准的 n! => 2^n 模型
+> > 
+> > 每一步只关心前面用过哪些数&最小和多少 不关心具体顺序 ==> 考虑状态压缩
+> 
+> > a[s] 对应第 s+1 个数字
+> > 
+> > a[s-1] 对应第 s 个数字
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int minimumXORSum(vector<int>& a, vector<int>& b) {
+        int n = a.size();
+        vector<int> f(1 << n, 1e9);
+        f[0] = 0;
+        for (int mask = 0; mask < (1 << n); ++ mask ) {
+            int s = 0;
+            for (int i = 0; i < n; ++ i )
+                if (mask >> i & 1)
+                    s ++ ;
+            // 枚举下一步走哪
+            for (int i = 0; i < n; ++ i )
+                if (!(mask >> i & 1))
+                    f[mask | (1 << i)] = min(f[mask | (1 << i)], f[mask] + (a[s] ^ b[i]));
+        }
+        return f[(1 << n) - 1];
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int minimumXORSum(vector<int>& a, vector<int>& b) {
+        int n = a.size();
+        vector<int> f(1 << n, 1e9);
+        f[0] = 0;
+        for (int mask = 0; mask < (1 << n); ++ mask ) {
+            int s = 0;
+            for (int i = 0; i < n; ++ i )
+                if (mask >> i & 1)
+                    s ++ ;
+            // 枚举上一步从哪走来
+            for (int i = 0; i < n; ++ i )
+                if (mask >> i & 1)
+                    f[mask] = min(f[mask], f[mask ^ (1 << i)] + (a[s - 1] ^ b[i]));
+        }
+        return f[(1 << n) - 1];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 三进制状压
 
 对于三进制的状态压缩题目，可以考虑使用 `limit << 1` 的形式也可以使用 `pow(3, M)` 的形式
@@ -1730,6 +2984,204 @@ public:
         for (auto v : st)
             res = (res + f[n][v]) % MOD;
         return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1659. 最大化网格幸福感](https://leetcode-cn.com/problems/maximize-grid-happiness/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 单个位置三进制表示
+> 
+> TODO 重复做
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// newhar
+class Solution {
+public:
+    int getMaxGridHappiness(int m, int n, int a, int b) {
+        // 0- 不放人 1-放内向 2-放外向 3^n
+        int cases = pow(3, n);
+
+        int f[cases][5];
+        memset(f, 0, sizeof(f));
+        for (int i = 0; i < cases; ++i) {
+            for (int t = i, p = 0; t; t /= 3, p++) { f[i][n - 1 - p] = t % 3; }
+        }
+
+        int M = cases - 1;
+        int dp[m + 1][n][a + 1][b + 1][cases];
+        memset(dp, 0, sizeof(dp));
+
+        for (int i = m - 1; i >= 0; --i) {
+            for (int j = n - 1; j >= 0; --j) {
+                int nei = i, nej = j + 1;
+                if (j == n) { nei = i + 1, nej = 0; }
+                for (int x = 0; x <= a; ++x) {
+                    for (int y = 0; y <= b; ++y) {
+                        for (int pre = 0; pre < cases; ++pre) {
+                            int nem = (pre * 3) % cases;
+                            if (x > 0) {
+                                int diff = 120;
+                                if (j != 0 && f[pre][n - 1] == 1) {
+                                    diff -= 30;
+                                    diff -= 30;
+                                }
+                                if (j != 0 && f[pre][n - 1] == 2) {
+                                    diff += 20;
+                                    diff -= 30;
+                                }
+                                if (f[pre][0] == 1) {
+                                    diff -= 30;
+                                    diff -= 30;
+                                }
+                                if (f[pre][0] == 2) {
+                                    diff += 20;
+                                    diff -= 30;
+                                }
+                                dp[i][j][x][y][pre] =
+                                    max(dp[i][j][x][y][pre],
+                                        diff + dp[nei][nej][x - 1][y][nem + 1]);
+                            }
+                            if (y > 0) {
+                                int diff = 40;
+                                if (j != 0 && f[pre][n - 1] == 1) {
+                                    diff -= 30;
+                                    diff += 20;
+                                }
+                                if (j != 0 && f[pre][n - 1] == 2) {
+                                    diff += 20;
+                                    diff += 20;
+                                }
+                                if (f[pre][0] == 1) {
+                                    diff -= 30;
+                                    diff += 20;
+                                }
+                                if (f[pre][0] == 2) {
+                                    diff += 20;
+                                    diff += 20;
+                                }
+                                dp[i][j][x][y][pre] =
+                                    max(dp[i][j][x][y][pre],
+                                        diff + dp[nei][nej][x][y - 1][nem + 2]);
+                            }
+                            dp[i][j][x][y][pre] = max(dp[i][j][x][y][pre],
+                                                      dp[nei][nej][x][y][nem]);
+                        }
+                    }
+                }
+            }
+        }
+        return dp[0][0][a][b][0];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1774. 最接近目标价格的甜点成本](https://leetcode-cn.com/problems/closest-dessert-cost/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 枚举小技巧: 四进制来表示三进制
+> 
+> 也可以转化为 01背包
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int closestCost(vector<int>& a, vector<int>& b, int T) {
+        int res = INT_MAX;
+        int n = a.size(), m = b.size();
+        for (int i = 0; i < n; ++ i ) {
+            int s = a[i];
+            // 四进制来表示三进制
+            for (int j = 0; j < 1 << m * 2; ++ j ) {
+                int r = s;
+                bool flag = false;
+                for (int k = 0; k < m; ++ k ) {
+                    int t = j >> k * 2 & 3;
+                    if (t == 3) {
+                        flag = true;
+                        break;
+                    }
+                    r += b[k] * t;
+                }
+                if (flag) continue;
+                if (abs(r - T) < abs(res - T) || abs(r - T) == abs(res - T) && r < res)
+                    res = r;
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 背包**
+
+```cpp
+class Solution {
+public:
+    int closestCost(vector<int>& baseCosts, vector<int>& toppingCosts, int target) {
+        int tt = 20000;
+        vector<bool> f(tt + 1, false);
+        for (int x: baseCosts)
+            f[x] = true;
+        for (int x: toppingCosts)
+            for (int j = tt; j >= x; --j)
+                if (f[j - x])
+                    f[j] = true;
+        for (int x: toppingCosts)
+            for (int j = tt; j >= x; --j)
+                if (f[j - x])
+                    f[j] = true;
+        int ans = tt;
+        for (int i = 0; i <= tt; ++i)
+            if (f[i])
+                if (abs(i - target) < abs(ans - target))
+                    ans = i;
+        return ans;
     }
 };
 ```
@@ -2087,6 +3539,206 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 1994. 好子集的数目](https://leetcode-cn.com/problems/the-number-of-good-subsets/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 非常好的状态压缩 + 组合计数应用题
+> 
+> 按比特位划分是为了去重，详情参考第三份代码
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 1**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 10;
+    const int MOD = 1e9 + 7;
+    
+    vector<int> ps = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29};
+    
+    int numberOfGoodSubsets(vector<int>& nums) {
+        vector<int> cnt(1 << N), sum(1 << N);
+        // 1. 求每个数分解得到全素数集合，该全素数集合对应的原始数的个数
+        // 本质上是将原始数组中合法的部分重新统计一遍
+        for (auto x : nums) {
+            int t = 0;
+            for (int i = 0; i < N; ++ i )
+                if (x % ps[i] == 0) {
+                    t |= 1 << i;
+                    // ATTENTION: 如果x包含两个p[i]，必然无效
+                    if (x / ps[i] % ps[i] == 0) {
+                        t = -1;
+                        break;
+                    }
+                }
+        
+            if (t != -1)
+                cnt[t] ++ ;
+        }
+        
+        // 2. 遍历统计
+        // 为什么可以遍历到 1 << N ? 因为按照合法性规则，最多包含ps中所有的元素 即2^10
+        int res = 0;
+        for (int i = 1; i < 1 << N; ++ i ) {
+            // 该集合本身作为一个数
+            sum[i] = cnt[i];
+            // 集合拆分
+            // ATTENTION 思考细节：【为什么实现需找第一个存在位来划分】
+            // 【目的：去重】如果直接用子集去算会有重合部分
+            for (int j = 0; j < N; ++ j )
+                if (i >> j & 1) {
+                    int k = i ^ (1 << j);
+                    // 枚举k的子集（必然包含j的子集）作为第一部分【cnt[(1 << j) | x]】
+                    // 其补集作为第二部分【sum[k ^ x]】
+                    for (int x = (k - 1) & k; true; x = (x - 1) & k) {
+                        sum[i] = (sum[i] + (LL)cnt[(1 << j) | x] * sum[k ^ x]) % MOD;
+                        if (x == 0) // 注意 x 可以为空集，即第一部分只包含一个j
+                            break;
+                    }
+                    // ATTENTION 能够根据一位不同去划分为两类即可
+                    break;
+                }
+            // 统计
+            res = (res + (LL)sum[i]) % MOD;
+        }
+        // 1的数量 任意选 2^cnt[0]
+        for (int i = 0; i < cnt[0]; ++ i )
+            res = (res + (LL)res) % MOD;
+        return res;
+    }
+};
+```
+
+##### **C++ 2**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 10;
+    const int MOD = 1e9 + 7;
+    
+    vector<int> ps = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29};
+    
+    int qpow(int a, int b) {
+        LL res = 1;
+        while (b) {
+            if (b & 1)
+                res = res * a % MOD;
+            a = (LL)a * a % MOD;
+            b >>= 1;
+        }
+        return res;
+    }
+    
+    int numberOfGoodSubsets(vector<int>& nums) {
+        vector<int> cnt(1 << N), sum(1 << N);
+        // 1. 求每个数分解得到全素数集合，该全素数集合对应的原始数的个数
+        // 本质上是将原始数组中合法的部分重新统计一遍
+        for (auto x : nums) {
+            int t = 0;
+            for (int i = 0; i < N; ++ i )
+                if (x % ps[i] == 0) {
+                    t |= 1 << i;
+                    // ATTENTION: 如果x包含两个p[i]，必然无效
+                    if (x / ps[i] % ps[i] == 0) {
+                        t = -1;
+                        break;
+                    }
+                }
+        
+            if (t != -1)
+                cnt[t] ++ ;
+        }
+        
+        // 2. 遍历统计
+        sum[0] = qpow(2, cnt[0]);
+        
+        for (int i = 1; i < 1 << N; ++ i ) {
+            // ATTENTION 1: 只用sum不用nxt也可以过，因为是从小到大计算的
+            auto nxt = sum;
+            for (int j = 0; j < 1 << N; ++ j )
+                if (!(i & j)) {
+                    // i 与 j 无交叉
+                    nxt[j | i] = (nxt[j | i] + (LL)sum[j] * cnt[i]) % MOD;
+                }
+            sum = nxt;
+        }
+        
+        // ATTENTION 2: 这样res统计必须放在最后，因为前面for-loop未将当前结果统计完成
+        int res = 0;
+        for (int i = 1; i < 1 << N; ++ i )
+            res = (res + (LL)sum[i]) % MOD;
+        
+        return res;
+    }
+};
+```
+
+##### **C++ 3**
+
+```cpp
+class Solution {
+public:
+    // ...
+    int numberOfGoodSubsets(vector<int>& nums) {
+        vector<int> cnt(1 << N), sum(1 << N);
+        for (auto x : nums) {
+            // ...
+            if (t != -1)
+                cnt[t] ++ ;
+        }
+        
+        sum[0] = qpow(2, cnt[0]);
+        
+        for (int i = 1; i < 1 << N; ++ i ) {
+            int f = i & (-i);  // bit划分
+            
+            for (int j = i; j; j = (j - 1) & i) {
+                // 会计算重复
+                // DEBUG
+                // if (cnt[j] && sum[i ^ j]) {
+                //     cout << " i = " << i << " j = " << j << " cnt[j] = " << cnt[j] << " sum[i ^ j] = " << sum[i ^ j] << endl;
+                // }
+                // 去重
+                if (j & f)
+                    sum[i] = (sum[i] + (LL)cnt[j] * sum[i ^ j]) % MOD;
+            }
+            
+            // if (sum[i])
+            //     cout << " sum[" << i << "] = " << sum[i] << endl;
+        }
+        
+        int res = 0;
+        for (int i = 1; i < 1 << N; ++ i )
+            res = (res + (LL)sum[i]) % MOD;
+        
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 状压 + meet in the middle
 
 > [!NOTE] **[LeetCode 2035. 将数组分成两个数组并最小化数组和的差](https://leetcode-cn.com/problems/partition-array-into-two-arrays-to-minimize-sum-difference/)**
@@ -2166,6 +3818,76 @@ public:
         
         
         return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1755. 最接近目标值的子序列和](https://leetcode-cn.com/problems/closest-subsequence-sum/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> `n = 40` 的复杂度考虑拆半再二进制枚举
+> 
+> 可以分别计算两个部分的可能和，再双指针
+> 
+> 也可以先计算第一部分，再计算第二个部分的时候二分查找
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int minAbsDifference(vector<int>& nums, int goal) {
+        int n = nums.size();
+        int m = n >> 1;
+        
+        vector<int> h;
+        for (int s = 0; s < 1 << m; ++ s ) {
+            int t = 0;
+            for (int i = 0; i < m; ++ i )
+                if (s >> i & 1) 
+                    t += nums[i];
+            h.push_back(t);
+        }
+        sort(h.begin(), h.end());
+        
+        int ans = INT_MAX;
+        for (int s = 0; s < (1 << n - m); ++ s ) {
+            int t = goal;
+            for (int i = 0; i < n - m; ++ i )
+                if (s >> i & 1)
+                    t -= nums[i + m];
+            
+            int l = 0, r = h.size() - 1;
+            while (l < r) {
+                int mid = l + r >> 1;
+                if (h[mid] < t) l = mid + 1;
+                else r = mid;
+            }
+            
+            if (ans > abs(h[l] - t)) ans = abs(h[l] - t);
+            if (l >= 1 && ans > abs(h[l - 1] - t)) ans = abs(h[l - 1] - t);
+        }
+        return ans;
     }
 };
 ```

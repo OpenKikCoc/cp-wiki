@@ -128,3 +128,53 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 1287. 有序数组中出现次数超过25%的元素](https://leetcode-cn.com/problems/element-appearing-more-than-25-in-sorted-array/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 超过25%的数唯一 说明这个数就是出现次数最多的数
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int findSpecialInteger(vector<int>& arr) {
+        int n = arr.size();
+        int res = arr[0], cnt = 1;
+        vector<pair<int, int>> ve;
+        for (int i = 1; i < n; ++i) {
+            if (arr[i] == res)
+                ++cnt;
+            else {
+                ve.push_back({cnt, res});
+                res = arr[i];
+                cnt = 1;
+            }
+        }
+        ve.push_back({cnt, res});
+        sort(ve.begin(), ve.end());
+        return ve.back().second;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

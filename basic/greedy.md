@@ -238,60 +238,6 @@ int main() {
 
 * * *
 
-> [!NOTE] **[Luogu [NOIP2018 提高组] 铺设道路](https://www.luogu.com.cn/problem/P5019)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 经典贪心
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-using LL = long long;
-const int N = 1e6 + 10;
-
-int n;
-LL d[N];
-
-int main() {
-    cin >> n;
-    for (int i = 1; i <= n; ++ i )
-        cin >> d[i];
-    
-    LL res = 0;
-    stack<int> st;
-    // i = 0 -----> d[i] = 0
-    for (int i = 1; i <= n; ++ i )
-        if (d[i] > d[i - 1])
-            res += d[i] - d[i - 1];
-    cout << res << endl;
-    
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
 > [!NOTE] **[Luogu [USACO07MAR]Face The Right Way G](https://www.luogu.com.cn/problem/P2882)**
 > 
 > 题意: TODO
@@ -380,6 +326,429 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 1363. 形成三的最大倍数](https://leetcode-cn.com/problems/largest-multiple-of-three/)**
+> 
+> 题意: 
+> 
+> 给你一个整数数组 `digits`，你可以通过按任意顺序连接其中某些数字来形成 3 的倍数，请你返回所能得到的最大的 3 的倍数。
+
+> [!TIP] **思路**
+> 
+> 对所有整数求和 随后依据mod3得到的结果去除一些整数 再生成res
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    string largestMultipleOfThree(vector<int>& digits) {
+        vector<int> cnt(10);
+        int sum = 0;
+        for (auto v : digits) {
+            ++cnt[v];
+            sum += v;
+        }
+        bool f = true;
+        if (sum % 3 == 0) {
+        } else if (sum % 3 == 1) {
+            if (cnt[1])
+                --cnt[1];
+            else if (cnt[4])
+                --cnt[4];
+            else if (cnt[7])
+                --cnt[7];
+            else if (cnt[2] >= 2)
+                cnt[2] -= 2;
+            else if (cnt[5] >= 2)
+                cnt[5] -= 2;
+            else if (cnt[8] >= 2)
+                cnt[8] -= 2;
+            else
+                f = false;
+        } else if (sum % 3 == 2) {
+            if (cnt[2])
+                --cnt[2];
+            else if (cnt[5])
+                --cnt[5];
+            else if (cnt[8])
+                --cnt[8];
+            else if (cnt[1] >= 2)
+                cnt[1] -= 2;
+            else if (cnt[4] >= 2)
+                cnt[4] -= 2;
+            else if (cnt[7] >= 2)
+                cnt[7] -= 2;
+            else
+                f = false;
+        }
+
+        string res;
+        if (!f) {
+            if (cnt[0]) res.push_back('0');
+            return res;
+        }
+        for (int v = 9; v > 0; --v) {
+            while (cnt[v]--) { res.push_back('0' + v); }
+        }
+        if (res.size())
+            while (cnt[0]--) res.push_back('0');
+        else if (cnt[0])
+            res.push_back('0');
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1402. 做菜顺序](https://leetcode-cn.com/problems/reducing-dishes/)**
+> 
+> 题意: 
+> 
+> 做出每道菜的时间都是 1 单位时间。一道菜的 「喜爱时间」系数定义为烹饪这道菜以及之前每道菜所花费的时间乘以这道菜的满意程度，也就是 $time[i]*satisfaction[i]$ 。顺序随便排，可以舍弃任意菜。
+> 
+> 返回做完所有菜 「喜爱时间」总和的最大值为多少。
+
+> [!TIP] **思路**
+> 
+> 贪心 每次选满意度最高的 然后向后移动(sum) 相当于后面的菜全部又加了后面的菜满意度之和: v + sum
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int maxSatisfaction(vector<int>& satisfaction) {
+        int res = 0, sum = 0, v = 0;
+        sort(satisfaction.begin(), satisfaction.end());
+        int n = satisfaction.size();
+        for (int i = n - 1; i >= 0; --i) {
+            v = v + sum + satisfaction[i];
+            if (v > res) res = v;
+            sum += satisfaction[i];
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1414. 和为 K 的最少斐波那契数字数目](https://leetcode-cn.com/problems/find-the-minimum-number-of-fibonacci-numbers-whose-sum-is-k/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 返回和为 k 的斐波那契数字的最少数目，其中，每个斐波那契数字都可以被使用多次。
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int findMinFibonacciNumbers(int k) {
+        vector<int> fib;
+        fib.push_back(1);
+        fib.push_back(2);
+        int a = 1, b = 2, c = 3;
+        while (c <= k) {
+            fib.push_back(c);
+            a = b;
+            b = c;
+            c = a + b;
+        }
+        int n = fib.size(), res = 0;
+        // === Solutiong 1
+        for (int i = n - 1; i >= 0; --i) {
+            if (k > fib[i]) {
+                ++res;
+                k -= fib[i];
+            } else if (k == fib[i]) {
+                ++res;
+                break;
+            }
+        }
+        // ===
+        // === Solution 2
+        while (k > 0) {  // 从大到小贪心选取
+            if (k >= fi[i]) k -= fi[i], ++res;
+            --i;
+        }
+        // ===
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1536. 排布二进制网格的最少交换次数](https://leetcode-cn.com/problems/minimum-swaps-to-arrange-a-binary-grid/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 要求：主对角线以上的格子全0
+> 
+> 考虑统计每一行右侧连续0个数 记录分界位置于 rec
+> 
+> 随后贪心：从后面找到最近可满足的 【因为从前往后的要求逐级降低】 所以次近的
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int minSwaps(vector<vector<int>>& grid) {
+        int n = grid.size();
+        vector<int> rec(n);
+        for (int i = 0; i < n; ++i) {
+            int cnt = 0;
+            for (int j = n - 1; j > 0; --j) {
+                if (grid[i][j])
+                    break;
+                else
+                    ++cnt;
+            }
+            rec[i] = n - 1 - cnt;
+        }
+        int res = 0;
+        for (int i = 0; i < n; ++i) {
+            if (rec[i] <= i) continue;
+            int j = i + 1;
+            while (j < n && rec[j] > i) ++j;
+            if (j >= n) return -1;
+            res += j - i;
+            int t = rec[j];
+            for (int k = j; k > i; k--) { rec[k] = rec[k - 1]; }
+            rec[i] = t;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1691. 堆叠长方体的最大高度](https://leetcode-cn.com/problems/maximum-height-by-stacking-cuboids/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 对每一个方块贪心排列
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int maxHeight(vector<vector<int>>& cuboids) {
+        for (auto & c : cuboids) sort(c.begin(), c.end());
+        sort(cuboids.begin(), cuboids.end(), greater<vector<int>>());
+        int n = cuboids.size();
+        int res = 0;
+        vector<int> f(n);
+        for (int i = 0; i < n; ++ i ) {
+            f[i] = cuboids[i][2];
+            for (int j = 0; j < i; ++ j )
+                if (cuboids[j][0] >= cuboids[i][0] && cuboids[j][1] >= cuboids[i][1] && cuboids[j][2] >= cuboids[i][2])
+                    f[i] = max(f[i], f[j] + cuboids[i][2]);
+            res = max(res, f[i]);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1717. 删除子字符串的最大得分](https://leetcode-cn.com/problems/maximum-score-from-removing-substrings/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 贪心 记忆处理技巧
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int maximumGain(string s, int x, int y) {
+        // 确保最终优先选择的都是'ab'
+        if (x < y) {
+            swap(x, y);
+            for (auto & c : s) {
+                if (c == 'a') c = 'b';
+                else if (c == 'b') c = 'a';
+            }
+        }
+
+        int res = 0;
+        for (int i = 0; i < s.size(); ++ i ) {
+            if (s[i] != 'a' && s[i] != 'b') continue;
+            int j = i + 1;
+            while (j < s.size() && (s[j] == 'a' || s[j] == 'b')) ++ j ;
+            // 全是 a 或 b 的一段
+            int a = 0, b = 0, c = 0;
+            for (int k = j - 1, t = 0; k >= i; -- k )
+                if (s[k] == 'a') {
+                    ++ a ;
+                    // 后方有未使用的b
+                    if (t) {
+                        ++ c ;
+                        -- t ;
+                    }
+                } else {
+                    ++ b ;
+                    ++ t ;
+                }
+            
+            res += c * x + (min(a, b) - c) * y;
+            i = j - 1;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1798. 你能构造出连续值的最大数目](https://leetcode-cn.com/problems/maximum-number-of-consecutive-values-you-can-make/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 类似的总结 ==> 跳跃游戏 TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int getMaximumConsecutive(vector<int>& coins) {
+        sort(coins.begin(), coins.end());
+        int lst = 0, n = coins.size();
+        for (int i = 0; i < n; ++ i )
+            if (coins[i] <= lst + 1)
+                lst += coins[i];
+            else
+                break;
+        return lst + 1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 ### 排序不等式
 
@@ -679,7 +1048,7 @@ int main() {
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++**
+##### **C++ yxc**
 
 ```cpp
 // yxc
@@ -718,6 +1087,185 @@ public:
 
 ```
 
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1703. 得到连续 K 个 1 的最少相邻交换次数](https://leetcode-cn.com/problems/minimum-adjacent-swaps-for-k-consecutive-ones/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 所有1坐标 如何移动使得其新的坐标成为一个等差数列（公差1）
+> 
+> 考虑计算答案时是绝对值求和取 min ，转化映射后即绝对值不等式
+> 
+> 做一个映射：`ai' = aix - i`
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 交换过程中1的相对位置必然不变
+    // 绝对值不等式
+    using LL = long long;
+    int minMoves(vector<int>& nums, int k) {
+        vector<int> ve;
+        for (int i = 0; i < nums.size(); ++ i )
+            if (nums[i])
+                ve.push_back(i - ve.size());
+        int n = ve.size();
+        vector<LL> s(n + 1);
+        for (int i = 1; i <= n; ++ i ) s[i] = s[i - 1] + ve[i - 1];
+        LL res = 1e18;
+        for (int i = k; i <= n; ++ i ) {
+            int l = i - k + 1, r = i;
+            int mid = (l + r) / 2;
+            LL x = ve[mid - 1];
+            LL left = x * (mid - l) - (s[mid - 1] - s[l - 1]);
+            LL right = (s[r] - s[mid]) - x * (r - mid);
+            res = min(res, left + right);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 2033. 获取单值网格的最小操作数](https://leetcode-cn.com/problems/minimum-operations-to-make-a-uni-value-grid/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> - 自己有较直观的解法
+> 
+> - 实际上 这就是一个打水问题 要求【所有点到某点的距离和最小 该点即为中点】
+> 
+>   需要增强对该结论的敏感程度
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 直观解法**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    
+    int n, m;
+    
+    int minOperations(vector<vector<int>>& grid, int x) {
+        this->n = grid.size(), this->m = grid[0].size();
+        vector<int> nums;
+        for (int i = 0; i < n; ++ i )
+            for (int j = 0; j < m; ++ j )
+                nums.push_back(grid[i][j]);
+        sort(nums.begin(), nums.end());
+        
+        int len = nums.size(), v = nums[0];
+        {
+            nums[0] = 0;
+            for (int i = 1; i < len; ++ i ) {
+                nums[i] -= v;
+                if (nums[i] % x)
+                    return -1;
+                nums[i] /= x;
+            }
+        }
+        
+        vector<int> l(len), r(len);
+        for (int i = 1; i < len; ++ i )
+            l[i] = l[i - 1] + nums[i - 1];
+        for (int i = len - 2; i >= 0; -- i )
+            r[i] = r[i + 1] + nums[i + 1];
+        
+        int res = 2e9;
+        for (int i = 0; i < len; ++ i ) {
+            int t = 0;
+            if (i - 1 >= 0)
+                t += i * nums[i] - l[i];
+            if (i + 1 < len)
+                t += r[i] - (len - i - 1) * nums[i];
+            res = min(res, t);
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 绝对值不等式**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    
+    int n, m;
+    
+    int minOperations(vector<vector<int>>& grid, int x) {
+        this->n = grid.size(), this->m = grid[0].size();
+        vector<int> nums;
+        for (int i = 0; i < n; ++ i )
+            for (int j = 0; j < m; ++ j )
+                nums.push_back(grid[i][j]);
+        
+        // 使用 nth_element 无需排序
+        // sort(nums.begin(), nums.end());
+        
+        int len = nums.size(), v = nums[0];
+        {
+            nums[0] = 0;
+            for (int i = 1; i < len; ++ i ) {
+                nums[i] -= v;
+                if (nums[i] % x)
+                    return -1;
+                nums[i] /= x;
+            }
+        }
+
+        // ATTENTION 显然此类问题可以直接找中点
+        //   加强思维上的敏感度
+        int mid = n * m / 2;
+        nth_element(nums.begin(), nums.begin() + mid, nums.end());
+
+        int res = 0;
+        for (auto v : nums)
+            res += abs(v - nums[mid]);
+        return res;
+    }
+};
+```
 
 ##### **Python**
 
@@ -1553,6 +2101,234 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 1229. 安排会议日程](https://leetcode-cn.com/problems/meeting-scheduler/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 预选 + 暴力判断
+> 
+> 可以双指针过 todo
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+vector<int> minAvailableDuration(vector<vector<int>>& slots1,
+                                 vector<vector<int>>& slots2, int duration) {
+    vector<vector<int>> s1, s2;
+    for (auto& s : slots1)
+        if (s[0] + duration <= s[1]) s1.push_back(s);
+    for (auto& s : slots2)
+        if (s[0] + duration <= s[1]) s2.push_back(s);
+    int n1 = s1.size(), n2 = s2.size();
+    vector<int> res{INT_MAX, INT_MAX};
+    int l, r;
+    for (int i = 0; i < n1; ++i)
+        for (int j = 0; j < n2; ++j) {
+            l = max(s1[i][0], s2[j][0]), r = min(s1[i][1], s2[j][1]);
+            if (l + duration <= r && l < res[0])
+                res[0] = l, res[1] = l + duration;
+        }
+    if (res[0] == INT_MAX) return vector<int>{};
+    return res;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1235. 规划兼职工作](https://leetcode-cn.com/problems/maximum-profit-in-job-scheduling/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然要按照结束时间排序
+> 
+> 状态 f 有两种定义方式
+> 
+> 1. i 表示第几个任务，f[i] 表示 i 号之前所有工作能取得的最大收益。则需使用 pre 维护某个任务前面最近结束的任务，计算比较麻烦
+> 
+> 2. i 表示时间点，f[i] 表示时间点 i 为止的最大收益，随后跑 01 背包 【需要对时间离散化以压缩空间】
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int jobScheduling(vector<int>& startTime, vector<int>& endTime,
+                      vector<int>& profit) {
+        vector<int> T({0});
+        for (auto t : startTime) T.emplace_back(t);
+        for (auto t : endTime) T.emplace_back(t);
+        sort(T.begin(), T.end());
+        T.erase(unique(T.begin(), T.end()), T.end());
+        int n = T.size();
+        vector<int> dp(n, INT_MIN);
+        dp[0] = 0;
+        vector<pair<int, int> > a;
+        for (int i = 0; i < startTime.size(); ++i)
+            a.emplace_back(make_pair(endTime[i], i));
+        sort(a.begin(), a.end());
+
+        for (int i = 1, j = 0; i < n; ++i) {
+            dp[i] = dp[i - 1];
+            while (j < int(a.size()) && a[j].first == T[i]) {
+                int idx = a[j].second;
+                int k =
+                    lower_bound(T.begin(), T.end(), startTime[idx]) - T.begin();
+                int f = profit[idx];
+                dp[i] = max(dp[i], dp[k] + f);
+                ++j;
+            }
+        }
+        return dp[n - 1];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1272. 删除区间](https://leetcode-cn.com/problems/remove-interval/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 模拟 分类讨论即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<vector<int>> removeInterval(vector<vector<int>>& intervals,
+                                       vector<int>& toBeRemoved) {
+        int n = intervals.size(), s = toBeRemoved[0], t = toBeRemoved[1];
+        vector<vector<int>> res;
+        for (auto p : intervals) {
+            if (p[1] < s || p[0] > t) {
+                res.push_back(p);
+            } else if (p[1] <= t && p[0] >= s) {
+                continue;
+            } else if (p[1] > t && p[0] < s) {
+                res.push_back({p[0], s});
+                res.push_back({t, p[1]});
+            } else if (p[1] <= t) {
+                res.push_back({p[0], s});
+            } else if (p[0] >= s) {
+                res.push_back({t, p[1]});
+            }
+        }
+        sort(res.begin(), res.end());
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1546. 和为目标值的最大数目不重叠非空子数组数目](https://leetcode-cn.com/problems/maximum-number-of-non-overlapping-subarrays-with-sum-equals-target/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 统计区间 随后排序贪心即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 某一个前缀和数值出现的下标 要求数量最多 即长度最短 显然可以随时更新
+    unordered_map<int, int> m;
+    int maxNonOverlapping(vector<int>& nums, int target) {
+        int n = nums.size();
+        vector<int> sum(n + 1);
+        vector<pair<int, int>> ps;
+        m[0] = 0;
+        for (int i = 1; i <= n; ++i) {
+            sum[i] = sum[i - 1] + nums[i - 1];
+            if (m.count(sum[i] - target))
+                ps.push_back({i, m[sum[i] - target] + 1});
+            m[sum[i]] = i;
+        }
+        // 按结束时间排序
+        sort(ps.begin(), ps.end());
+        int mx = 0, res = 0;
+        for (auto [r, l] : ps)
+            if (l <= mx)
+                continue;
+            else
+                ++res, mx = r;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### huffman
 
 > [!NOTE] **[AcWing 148. 合并果子](https://www.acwing.com/problem/content/150/)**
@@ -1968,7 +2744,7 @@ public:
 };
 ```
 
-##### **C++**
+##### **C++ yxc**
 
 ```cpp
 // yxc
@@ -2197,6 +2973,458 @@ public:
             } else return false;
         }
         return true;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1353. 最多可以参加的会议数目](https://leetcode-cn.com/problems/maximum-number-of-events-that-can-be-attended/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 线性扫描问题 考虑每一天可选的会议范围 并选择结束时间最早的会议
+> 
+> 主要是使用优先队列维护 不能简单贪心
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+const int MAX = 1e5 + 1;
+class Solution {
+public:
+    int maxEvents(vector<vector<int>>& events) {
+        vector<vector<int>> left(MAX);
+        for (int i = 0; i < events.size(); ++i)
+            left[events[i][0]].emplace_back(i);
+        // 每个时间点开始的会议 存下标
+
+        int ans = 0;
+        priority_queue<int, vector<int>, greater<>> pq;
+        for (int i = 1; i < MAX; ++i) {
+            for (int j : left[i]) pq.push(events[j][1]);
+            while (!pq.empty() && pq.top() < i) pq.pop();
+            if (!pq.empty()) {
+                pq.pop();
+                ans++;
+            }
+        }
+        return ans;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1383. 最大的团队表现值](https://leetcode-cn.com/problems/maximum-performance-of-a-team/)**
+> 
+> 题意: 
+> 
+> 两个数组 speed 和 efficiency ，其中 speed[i] 和 efficiency[i] 分别代表第 i 位工程师的速度和效率。
+> 
+> 请你返回由最多 k 个工程师组成的 最大团队表现值。
+> 
+> 团队表现值 的定义为：一个团队中「所有工程师速度的和」乘以他们「效率值中的最小值」。
+> 
+> 取模
+
+> [!TIP] **思路**
+> 
+> 按照效率进行降序排序，每个人作为最低效率时，在其左侧找出至多K - 1个最大速度即可(再加上这个人的速度组成K个)
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int maxPerformance(int n, vector<int>& speed, vector<int>& efficiency,
+                       int k) {
+        vector<pair<int, int>> ns;
+        for (int i = 0; i < n; ++i)
+            ns.push_back({speed[i], efficiency[i]});
+        sort(ns.begin(), ns.end(),
+             [](const pair<int, int>& a, const pair<int, int>& b) -> bool {
+                 return a.second > b.second;
+             });
+        long long res = 0, mod = 1e9 + 7, sum = 0;
+        priority_queue<int, vector<int>, greater<int>> pq;
+        for (int i = 0; i < n; ++i) {
+            pq.push(ns[i].first);
+            sum += ns[i].first;
+            if (pq.size() > k) {
+                sum -= pq.top();
+                pq.pop();
+            }
+            res = max(res, (long long)sum * ns[i].second);
+        }
+        return res % mod;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1488. 避免洪水泛滥](https://leetcode-cn.com/problems/avoid-flood-in-the-city/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 贪心 写法思路完全正确 vector二分查找超时
+> 
+> 数组改成set就过了
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ vector TLE**
+
+```cpp
+// 最后一个用例超时
+class Solution {
+public:
+    // 某一个湖泊 上一次下雨的下标（是哪一天） 无数个湖泊所以用map
+    unordered_map<int, int> m;
+    vector<int> avoidFlood(vector<int>& rains) {
+        int n = rains.size();
+        // 没下雨的天下标
+        vector<int> zero;
+        vector<int> res;
+        for (int i = 0; i < n; ++i) {
+            if (rains[i]) {
+                if (m[rains[i]]) {
+                    auto it =
+                        lower_bound(zero.begin(), zero.end(), m[rains[i]]);
+                    if (it == zero.end())
+                        return vector<int>{};
+                    else {
+                        res[*it - 1] = rains[i];
+                        zero.erase(it);
+                    }
+                }
+                m[rains[i]] = i + 1;
+                res.push_back(-1);
+            } else {
+                // rains[i] == 0
+                zero.push_back(i + 1);
+                res.push_back(0);  // 默认什么都不动
+            }
+        }
+        for (int i = 0; i < n; ++i) {
+            if (!res[i]) res[i] = 1;
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ set AC**
+
+```cpp
+
+class Solution {
+public:
+    // 某一个湖泊 上一次下雨的下标（是哪一天） 无数个湖泊所以用map
+    unordered_map<int, int> m;
+    vector<int> avoidFlood(vector<int>& rains) {
+        int n = rains.size();
+        // 没下雨的天下标
+        set<int> zero;
+        // vector<int> res(n,1);
+        vector<int> res;
+        for (int i = 0; i < n; ++i) {
+            if (rains[i]) {
+                if (m[rains[i]]) {
+                    auto it = zero.lower_bound(m[rains[i]]);
+                    if (it == zero.end())
+                        return vector<int>{};
+                    else {
+                        res[*it - 1] = rains[i];
+                        zero.erase(it);
+                    }
+                }
+                m[rains[i]] = i + 1;
+                // res[i] = -1;
+                res.push_back(-1);
+            } else {
+                // rains[i] == 0
+                zero.insert(i + 1);
+                res.push_back(1);
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1606. 找到处理最多请求的服务器](https://leetcode-cn.com/problems/find-servers-that-handled-most-number-of-requests/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+>
+> 核心在**构造待选列表以降低复杂度** 。
+>
+> 遍历每一个 `arrival` ， 数据范围较大不能每次遍历过程都模拟向后寻找。
+>
+> 考虑使用优先队列维护每一个服务器的结束时间，在每一个 `arrival` 到来的处理过程中，先更新之前曾执行任务的服务器列表 `busy` ，如果比当前时间小则加入可用集合 `svr` 。处理结束后，所有 `busy` 中的服务器均在当前处于忙状态。若 `svr` 空则无可用服务器，否则按题意找下标服务器，从 `svr` 清除并加入 `busy` 。
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<int> busiestServers(int k, vector<int>& arrival, vector<int>& load) {
+        int n = arrival.size(), mx = 0;
+        vector<int> cnt(n);
+        set<int> svr;
+        for (int i = 0; i < k; ++i) svr.insert(i);
+        priority_queue<pair<int, int>> busy;
+        for (int i = 0; i < n; ++i) {
+            int p = i % k, t = arrival[i], c = load[i];
+            while (!busy.empty() && busy.top().first * -1 <= t) {
+                svr.insert(busy.top().second);
+                busy.pop();
+            }
+            if (svr.empty()) continue;
+            auto it = svr.lower_bound(p);
+            if (it == svr.end()) it = svr.begin();
+            p = *it;
+            svr.erase(p);
+            busy.push({-t - c, p});
+            mx = max(mx, ++cnt[p]);
+        }
+        vector<int> res;
+        for (int i = 0; i < n; ++i)
+            if (cnt[i] == mx) res.push_back(i);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1834. 单线程 CPU](https://leetcode-cn.com/problems/single-threaded-cpu/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 外层**写法**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    struct Task {
+        int et, pt, id;
+        // heap
+        bool operator < (const Task & t) const {
+            return pt == t.pt ? id > t.id : pt > t.pt;
+        }
+    };
+    
+    vector<int> getOrder(vector<vector<int>>& tasks) {
+        int n = tasks.size();
+        vector<Task> qt;
+        for (int i = 0; i < n; ++ i )
+            qt.push_back({tasks[i][0], tasks[i][1], i});
+        sort(qt.begin(), qt.end(), [](const Task & a, const Task & b) {
+            return a.et == b.et ? a.pt < b.pt : a.et < b.et;
+        });
+        
+        priority_queue<Task> heap;
+        vector<int> res;
+        int last = 0;
+        LL time = 0;
+        // 每次过程执行一个任务
+        while (heap.size() || last < n) {
+            // 细节 更新time基准【所谓的时间戳快进】
+            if (heap.empty())
+                time = max(time, (LL)qt[last].et);
+            while (last < n && qt[last].et <= time)
+                heap.push(qt[last ++ ]);
+            
+            auto t = heap.top(); heap.pop();
+            res.push_back(t.id);
+            time += t.pt;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1942. 最小未被占据椅子的编号](https://leetcode-cn.com/problems/the-number-of-the-smallest-unoccupied-chair/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 维护堆即可 略
+> 
+> 注意 `当时间 i 为 st 时仍需弹出 used` ，或者直接加个 break 即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using PII = pair<int, int>;
+    
+    int smallestChair(vector<vector<int>>& times, int targetFriend) {
+        int n = times.size();
+        int st = times[targetFriend][0];
+        sort(times.begin(), times.end());
+        
+        priority_queue<int, vector<int>, greater<int>> q;
+        for (int i = 0; i < n; ++ i )
+            q.push(i);
+        priority_queue<PII, vector<PII>, greater<PII>> used;
+        
+        for (int i = 0, j = 0; i <= st; ++ i ) {
+            while (used.size() && used.top().first <= i) {
+                int id = used.top().second;
+                used.pop();
+                q.push(id);
+            }
+            // ATTENTION
+            if (i == st)
+                break;
+            if (i == times[j][0]) {
+                int id = q.top(); q.pop();
+                used.push({times[j][1], id});
+                j ++ ;
+            }
+        }
+        return q.top();
+    }
+};
+```
+
+##### **C++ 直接扫完*
+
+或者直接扫完返回结果
+
+```cpp
+class Solution {
+public:
+    int smallestChair(vector<vector<int>>& times, int targetFriend) {
+        vector<vector<int>> v(100010);
+        vector<vector<int>> w(100010);
+        int n = times.size();
+        for (int i = 0; i < n; ++i) {
+            int x = times[i][0], y = times[i][1];
+            v[x].push_back(i);
+            w[y].push_back(i);
+        }
+        set<int> H;
+        for (int i = 0; i < n; ++i) H.insert(i);
+        vector<int> res(n);
+        for (int i = 1; i <= 100000; ++i) {
+            for (auto id : w[i]) {
+                H.insert(res[id]);
+            }
+            for (auto id : v[i]) {
+                res[id] = *H.begin();
+                H.erase(res[id]);
+            }
+        }
+        return res[targetFriend];
     }
 };
 ```
@@ -2588,7 +3816,7 @@ public:
 };
 ```
 
-##### **C++**
+##### **C++ yxc**
 
 ```cpp
 // yxc
@@ -2604,6 +3832,249 @@ public:
             if (b > a && b > c || b < a && b < c) res ++ ;
         }
         return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1405. 最长快乐字符串](https://leetcode-cn.com/problems/longest-happy-string/)**
+> 
+> 题意: 
+> 
+> 生成任意一个尽可能长的快乐字符串(不包含3个连续相同字母) abc各自至多使用入参'a''b''c'次
+
+> [!TIP] **思路**
+> 
+> 贪心 选择每次和前面不重复的剩下最多的 依据剩下的数量选择放1/2个
+> 
+> TODO: 更优雅的实现
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    string longestDiverseString(int a, int b, int c) {
+        string s;
+        int last = 0;
+        while (a || b || c) {
+            int maxv = 0, newlast = 0, mindif = INT_MAX;
+            if (last != 1 && maxv < a) {
+                maxv = a;
+                newlast = 1;
+            }
+            if (last != 2 && maxv < b) {
+                maxv = b;
+                newlast = 2;
+            }
+            if (last != 3 && maxv < c) {
+                maxv = c;
+                newlast = 3;
+            }
+            // 前面选出abc中剩下可选最多的
+            if (newlast == 0) break;
+            if (newlast == 1) {
+                if (maxv > 1 && a >= b + 2 && a >= c + 2) {
+                    s += "aa";
+                    a -= 2;
+                } else {
+                    s += "a";
+                    a -= 1;
+                }
+            } else if (newlast == 2) {
+                if (maxv > 1 && b >= a + 2 && b >= c + 2) {
+                    s += "bb";
+                    b -= 2;
+                } else {
+                    s += "b";
+                    b -= 1;
+                }
+            } else if (newlast == 3) {
+                if (maxv > 1 && c >= a + 2 && c >= b + 2) {
+                    s += "cc";
+                    c -= 2;
+                } else {
+                    s += "c";
+                    c -= 1;
+                }
+            }
+            last = newlast;
+        }
+        return s;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1520. 最多的不重叠子字符串](https://leetcode-cn.com/problems/maximum-number-of-non-overlapping-substrings/)** [TAG]
+> 
+> 题意: 
+> 
+> 给你一个只包含小写字母的字符串 s ，你需要找到 s 中最多数目的非空子字符串，满足如下条件：
+> 
+> 这些字符串之间互不重叠，也就是说对于任意两个子字符串 s[i..j] 和 s[k..l] ，要么 j < k 要么 i > l 。
+> 
+> 如果一个子字符串包含字符 c ，那么 s 中所有 c 字符都应该在这个子字符串中。
+
+> [!TIP] **思路**
+> 
+> 贪心
+> 
+> 先获取满足条件2的所有子串，再依据条件1调整子串列表，随后按照子串长度贪心旋转即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<string> maxNumOfSubstrings(string s) {
+        int n = s.size(), inf = 1e9;
+        vector<vector<int>> pos(26);
+        vector<int> l(26, inf), r(26, -inf);
+        for (int i = 0; i < n; ++i) {
+            int v = s[i] - 'a';
+            pos[v].push_back(i);
+            l[v] = min(l[v], i);
+            r[v] = max(r[v], i);
+        }
+        // 扩边界
+        vector<pair<int, int>> H;
+        for (int i = 0; i < 26; ++i)
+            if (l[i] != inf) {
+                int nl = l[i], nr = r[i];
+                // ===> for(int j = l[i]+1; j < r[i]; ++j) {
+                // 思考 应该是下面这样
+                for (int j = l[i] + 1; j < nr; ++j) {
+                    int v = s[j] - 'a';
+                    if (l[v] >= nl && r[v] <= nr) continue;
+                    nl = min(nl, l[v]);
+                    nr = max(nr, r[v]);
+                    j = nl;  // 前面 continue确保此处一定会更新
+                }
+                H.push_back({nl, nr});
+            }
+        // 排序
+        sort(H.begin(), H.end(),
+             [&](const pair<int, int>& p1, const pair<int, int>& p2) {
+                 return p1.second - p1.first < p2.second - p2.first;
+             });
+        vector<string> res;
+        // 排除内包含
+        vector<bool> vis(H.size());
+        for (int i = 0; i < H.size(); ++i) {
+            if (vis[i]) continue;
+            auto [x, y] = H[i];
+            for (int j = 0; j < H.size(); ++j) {
+                auto [lj, rj] = H[j];
+                if (lj <= x && y <= rj) vis[j] = true;
+            }
+            res.push_back(s.substr(x, y - x + 1));
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1953. 你可以工作的最大周数](https://leetcode-cn.com/problems/maximum-number-of-weeks-for-which-you-can-work/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 贪心加思维
+> 
+> 考虑某个最长的任务以及剩下其他所有任务之和
+> 
+> 1. 如果其他任务之和小于最长任务，可完成周数为其他任务之和的二倍加一
+> 2. 如果其他任务之和小于等于最长任务，则所有任务皆可完成，直接累加
+> 
+> 做的太慢了。。。
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    long long numberOfWeeks(vector<int>& ms) {
+        sort(ms.begin(), ms.end());
+        int n = ms.size();
+        LL res = 0;
+        for (int i = 0; i < n - 1; ++ i )
+            res += (LL)ms[i];
+        if (res < ms[n - 1])
+            res += res + 1;
+        else
+            res += ms[n - 1];
+        return res;
+    }
+};
+```
+
+##### **C++ 直接遍历**
+
+也可以直接遍历同时取最值：
+
+```cpp
+using LL = long long;
+class Solution {
+public:
+    long long numberOfWeeks(vector<int>& milestones) {
+        LL sum = 0, m = 0;
+        for (LL x : milestones)
+            sum += x, m = max(m, x);
+        if (m > sum - m + 1)
+            return (sum - m) * 2 + 1;
+        return sum;
     }
 };
 ```

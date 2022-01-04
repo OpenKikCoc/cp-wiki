@@ -360,7 +360,104 @@ public:
 
 * * *
 
-### 思维
+> [!NOTE] **[LeetCode 1366. 通过投票对团队排名](https://leetcode-cn.com/problems/rank-teams-by-votes/)**
+> 
+> 题意: 
+> 
+> 参赛团队的排名次序依照其所获「排位第一」的票的多少决定。如果存在多个团队并列的情况，将继续考虑其「排位第二」的票的数量。
+> 
+> 以此类推，直到不再存在并列的情况。 如果在考虑完所有投票情况后仍然出现并列现象，则根据团队字母的字母顺序进行排名。
+
+> [!TIP] **思路**
+> 
+> **巧妙的补全一个字符维度**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 裸排序**
+
+```cpp
+class Solution {
+public:
+    struct node {
+        int cnt = 0, c = 0, n;
+        unordered_map<int, int> v;
+        bool operator<(const node& n) const {
+            int sz = this->n, a, b;
+            auto mpa = this->v, mpb = n.v;
+            for (int i = 0; i < sz; ++i) {
+                a = mpa[i], b = mpb[i];
+                if (a != b) return a > b;
+            }
+            return c < n.c;
+            // return rank < n.rank;
+        }
+    };
+    string rankTeams(vector<string>& votes) {
+        int n = votes.size();
+        int m = votes[0].size();
+        vector<node> v(26);
+        for (int i = 0; i < 26; ++i) v[i].c = i, v[i].n = m;
+
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < m; ++j) {
+                ++v[votes[i][j] - 'A'].v[j];
+                ++v[votes[i][j] - 'A'].cnt;
+            }
+        }
+        sort(v.begin(), v.end());
+        string res;
+        for (int i = 0; i < 26; ++i) {
+            if (v[i].cnt)
+                res.push_back(v[i].c + 'A');
+            else
+                break;
+        }
+
+        return res;
+    }
+};
+```
+
+##### **C++ 补全**
+
+```cpp
+class Solution {
+public:
+    string rankTeams(vector<string>& votes) {
+        string res;
+        vector<vector<int>> dw(27, vector<int>(27, 0));
+        for (auto p : votes) {
+            for (int i = 0; i < p.length(); ++i) {
+                dw[p[i] - 'A'][i]++;
+                dw[p[i] - 'A'][26] = 26 - (p[i] - 'A');
+            }
+        }
+        sort(dw.begin(), dw.end(), greater<vector<int>>());
+        for (int i = 0; i < dw.size(); ++i) {
+            if (dw[i][26]) res.push_back(26 - dw[i][26] + 'A');
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 思维 ==> TODO 细分
 
 > [!NOTE] **[AcWing 1396. 街头竞速](https://www.acwing.com/problem/content/1398/)**
 > 
@@ -567,6 +664,69 @@ public:
             }
         }
         sort(res.begin(), res.end());
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1419. 数青蛙](https://leetcode-cn.com/problems/minimum-number-of-frogs-croaking/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> "croak"合法串中 尽可能最少的青蛙的个数
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int minNumberOfFrogs(string croakOfFrogs) {
+        int n = croakOfFrogs.size();
+        if (n % 5) return -1;
+        int res = 0;
+        vector<int> hasNum(5, 0);
+        // 叫了c的 r的 a的 k的 必须时刻有顺序递减 >= 否则不合法
+        // 合法的情况下 c的数量就是当前最少的 统计c
+        for (int i = 0; i < n; ++i) {
+            if (croakOfFrogs[i] == 'c')
+                ++hasNum[0];
+            else if (croakOfFrogs[i] == 'r')
+                ++hasNum[1];
+            else if (croakOfFrogs[i] == 'o')
+                ++hasNum[2];
+            else if (croakOfFrogs[i] == 'a')
+                ++hasNum[3];
+            else if (croakOfFrogs[i] == 'k')
+                ++hasNum[4];
+
+            if (hasNum[0] < hasNum[1] || hasNum[1] < hasNum[2] ||
+                hasNum[2] < hasNum[3] || hasNum[3] < hasNum[4])
+                return -1;
+            res = max(res, hasNum[0]);
+            if (hasNum[4])
+                --hasNum[0], --hasNum[1], --hasNum[2], --hasNum[3], --hasNum[4];
+        }
+        if (hasNum[0] || hasNum[1] || hasNum[2] || hasNum[3] || hasNum[4])
+            return -1;
         return res;
     }
 };
@@ -1978,6 +2138,2010 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 1144. 递减元素使数组呈锯齿状](https://leetcode-cn.com/problems/decrease-elements-to-make-array-zigzag/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 注意 只递减 简单很多
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int movesToMakeZigzag(vector<int>& nums) {
+        int n = nums.size();
+        if (n < 2)
+            return 0;
+        int s1 = 0, s2 = 0;
+        for (int i = 0; i < n; ++ i ) {
+            int l = i > 0 ? nums[i - 1] : INT_MAX;
+            int r = i < n - 1 ? nums[i + 1] : INT_MAX;
+            int v = max(0, nums[i] - min(l, r) + 1);
+            if (i & 1)
+                s1 += v;
+            else
+                s2 += v;
+        }
+        return min(s1, s2);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1183. 矩阵中 1 的最大数量](https://leetcode-cn.com/problems/maximum-number-of-ones/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 计算左上角正方形的每个格子在整个矩形中有多少个等效位置，取等效位置最多的前maxOnes个即可。
+> 
+> > 先放好左上角，然后剩下的正方形都复制粘贴左上角的
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int maximumNumberOfOnes(int w, int h, int l, int maxOnes) {
+        vector<int> ve;
+        for (int i = 0; i < l; ++ i )
+            for (int j = 0; j < l; ++ j ) {
+                int v = 1;
+                v *= (w - i - 1) / l + 1;
+                v *= (h - j - 1) / l + 1;
+                ve.push_back(v);
+            }
+        sort(ve.begin(), ve.end(), greater<int>());
+        int res = 0;
+        for (int i = 0; i < maxOnes; ++ i )
+            res += ve[i];
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1191. K 次串联后最大子数组之和](https://leetcode-cn.com/problems/k-concatenation-maximum-sum/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+>
+> 当 k = 1 时，答案为当前数组的最大子序和（参考股票问题）
+>
+> 当 k >= 2 时，答案为三者的最大值：
+>
+> 1.  k = 1 时的答案
+> 2.  最大前缀和 + 全部和 - 最小前缀和 （即：最大后缀和 + 最大前缀和）
+> 3.  k = 1 时的答案 + (k - 1)*当前数组的和
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const int mod = 1e9 + 7;
+    using LL = long long;
+    int kConcatenationMaxSum(vector<int>& arr, int k) {
+        LL minv = 0, maxv = 0, maxd = 0, sum = 0;
+        for (auto v : arr) {
+            sum += v;
+            if (sum < minv) minv = sum;
+            if (sum > maxv) maxv = sum;
+            if (sum - minv > maxd) maxd = sum - minv;
+        }
+        LL k1 = maxd, k2 = maxv + sum - minv, kn = maxd + (k - 1) * sum;
+        return k == 1 ? k1 % mod : max({k1, k2, kn}) % mod;
+    }
+};
+```
+
+##### **C++ liuzhou**
+
+```cpp
+// liuzhou_101
+
+class Solution {
+public:
+    const int mod = 1e9 + 7;
+    using LL = long long;
+    int kConcatenationMaxSum(vector<int>& arr, int k) {
+        int n = arr.size();
+        vector<LL> s(2 * n + 1);
+        LL minv = 0, ret1 = 0, ret2 = 0;
+        for (int i = 1; i <= 2 * n; ++ i ) {
+            s[i] = s[i - 1] + arr[(i - 1) % n];
+            minv = min(minv, s[i]);
+            if (i <= n)
+                ret1 = max(ret1, s[i] - minv);
+            ret2 = max(ret2, s[i] - minv);
+        }
+        
+        if (k == 1) return ret1 % mod;
+        if (k == 2) return ret2 % mod;
+        
+        LL t1 = ret1, t2 = ret2;
+        t1 += LL(k - 1) * s[n];
+        t2 += LL(k - 2) * s[n];
+        LL res = max({ret1, ret2, t1, t2});
+        return res % mod;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1247. 交换字符使得字符串相同](https://leetcode-cn.com/problems/minimum-swaps-to-make-strings-equal/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 规律 统计
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int minimumSwap(string s1, string s2) {
+        if (s1.size() != s2.size()) return false;
+        int n = s1.size();
+        // 统计有多少 x-y 和 y-x
+        int c1 = 0, c2 = 0;
+        for (int i = 0; i < n; ++i) {
+            if (s1[i] == 'x' && s2[i] == 'y')
+                ++c1;
+            else if (s1[i] == 'y' && s2[i] == 'x')
+                ++c2;
+        }
+        // 对于每一对 x-y,x-y y-x,y-x 一次操作即可
+        int res = c1 / 2 + c2 / 2;
+        c1 %= 2, c2 %= 2;
+        if (c1 + c2 == 1)
+            return -1;
+        else if (c1 + c1 == 2)
+            res += 2;  // 一对 x-y y-x 需要两次
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1256. 加密数字](https://leetcode-cn.com/problems/encode-number/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 规律
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+自己模拟实现如下：
+
+主要是找到该数字所在的段，随后计算 01 值
+
+```cpp
+class Solution {
+public:
+    // 0位的数有1个
+    // 1       2
+    // 2       4
+    // 3       8
+    string encode(int num) {
+        if (!num)
+            return "";
+        else if (num == 1)
+            return "0";
+        else if (num == 2)
+            return "1";
+        int b = 0, c = 1, tot = 1;
+        while (num - tot >= c * 2) {
+            ++b;
+            c *= 2;
+            tot += c;
+        }
+        // num 位数为 b+1
+        // cout <<"num="<<num<<" b="<<b<<" c="<<c <<" tot="<<tot<<endl;
+        int idx = num - tot;
+        int p = 1 << b;
+        string res;
+        while (p) {
+            if (p & idx)
+                res.push_back('1');
+            else
+                res.push_back('0');
+            p >>= 1;
+        }
+        return res;
+    }
+}
+```
+
+##### **C++ 找规律**
+
+可以直接找规律：结果就是 原来的值+1 转换为二进制后去除最高位
+
+```cpp
+class Solution {
+public:
+    string encode(int num) {
+        ++num;
+        string res;
+        while (num) {
+            if (num & 1)
+                res.push_back('1');
+            else
+                res.push_back('0');
+            num >>= 1;
+        }
+        res.pop_back();
+        reverse(res.begin(), res.end());
+        return res;
+    }
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1328. 破坏回文串](https://leetcode-cn.com/problems/break-a-palindrome/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 删除一个字符使得原始回文串不再回文 且新字符串字典序最小 若做不到返回空串
+> 
+> 找到前半部分比 a 大的改为 a 若不存在说明全是a 把最后一个改为+1（其实就是改为b）即可
+> 
+> > 需要稍加思考的是中间字符的处理 n为奇数则 5: 01-345 6: 012-345 中间字符不能动 所以 i < n/2
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    string breakPalindrome(string palindrome) {
+        int n = palindrome.size();
+        if (n <= 1) return "";
+        for (int i = 0; i < n / 2; ++i) {
+            if (palindrome[i] > 'a') {
+                palindrome[i] = 'a';
+                return palindrome;
+            }
+        }
+        // if(palindrome.back() == 'z') return "";	// 不用
+        // 因为可以从前到后遍历注定了后面不会比a大
+        palindrome.back() = palindrome.back() + 1;
+        return palindrome;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1352. 最后 K 个数的乘积](https://leetcode-cn.com/problems/product-of-the-last-k-numbers/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 想到了把0处理为1 以及使用前缀积 没想到遇到0就把前缀积更新为1 导致溢出出错
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class ProductOfNumbers {
+public:
+    vector<int> num, get;  //, zero;
+    int zero;
+    ProductOfNumbers() {
+        num.push_back(1);
+        get.push_back(1);
+    }
+
+    void add(int m) {
+        if (m) {
+            num.push_back(m);
+            get.push_back((get[get.size() - 1]) * m);
+        } else {
+            zero = num.size();
+            // zero.push_back(num.size());
+            num.push_back(1);
+            // 因为出现为0的 前面都已经没有价值了 可以直接赋值1
+            // get.push_back(get[get.size()-1]);
+            get.push_back(1);
+        }
+    }
+
+    int getProduct(int k) {
+        int res = 1, n = num.size();
+        // for (auto v : zero) if (v >= n - k) return 0;
+        if (zero >= n - k) return 0;
+        return get[n - 1] / get[n - k - 1];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1574. 删除最短的子数组使剩余数组有序]()** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 需要注意题意：**删除一个子数组 子数组指一段连续的子序列**
+> 
+> 考虑从后面找到最长不上升序列，随后 **双指针**
+> 
+> - 右指针在后缀里移动, 每次固定左指针, 右指针往后试探到符合条件的位置
+> 
+> - 然后中间就是要删除的长度, 取最小值就是答案
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int findLengthOfShortestSubarray(vector<int>& arr) {
+        int n = arr.size();
+        int R = n - 1;
+        for (int i = n - 1; i >= 0; --i)
+            if (i == n - 1 || arr[i] <= arr[i + 1])
+                R = i;
+            else
+                break;
+        int res = R;
+        for (int i = 0, j = R; i < R; ++i) {
+            if (!i || arr[i] >= arr[i - 1]) {
+                while (j < n && arr[j] < arr[i]) ++j;
+                res = min(res, j - i - 1);
+            } else
+                break;
+        }
+        return max(res, 0);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1585. 检查字符串是否可以通过排序子字符串得到另一个字符串](https://leetcode-cn.com/problems/check-if-string-is-transformable-with-substring-sort-operations/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 因为排序不能改变相对位置 也即： 原本 x1 < x2 且边后 x1 在 x2 后面 比如 `8xxx5` 改之后还是 `8 5`
+> 
+> 排序会改变一段区间内元素的相对位置
+> 
+> 对于 s[i] 到 i 位置位置的每一个数 前面比它小的数的数量都必须小于等于 t[i] 位置前面比它小的数的数量
+> 
+> > 题解区有别的做法，如 `操作前后逆序对树木不增加即可转换` ，感觉并不优雅。
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+
+class Solution {
+public:
+    bool isTransformable(string s, string t) {
+        int n = s.size();
+        vector<int> cntt(10), cnts(10);
+        vector<vector<int>> lest(10, vector<int>()), less(10, vector<int>());
+        for (int i = 0; i < n; ++i) {
+            int v = t[i] - '0';
+            int les = 0;
+            for (int i = 0; i < v; ++i) les += cntt[i];
+            lest[v].push_back(les);
+            ++cntt[v];
+        }
+        for (int i = 0; i < n; ++i) {
+            int v = s[i] - '0';
+            int les = 0;
+            for (int i = 0; i < v; ++i) les += cnts[i];
+            less[v].push_back(les);
+            int sz = less[v].size();
+            if (sz > lest[v].size() || les > lest[v][sz - 1]) return false;
+            ++cnts[v];
+        }
+        return true;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1702. 修改后的最大二进制字符串](https://leetcode-cn.com/problems/maximum-binary-string-after-change/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 模拟必然超时
+> 
+> 考虑：
+> 
+> > 0 1 1 1 1 0 ===> 1 0 1 1 1 1 消除第一位和末尾0 产生第二位0
+> 
+> 也即：每将最前面的0向后移动一位需要消耗掉后方一个0
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    string maximumBinaryString(string binary) {
+        int n = binary.size(), k = 0;
+        // 找到第一个0
+        while (k < n && binary[k] == '1') ++ k ;
+        if (k == n) return binary;
+        
+        int cnt = 0;
+        for (int i = k + 1; i < n; ++ i )
+            if (binary[i] == '0')
+                ++ cnt;
+        string res = string(n, '1');
+        res[k + cnt] = '0';
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1719. 重构一棵树的方案数](https://leetcode-cn.com/problems/number-of-ways-to-reconstruct-a-tree/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 非常非常非常好的综合思维题 难度拉满
+> 
+> TODO 重复做
+> 
+> 删点
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 如果一个点只有一个儿子 则可以缩点
+    
+    int checkWays(vector<vector<int>>& pairs) {
+        // bitset 方便在比较的时候压位以降低复杂度
+        bitset<501> g[501];
+        for (auto & p : pairs) {
+            int a = p[0], b = p[1];
+            g[a][b] = g[b][a] = 1;
+        }
+        for (int i = 1; i <= 500; ++ i )
+            if (g[i].count())
+                g[i][i] = 1;
+        
+        int res = 1;
+        set<int> rms;   // 记录删掉的点
+        for (int i = 1; i <= 500; ++ i ) {
+            // 循环删点
+            if (!g[i].count()) continue;
+            for (int j = i + 1; j <= 500; ++ j )
+                if (g[i] == g[j]) {
+                    res = 2;
+                    rms.insert(j);
+                    g[j][j] = 0;
+                }
+        }
+        
+        // 只保留单向关系
+        vector<int> vers;
+        for (auto & p : pairs) {
+            int a = p[0], b = p[1];
+            if (rms.count(a) || rms.count(b))
+                g[a][b] = g[b][a] = 0;
+            else vers.push_back(a), vers.push_back(b);
+        }
+        if (vers.size()) {
+            sort(vers.begin(), vers.end());
+            vers.erase(unique(vers.begin(), vers.end()), vers.end());
+        }
+        sort(vers.begin(), vers.end(), [&](int a, int b) {
+            return g[a].count() > g[b].count();
+        });
+        
+        for (auto & p : pairs) {
+            int & a = p[0], & b = p[1];
+            if (!rms.count(a) && !rms.count(b)) {
+                if (g[a].count() == g[b].count()) return 0;
+                else if (g[a].count() > g[b].count()) swap(a, b);
+            }
+        }
+        
+        for (auto & p : pairs) {
+            int & a = p[0], & b = p[1];
+            if (!rms.count(a) && !rms.count(b))
+                g[a][b] = 0;
+        }
+        
+        // 是否有一个点可以到达所有点
+        if (vers.size() && g[vers[0]].count() != vers.size()) return 0;
+        
+        for (int i = 0; i < vers.size(); ++ i ) {
+            int a = vers[i];
+            if (!g[a].count()) continue;
+            for (int j = i + 1; j < vers.size(); ++ j ) {
+                int b = vers[j];
+                // 此时ab必然是一条边
+                if (g[a][b]) {
+                    if ((g[a] & g[b]) != g[b]) return 0;
+                    g[a] &= ~g[b];  // 删掉b子集
+                }
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1733. 需要教语言的最少人数](https://leetcode-cn.com/problems/minimum-number-of-people-to-teach/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 要教的语言必定是最终 persons 中交流所使用的语言
+> 
+> 选择剩余 persons 中会的人最多的语言即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int minimumTeachings(int n, vector<vector<int>>& lg, vector<vector<int>>& fs) {
+        int m = lg.size();
+        vector<vector<bool>> g(m + 1, vector<bool>(n + 1));
+        
+        for (int i = 0; i < lg.size(); ++ i )
+            for (auto x : lg[i])
+                g[i + 1][x] = true;
+        
+        set<int> persons;
+        for (auto & f : fs) {
+            int x = f[0], y = f[1];
+            bool flag = false;
+            for (int i = 1; i <= n; ++ i )
+                if (g[x][i] && g[y][i]) {
+                    flag = true;
+                    break;
+                }
+            if (flag) continue;
+            persons.insert(x), persons.insert(y);
+        }
+        
+        int s = 0;
+        vector<int> cnt(n + 1);
+        for (auto x : persons)
+            for (int i = 1; i <= n; ++ i )
+                if (g[x][i]) {
+                    cnt[i] ++ ;
+                    s = max(s, cnt[i]);
+                }
+        return persons.size() - s;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1753. 移除石子的最大得分](https://leetcode-cn.com/problems/maximum-score-from-removing-stones/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 如果不是 `一个堆大于剩下俩堆` 则必然可以取完
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    bool check(int a, int b, int c) {
+        int cnt = 0;
+        if (a) ++ cnt;
+        if (b) ++ cnt;
+        if (c) ++ cnt;
+        return cnt > 1;
+    }
+    int maximumScore(int a, int b, int c) {
+        int res = 0;
+        while (check(a, b, c)) {
+            int na = max(max(a, b), c);
+            int nc = min(min(a, b), c);
+            int nb = a + b + c - na - nc;
+            a = na, b = nb, c = nc;
+            int cnt = min(a, b) - c;
+            if (cnt) {
+                a -= cnt, b -= cnt;
+                res += cnt;
+            } else {
+                // b == c
+                if (a < 2) {
+                    a -= 1, b -= 1;
+                    res += 1;
+                } else if (a / 2 >= b) {
+                    cnt = b;
+                    a -= cnt * 2, b -= cnt, c -= cnt;
+                    res += cnt * 2;
+                } else {
+                    cnt = a / 2;
+                    a -= cnt * 2, b -= cnt, c -= cnt;
+                    res += cnt * 2;
+                }
+            }
+            // cout << a << ' ' << b << ' ' << c << endl;
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 极简**
+
+```cpp
+class Solution {
+public:
+    int maximumScore(int a, int b, int c) {
+        int d[] = {a, b, c};
+        sort(d, d + 3);
+        int x = 0;
+        if (d[0] + d[1] < d[2]) x = d[2] - (d[0] + d[1]);
+        else x = (a + b + c) % 2;
+        return (a + b + c - x) / 2;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1775. 通过最少操作次数使数组的和相等](https://leetcode-cn.com/problems/equal-sum-arrays-with-minimum-number-of-operations/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 技巧性
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 每次挑选能够变化尽可能大的数值
+    int minOperations(vector<int>& nums1, vector<int>& nums2) {
+        int n1 = nums1.size(), n2 = nums2.size();
+        int s1 = 0, s2 = 0;
+        for (auto x : nums1) s1 += x;
+        for (auto x : nums2) s2 += x;
+        if (s1 < s2)
+            swap(s1, s2), swap(n1, n2), swap(nums1, nums2);
+        
+        // s1 > s2
+        // 可以达到的变化量(减少量)
+        vector<int> cs(6, 0);
+        for (auto x : nums1) cs[x - 1] ++ ;
+        for (auto x : nums2) cs[6 - x] ++ ;
+        
+        int cur = 0, res = 0;
+        for (int i = 5; i >= 1; -- i )
+            if (cur + i * cs[i] < s1 - s2)
+                cur += i * cs[i], res += cs[i];
+            else {
+                int dif = s1 - s2 - cur;
+                int use = (dif + i - 1) / i;
+                cur += i * use, res += use;
+                break;
+            }
+        if (cur < s1 - s2) return -1;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1802. 有界数组中指定下标处的最大值](https://leetcode-cn.com/problems/maximum-value-at-a-given-index-in-a-bounded-array/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 注意细节 有好几个超时的 case
+> 
+> 另有二分做法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int maxValue(int n, int index, int maxSum) {
+        maxSum -= n;
+        int v = 1, w = 0;
+        while (maxSum) {
+            int tot = min(index + w, n - 1) - max(index - w, 0) + 1;
+            if (tot >= n) {
+                // 扩张已经无用了
+                v += maxSum / n;
+                break;
+            }
+            if (maxSum >= tot) {
+                maxSum -= tot;
+                v ++ ;
+                w ++ ;
+            } else
+                break;
+        }
+        return v;
+    }
+};
+```
+
+##### **C++ 二分**
+
+大量用二分的 也可以 复杂度稍高一些
+
+注意 用二分的方法在具体计算时仍要借助公式优化计算过程 否则仍然TLE
+
+```cpp
+class Solution {
+public:
+    long long getSum(int len, int mx) {
+        long long a, b, more = 0;
+        if (len >= mx) {
+            a = 1, b = mx;
+            more = len - mx;
+        } else {
+            a = mx - len + 1;
+            b = mx;
+            more = 0;
+        }
+        
+        long long c = (b - a + 1);
+        return (a + b) * c / 2 + more;
+    }
+    
+    int maxValue(int n, int index, int maxSum) {
+        int l = 0, r = maxSum;
+        while (l < r) {
+            int mid = (l + r + 1) / 2;
+            long long sum = getSum(index + 1, mid) + getSum(n - index, mid) - mid;
+            if (sum <= maxSum) {
+                l = mid;
+            } else {
+                r = mid - 1;
+            }
+        }
+        return l;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode LCP 33. 蓄水](https://leetcode-cn.com/problems/o8SXZn/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思维题
+> 
+> 一开始在贪心，实际上可以考虑枚举的思路
+> 
+> 注意需特判 vat 的和为 0 的情况
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:    
+    int storeWater(vector<int>& bucket, vector<int>& vat) {
+        {
+            int s = 0;
+            for (auto v : vat)
+                s += v;
+            if (!s)
+                return 0;
+        }
+        
+        int n = bucket.size();
+        unordered_map<int, int> hash;
+        
+        for (int i = 0; i < n; ++ i ) {
+            int b = bucket[i], v = vat[i];
+            for (int j = 1; j <= 1e4; ++ j )
+                hash[j] += max((v + j - 1) / j - b, 0);
+        }
+        
+        int res = INT_MAX;
+        for (auto [k, v] : hash)
+            res = min(res, k + v);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1878. 矩阵中最大的三个菱形和](https://leetcode-cn.com/problems/get-biggest-three-rhombus-sums-in-a-grid/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 暴力可过
+> 
+> 更优雅的实现 即写的时候想的利用前缀和思想
+> 
+> > 存以每个点为底点的两个斜方向的前缀和
+> > 
+> > 形如
+> > 
+> > \ / \ / \ / V (x, y) s1 计算左上斜着的和 s2 计算右上
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 暴力**
+
+```cpp
+class Solution {
+public:
+    vector<vector<int>> g;
+    vector<int> t;
+    int n, m;
+    
+    bool check(int x, int y, int d) {
+        return x - d >= 0 && x + d < n && y - d >= 0 && y + d < m;
+    }
+    
+    int sum(int x, int y, int d) {
+        int ret = 0;
+        if (d)
+            ret = g[x - d][y] + g[x + d][y] + g[x][y - d] + g[x][y + d];
+        else
+            ret = g[x][y];
+        
+        for (int i = x - 1, j = y - d + 1; j < y; i -- , j ++ )
+            ret += g[i][j];
+        for (int i = x + 1, j = y - d + 1; j < y; i ++ , j ++ )
+            ret += g[i][j];
+        for (int i = x - 1, j = y + d - 1; j > y; i -- , j -- )
+            ret += g[i][j];
+        for (int i = x + 1, j = y + d - 1; j > y; i ++ , j -- )
+            ret += g[i][j];
+        return ret;
+    }
+    
+    void get(int x, int y) {
+        int d = 0;
+        while (check(x, y, d)) {
+            t.push_back(sum(x, y, d));
+            d ++ ;
+        }
+    }
+    
+    vector<int> getBiggestThree(vector<vector<int>>& grid) {
+        this->g = grid;
+        n = g.size(), m = g[0].size();
+        
+        t.clear();
+        for (int i = 0; i < n; ++ i )
+            for (int j = 0; j < m; ++ j )
+                get(i, j);
+        sort(t.begin(), t.end());
+        t.erase(unique(t.begin(), t.end()), t.end());
+        reverse(t.begin(), t.end());
+        
+        vector<int> res;
+        for (int i = 0; i < 3 && i < t.size(); ++ i )
+            res.push_back(t[i]);
+        return res;
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+// yxc
+const int N = 110;
+
+int s1[N][N], s2[N][N];
+
+class Solution {
+public:
+    vector<int> getBiggestThree(vector<vector<int>>& g) {
+        memset(s1, 0, sizeof s1);
+        memset(s2, 0, sizeof s2);
+        int n = g.size(), m = g[0].size();
+        for (int i = 1; i <= n; i ++ )
+            for (int j = 1; j <= m; j ++ ) {
+                s1[i][j] = s1[i - 1][j - 1] + g[i - 1][j - 1];
+                s2[i][j] = s2[i - 1][j + 1] + g[i - 1][j - 1];
+            }
+        
+        set<int> S;
+        for (int i = 1; i <= n; i ++ )
+            for (int j = 1; j <= m; j ++ ) {
+                S.insert(g[i - 1][j - 1]);
+                for (int k = 1; i - k >= 1 && i + k <= n && j - k >= 1 && j + k <= m; k ++ ) {
+                    int a = s2[i][j - k] - s2[i - k][j];
+                    int b = s1[i - 1][j + k - 1] - s1[i - k - 1][j - 1];
+                    int c = s2[i + k - 1][j + 1] - s2[i - 1][j + k + 1];
+                    int d = s1[i + k][j] - s1[i][j - k];
+                    S.insert(a + b + c + d);
+                }
+                while (S.size() > 3) S.erase(S.begin());
+            }
+        return vector<int>(S.rbegin(), S.rend());
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1888. 使二进制字符串字符交替的最少反转次数](https://leetcode-cn.com/problems/minimum-number-of-flips-to-make-the-binary-string-alternating/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+>
+> **经典通用思路**
+>
+> 分析，经过若干轮转：
+>
+> 1. n 为偶数
+>
+>    总计只有 `010101...01` 和 `101010...10` 两种情况，取 min 即可
+>
+> 2. 两大类
+>
+>    2.1 `101010...01` 或 `010101...10` 首尾相同
+>
+>    2.2 `010101...11...01` 或 `101010...00...10` 中间有两个相同相同，两侧分别交替
+>
+> > 通用思路：
+> >
+> > **前后缀分解**
+> >
+> > > ```
+> > > l[0][i];		// 以 0 从【起点】开始交替出现直到 i 的最小修改次数
+> > > l[1][i];		// 以 1 从【起点】开始交替出现直到 i 的最小修改次数
+> > > r[0][i];		// 以 0 从【末尾】开始交替出现直到 i 的最小修改次数
+> > > r[1][i];		// 以 1 从【末尾】开始交替出现直到 i 的最小修改次数
+> > > ```
+> > >
+> > > 则每个位置 `i` 和 `i + 1` 都可以 `O(1)` 求出。
+> 
+> 还有滑动窗口：最终一定是形成 010101 或 101010 这样的字符串，故直接**将当前串与目标串比较并维护窗口**的思路
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 前后缀分解**
+
+```cpp
+class Solution {
+public:
+    int minFlips(string s) {
+        int n = s.size();
+        vector<int> l[2], r[2];
+        l[0] = l[1] = r[0] = r[1] = vector<int>(n);
+        
+        for (int i = 0; i < 2; ++ i )
+            // c 当前变了多少个字母
+            for (int j = 0, c = 0, k = i; j < n; ++ j , k ^= 1) {
+                if (k != s[j] - '0')
+                    c ++ ;
+                l[i][j] = c;
+            }
+        for (int i = 0; i < 2; ++ i )
+            for (int j = n - 1, c = 0, k = i; j >= 0; -- j , k ^= 1) {
+                if (k != s[j] - '0')
+                    c ++ ;
+                r[i][j] = c;
+            }
+        
+        if (n % 2 == 0)
+            return min(l[0][n - 1], l[1][n - 1]);
+        else {
+            int res = min(l[0][n - 1], l[1][n - 1]);
+            for (int i = 0; i + 1 < n; ++ i ) {
+                res = min(res, l[0][i] + r[1][i + 1]);
+                res = min(res, l[1][i] + r[0][i + 1]);
+            }
+            return res;
+        }
+    }
+};
+```
+
+##### **C++ 滑动窗口1**
+
+```cpp
+class Solution {
+public:
+    int minFlips(string s) {
+        int n = s.size(), cnt = 0;
+        // 将字符串变成 01 串需要反转的次数
+        string tar = "01";
+        for (int i = 0; i < n; ++ i )
+            cnt += (s[i] != tar[i % 2]);
+        
+        int res = min(cnt, n - cnt);
+        s += s;
+        for (int i = 0; i < n; ++ i ) {
+            cnt -= (s[i] != tar[i % 2]);
+            cnt += (s[i + n] != tar[(i + n) % 2]);
+            res = min(res, min(cnt, n - cnt));
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 滑动窗口2**
+
+```cpp
+class Solution {
+public:
+    int minFlips(string s) {
+        int n = s.size();
+        s = s + s;
+        
+        string a, b;    // a = "0101...", b = "1010..."
+        for (int i = 0; i < 2 * n; ++ i )
+            a.push_back('0' + i % 2), b.push_back('0' + (i + 1) % 2);
+        
+        int res = n, da = 0, db = 0;
+        for (int i = 0; i < 2 * n; ++ i ) {
+            if (s[i] != a[i])
+                da ++ ;
+            if (s[i] != b[i])
+                db ++ ;
+            
+            // 维护窗口的实现
+            if (i >= n) {
+                if (s[i - n] != a[i - n])
+                    da -- ;
+                if (s[i - n] != b[i - n])
+                    db -- ;
+            }
+            if (i >= n - 1)
+                res = min(res, min(da, db));
+        }
+        return res;
+    }
+};
+
+// 转化为常见方式
+class Solution {
+public:
+    int minFlips(string s) {
+        int n = s.size();
+        s = s + s;
+        
+        string a, b;    // a = "0101...", b = "1010..."
+        for (int i = 0; i < 2 * n; ++ i )
+            a.push_back('0' + i % 2), b.push_back('0' + (i + 1) % 2);
+        
+        int res = n, da = 0, db = 0;
+        for (int i = 0; i < n; ++ i ) {
+            if (s[i] != a[i])
+                da ++ ;
+            if (s[i] != b[i])
+                db ++ ;
+        }
+        
+        res = min(res, min(da, db));
+        
+        for (int i = n; i < 2 * n; ++ i ) {
+            if (s[i] != a[i])
+                da ++ ;
+            if (s[i] != b[i])
+                db ++ ;
+            
+            {
+                if (s[i - n] != a[i - n])
+                    da -- ;
+                if (s[i - n] != b[i - n])
+                    db -- ;
+            }
+            
+            res = min(res, min(da, db));
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 自己思路TLE**
+
+```cpp
+// 51 / 65 个通过测试用例
+class Solution {
+public:
+    const static int N = 2e5 + 10;
+    int n;
+    int f[N];
+    string ns;
+    
+    int get(int l, int r) {
+        int c = 0;
+        for (int i = l, flag = 1; i < r; i += f[i], flag ^= 1 )
+            if (flag == 0)
+                c += min(r - i, f[i]);
+        
+        return min(c, n - c);
+    }
+    
+    int minFlips(string s) {
+        n = s.size();
+        ns = s + s;
+        
+        memset(f, 0, sizeof f);
+        f[2 * n] = 1;
+        for (int i = 2 * n - 1; i > 0; -- i )
+            if (ns[i - 1] != ns[i])
+                f[i] = f[i + 1] + 1;
+            else
+                f[i] = 1;
+        
+        int res = n;
+        for (int i = 1; i <= n; i += f[i] ) {
+            int t = get(i, i + n);
+            // cout << "i = " << i << " t = " << t << endl;
+            res = min(res, min(t, n - t));
+        }
+        // cout << endl;
+        
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1930. 长度为 3 的不同回文子序列](https://leetcode-cn.com/problems/unique-length-3-palindromic-subsequences/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 注意 l & r 避免数值溢出
+> 
+> 另有 trick 的思想和解法: set 可以用数组标记替代
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int countPalindromicSubsequence(string s) {
+        int n = s.size();
+        vector<vector<int>> sum(n + 1, vector<int>(26));
+        
+        for (int i = 1; i <= n; ++ i ) {
+            int v = s[i - 1] - 'a';
+            for (int j = 0; j < 26; ++ j )
+                if (j == v)
+                    sum[i][j] = sum[i - 1][j] + 1;
+                else
+                    sum[i][j] = sum[i - 1][j];
+        }
+        
+        unordered_set<string> S;
+        for (int i = 2; i < n; ++ i ) {
+            int v = s[i - 1] - 'a';
+            for (int j = 0; j < 26; ++ j ) {
+                int l = sum[i - 1][j], r = sum[n][j] - sum[i][j];
+                if (l && r) {   // ATTENTION && 而不是 *
+                    string t;
+                    t.push_back('a' + j);
+                    t.push_back('a' + v);
+                    t.push_back('a' + j);
+                    S.insert(t);
+                }
+            }
+        }
+        return S.size();
+    }
+};
+```
+
+##### **C++ trick**
+
+```cpp
+class Solution {
+public:
+    int countPalindromicSubsequence(string s) {
+        int n = s.size();
+        vector<int> u(26), v(26);
+        for (int i = 0; i < n; ++i)
+            u[s[i]-'a'] ++;
+        vector<vector<int>> f(26, vector<int>(26));
+        for (int i = 0; i < n; ++i) {
+            u[s[i]-'a'] --;
+            for (int c = 0; c < 26; ++c)
+                if (u[c] && v[c]) f[s[i]-'a'][c] = 1;
+            v[s[i]-'a'] ++;
+        }
+        int res = 0;
+        for (int a = 0; a < 26; ++a)
+            for (int b = 0; b < 26; ++b)
+                res += f[a][b];
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1975. 最大方阵和](https://leetcode-cn.com/problems/maximum-matrix-sum/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 简单推理易知，总是能【通过传递的方式】同时使两个位置的值取反
+> 
+> 显然扫一遍统计即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// 虚拟比赛代码
+class Solution {
+public:
+    using LL = long long;
+    
+    int n;
+    
+    long long maxMatrixSum(vector<vector<int>>& matrix) {
+        this->n = matrix.size();
+        LL s = 0, ns = 0, mv = INT_MAX, msv = INT_MIN, c = 0;
+        for (int i = 0; i < n; ++ i )
+            for (int j = 0; j < n; ++ j ) {
+                LL t = matrix[i][j];
+                if (t >= 0)
+                    s += t, mv = min(mv, t);
+                else
+                    ns += t, msv = max(msv, t), c ++ ;
+            }
+        if (c & 1) {
+            if (-msv > mv)
+                s = s - ns - mv - mv;
+            else
+                s = s - (ns - msv) + msv;
+        } else
+            s -= ns;
+        return s;
+    }
+};
+```
+
+##### **C++ 简化**
+
+```cpp
+// 进一步简化 by Heltion
+class Solution {
+public:
+    long long maxMatrixSum(vector<vector<int>>& matrix) {
+        int n = 0, mn = 100000;
+        long long sum = 0;
+        for (auto& v : matrix) for (int x : v) {
+            sum += abs(x);
+            if (x < 0) n += 1;
+            mn = min(abs(x), mn);
+        }
+        if (n & 1) return sum - mn * 2;
+        return sum;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1982. 从子集的和还原数组](https://leetcode-cn.com/problems/find-array-given-subset-sums/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 核心在于将负数集合转化为正数集合
+> 
+> 随后简化处理流程
+> 
+> > https://leetcode-cn.com/problems/find-array-given-subset-sums/solution/ti-jie-cong-zi-ji-de-he-huan-yuan-shu-zu-q9qw/
+> > 
+> > 全非负数的基础版 题目链接 https://www.codechef.com/problems/ANUMLA
+> > 
+> > 理解思路
+> 
+> > https://leetcode-cn.com/problems/find-array-given-subset-sums/solution/jian-yi-ti-jie-by-sfiction-9i43/
+> > 
+> > 本题有负值，则将所有数 -min_element 转化为非负问题
+> > 
+> > [非负问题中最小值必为0 次小值就是原集合的最小值] ===> [最大值与最小值差即为该数的绝对值 正负性待定]。递归求解
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<int> recoverArray(int n, vector<int>& a) {
+        sort(a.begin(), a.end());
+        int B = -a[0];
+        
+        // 非负集合
+        vector<int> b;
+        for (auto x : a)
+            b.push_back(B + x);
+        
+        vector<int> res;
+        for (int _ = 0; _ < n; ++ _ ) {
+            // 最小值为空集 次小值-最小值即为当前最小的数的绝对值
+            int t = b[1] - b[0];
+            res.push_back(t);
+            
+            // d 替代set实现值的删除
+            int m = b.back();
+            vector<int> d(m + 1);
+            for (auto x : b)
+                d[x] ++ ;
+            b.clear();
+            // ATTENTION
+            for (int i = 0; i <= m; ++ i )
+                if (d[i]) {
+                    b.push_back(i);
+                    d[i] -- ;
+                    d[i + t] -- ;
+                    i -- ; // 回退 继续检查当前值
+                }
+        }
+        
+        // 枚举子集
+        for (int i = 0; i < 1 << n; ++ i ) {
+            int t = 0;
+            for (int j = 0; j < n; ++ j )
+                if (i >> j & 1)
+                    t += res[j];
+            if (t == B) {
+                // 则该子集中的所有数字都应是负数
+                for (int j = 0; j < n; ++ j )
+                    if (i >> j & 1)
+                        res[j] *= -1;
+                return res;
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1996. 游戏中弱角色的数量](https://leetcode-cn.com/problems/the-number-of-weak-characters-in-the-game/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+>
+> **重点在于：单纯的按照两个维度 升/降 序排列会遇到无法区分的问题**
+>
+> **为了达到区分效果 两个维度分别降升序**
+>
+> > Trick 思维题 利用排序规则
+>
+> 显然可以先按某一维度排序 如 `按第一维度从大到小排序`
+>
+> 排序后，考虑遍历：
+>
+> - 如果第二维度以同样规则 `从大到小` 排序，则无法严格区分在 **第一维度上 `大于/等于`** 当前遍历位置的元素
+>
+> - 考虑第二维度按相反规则 `从小到大` 排序，则可以在遍历时维护第二维度的最大值
+>
+>   此时：
+>
+>   - 该最大值一定代表着 **第一维度上 `大于`** 当前遍历位置元素的第二维度值【可以区分 `大于/等于`】
+>   - 第一维度相等的元素，内部不会对结果造成影响，因为第二维度较小的总是在前面
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<vector<int>> ps;
+    
+    int numberOfWeakCharacters(vector<vector<int>>& properties) {
+        this->ps = properties;
+        // ATTENTION [排序trick] 和 [维护规则]
+        sort(ps.begin(), ps.end(), [](const vector<int> & a, const vector<int> & b) {
+            if (a[0] == b[0])
+                return a[1] < b[1];
+            return a[0] > b[0];
+        });
+        int n = ps.size(), maxd = 0, res = 0;
+        for (auto & p : ps) {
+            if (p[1] < maxd)    // 排序规则注定此时 p[0] 必定不同
+                res ++ ;
+            else
+                maxd = p[1];
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 2009. 使数组连续的最少操作数](https://leetcode-cn.com/problems/minimum-number-of-operations-to-make-array-continuous/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 一开始在思考将数据分段再贪心
+> 
+> 其实是个思维题
+> 
+> 要想到【**最终结果一定是一个长度为 n 的连续序列**】
+> 
+> 另外 数字范围极大所以不能遍历数值 而是遍历输入数据同时使用【滑动窗口】维护 也因此需要【对输入进行排序
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 思维 trick
+    // 想象一下所有nums在一个数轴上，然后你拿一个长度为n的窗口去扫
+    // 那么对于每个特定的窗口，里面有几个点就有几个不需要挪的坑。
+
+    // 数值范围较大 1e9 所以无法直接使用 st[] 或者 set 记录然后直接遍历值
+    // 应该 排序(must) + 滑动窗口
+    
+    int minOperations(vector<int>& nums) {
+        int n = nums.size();
+        sort(nums.begin(), nums.end());
+        
+        int res = 2e9;
+        // 还需要处理 nums 中重复的数字
+        unordered_map<int, int> hash;
+        for (int l = 0, r = 0, cnt = 0; r < n; ++ r ) {
+            while (l <= r && nums[l] <= nums[r] - n) {
+                if ( -- hash[nums[l]] == 0)
+                    cnt -- ;
+                l ++ ;
+            }
+            if ( ++ hash[nums[r]] == 1)
+                cnt ++ ;
+            res = min(res, n - cnt);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 2025. 分割数组的最多方案数](https://leetcode-cn.com/problems/maximum-number-of-ways-to-partition-an-array/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然有分情况讨论
+> 
+> **重点在于将修改一个数造成后缀部分全部被动修改的结果化为偏移**
+> 
+> **维护偏移量来统一计数**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    
+    int waysToPartition(vector<int>& nums, int k) {
+        int n = nums.size(), res = 0;
+        
+        vector<LL> s(n);
+        for (int i = 0; i < n; ++ i )
+            s[i] = (i ? s[i - 1] : 0) + nums[i];
+        
+        {
+            // do not modify
+            int ret = 0;
+            for (int i = 0; i < n - 1; ++ i )
+                if (s[i] == s[n - 1] - s[i])
+                    ret ++ ;
+            res = max(res, ret);
+        }
+        {
+            // modify once
+            // ATTENTION 枚举每个位置 通过hash-table找出符合要求的分界点的数量
+            // 改变位置分别是 [前缀or后缀] 时的出现情况
+            unordered_map<LL, int> l, r;
+            // 细节 n - 1
+            for (int i = 0; i < n - 1; ++ i )
+                l[s[i]] ++ ;
+            for (int i = n - 1; i >= 0; -- i ) {
+                // 细节 n - 1
+                if (i < n - 1)
+                    l[s[i]] -- , r[s[i]] ++ ;
+                
+                // change the i-th item, get new sum
+                LL sum = s[n - 1] - nums[i] + k;
+                if (sum & 1)
+                    continue;
+                LL tar = sum >> 1;
+                // ATTENTION: tar - k + nums[i]
+                // 核心在于改变当前数字后后缀都会发生偏移 所以找偏移前的数值
+                res = max(res, l[tar] + r[tar - k + nums[i]]);
+            }
+        }
+        
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 动态统计计数题
+
+> [!NOTE] **[LeetCode 1224. 最大相等频率](https://leetcode-cn.com/problems/maximum-equal-frequency/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+>
+> `unordered_map + map` 计数动态统计题
+>
+> 类似的还有 Weekly 12 ：[1244. 力扣排行榜](https://leetcode-cn.com/problems/design-a-leaderboard/)
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    map<int, int> s;
+    map<int, int>::iterator it;
+    void del(int x) {
+        if (s[x] > 1)
+            --s[x];
+        else
+            s.erase(x);
+    }
+    void ins(int x) { ++s[x]; }
+    bool check() {
+        if (s.size() > 2) return false;
+        // 只有一个字符 或一个字符出现连续多次
+        int c0 = s.begin()->first, n0 = s.begin()->second;
+        if (s.size() == 1) return c0 == 1 || n0 == 1;
+
+        // 此时 size = 2
+        it = s.begin();
+        ++it;
+        int c1 = it->first, n1 = it->second;
+        // 有两个不同的出现次数 则第一个次数为0且只出现一次
+        //  或 第一个出现次数比第二个小1且只出现1次
+        return c0 == 1 && n0 == 1 || c1 == c0 + 1 && n1 == 1;
+    }
+    int maxEqualFreq(vector<int>& nums) {
+        // unordered_map key->cnt
+        // map cnt->num
+        int n = nums.size(), v, res = 0;
+        unordered_map<int, int> kc;
+        for (int i = 0; i < n; ++i) {
+            v = nums[i];
+            if (kc[v]) del(kc[v]);
+            ins(++kc[v]);
+            if (check()) res = i;
+        }
+        return res + 1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 剪绳子
 
 > [!NOTE] **[SwordOffer 14- I. 剪绳子](https://leetcode-cn.com/problems/jian-sheng-zi-lcof/)**
@@ -2287,7 +4451,276 @@ class Solution:
 """
 
 """
+```
 
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1306. 跳跃游戏 III](https://leetcode-cn.com/problems/jump-game-iii/)**
+> 
+> 题意: 每个位置上可以左右跳 $arr[i]$ 个距离
+
+> [!TIP] **思路**
+> 
+> 裸搜索
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int n;
+    bool dfs(vector<int>& arr, vector<bool>& vis, int s) {
+        if (arr[s] == 0) return true;
+        vis[s] = true;
+        bool l = false, r = false;
+        if (s - arr[s] >= 0 && !vis[s - arr[s]]) l = dfs(arr, vis, s - arr[s]);
+        if (s + arr[s] < n && !vis[s + arr[s]]) r = dfs(arr, vis, s + arr[s]);
+        return l || r;
+    }
+    bool canReach(vector<int>& arr, int start) {
+        this->n = arr.size();
+        bool nofind = true;
+        for (int i = 0; i < n; ++i)
+            if (!arr[i]) {
+                nofind = false;
+                break;
+            }
+        if (nofind) return false;
+        vector<bool> vis(n);
+        return dfs(arr, vis, start);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1345. 跳跃游戏 IV](https://leetcode-cn.com/problems/jump-game-iv/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> bfs 需要注意的是使用map记录优化
+> 
+> 建图跑最短路也可以 n^2
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int minJumps(vector<int>& arr) {
+        int n = arr.size();
+        unordered_map<int, vector<int>> m;
+        for (int i = 0; i < n; ++i) m[arr[i]].push_back(i);
+        vector<int> dis(n, INT_MAX);
+        vector<int> vis(n, false);
+        dis[n - 1] = 0;
+        vis[n - 1] = true;
+        queue<int> q;
+        q.push(n - 1);
+        while (!q.empty()) {
+            int u = q.front();
+            q.pop();
+            if (u && !vis[u - 1] && m.find(arr[u - 1]) != m.end()) {
+                dis[u - 1] = min(dis[u - 1], dis[u] + 1);
+                vis[u - 1] = true;
+                q.push(u - 1);
+            }
+            if (u + 1 < n && !vis[u + 1] && m.find(arr[u + 1]) != m.end()) {
+                dis[u + 1] = min(dis[u + 1], dis[u] + 1);
+                vis[u + 1] = true;
+                q.push(u + 1);
+            }
+            if (m.find(arr[u]) != m.end()) {
+                for (auto v : m[arr[u]]) {
+                    if (!vis[v]) {
+                        vis[v] = true;
+                        dis[v] = min(dis[v], dis[u] + 1);
+                        q.push(v);
+                    }
+                }
+                m.erase(arr[u]);
+            }
+        }
+        return dis[0];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1340. 跳跃游戏 V](https://leetcode-cn.com/problems/jump-game-v/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> dp 记忆化搜索即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int dfs(vector<int>& arr, vector<int>& dp, int n, int d, int x) {
+        if (dp[x]) return dp[x];
+        dp[x] = 1;
+        for (int i = x - 1; i >= max(0, x - d); --i) {
+            // check
+            if (arr[i] >= arr[x]) break;
+            dp[x] = max(dp[x], dfs(arr, dp, n, d, i) + 1);
+        }
+        for (int i = x + 1; i <= min(n - 1, x + d); ++i) {
+            // check
+            if (arr[i] >= arr[x]) break;
+            dp[x] = max(dp[x], dfs(arr, dp, n, d, i) + 1);
+        }
+        return dp[x];
+    }
+    int maxJumps(vector<int>& arr, int d) {
+        int n = arr.size(), res = 0;
+        vector<int> dp(n);
+        for (int i = 0; i < n; ++i) { res = max(res, dfs(arr, dp, n, d, i)); }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1871. 跳跃游戏 VII](https://leetcode-cn.com/problems/jump-game-vii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> - BIT维护
+> 
+>   当前 x 位置能否跳到取决于 [x - maxJump, x - minJump] 区间是否有可达点
+> 
+> - DP
+> 
+>   判断是否有合法方案，维护到某个位置位置可以跳到的所有位置的个数(前缀和)
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ BIT**
+
+```cpp
+class Solution {
+public:
+    const static int N = 2e5 + 10;
+    int tr[N], n;
+    
+    int lowbit(int x) {
+        return x & -x;
+    }
+    void add(int x, int c) {
+        for (int i = x; i <= n; i += lowbit(i))
+            tr[i] += c;
+    }
+    int sum(int x) {
+        int res = 0;
+        for (int i = x; i; i -= lowbit(i))
+            res += tr[i];
+        return res;
+    }
+    
+    bool canReach(string s, int minJump, int maxJump) {
+        memset(tr, 0, sizeof tr);
+        this->n = s.size();
+        add(1, 1);
+        for (int i = 2; i <= n; ++ i )
+            if (s[i - 1] == '0') {
+                int l = max(i - maxJump - 1, 0), r = max(i - minJump, 0);
+                if (sum(r) - sum(l) > 0) {
+                    add(i, 1);
+                }
+            }
+        return sum(n) - sum(n - 1) > 0;
+    }
+};
+```
+
+##### **C++ DP**
+
+```cpp
+class Solution {
+public:
+    bool canReach(string str, int a, int b) {
+        int n = str.size();
+        vector<int> f(n + 1), s(n + 1);
+        f[1] = 1;
+        s[1] = 1;
+        for (int i = 2; i <= n; i ++ ) {
+            if (str[i - 1] == '0' && i - a >= 1) {
+                int l = max(1, i - b), r = i - a;
+                if (s[r] > s[l - 1]) f[i] = 1;
+            }
+            s[i] = s[i - 1] + f[i];
+        }
+        return f[n];
+    }
+};
+```
+
+
+##### **Python**
+
+```python
 
 ```
 

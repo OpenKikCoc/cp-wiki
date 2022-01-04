@@ -233,6 +233,53 @@ if __name__ == '__main__':
 
 * * *
 
+> [!NOTE] **[LeetCode 1499. 满足不等式的最大值](https://leetcode-cn.com/problems/max-value-of-equation/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 动态维护单调队列
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int findMaxValueOfEquation(vector<vector<int>>& points, int k) {
+        // 动态维护队列的情况下 (对于i<j)所求yi + yj + |xi - xj| 即 yi+yj+xj-xi
+        // 所以在满足 xj-xi <= k的情况下找最大的yi-xi pair->first yi-xi
+        // pair->second xi
+        priority_queue<pair<int, int>> pq;
+        int res = -1e9;
+        for (auto v : points) {
+            int x = v[0], y = v[1];
+            while (!pq.empty() && pq.top().second < x - k) pq.pop();
+            if (!pq.empty()) res = max(res, pq.top().first + y + x);
+            pq.push({y - x, x});
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 结合前后缀分解
 
 > [!NOTE] **[LeetCode 1888. 使二进制字符串字符交替的最少反转次数](https://leetcode-cn.com/problems/minimum-number-of-flips-to-make-the-binary-string-alternating/)**

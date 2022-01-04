@@ -751,6 +751,381 @@ class Solution:
 
 * * *
 
+> [!NOTE] **[LeetCode 1178. 猜字谜](https://leetcode-cn.com/problems/number-of-valid-words-for-each-puzzle/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 位运算即可 注意细节
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    unordered_map<int, int> hash;
+    vector<int> findNumOfValidWords(vector<string>& words, vector<string>& puzzles) {
+        int n = words.size();
+        for (int i = 0; i < n; ++ i ) {
+            int v = 0;
+            for (auto & c : words[i])
+                v |= 1 << (c - 'a');
+            hash[v] ++ ;
+        }
+        
+        vector<int> res;
+        for (auto & p : puzzles) {
+            int base = 1 << (p[0] - 'a');
+            int v = 0, cnt = hash.count(base) ? hash[base] : 0;
+            for (int i = 1; i < 7; ++ i )
+                v |= 1 << (p[i] - 'a');
+            
+            for (int i = v; i; i = i - 1 & v)
+                if (hash.count(i | base))
+                    cnt += hash[i | base];
+            
+            res.push_back(cnt);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1371. 每个元音包含偶数次的最长子字符串](https://leetcode-cn.com/problems/find-the-longest-substring-containing-vowels-in-even-counts/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 奇偶次数为一个状态 状态dp
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int findTheLongestSubstring(string s) {
+        vector<int> last(32, -2);
+        int v = 0, n = s.size();
+        int res = 0;
+        last[0] = -1;
+        for (int i = 0; i < n; ++i) {
+            if (s[i] == 'a')
+                v ^= (1 << 0);
+            else if (s[i] == 'e')
+                v ^= (1 << 1);
+            else if (s[i] == 'i')
+                v ^= (1 << 2);
+            else if (s[i] == 'o')
+                v ^= (1 << 3);
+            else if (s[i] == 'u')
+                v ^= (1 << 4);
+            if (last[v] == -2)
+                last[v] = i;
+            else
+                res = max(res, i - last[v]);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1386. 安排电影院座位](https://leetcode-cn.com/problems/cinema-seat-allocation/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 2-9位 连续4个0的情况统计
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 2-5 4-7 6-9
+    int maxNumberOfFamilies(int n, vector<vector<int>>& reservedSeats) {
+        int l = 0b11110000;
+        int m = 0b11000011;
+        int r = 0b00001111;
+
+        unordered_map<int, int> occupied;
+        for (auto v : reservedSeats)
+            if (v[1] > 1 && v[1] < 10) occupied[v[0]] |= 1 << (v[1] - 2);
+
+        int res = (n - occupied.size()) * 2;
+        // cout <<res<<endl;
+        for (auto v : occupied) {
+            if (((v.second | l) == l) || ((v.second | r) == r) ||
+                ((v.second | m) == m))
+                ++res;
+        }
+        return res;
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int maxNumberOfFamilies(int n, vector<vector<int>>& re) {
+        unordered_map<int, unordered_set<int>> s;
+        int cnt = 0;
+        bool f = 0;
+        for (auto it : re) { s[it[0]].insert(it[1]); }
+        for (auto it : s) {
+            f = 0;
+            if (!it.second.count(2) && !it.second.count(3) &&
+                !it.second.count(4) && !it.second.count(5))
+                ++cnt, f = 1;
+            if (!it.second.count(6) && !it.second.count(7) &&
+                !it.second.count(8) && !it.second.count(9))
+                ++cnt, f = 1;
+            if (!it.second.count(4) && !it.second.count(5) &&
+                !it.second.count(6) && !it.second.count(7) && !f)
+                ++cnt;
+        }
+        return cnt + 2 * (n - s.size());
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1442. 形成两个异或相等数组的三元组数目](https://leetcode-cn.com/problems/count-triplets-that-can-form-two-arrays-of-equal-xor/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+>
+> 前缀异或数组 然后遍历即可
+>
+> 评论区有O(n^2)解法 本质是只要固定了左右两端 则这段内部如何划分k都是一样的
+>
+> >   a = arr[i] ^ arr[i + 1] ^ ... ^ arr[j - 1],
+> >
+> >   b = arr[j] ^ arr[j + 1] ^ ... ^ arr[k],
+> >
+> >   那么根据位运算的规则， a^b=arr[i]^ arr[i + 1] ^ ... ^ arr[k]，即i到k。 
+> > 
+> >   此外，根据位运算，如果 a^b==0, 那么 a==b，这是逆否命题，即反推也成立。
+
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ O(n^3)**
+
+```cpp
+class Solution {
+public:
+    int countTriplets(vector<int>& arr) {
+        int n = arr.size();
+        if (!n) return 0;
+        vector<int> xorv(n + 1);
+        // xorv[0] = arr[0];
+        for (int i = 1; i <= n; ++i) xorv[i] = xorv[i - 1] ^ arr[i - 1];
+        int res = 0;
+        for (int i = 1; i < n; ++i)
+            for (int j = i + 1; j <= n; ++j)
+                for (int k = j; k <= n; ++k)
+                    if ((xorv[j - 1] ^ xorv[i - 1]) == (xorv[k] ^ xorv[j - 1]))
+                        ++res;
+        return res;
+    }
+};
+```
+
+##### **C++ O(n^2)**
+
+```cpp
+class Solution {
+public:
+    int countTriplets(vector<int>& arr) {
+        int n = arr.size(), res = 0;
+        for (int i = 0; i < n; ++i) {
+            int t = arr[i];
+            for (int j = i + 1; j < n; ++j) {
+                t ^= arr[j];
+                if (t == 0) { res += j - i; }
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1461. 检查一个字符串是否包含所有长度为 K 的二进制子串](https://leetcode-cn.com/problems/check-if-a-string-contains-all-binary-codes-of-size-k/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> bit 维护窗口
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    bool f[1 << 20];
+    bool hasAllCodes(string s, int k) {
+        int limit = 1 << k, mask = limit - 1, now = 0;
+        int ls = s.size();
+        fill(f, f + limit, false);
+        for (int i = 0; i < ls; i++) {
+            now <<= 1;
+            now |= s[i] - '0';
+            now &= mask;
+            if (i >= k - 1) { f[now] = true; }
+        }
+        for (int i = 0; i < limit; i++)
+            if (!f[i]) return false;
+        return true;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1542. 找出最长的超赞子字符串](https://leetcode-cn.com/problems/find-longest-awesome-substring/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 定义超赞子字符串：可以通过重排使其回文，也即出现奇数次的字母个数小于等于1。
+> 
+> 显然状态压缩 **记录截止目前位置每个数字的奇偶状态**。
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int longestAwesome(string s) {
+        int n = s.size(), res = 0;
+        // 记录某状态第一次出现的位置 对于1～n 默认-1
+        vector<int> m(1024, -1);
+        m[0] = 0;
+        int st = 0, l;
+
+        for (int i = 1; i <= n; ++i) {
+            st = st ^ (1 << (s[i - 1] - '0'));
+            l = m[st];
+            // 和出现过的状态相同的情况
+            if (l != -1) res = max(res, i - l);
+            // 检查只相差 1 位的情况 只差一位得到的状态需是全0或只有一个1
+            for (int j = 0; j < 10; ++j) {
+                int v = st ^ (1 << j);
+                if (m[v] == -1) continue;
+                res = max(res, i - m[v]);
+            }
+            if (l == -1) m[st] = i;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 进阶
 
 > [!NOTE] **[AcWing 90. 64位整数乘法](https://www.acwing.com/problem/content/92/)**
@@ -908,6 +1283,132 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 1734. 解码异或后的排列](https://leetcode-cn.com/problems/decode-xored-permutation/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 简单版:
+> 
+> - 扫一遍即可
+> 
+> 扩展:
+> 
+> - n 为奇数
+> - n 不一定奇数
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 简单版**
+
+```cpp
+class Solution {
+public:
+    vector<int> decode(vector<int>& encoded) {
+        int m = encoded.size(), n = m + 1;
+        int v1 = 0, v2 = 0;
+        for (int i = 1; i <= n; ++ i ) v1 ^= i;
+        for (int i = 0; i < m; ++ i ) if (i % 2 == 1) v2 ^= encoded[i];
+        vector<int> res;
+        v1 ^= v2;
+        res.push_back(v1);
+        for (auto & v : encoded) {
+            v1 ^= v;
+            res.push_back(v1);
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 奇数**
+
+```cpp
+class Solution {
+public:
+    vector<int> decode(vector<int>& b) {
+        int sum = 0;
+        int n = b.size() + 1;
+        for (int i = 1; i <= n; i ++ ) sum ^= i;  // a1 ^ ... ^ an
+        for (int i = b.size() - 1; i >= 0; i -= 2)
+            sum ^= b[i];
+        vector<int> a(1, sum);
+        for (int i = 0; i < b.size(); i ++ )
+            a.push_back(a.back() ^ b[i]);
+        return a;
+    }
+};
+```
+
+##### **C++ 不一定奇数**
+
+```cpp
+int son[2100000][2];
+
+class Solution {
+public:
+    int idx;
+
+    void insert(int x) {
+        int p = 0;
+        for (int i = 20; i >= 0; i -- ) {
+            int u = x >> i & 1;
+            if (!son[p][u]) son[p][u] = ++ idx;
+            p = son[p][u];
+        }
+    }
+
+    int query(int x) {
+        int res = 0, p = 0;
+        for (int i = 20; i >= 0; i -- ) {
+            int u = x >> i & 1;
+            if (son[p][!u]) p = son[p][!u], res = res * 2 + 1;
+            else p = son[p][u], res *= 2;
+        }
+        return res;
+    }
+
+    vector<int> decode(vector<int>& b) {
+        int n = b.size() + 1;
+        idx = 0;
+        memset(son, 0, sizeof son);
+        for (int i = 1; i < b.size(); i ++ ) b[i] ^= b[i - 1];
+        unordered_set<int> hash;
+        for (auto x: b) hash.insert(x), insert(x);
+
+        vector<int> res;
+        for (int i = 1; i <= n; i ++ ) {
+            if (!hash.count(i)) {
+                if (query(i) <= n) {
+                    res.push_back(i);
+                    for (int j = 0; j < b.size(); j ++ )
+                        res.push_back(i ^ b[j]);
+                    break;
+                }
+            }
+        }
+
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 思想
 
 > [!NOTE] **[LeetCode 201. 数字范围按位与](https://leetcode-cn.com/problems/bitwise-and-of-numbers-range/)**
@@ -960,6 +1461,56 @@ public:
         return res;
     }
 };
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1558. 得到目标数组的最少函数调用次数](https://leetcode-cn.com/problems/minimum-numbers-of-function-calls-to-make-target-array/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 类似快速幂的思想
+> 
+> 可以理解为，在全体不断乘二的过程中，选择是否给某一个数单独加一。
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int minOperations(vector<int>& nums) {
+        int best = 0;
+        int ans = 0;
+        for (int num : nums) {
+            ans += __builtin_popcount(num);
+            best = max(best, num);
+        }
+        for (int i = 29; i >= 0; --i) {
+            if (best & (1 << i)) {
+                ans += i;
+                break;
+            }
+        }
+        return ans;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
 ```
 
 <!-- tabs:end -->
@@ -1299,6 +1850,56 @@ class Solution:
                 else:x += 1
             res += x * y 
         return res
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1835. 所有数对按位与结果的异或和](https://leetcode-cn.com/problems/find-xor-sum-of-all-pairs-bitwise-and/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 数学 注意判断条件的思考
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    int getXORSum(vector<int>& arr1, vector<int>& arr2) {
+        int n1 = arr1.size(), n2 = arr2.size();
+        int res = 0;
+        for (int i = 0; i < 32; ++ i ) {
+            LL c1 = 0, c2 = 0;
+            for (auto v : arr1)
+                c1 += (v >> i & 1);
+            for (auto v : arr2)
+                c2 += (v >> i & 1);
+            LL t = c1 * c2;
+            // 判断条件: 为奇数个则最终AND结果中该位1的有奇数个
+            if (t & 1)
+                res += 1 << i;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
 ```
 
 <!-- tabs:end -->

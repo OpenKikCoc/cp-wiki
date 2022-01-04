@@ -1140,6 +1140,39 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 1397. 找到所有好字符串](https://leetcode-cn.com/problems/find-all-good-strings/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> TODO TODO
+> 
+> 数位DP + KMP
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+TODO
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### TODO 汇总
 
 #### 拓展 n以内所有数字 每个数字在各个数位出现多少次

@@ -2615,6 +2615,101 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 1171. 从链表中删去总和值为零的连续节点](https://leetcode-cn.com/problems/remove-zero-sum-consecutive-nodes-from-linked-list/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 扫一遍即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    ListNode* removeZeroSumSublists(ListNode* head) {
+        unordered_map<int, ListNode*> hash; // mem the pre
+        ListNode * dummy = new ListNode(-1);
+        dummy->next = head;
+        int sum = 0;
+        hash[0] = dummy;
+        
+        auto p = head, last = dummy;
+        while (p) {
+            sum += p->val;
+            last = p;
+            if (hash.count(sum)) {
+                int tsum = 0;
+                auto pre = hash[sum];
+                auto first = pre->next;
+                while (first != p->next) {
+                    tsum += first->val;
+                    hash.erase(sum + tsum);
+                    first = first->next;
+                }
+                last = pre;
+                pre->next = p->next;
+            }
+            hash[sum] = last;
+            p = p->next;
+        }
+        return dummy->next;
+    }
+};
+```
+
+##### **C++ 更简约**
+
+以前的写法，更简约清晰：
+
+```cpp
+class Solution {
+public:
+    ListNode* removeZeroSumSublists(ListNode* head) {
+        unordered_map<int, ListNode*> hash;     // 记录当前值节点
+        ListNode * dummy = new ListNode(-1);
+        dummy->next = head;
+        int sum = 0;
+        hash[0] = dummy;
+
+        while(head) {
+            sum += head->val;
+            if(hash.count(sum)) {
+                auto next = hash[sum]->next;
+                hash[sum]->next = head->next;   // 在这里处理 更简约
+                int csum = sum;
+                while(next != head) {
+                    csum += next->val;
+                    hash.erase(csum);
+                    next = next->next;
+                }
+                // 不管next->next
+            } else hash[sum] = head;            // 而非last
+            head = head->next;
+        }
+        return dummy->next;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 结合递归
 
 > [!NOTE] **[LeetCode 430. 扁平化多级双向链表](https://leetcode-cn.com/problems/flatten-a-multilevel-doubly-linked-list/)**

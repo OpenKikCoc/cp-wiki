@@ -908,6 +908,69 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 1135. 最低成本联通所有城市](https://leetcode-cn.com/problems/connecting-cities-with-minimum-cost/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> MST 模版题 略
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public: 
+    vector<int> fa;
+    int find(int x) {
+        if (fa[x] != x)
+            fa[x] = find(fa[x]);
+        return fa[x];
+    }
+    
+    int minimumCost(int n, vector<vector<int>>& connections) {
+        int m = connections.size();
+        fa = vector<int>(n + 1);
+        for (int i = 1; i <= n; ++ i )
+            fa[i] = i;
+        
+        sort(connections.begin(), connections.end(), [](const vector<int> & a, vector<int> & b) {
+            return a[2] < b[2];
+        });
+        
+        int part = n, res = 0;
+        for (int i = 0; i < m; ++ i ) {
+            int a = connections[i][0], b = connections[i][1], c = connections[i][2];
+            int pa = find(a), pb = find(b);
+            if (pa != pb) {
+                fa[pa] = pb;
+                part -- ;
+                res += c;
+            }
+        }
+        
+        return part == 1 ? res : -1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### MST 拓展
 
 > [!NOTE] **[AcWing 1146. 新的开始](https://www.acwing.com/problem/content/1148/)**
@@ -1176,6 +1239,168 @@ int main() {
 
     return 0;
 }
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1489. 找到最小生成树里的关键边和伪关键边](https://leetcode-cn.com/problems/find-critical-and-pseudo-critical-edges-in-minimum-spanning-tree/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> Kruskal 检查选边不选边得到的mst即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+
+class Solution {
+public:
+    int fa[105];
+    int find(int x) { return x == fa[x] ? x : fa[x] = find(fa[x]); }
+    bool merge(int x, int y) {
+        int u = find(x), v = find(y);
+        if (u == v) return false;
+        fa[u] = v;
+        return true;
+    }
+
+    int n, m;
+    pair<int, pair<int, int>> p[205], pp[205];
+    int kruskal(int x, bool choose) {
+        for (int i = 0; i < n; ++i) fa[i] = i;
+        int cnt = 0, cost = 0, tot = 0;
+        for (int i = 0; i < m; ++i) {
+            if (i != x)
+                p[tot++] = pp[i];
+            else if (choose)
+                merge(pp[i].second.first, pp[i].second.second), ++cnt,
+                    cost += pp[i].first;
+        }
+        sort(p, p + tot);
+        for (int i = 0; i < tot; ++i)
+            if (merge(p[i].second.first, p[i].second.second))
+                ++cnt, cost += p[i].first;
+        return cnt == n - 1 ? cost : INT_MAX;
+    }
+    vector<vector<int>> findCriticalAndPseudoCriticalEdges(
+        int n, vector<vector<int>>& edges) {
+        vector<int> key, nkey;
+        this->n = n;
+        m = edges.size();
+        for (int i = 0; i < m; ++i) {
+            pp[i].first = edges[i][2];
+            pp[i].second.first = edges[i][0], pp[i].second.second = edges[i][1];
+        }
+        int mint = kruskal(-1, false);
+        for (int i = 0; i < m; ++i) {
+            if (kruskal(i, false) != mint)
+                key.push_back(i);
+            else if (kruskal(i, true) == mint)
+                nkey.push_back(i);
+        }
+        vector<vector<int>> res;
+        res.push_back(key);
+        res.push_back(nkey);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 曼哈顿最小生成树
+
+> [!TIP] **有 $nlogn$ 算法, 参见 poj 3241**
+
+> [!NOTE] **[LeetCode 1584. 连接所有点的最小费用](https://leetcode-cn.com/problems/min-cost-to-connect-all-points/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 针对 leetcode 的用例，暴力跑 kruskal 就能过
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+struct Edge {
+    int u, v, w;
+    bool operator<(const Edge& o) { return w < o.w; }
+};
+
+class Solution {
+public:
+    const int inf = 0x3f3f3f3f;
+    vector<Edge> es;
+    vector<int> fa;
+    int n;
+    long long kruskal() {
+        sort(es.begin(), es.end());
+        for (int i = 1; i <= n; ++i) fa[i] = i;
+        long long res = 0;
+        int m = es.size();
+        for (int i = 0; i < m; ++i) {
+            auto [u, v, w] = es[i];
+            int fu = find(u), fv = find(v);
+            if (fu != fv) {
+                fa[fu] = fv;
+                res += w;
+            }
+        }
+        // if (cnt < n - 1)
+        return res;
+    }
+    int find(int x) {
+        if (x == fa[x]) return x;
+        return fa[x] = find(fa[x]);
+    }
+    int minCostConnectPoints(vector<vector<int>>& points) {
+        n = points.size();
+        fa = vector<int>(n + 1);
+        for (int i = 0; i < n; ++i) {
+            int x1 = points[i][0], y1 = points[i][1];
+            for (int j = 0; j < i; ++j) {
+                int x2 = points[j][0], y2 = points[j][1];
+                int w = abs(x1 - x2) + abs(y1 - y2);
+                es.push_back({i + 1, j + 1, w});
+            }
+        }
+
+        return kruskal();
+    }
+};
 ```
 
 ##### **Python**

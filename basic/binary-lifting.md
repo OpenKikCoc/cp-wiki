@@ -135,3 +135,67 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 1483. 树节点的第 K 个祖先](https://leetcode-cn.com/problems/kth-ancestor-of-a-tree-node/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> LCA 简单版
+> 
+> 倍增即可 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+vector<int> v[200001];
+int d[100001][19];
+
+class TreeAncestor {
+public:
+    void dfs(int x, int fa) {
+        d[x][0] = fa;
+        for (int j = 1; j <= 18; j ++)
+            d[x][j] = d[d[x][j - 1]][j - 1];
+        for (int i = 0; i < (int )v[x].size(); i ++) {
+            if (v[x][i] == fa) continue;
+            dfs(v[x][i], x);
+        }
+    }
+    TreeAncestor(int n, vector<int>& parent) {
+        for (int i = 1; i <= n; i ++) v[i].clear();
+        for (int i = 0; i < n; i ++) {
+            if (i == 0) continue;
+            v[i + 1].push_back(parent[i] + 1);
+            v[parent[i] + 1].push_back(i + 1);
+        }
+        dfs(1, 0);
+    }
+    
+    int getKthAncestor(int node, int k) {
+        int x = node + 1;
+        for (int i = 18; i >= 0; i --)
+            if ((k >> i) & 1) x = d[x][i];
+        return x - 1;
+    }
+};
+// ZhuolinYang
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

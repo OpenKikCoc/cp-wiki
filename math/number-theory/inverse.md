@@ -306,3 +306,80 @@ for i in range(1, n + 1):
 [「AHOI2005」洗牌](https://www.luogu.com.cn/problem/P2054)
 
 [「SDOI2016」排列计数](https://loj.ac/problem/2034)
+
+## 习题
+
+> [!NOTE] **[LeetCode 1622. 奇妙序列](https://leetcode-cn.com/problems/fancy-sequence/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#define LL long long
+
+class Fancy {
+private:
+    vector<LL> nums;
+    LL add, mul;
+    const int mod = 1000000007;
+    
+    LL power(LL x, int y) {
+        LL tot = 1, p = x;
+        for (; y; y >>= 1) {
+            if (y & 1)
+                tot = (tot * p) % mod;
+            p = (p * p) % mod;
+        }
+        return tot;
+    }
+
+public:
+    Fancy() {
+        add = 0;
+        mul = 1;
+    }
+    
+    void append(int val) {
+        val = ((val - add) % mod + mod) % mod;
+        val = (val * power(mul, mod - 2)) % mod;
+        nums.push_back(val);
+    }
+    
+    void addAll(int inc) {
+        add = (add + inc) % mod;
+    }
+    
+    void multAll(int m) {
+        add = add * m % mod;
+        mul = mul * m % mod;
+    }
+    
+    int getIndex(int idx) {
+        if (idx >= nums.size())
+            return -1;
+        return (nums[idx] * mul + add) % mod;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

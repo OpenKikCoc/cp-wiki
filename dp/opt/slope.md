@@ -433,3 +433,72 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 1776. 车队 II](https://leetcode-cn.com/problems/car-fleet-ii/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 合并：后车撞前车，后车消失即可
+> 
+> **graham 维护凸包 (下凸壳)** 即可
+> 
+> 与 dp 的斜率优化略有不同
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+using PDD = pair<double, double>;
+#define x first
+#define y second
+
+class Solution {
+public:
+    double cross(double x1, double y1, double x2, double y2) {
+        return x1 * y2 - x2 * y1;
+    }
+    
+    double area(PDD a, PDD b, PDD c) {
+        return cross(b.x - a.x, b.y - a.y, c.x - a.x, c.y - a.y);
+    }
+    
+    vector<double> getCollisionTimes(vector<vector<int>>& cars) {
+        int n = cars.size();
+        vector<PDD> stk(n + 1);
+        vector<double> res(n);
+        int top = 0;
+        for (int i = n - 1; i >= 0; -- i ) {
+            auto & c = cars[i];
+            PDD p(c[0], c[1]);
+            while (top >= 2 && area(p, stk[top], stk[top - 1]) <= 0) top -- ;
+            if (!top) res[i] = -1;
+            else {
+                auto & q = stk[top];
+                // <= 不能相遇
+                if (p.y <= q.y) res[i] = -1;
+                else res[i] = (q.x - p.x) / (p.y - q.y);
+            }
+            stk[ ++ top] = p;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

@@ -137,6 +137,8 @@ SG 定理适用于 **任何公平的两人游戏**, 它常被用于决定游戏�
 
 ## 习题
 
+### NIM
+
 > [!NOTE] **[AcWing 891. Nim游戏](https://www.acwing.com/problem/content/893/)**
 > 
 > 题意: TODO
@@ -393,7 +395,223 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 295. 数据流的中位数](https://leetcode-cn.com/problems/find-median-from-data-stream/)**
+### 石子游戏
+
+> [!NOTE] **[LeetCode 1140. 石子游戏 II](https://leetcode-cn.com/problems/stone-game-ii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 博弈 + 记忆化
+> 
+> 注意状态定义与其他人略有不同，因此返回时 $(s[n] + t) / 2$
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using PII = pair<int, int>;
+    const static int N = 110;
+    const int INF = 0x3f3f3f3f;
+    
+    int n;
+    int s[N];
+    map<PII, int> hash;
+    
+    int dp(int x, int m) {
+        if (x == n)
+            return 0;
+        PII pi = {x, m};
+        if (hash.count(pi))
+            return hash[pi];
+        
+        int t = -INF, top = min(n, x + 2 * m);
+        for (int i = x + 1; i <= top; ++ i )
+            t = max(t, s[i] - s[x] - dp(i, max(m, i - x)));
+        
+        return hash[pi] = t;
+    }
+    
+    int stoneGameII(vector<int>& piles) {
+        this->n = piles.size();
+        memset(s, 0, sizeof s);
+        for (int i = 1; i <= n; ++ i )
+            s[i] = s[i - 1] + piles[i - 1];
+        
+        int t = dp(0, 1);
+        
+        return (s[n] + t) / 2;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1406. 石子游戏 III](https://leetcode-cn.com/problems/stone-game-iii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 一排石子每个人可以从左取1-3堆 求取完谁分数最大
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    string stoneGameIII(vector<int>& stoneValue) {
+        int n = stoneValue.size();
+        vector<int> dp(n + 1);
+        for (int i = n - 1; i >= 0; --i) {
+            dp[i] = INT_MIN;
+            int sum = 0;
+            for (int j = i; j < n && j < i + 3; ++j) {
+                sum += stoneValue[j];
+                dp[i] = max(dp[i], sum - dp[j + 1]);
+            }
+        }
+        if (dp[0] > 0)
+            return "Alice";
+        else if (dp[0] < 0)
+            return "Bob";
+        else
+            return "Tie";
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1510. 石子游戏 IV](https://leetcode-cn.com/problems/stone-game-iv/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 博弈dp 决策是取平方数
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    bool winnerSquareGame(int n) {
+        vector<bool> f(n + 1);
+        for (int i = 1; i <= n; ++i)
+            for (int j = 1; i - j * j >= 0; ++j) {
+                f[i] = !f[i - j * j];
+                if (f[i]) break;
+            }
+        return f[n];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1686. 石子游戏 VI](https://leetcode-cn.com/problems/stone-game-vi/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 直接按和排序而 **无需考虑对于 alice bob 来说和相同时是否需要选择对自己更有利的正确性证明**
+
+
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    typedef pair<int, int> PII;
+    int stoneGameVI(vector<int>& av, vector<int>& bv) {
+        int n = av.size();
+        vector<PII> ve;
+        for (int i = 0; i < n; ++ i ) ve.push_back({av[i] + bv[i], i});
+        sort(ve.begin(), ve.end(), greater<PII>());
+        int v1 = 0, v2 = 0;
+        for (int i = 0; i < n; ++ i ) {
+            // cout << "i = " << i << " val = " << ve[i].first << " idx = " << ve[i].second;
+            int idx = ve[i].second;
+            if (i & 1) v2 += bv[idx];
+            else v1 += av[idx];
+        }
+            
+        // cout << " v1 = " << v1 << "  v2 = " << v2 << endl;
+        if (v1 < v2) return -1;
+        else if (v1 > v2) return 1;
+        return 0;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1690. 石子游戏 VII](https://leetcode-cn.com/problems/stone-game-vii/)**
 > 
 > 题意: TODO
 
@@ -408,35 +626,20 @@ int main() {
 ##### **C++**
 
 ```cpp
-class MedianFinder {
+class Solution {
 public:
-    priority_queue<int, vector<int>, greater<int>> up;
-    priority_queue<int> down;
-
-    /** initialize your data structure here. */
-    MedianFinder() {
-
-    }
-
-    void addNum(int num) {
-        if (down.empty() || num <= down.top()) {
-            down.push(num);
-            if (down.size() > up.size() + 1) {
-                up.push(down.top());
-                down.pop();
+    int stoneGameVII(vector<int>& stones) {
+        int n = stones.size();
+        vector<int> s(n + 1);
+        for (int i = 1; i <= n; ++ i ) s[i] = s[i - 1] + stones[i - 1];
+        vector<vector<int>> f(n + 1, vector<int>(n + 1));
+        // len = 1 时剩余和为0 也即f[i][i]为0 故直接从2开始
+        for (int len = 2; len <= n; ++ len )
+            for (int l = 1; l + len - 1 <= n; ++ l ) {
+                int r = l + len - 1;
+                f[l][r] = max(s[r] - s[l] - f[l + 1][r], s[r - 1] - s[l - 1] - f[l][r - 1]);
             }
-        } else {
-            up.push(num);
-            if (up.size() > down.size()) {
-                down.push(up.top());
-                up.pop();
-            }
-        }
-    }
-
-    double findMedian() {
-        if ((down.size() + up.size()) % 2) return down.top();
-        return (down.top() + up.top()) / 2.0;
+        return f[1][n];
     }
 };
 ```
@@ -444,34 +647,60 @@ public:
 ##### **Python**
 
 ```python
-class MedianFinder {
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1872. 石子游戏 VIII](https://leetcode-cn.com/problems/stone-game-viii/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 博弈 dp
+> 
+> 注意 **类似 LCIS 的常数优化** TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
 public:
-    priority_queue<int> lo;
-    priority_queue<int, vector<int>, greater<int>> hi;
-    /** initialize your data structure here. */
-    MedianFinder() {}
-    
-    void addNum(int num) {
-        lo.push(num);
-        hi.push(lo.top());
-        lo.pop();
-        if (lo.size() < hi.size()) {
-            lo.push(hi.top());
-            hi.pop();
+    int stoneGameVIII(vector<int>& stones) {
+        int n = stones.size();
+        reverse(stones.begin(), stones.end());
+        vector<int> f(n + 1), s(n + 1);
+        for (int i = 1; i <= n; ++ i )
+            s[i] = s[i - 1] + stones[i - 1];
+        int v = s[n] - s[0] + f[1];
+        for (int i = 2; i <= n; ++ i ) {
+            // 优化
+            f[i] = v;
+            v = max(v, s[n] - s[i - 1] - f[i]);
+            // 本次操作之后 下次剩余至多 i - 2 + 1
+            // f[i] = INT_MIN;
+            // for (int j = 1; j <= i - 1; ++ j )
+            //     f[i] = max(f[i], s[n] - s[j - 1] - f[j]);
         }
-    }
-    
-    double findMedian() {
-        return lo.size() > hi.size() ? lo.top() : (lo.top() + hi.top()) / 2.0;
+        return f[n];
     }
 };
+```
 
-/**
- * Your MedianFinder object will be instantiated and called as such:
- * MedianFinder* obj = new MedianFinder();
- * obj->addNum(num);
- * double param_2 = obj->findMedian();
- */
+##### **Python**
+
+```python
+
 ```
 
 <!-- tabs:end -->

@@ -767,3 +767,414 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 1151. 最少交换次数来组合所有的 1](https://leetcode-cn.com/problems/minimum-swaps-to-group-all-1s-together/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 转化为定长区间内 求1个数最多是多少
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int minSwaps(vector<int>& data) {
+        int tot = 0;
+        for (auto v : data)
+            if (v)
+                ++ tot ;
+        int res = -1e9, s = 0;
+        for (int i = 0; i < data.size(); ++ i ) {
+            s += data[i];
+            if (i >= tot - 1) {
+                res = max(res, s);
+                s -= data[i - tot + 1];
+            }
+        }
+        return tot - res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1176. 健身计划评估](https://leetcode-cn.com/problems/diet-plan-performance/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 窗口即可 优雅写法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    int res, l, u;
+    LL s;
+    
+    void f() {
+        if (s < l) -- res;
+        else if (s > u) ++ res;
+    }
+    
+    int dietPlanPerformance(vector<int>& c, int k, int lower, int upper) {
+        int n = c.size();
+        res = 0, s = 0; l = lower, u = upper;
+        for (int i = 0; i < k; ++ i ) s += c[i];
+        f();
+        
+        for (int i = 1; i + k - 1 < n; ++ i ) {
+            s -= c[i - 1];
+            s += c[i + k - 1];
+            f();
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1208. 尽可能使字符串相等](https://leetcode-cn.com/problems/get-equal-substrings-within-budget/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然可以滑动窗口
+> 
+> **还有个构造前缀和二分的思维**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int equalSubstring(string s, string t, int maxCost) {
+        int n = s.size();
+        vector<int> cost(n);
+        for (int i = 0; i < n; ++ i ) cost[i] = abs(s[i] - t[i]);
+        int c = 0, res = 0;
+        for (int l = 0, r = 0; r < n; ++ r ) {
+            c += cost[r];
+            while (l <= r && c > maxCost) {
+                c -= cost[l];
+                ++ l ;
+            }
+            res = max(res, r - l + 1);
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 二分**
+
+```cpp
+// liuzhou_101
+class Solution {
+public:
+    int equalSubstring(string s, string t, int maxCost) {
+        int n = s.size();
+        vector<int> a(n + 1);
+        int ret = 0;
+        for (int i = 1; i <= n; ++ i ) {
+            a[i] = a[i - 1] + abs(s[i - 1] - t[i - 1]);
+            int j = lower_bound(a.begin(), a.begin() + i + 1, a[i] - maxCost) - a.begin();
+            ret = max(ret, i - j);
+        }
+        return ret;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1425. 带限制的子序列和](https://leetcode-cn.com/problems/constrained-subsequence-sum/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 间隔小于等于 k 的子序列和最大值
+> 
+> 暴力 $O(n*k)$ 超时 可以滑动窗口维护每个 idx 前面 k 个数
+> 
+> 下面是借助 multiset 实现 找到前 k 个的最大值
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int n;
+    int maxv = INT_MIN, v;
+    int constrainedSubsetSum(vector<int>& nums, int k) {
+        n = nums.size();
+        vector<int> dp(n + 1);
+        int maxv = INT_MIN;
+        multiset<int> s;
+        for (int i = 0; i < n; ++i) {
+            dp[i] = nums[i];
+            if (s.size() > k) s.erase(dp[i - k - 1]);
+            if (!s.empty()) {
+                auto it = --s.end();
+                dp[i] = max(dp[i], nums[i] + *it);
+            }
+            maxv = max(maxv, dp[i]);
+            s.insert(dp[i]);
+        }
+
+        return maxv;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1438. 绝对差不超过限制的最长连续子数组](https://leetcode-cn.com/problems/longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> multiset
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int longestSubarray(vector<int>& nums, int limit) {
+        int n = nums.size(), ans = 0;
+        multiset<int> ms;
+        for (int L = 0, R = 0; L < n; ++L) {
+            while (R < n) {
+                ms.insert(nums[R]);
+                if (*ms.rbegin() - *ms.begin() > limit) {
+                    ms.erase(ms.find(nums[R]));
+                    break;
+                }
+                ++R;
+            }
+            ans = max(R - L, ans);
+            ms.erase(ms.find(nums[L]));
+        }
+        return ans;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1477. 找两个和为目标值且不重叠的子数组](https://leetcode-cn.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 自己比赛做法：记录前缀和 及该前缀和对应下标 存储合法区间到 ve 对ve排序后贪心即可 注意贪心条件：
+> 
+> `(p.second - 1 >= t1 || p.second - 1 + p.first <= s1)` 因为 第二个长度较长的区间 可以在 第一个长度较短区间 下标的前面。
+> 
+> **滑动窗口 + dp**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int f[100005];  // 每个以i结尾的 最短满足target的长度
+    int minSumOfLengths(vector<int>& arr, int target) {
+        int i = 0, j = -1, cursum = 0, n = arr.size();
+        int res = 100005;
+
+        for (int j = 0; j < n; ++j) {
+            cursum += arr[j];
+            while (cursum > target) cursum -= arr[i++];  // 维护窗口
+            int cur = 100005;
+            if (cursum == target) {
+                cur = j - i + 1;
+                if (i) res = min(f[i - 1] + cur, res);
+            }
+            int pre = j && f[j - 1] < 100005 ? f[j - 1] : 100005;
+            f[j] = min(cur, pre);
+        }
+        return res < 100005 ? res : -1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1695. 删除子数组的最大得分](https://leetcode-cn.com/problems/maximum-erasure-value/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 简单滑动窗口
+> 
+> 小优化：前缀和数组可以省略，直接在窗口滑动时计算总和即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int maximumUniqueSubarray(vector<int>& nums) {
+        unordered_map<int, int> hash;
+        int n = nums.size(), res = 0;
+        vector<int> s(n + 1);
+        for (int i = 1; i <= n; ++ i ) s[i] = s[i - 1] + nums[i - 1];
+        for (int l = 0, r = 0, mul = 0; r < n; ++ r ) {
+            ++ hash[nums[r]];
+            if (hash[nums[r]] == 2) ++ mul;
+            
+            while (mul && l < r) {
+                -- hash[nums[l]];
+                if (hash[nums[l]] == 1) -- mul;
+                ++ l;
+            }
+            res = max(res, s[r + 1] - s[l]);
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 小优化**
+
+```cpp
+class Solution {
+public:
+    int maximumUniqueSubarray(vector<int>& nums) {
+        unordered_map<int, int> hash;
+        int res = 0;
+        for (int i = 0, j = 0, s = 0; i < nums.size(); i ++ ) {
+            int x = nums[i];
+            hash[x] ++ ;
+            s += x;
+            while (hash[x] > 1) {
+                s -= nums[j];
+                hash[nums[j ++ ]] -- ;
+            }
+            res = max(res, s);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

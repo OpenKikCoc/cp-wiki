@@ -155,3 +155,113 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 1253. 重构 2 行二进制矩阵](https://leetcode-cn.com/problems/reconstruct-a-2-row-binary-matrix/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 贪心即可 需要注意优先处理列和为 2 的
+> 
+> 以及 处理 2 的时候就要判断 uv lv 是否合法 (WA 1)
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<vector<int>> reconstructMatrix(int upper, int lower,
+                                          vector<int>& colsum) {
+        int n = colsum.size();
+        int uv = upper, lv = lower;
+        vector<vector<int>> g(2, vector<int>(n));
+
+        int tot = upper + lower, che = 0;
+        for (auto& v : colsum) che += v;
+        if (che != tot) return vector<vector<int>>{};
+
+        for (int i = 0; i < n; ++i)
+            if (colsum[i] == 2) {
+                g[0][i] = g[1][i] = 1;
+                uv -= 1, lv -= 1;
+                if (uv < 0 || lv < 0) return vector<vector<int>>{};
+            }
+        for (int i = 0; i < n; ++i) {
+            if (colsum[i] == 1) {
+                if (uv)
+                    g[0][i] = 1, --uv;
+                else if (lv)
+                    g[1][i] = 1, --lv;
+                else
+                    return vector<vector<int>>{};
+            }
+        }
+
+        return g;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1968. 构造元素不等于两相邻元素平均值的数组](https://leetcode-cn.com/problems/array-with-elements-not-equal-to-average-of-neighbors/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思维题
+> 
+> 显然排序再间隙排，构造摆动序列，此时必然满足题目要求
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<int> rearrangeArray(vector<int>& nums) {
+        int n = nums.size();
+        sort(nums.begin(), nums.end());
+        vector<int> res(n);
+        int p = 0;
+        for (int i = 0; i < n; i += 2)
+            res[i] = nums[p ++ ];
+        for (int i = 1; i < n; i += 2)
+            res[i] = nums[p ++ ];
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

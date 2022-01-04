@@ -299,3 +299,85 @@ if __name__ == "__main__":
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2013. 检测正方形](https://leetcode-cn.com/problems/detect-squares/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 数值范围较大 所以对其中一维离散化 在询问时查询离散化结果即可
+> 
+> > 时间复杂度要求不高 甚至一些暴力遍历之前所有点的代码也能AC
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class DetectSquares {
+public:
+    const static int N = 1010;
+    
+    int g[N][N];
+    set<int> xs[N];
+    vector<int> dir = {-1, 1};
+    
+    int get(int a, int b, int c) {
+        return a * b * c;
+    }
+    
+    bool check(int x, int y) {
+        // can be zero
+        return x >= 0 && x < N && y >= 0 && y < N;
+    }
+    
+    DetectSquares() {
+        memset(g, 0, sizeof g);
+    }
+    
+    void add(vector<int> point) {
+        int x = point[0], y = point[1];
+        g[x][y] ++ ;
+        xs[x].insert(y);    // we donot care whether it's duplicated
+    }
+    
+    int count(vector<int> point) {
+        int res = 0;
+        int x1 = point[0], y1 = point[1];
+        for (auto y2 : xs[x1]) 
+            if (y2 != y1) {
+                int d = y2 - y1, x2 = x1;
+                for (auto f : dir) {
+                    int x3 = x1 + f * d, y3 = y1;
+                    int x4 = x1 + f * d, y4 = y2;
+                    if (check(x2, y2) && check(x3, y3) && check(x4, y4))
+                        res += get(g[x2][y2], g[x3][y3], g[x4][y4]);
+                }
+            }
+        return res;
+    }
+};
+
+/**
+ * Your DetectSquares object will be instantiated and called as such:
+ * DetectSquares* obj = new DetectSquares();
+ * obj->add(point);
+ * int param_2 = obj->count(point);
+ */
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

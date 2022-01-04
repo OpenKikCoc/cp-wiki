@@ -1304,6 +1304,685 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 1215. 步进数](https://leetcode-cn.com/problems/stepping-numbers/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 搜索生成所有步进数即可，注意排除 `v + 1 = 10` 这类以及负数
+> 
+> 也即: `if (v + 1 <= 9)` 和 `if (v - 1 >= 0)`
+> 
+> 也有 bfs 构造，略
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    typedef long long LL;
+    vector<LL> t;
+    void dfs(int v, LL s, int p) {
+        if (p > 9) {
+            return;
+        }
+        t.push_back(s * 10 + v);
+        if (v + 1 <= 9) dfs(v + 1, s * 10 + v, p + 1);
+        if (v - 1 >= 0) dfs(v - 1, s * 10 + v, p + 1);
+    }
+    void get() {
+        for (int i = 0; i < 10; ++ i )
+            dfs(i, 0, 0);
+        sort(t.begin(), t.end());
+        t.erase(unique(t.begin(), t.end()), t.end());
+        //for (auto v : t) cout << v << endl;
+    }
+    vector<int> countSteppingNumbers(int low, int high) {
+        get();
+        vector<int> res;
+        for (auto v : t)
+            if (v >= low && v <= high)
+                res.push_back(v);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1273. 删除树节点](https://leetcode-cn.com/problems/delete-tree-nodes/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 有种更优雅的写法
+> 
+> > 之前有一种：该写法在子树被切掉时影响父节点的忧虑
+> > 
+> > 其实不必的，子树被切掉其和必然为0，直接传回 {0, 0} 即可，对父的求和无影响
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<vector<int>> sons;
+    vector<int> vals;
+
+    pair<int, int> dfs(int x) {
+        int size = 1, sum = vals[x];
+        for (auto y : sons[x]) {
+            auto [sz, val] = dfs(y);
+            size += sz, sum += val;
+        }
+        if (sum == 0) return {0, 0};
+        return {size, sum};
+    }
+
+    int deleteTreeNodes(int nodes, vector<int>& parent, vector<int>& value) {
+        sons.clear();
+        sons.resize(nodes);
+        vals = value;
+        for (int i = 0; i < nodes; ++i) {
+            if (parent[i] == -1) continue;
+            sons[parent[i]].push_back(i);
+        }
+        int ans = dfs(0).first;
+        return ans;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1315. 祖父节点值为偶数的节点和](https://leetcode-cn.com/problems/sum-of-nodes-with-even-valued-grandparent/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 直接记录父节点和祖父节点的值 对于root其父和祖父均为**任意奇数**（这里使用-1）
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int res;
+    void dfs(TreeNode* r, int f, int ff) {
+        // if(!r) return;
+        if (ff % 2 == 0) res += r->val;
+        if (r->left) dfs(r->left, r->val, f);
+        if (r->right) dfs(r->right, r->val, f);
+    }
+    int sumEvenGrandparent(TreeNode* root) {
+        res = 0;
+        dfs(root, -1, -1);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1415. 长度为 n 的开心字符串中字典序第 k 小的字符串](https://leetcode-cn.com/problems/the-k-th-lexicographical-string-of-all-happy-strings-of-length-n/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 只有abc组成的字符串 排列 递归
+> 
+> TODO: 更优雅的类似数位 dp 解法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int tot;
+    string path, res;
+    void dfs(int c, int left, int k) {
+        path.push_back('a' + c);
+        if (left == 0) {
+            ++tot;
+            if (tot == k) res = path;
+        }
+
+        for (int i = 0; i < 3; ++i) {
+            if (i == c) continue;
+            if (left - 1 >= 0) dfs(i, left - 1, k);
+        }
+        path.pop_back();
+    }
+
+    string getHappyString(int n, int k) {
+        tot = 0;
+        dfs(0, n - 1, k);
+        if (tot >= k) return res;
+
+        dfs(1, n - 1, k);
+        if (tot >= k) return res;
+
+        dfs(2, n - 1, k);
+        if (tot >= k) return res;
+
+        if (tot < k) return "";
+        return res;
+    }
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1530. 好叶子节点对的数量](https://leetcode-cn.com/problems/number-of-good-leaf-nodes-pairs/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 记一下这种写法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int countPairs(TreeNode *root, int distance) {
+        int res = 0;
+        function<vector<int>(TreeNode *)> dfs = [&](TreeNode *p) {
+            if (!p->left && !p->right) return vector<int>(1, 0);
+            vector<int> ls, rs;
+            if (p->left) ls = dfs(p->left);    // 左子树叶子节点距离
+            if (p->right) rs = dfs(p->right);  // 右子树叶子节点距离
+            for (int &l : ls) ++l;
+            for (int &r : rs) ++r;
+            for (const int &l : ls)
+                for (const int &r : rs) {
+                    if (l + r <= distance) ++res;
+                }
+            ls.insert(ls.end(), rs.begin(), rs.end());
+            // for(auto v : rs) ls.push_back(v);
+            return ls;
+        };
+        dfs(root);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 2014. 重复 K 次的最长子序列](https://leetcode-cn.com/problems/longest-subsequence-repeated-k-times/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+>
+> 较显然的：最好预先处理原串 生成所有字符都有可能出现的新串
+>
+> > 容易想到由预处理后的串生成子串（预处理后的串的每个字符都可以出现无限多次）
+> >
+> > 显然是一个递归的流程 递归参数即 【还需要增加的字符长度, 当前构造的串】
+> >
+> > 初始化 depth = n / k
+> >
+> > 且统计答案显然应放在每层 dfs 中而非出口（因为显然有结果子串的长度 <= n / k）
+> >
+> > 这样一来 中间会出现大量的重复计算流程 **显然需要记忆化**
+>
+> 题意清晰 重复练习即可
+>
+> 主要学习【trick check】【nxt构造】【分析构造思维】
+>
+> **重复重复反复做 TOOD**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 习惯写法: 字符串暴力匹配(可以更trick) + 记忆化搜索**
+
+TLE 几次 其实加个记忆化就过
+
+学习 trick 的 check 函数
+
+```cpp
+class Solution {
+public:
+    int n, k;
+    string s;
+    unordered_map<char, int> hash;
+    
+    string update(string s) {
+        for (auto c : s)
+            hash[c] ++ ;
+        string ret;
+        for (auto c : s)
+            if (hash[c] >= k)
+                ret.push_back(c);
+        return ret;
+    }
+    
+    vector<char> chs;
+    string res;
+
+    // 值得学习
+    // Trick 的 check 写法
+    bool check(string t) {
+        if (t.empty())
+            return true;
+        int d = t.size(), p = 0;
+        for (auto c : s)
+            if (c == t[p % d])
+                p ++ ;
+        return p >= k * d;
+    }
+    // 习惯的写法
+    bool check(string t) {
+        string tt;
+        for (int i = 0; i < k; ++ i )
+            tt += t;
+        int m = tt.size(), p = 0;
+        for (auto c : s)
+            if (p < m && c == tt[p])
+                p ++ ;
+            else if (p == m)
+                return true;
+        return p == m;
+    }
+
+    // The most important thing is `how to design the DFS func`
+    set<pair<int, string>> S;
+    void dfs(int depth, string now) {
+        // Do this firstly
+        if (S.count({depth, now}))
+            return;
+        S.insert({depth, now});
+        
+        if (!check(now))
+            return;
+        if (now.size() > res.size() || now.size() == res.size() && now > res)
+            res = now;
+        
+        if (!depth)
+            return;
+        
+        for (auto c : s)
+            if (hash[c] >= k) {
+                hash[c] -= k;
+                dfs(depth - 1, now + c);
+                hash[c] += k;
+            }
+    }
+    
+    string longestSubsequenceRepeatedK(string s, int k) {
+        this->n = s.size(), this->k = k;
+        this->s = update(s);
+        
+        chs.clear();
+        for (auto [c, v] : hash)
+            chs.push_back(c);
+        sort(chs.begin(), chs.end());
+        reverse(chs.begin(), chs.end());    // for ordered result
+        
+        // it's [n/k] not [chs.size()]
+        dfs(n / k, "");
+        
+        return res;
+    }
+};
+```
+
+##### **C++ 无需预处理原串 构造 next 数组加速字符串匹配(非常常见) + 记忆化**
+
+学习 nxt 构造的思想
+
+```cpp
+class Solution {
+public:
+    int n, k;
+    string s;
+    unordered_map<char, int> hash;
+    
+    string update(string s) {
+        // ...
+    }
+    
+    // Data structure
+    // TLE
+    // vector<vector<char, int>> nxt;
+    int nxt[16010][26];
+    
+    bool check(string t) {
+        // Change the meaning of `p`
+        int p = 0;
+        for (int _ = 0; _ < k; ++ _ ) {
+            for (auto c : t) {
+                if (nxt[p][c - 'a'] >= n)
+                    return false;
+                p = nxt[p][c - 'a'] + 1;
+            }
+        }
+        return true;
+    }
+    
+    vector<char> chs;
+    string res, tmp;
+
+    // The most important thing is `how to design the DFS func`
+    set<pair<int, string>> S;
+    void dfs(int depth, string now) {
+        if (S.count({depth, now}))
+            return;
+        S.insert({depth, now});
+        
+        if (!check(now))
+            return;
+        if (now.size() > res.size() || now.size() == res.size() && now > res)
+            res = now;
+        
+        if (!depth)
+            return;
+        
+        for (auto c : s)
+            if (hash[c] >= k) {
+                hash[c] -= k;
+                dfs(depth - 1, now + c);
+                hash[c] += k;
+            }
+    }
+    
+    string longestSubsequenceRepeatedK(string s, int k) {
+        this->s = update(s);
+        this->n = s.size(), this->k = k;
+        
+        chs.clear();
+        for (auto [c, v] : hash)
+            chs.push_back(c);
+        // sort(chs.begin(), chs.end());
+        // reverse(chs.begin(), chs.end());    // for ordered result
+        
+        // ATTENTION: 经典构造nxt数组来加速字符串匹配
+        // nxt = vector<unordered_map<char, int>>(n + 1);
+        for (auto c : chs)
+            nxt[n][c - 'a'] = n;
+        for (int i = n - 1; i >= 0; -- i ) {
+            for (auto c : chs)
+                nxt[i][c - 'a'] = nxt[i + 1][c - 'a'];
+            nxt[i][s[i] - 'a'] = i;
+        }
+        
+        // it's [n/k] not [chs.size()]
+        dfs(n / k, "");
+        
+        return res;
+    }
+};
+```
+
+##### **C++ 由短串构造长串 思维**
+
+根据题意 更长的合法串必然是由短一个长度的合法串新增字符而来
+
+学习推导和构造的思维
+
+```cpp
+class Solution {
+public:
+    int n, k;
+    string s;
+    unordered_map<char, int> hash;
+    
+    string update(string s) {
+        // ...
+    }
+    
+    bool check(string t) {
+        // ...
+    }
+
+    vector<char> chs;
+    
+    string longestSubsequenceRepeatedK(string s, int k) {
+        this->n = s.size(), this->k = k;
+        this->s = update(s);
+        
+        chs.clear();
+        for (auto [c, v] : hash)
+            chs.push_back(c);
+        sort(chs.begin(), chs.end());
+        reverse(chs.begin(), chs.end());    // for ordered result
+        
+        // Reason 1: we get the longer valid string step by step
+        //           so iterate from 1 to chs.size()
+        vector<vector<string>> mem(n / k + 1);
+        mem[0].push_back("");   // empty string
+        for (int len = 1; len <= n / k; ++ len )
+            for (auto & pre : mem[len - 1])
+                for (auto c : chs) {
+                    string now = pre + c;
+                    if (check(now))
+                        mem[len].push_back(now);
+                }
+        
+        // Reason 2: we get the result from chs.size() to 1
+        for (int len = n / k; len >= 1; -- len )
+            if (mem[len].size())
+                return mem[len][0];
+        
+        return "";
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 2056. 棋盘上有效移动组合的数目](https://leetcode-cn.com/problems/number-of-valid-move-combinations-on-chessboard/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 重点在于理解题意
+> 
+> 爆搜即可
+> 
+> **值得学习的是简洁优雅的代码实现方式**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int n;
+    vector<string> pc;
+    vector<vector<int>> pt;
+    
+    int dx[8] = {-1, -1, 0, 1, 1, 1, 0, -1};    // trick
+    int dy[8] = {0, 1, 1, 1, 0, -1, -1, -1};
+    
+    vector<vector<int>> path;
+    int res = 0;
+    int p[5][2];
+    
+    bool check() {
+        // 静态数组单独存 加速访问
+        for (int i = 0; i < n; ++ i )
+            p[i][0] = pt[i][0], p[i][1] = pt[i][1];
+        
+        // 所有可能的时间
+        for (int i = 1; ; ++ i ) {
+            // ATTENTION: flag 是否有棋子没有走到目的地
+            // 题意：【每一秒，每个棋子都沿着它们选择的方向往前移动 `一步` ，直到它们到达目标位置。】
+            bool flag = false;
+            for (int j = 0; j < n; ++ j ) {
+                int d = path[j][0], t = path[j][1];
+                // ATTENTION: <= 当前棋子还可以走
+                if (i <= t) {
+                    flag = true;
+                    p[j][0] += dx[d], p[j][1] += dy[d];
+                }
+            }
+            if (!flag)
+                break;
+            
+            for (int j = 0; j < n; ++ j )
+                for (int k = j + 1; k < n; ++ k )
+                    if (p[j][0] == p[k][0] && p[j][1] == p[k][1])
+                        return false;
+        }
+        return true;
+    }
+    
+    void dfs(int u) {
+        if (u == n) {
+            if (check())
+                res ++ ;
+            return;
+        }
+        
+        // 不动 方向0 距离0
+        path.push_back({0, 0});
+        dfs(u + 1);
+        path.pop_back();
+        
+        // 方向
+        for (int i = 0; i < 8; ++ i ) {
+            string & s = pc[u];
+            // trick
+            if (s == "rook" && i % 2)
+                continue;
+            if (s == "bishop" && i % 2 == 0)
+                continue;
+            
+            // 起始位置
+            int x = pt[u][0], y = pt[u][1];
+            // 有效步数
+            for (int j = 1; ; ++ j ) {
+                x += dx[i], y += dy[i];
+                if (x < 1 || x > 8 || y < 1 || y > 8)
+                    break;
+                path.push_back({i, j});
+                dfs(u + 1);
+                path.pop_back();
+            }
+        }
+    }
+    
+    int countCombinations(vector<string>& pieces, vector<vector<int>>& positions) {
+        pc = pieces, pt = positions;
+        n = pc.size();
+        dfs(0);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### dfs 回溯
 
 > [!NOTE] **[LeetCode 51. N 皇后](https://leetcode-cn.com/problems/n-queens/)**
@@ -2004,6 +2683,70 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 1219. 黄金矿工](https://leetcode-cn.com/problems/path-with-maximum-gold/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 回溯思想的实现 trick
+> 
+> 一开始想复杂了，直接 tmp 记录 g 随后恢复即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int n, m;
+    vector<vector<int>> gs, g;
+    
+    vector<int> dx = {-1, 0, 0, 1}, dy = {0, -1, 1, 0};
+    int dfs(int x, int y) {
+        int ret = g[x][y], t = 0;
+        int tmp = g[x][y];
+        g[x][y] = 0;
+        for (int i = 0; i < 4; ++ i ) {
+            int nx = x + dx[i], ny = y + dy[i];
+            if (nx < 0 || nx >= n || ny < 0 || ny >= m || !g[nx][ny]) continue;
+            t = max(t, dfs(nx, ny));
+        }
+        g[x][y] = tmp;
+        return ret + t;
+    }
+    
+    int getMaximumGold(vector<vector<int>>& grid) {
+        gs = grid;
+        n = gs.size(), m = gs[0].size();
+        
+        int res = 0;
+        for (int i = 0; i < n; ++ i )
+            for (int j = 0; j < m; ++ j ) if (gs[i][j]) {
+                g = gs;
+                res = max(res, dfs(i, j));
+            }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### dfs 分组
 
 > [!NOTE] **[AcWing 1118. 分成互质组](https://www.acwing.com/problem/content/1120/)**
@@ -2590,6 +3333,93 @@ public:
         return res;
     }
 }
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1900. 最佳运动员的比拼回合](https://leetcode-cn.com/problems/the-earliest-and-latest-rounds-where-players-compete/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然二进制枚举搜索即可
+> 
+> 比赛时忘了加记忆化 TLE 数次... 加行记忆化就过...
+> 
+> 加强搜索敏感度
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int n, p1, p2;
+    int minr, maxr;
+    
+    unordered_set<int> S;
+    
+    void dfs(int st, int d) {
+        if (S.count(st))
+            return;
+        S.insert(st);
+        
+        int sz = __builtin_popcount(st);
+        if (sz < 2)
+            return;
+        
+        int cp = sz / 2;
+        
+        vector<int> ve;
+        for (int i = 0; i < n; ++ i )
+            if (st >> i & 1)
+                ve.emplace_back(i);
+        
+        for (int i = 0; i < cp; ++ i )
+            if (ve[i] + 1 == p1 && ve[sz - i - 1] + 1 == p2 || ve[i] + 1 == p2 && ve[sz - i - 1] + 1 == p1) {
+                minr = min(minr, d), maxr = max(maxr, d);
+                return;
+            }
+        
+        // 某位为1则对应前半部分被淘汰
+        for (int i = 0; i < 1 << cp; ++ i ) {
+            int t = st;
+            for (int j = 0; j < cp; ++ j )
+                if (i >> j & 1)
+                    t ^= 1 << ve[j];
+                else
+                    t ^= 1 << ve[sz - j - 1];
+            if ((t >> (p1 - 1) & 1) == 0 || (t >> (p2 - 1) & 1) == 0)
+                continue;
+            
+            dfs(t, d + 1);
+        }
+    }
+    
+    vector<int> earliestAndLatest(int n, int firstPlayer, int secondPlayer) {
+        this->n = n, this->p1 = firstPlayer, this->p2 = secondPlayer;
+        minr = 2e9, maxr = -2e9;
+        
+        dfs((1 << n) - 1, 1);
+        
+        return {minr, maxr};
+    }
+};
 ```
 
 ##### **Python**

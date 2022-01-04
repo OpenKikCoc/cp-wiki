@@ -660,6 +660,78 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 1808. 好因子的最大数目](https://leetcode-cn.com/problems/maximize-number-of-nice-divisors/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 根据题意显然约数个数定理
+> 
+> 又因定理累乘显然需要积最大，同减绳子
+> 
+> 忘写快速幂 TLE 1
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 根据约数个数定理 对 p 分解
+    // 变为剪绳子的题
+    using LL = long long;
+    const LL MOD = 1e9 + 7;
+    
+    LL quick_pow(LL x, LL k, LL p) {
+        x %= p;
+        LL ret = 1;
+        while (k) {
+            if (k & 1)
+                ret = (ret * x) % p;
+            x = (x * x) % p;
+            k >>= 1;
+        }
+        return ret;
+    }
+    
+    int maxNiceDivisors(int p) {
+        if (p <= 2)
+            return p;
+        LL res = 1;
+        if (p % 3 == 1)
+            res *= 4, p -= 4;
+        // 需快速幂
+        // while (p >= 3)
+        //     res = (res * 3) % MOD, p -= 3;
+        if (p >= 3) {
+            LL k = p / 3;
+            res = (res * quick_pow(3, k, MOD)) % MOD;
+            p -= k * 3;
+        }
+        if (p == 2)
+            res = (res * 2) % MOD;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[Luogu 因子和](https://www.luogu.com.cn/problem/P1593)**
 > 
 > 题意: TODO
@@ -799,6 +871,176 @@ public:
                         f[i] = min(f[i], f[i / j] + j);
                     }
         return f[n];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1250. 检查「好数组」](https://leetcode-cn.com/problems/check-if-it-is-a-good-array/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 类似倒水问题
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    bool isGoodArray(vector<int>& nums) {
+        int n = nums.size();
+        int res = nums[0];
+        for (int i = 1; i < n; ++i) res = __gcd(res, nums[i]);
+        return res == 1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1819. 序列中不同最大公约数的数目](https://leetcode-cn.com/problems/number-of-different-subsequences-gcds/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 逆向考虑枚举每一个 GCD 即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+ass Solution {
+public:
+    int countDifferentSubsequenceGCDs(vector<int>& nums) {
+        vector<bool> st(200010);
+        int mxv = 0;
+        for (auto v : nums) {
+            mxv = max(mxv, v);
+            st[v] = true;
+        }
+        
+        int res = 0;
+        for (int i = 1; i <= mxv; ++ i ) {
+            int g = -1;
+            for (int j = i; j <= mxv; j += i)
+                if (st[j]) {
+                    if (g == -1)
+                        g = j;
+                    else
+                        g = __gcd(j, g); // ATTENTION
+                }
+            if (g == i)
+                res ++ ;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 2001. 可互换矩形的组数](https://leetcode-cn.com/problems/number-of-pairs-of-interchangeable-rectangles/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> `double` 统计即可 对于本题只要保证精度即可边统计边更新记录
+> 
+> 更稳妥的是使用 gcd
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    
+    // wi * hj == wj * hi
+    long long interchangeableRectangles(vector<vector<int>>& recs) {
+        unordered_map<double, int> cnt;
+        LL res = 0;
+        for (auto rec : recs) {
+            double w = rec[0], h = rec[1];
+            res += cnt[w / h];
+            cnt[w / h] ++ ;
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ gcd**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    LL interchangeableRectangles(vector<vector<int>>& rectangles) {
+        const int n = rectangles.size();
+        unordered_map<LL, int> seen;
+
+        LL ans = 0;
+        for (const auto &r : rectangles) {
+            int w = r[0], h = r[1];
+            const int g = __gcd(r[0], r[1]);
+
+            w /= g; h /= g;
+            LL hv = (LL)(w) * 100001 + h;
+
+            ans += seen[hv];
+            seen[hv]++;
+        }
+
+        return ans;
     }
 };
 ```
@@ -1124,6 +1366,88 @@ int main() {
     
     return 0;
 }
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1354. 多次求和构造目标数组](https://leetcode-cn.com/problems/construct-target-array-with-multiple-sums/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 比赛中好多暴力模拟代码都过了 主要应对两个case
+> 
+> 对于 [2] left计算得0 所以最好放在第一行特判
+> 
+> 对于 [1,1000000000] 如果当前取出的maxv在处理后还会是maxv 需要考虑：
+> 
+> 每次减去的数值都是其他数的值(sum-maxv)=left
+> 
+> 因此考虑取余 但要-1因为减后的结果不能是0
+> 
+> 【此办法减少循环中操作优先队列的次数】
+
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// [2]
+// [1,1000000000]
+class Solution {
+public:
+    bool isPossible(vector<int>& target) {
+        if (target.size() == 1) return target[0] == 1;
+        int n = target.size();
+        long long sum = 0, maxv, newv, left, y, k;
+        priority_queue<int> pq;
+        for (auto v : target) {
+            sum += v;
+            pq.push(v);
+        }
+        while (!pq.empty() && pq.top() > 1) {
+            maxv = pq.top();
+            pq.pop();
+            // check 新数字
+            if (2 * maxv - sum < 1) return false;
+            // 其他数的和为 sum-maxv 新数为 maxv - (sum-maxv) 新sum为 maxv
+            left = sum - maxv;
+            /*
+            if (!pq.empty()) {
+                y = pq.top();
+                if (y == 1)
+                    k = (maxv - y + left - 1) / left;
+                else
+                    k = (maxv - y) / left + 1;
+                maxv -= k * left;
+                if (maxv < 1) return false;
+                sum -= k * left;
+            }
+            */
+            k = (maxv - 1) / left;
+            maxv -= k * left;
+            sum -= k * left;
+
+            pq.push(maxv);
+        }
+        return true;
+    }
+};
 ```
 
 ##### **Python**

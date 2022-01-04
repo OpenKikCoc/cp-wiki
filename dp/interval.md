@@ -1148,6 +1148,222 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 1246. 删除回文子数组](https://leetcode-cn.com/problems/palindrome-removal/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const int inf = 0x3f3f3f3f;
+    int minimumMoves(vector<int>& arr) {
+        int n = arr.size();
+        vector<vector<int>> f(n + 1, vector<int>(n + 1, inf));
+        for (int i = 1; i <= n; ++i) f[i][i] = 1;
+        for (int len = 2; len <= n; ++len)
+            for (int l = 1; l + len - 1 <= n; ++l) {
+                int r = l + len - 1;
+                for (int k = l; k < r; ++k)
+                    f[l][r] = min(f[l][r], f[l][k] + f[k + 1][r]);
+                if (arr[l - 1] == arr[r - 1])
+                    if (len == 2)
+                        f[l][r] = 1;
+                    else
+                        f[l][r] = min(f[l][r], f[l + 1][r - 1]);
+            }
+        return f[1][n];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1531. 压缩字符串 II](https://leetcode-cn.com/problems/string-compression-ii/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> dp 解释参考 [题解](https://leetcode-cn.com/problems/string-compression-ii/solution/dong-tai-gui-hua-shi-jian-on3kong-jian-on2-by-newh/)
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+int dp[111][111];
+class Solution {
+public:
+    int getLengthOfOptimalCompression(string s, int k) {
+        int n = s.size();
+        memset(dp, 0x3f, sizeof(dp));
+        dp[0][0] = 0;
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= k + 1; j++) {
+                dp[i][j] = min(dp[i][j], dp[i - 1][j - 1]);
+                int cnt = 0, del = 0;
+                for (int l = i; l <= n; l++) {
+                    cnt += s[l - 1] == s[i - 1];
+                    del += s[l - 1] != s[i - 1];
+                    if (j + del - 1 <= k)
+                        dp[l][j + del - 1] =
+                            min(dp[l][j + del - 1], dp[i - 1][j - 1] + 1 +
+                                                        (cnt >= 100  ? 3
+                                                         : cnt >= 10 ? 2
+                                                         : cnt >= 2  ? 1
+                                                                     : 0));
+                }
+            }
+        }
+        return dp[n][k];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1770. 执行乘法运算的最大分数](https://leetcode-cn.com/problems/maximum-score-from-performing-multiplication-operations/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> $f[l][r]$ 表示左侧使用 l 个右侧使用 r 个的分数 与传统区间 dp 定义略有不同
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 1010;
+    int f[N][N];
+    
+    int maximumScore(vector<int>& nums, vector<int>& mp) {
+        int n = nums.size(), m = mp.size();
+        memset(f, 0xcf, sizeof f);
+        
+        f[0][0] = 0;
+        for (int i = 1; i <= m; ++ i )
+            f[0][i] = f[0][i - 1] + nums[n - i] * mp[i - 1];
+        for (int i = 1; i <= m; ++ i )
+            f[i][0] = f[i - 1][0] + nums[i - 1] * mp[i - 1];
+        
+        for (int len = 1; len <= m; ++ len )
+            for (int l = 1; l < len; ++ l ) {
+                int r = len - l;
+                f[l][r] = max(f[l - 1][r] + nums[l - 1] * mp[len - 1], f[l][r - 1] + nums[n - r] * mp[len - 1]);
+            }
+        int res = INT_MIN;
+        for (int i = 0; i <= m; ++ i )
+            res = max(res, f[i][m - i]);
+        return res;
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int maximumScore(vector<int>& nums, vector<int>& mp) {
+        int n = nums.size(), m = mp.size();
+        vector<vector<int>> f(m + 1, vector<int>(m + 1, -1e9));
+        f[0][0] = 0;
+        for (int i = 1; i <= m; ++ i )
+            f[0][i] = f[0][i - 1] + nums[n - i] * mp[i - 1];
+        for (int i = 1; i <= m; ++ i )
+            f[i][0] = f[i - 1][0] + nums[i - 1] * mp[i - 1];
+
+        for (int l = 1; l <= m; ++ l )
+            for (int r = 1; l + r <= m; ++ r ) {
+                f[l][r] = max(f[l - 1][r] + mp[l + r - 1] * nums[l - 1],
+                    f[l][r - 1] + mp[l + r - 1] * nums[n - r]);
+            }
+
+        int res = -1e9;
+        for (int i = 0; i <= m; ++i)
+            res = max(res, f[i][m - i]);
+        return res;
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int maximumScore(vector<int>& nums, vector<int>& mp) {
+        int n = nums.size(), m = mp.size();
+        vector<vector<int>> f(m + 1, vector<int>(m + 1, -1e9));
+        f[0][0] = 0;
+        for (int l = 0; l < m; ++l)
+            for (int r = 0; l + r < m; ++r) {
+                // ATTENTION 取 max 必不可少
+                f[l + 1][r] = max(f[l + 1][r], f[l][r] + mp[l + r] * nums[l]);
+                f[l][r + 1] = max(f[l][r + 1], f[l][r] + mp[l + r] * nums[n - 1 - r]);
+            }
+        
+        int res = -1e9;
+        for (int i = 0; i <= m; ++i)
+            res = max(res, f[i][m - i]);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 二维
 
 > [!NOTE] **[AcWing 321. 棋盘分割](https://www.acwing.com/problem/content/description/323/)**
@@ -1224,6 +1440,70 @@ int main() {
 
     return 0;
 }
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1444. 切披萨的方案数](https://leetcode-cn.com/problems/number-of-ways-of-cutting-a-pizza/)**
+> 
+> 题意: 
+> 
+> rows * cols的矩阵 某些坐标有Apple 
+> 
+> 每次可以沿 【垂直/水平】 切一刀（【左/上】至少包含 1 个 apple）然后将【左/上】拿出去
+> 
+> 剩下的自问题 总共切 k-1 次分成 k 个都有苹果的块
+
+> [!TIP] **思路**
+> 
+> 重复
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int dp[55][55][15];  // 以 [i,j]为左上角 *再切* k刀的方案数
+    int s[55][55];       // 以 [i,j]为左上角 包含苹果个数
+    const int MOD = 1e9 + 7;
+    int ways(vector<string>& pizza, int k) {
+        int m = pizza.size(), n = pizza[0].size();
+        for (int i = m; i > 0; --i)
+            for (int j = n; j > 0; --j)
+                s[i][j] = s[i + 1][j] + s[i][j + 1] - s[i + 1][j + 1] +
+                          (pizza[i - 1][j - 1] == 'A');
+
+        for (int i = m; i > 0; --i)
+            for (int j = n; j > 0; --j) {
+                if (s[i][j] == 0) continue;
+                dp[i][j][0] = 1;
+                for (int t = 1; t < k; ++t) {
+                    for (int x = i + 1; x <= m; ++x)
+                        if (s[i][j] - s[x][j])
+                            dp[i][j][t] = (dp[i][j][t] + dp[x][j][t - 1]) % MOD;
+                    for (int y = j + 1; y <= n; ++y)
+                        if (s[i][j] - s[i][y])
+                            dp[i][j][t] = (dp[i][j][t] + dp[i][y][t - 1]) % MOD;
+                }
+            }
+        return dp[1][1][k - 1];
+    }
+};
 ```
 
 ##### **Python**
@@ -1545,6 +1825,63 @@ public:
                 res += 5;
             else if (S.count(v))
                 res += 2;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1771. 由子序列构造的最长回文串的长度](https://leetcode-cn.com/problems/maximize-palindrome-length-from-subsequences/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 将两个字符串进行拼接 求拼接后字符串的最长回文子序列 但要保证答案对应原字符串中的子序列都非空
+> 
+> **注意添加条件的判断处理 ( l 和 r 的范围判断 )**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 2010;
+    int f[N][N];
+     
+    int longestPalindrome(string word1, string word2) {
+        string s = word1 + word2;
+        int n1 = word1.size(), n2 = word2.size(), n = s.size();
+        memset(f, 0, sizeof f);
+        
+        int res = 0;
+        for (int i = 1; i <= n; ++ i ) f[i][i] = 1;
+        for (int len = 2; len <= n; ++ len )
+            for (int l = 1; l + len - 1 <= n; ++ l ) {
+                int r = l + len - 1;
+                if (s[l - 1] == s[r - 1]) {
+                    f[l][r] = f[l + 1][r - 1] + 2;
+                    // 只要加一个判断即可
+                    if (l <= n1 && r > n1) res = max(res, f[l][r]);
+                } else
+                    f[l][r] = max(f[l + 1][r], f[l][r - 1]);
+            }
         return res;
     }
 };
@@ -1888,6 +2225,163 @@ public:
                 }
             }
         return g[0][n - 1];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1563. 石子游戏 V](https://leetcode-cn.com/problems/stone-game-v/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 题意理解有问题，其实这题是每次选中点切分成两组。
+> 
+> - 显然区间DP ==> TLE
+> 
+> - 区间DP基础上 + 记忆化 ==> AC
+> 
+> - 优化写法: [考虑不用记忆化搜索的优化](https://leetcode-cn.com/problems/stone-game-v/solution/on2dong-tai-gui-hua-jie-fa-by-huangyuyang/) ==> AC
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ TLE**
+
+```cpp
+class Solution {
+public:
+    int stoneGameV(vector<int>& stoneValue) {
+        int n = stoneValue.size();
+        vector<int> sum(n + 1);
+        for (int i = 1; i <= n; ++i) sum[i] = sum[i - 1] + stoneValue[i - 1];
+        vector<vector<int>> f(n + 1, vector<int>(n + 1));
+        for (int len = 2; len <= n; ++len)
+            for (int l = 1; l + len - 1 <= n; ++l) {
+                int r = l + len - 1;
+                for (int k = l; k < r; k++) {
+                    int lv = sum[k] - sum[l - 1];
+                    int rv = sum[r] - sum[k];
+                    if (lv > rv)
+                        f[l][r] = max(f[l][r], rv + f[k + 1][r]);
+                    else if (lv < rv)
+                        f[l][r] = max(f[l][r], lv + f[l][k]);
+                    else
+                        f[l][r] = max(f[l][r], max(f[k + 1][r], f[l][k]) + lv);
+                }
+            }
+        return f[1][n];
+    }
+};
+```
+
+##### **C++ AC**
+
+```cpp
+class Solution {
+public:
+    int vis[601][601], f[601][601];
+    int idx = 101, a[10001], sum[10001];
+
+    int dfs(int l, int r) {
+        if (l == r) return 0;
+        if (vis[l][r] == idx) return f[l][r];
+        vis[l][r] = idx;
+        int ans = 0;
+        for (int i = l; i < r; i++) {
+            int x = sum[i] - sum[l - 1], y = sum[r] - sum[i];
+            int tmp = 0;
+            if (x > y)
+                tmp = dfs(i + 1, r) + y;
+            else if (x < y)
+                tmp = dfs(l, i) + x;
+            else
+                tmp = max(dfs(i + 1, r), dfs(l, i)) + x;
+            ans = max(ans, tmp);
+        }
+        return f[l][r] = ans;
+    }
+    int stoneGameV(vector<int>& stoneValue) {
+        int n = (int)stoneValue.size();
+        ++idx;
+        for (int i = 1; i <= n; i++)
+            a[i] = stoneValue[i - 1], sum[i] = sum[i - 1] + a[i];
+        return dfs(1, n);
+    }
+};
+```
+
+##### **C++ 优化 AC**
+
+```cpp
+const int N = 505;
+int s[N][N], g[N][N], f[N][N], mxl[N][N], mxr[N][N];
+class Solution {
+public:
+    int stoneGameV(vector<int>& a) {
+        int n = a.size();
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                f[i][j] = g[i][j] = s[i][j] = 0;
+                mxl[i][j] = mxr[i][j] = 0;
+            }
+        }
+        for (int i = 0; i < n; i++) {
+            s[i][i] = a[i];
+            g[i][i] = i;
+            for (int j = i + 1; j < n; j++) {
+                s[i][j] = s[i][j - 1] + a[j];
+                int now = g[i][j - 1];
+                while (s[i][j] - s[i][now] > s[i][now]) {
+                    now++;
+                }
+                g[i][j] = now;
+            }
+        }
+        
+        for (int len = 1; len <= n; len++) {
+            for (int l = 0; l + len - 1 < n; l++) {
+                int r = l + len - 1;
+                int mid = g[l][r];
+                int ls = s[l][mid];
+                int rs = s[mid + 1][r];
+                if (ls == rs) {
+                    f[l][r] = max(f[l][r], mxl[l][mid]);
+                    f[l][r] = max(f[l][r], mxr[mid + 1][r]);
+                } else {
+                    if (mid > l) {
+                        int ls = s[l][mid - 1];
+                        f[l][r] = max(f[l][r], mxl[l][mid - 1]);
+                    }
+                    if (mid < r) {
+                        int rs = s[mid + 1][r];
+                        f[l][r] = max(f[l][r], mxr[mid + 1][r]);
+                    }
+                }
+                int v = f[l][r] + s[l][r];
+                if (l == r) {
+                    mxl[l][r] = mxr[l][r] = v;
+                } else {
+                    mxl[l][r] = max(v, mxl[l][r - 1]);
+                    mxr[l][r] = max(v, mxr[l + 1][r]);
+                }
+            }
+        }
+        return f[0][n - 1];
     }
 };
 ```

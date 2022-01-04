@@ -629,3 +629,123 @@ $$
 - <https://zhuanlan.zhihu.com/p/25948077>
 
 * * *
+
+## 习题
+
+> [!NOTE] **[LeetCode 1923. 最长公共子路径](https://leetcode-cn.com/problems/longest-common-subpath/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 多字符串的 LCS 问题
+> 
+> SAM 模版题
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 100010;
+    
+    int tot, last;
+    struct Node {
+        int len, fa;
+        unordered_map<int, int> ch; // 注意本题特殊 数据范围较大 数组改map
+    } node[N];
+
+    int ans[N], now[N];
+    int h[N], e[N], ne[N], idx;
+    
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+        tot = last = 1;
+        memset(ans, 0, sizeof ans);
+        memset(now, 0, sizeof now);
+    }
+    void add(int a, int b) {
+        e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    void extend(int c) {
+        int p = last, np = last = ++ tot;
+        node[np].len = node[p].len + 1;
+        for (; p && !node[p].ch[c]; p = node[p].fa)
+            node[p].ch[c] = np;
+        if (!p)
+            node[np].fa = 1;
+        else {
+            int q = node[p].ch[c];
+            if (node[q].len == node[p].len + 1) node[np].fa = q;
+            else {
+                int nq = ++ tot;
+                node[nq] = node[q], node[nq].len = node[p].len + 1;
+                node[q].fa = node[np].fa = nq;
+                for (; p && node[p].ch[c] == q; p = node[p].fa)
+                    node[p].ch[c] = nq;
+            }
+        }
+    }
+    
+    void dfs(int u) {
+        for (int i = h[u]; ~i; i = ne[i]) {
+            dfs(e[i]);
+            now[u] = max(now[u], now[e[i]]);
+        }
+    }
+    
+    int longestCommonSubpath(int n, vector<vector<int>>& paths) {
+        init();
+        
+        auto pth = paths[0];
+        for (auto c : pth)
+            extend(c);
+        for (int i = 1; i <= tot; ++ i )
+            ans[i] = node[i].len;
+        for (int i = 2; i <= tot; ++ i )
+            add(node[i].fa, i);
+        
+        int m = paths.size();
+        for (int i = 1; i < m; ++ i ) {
+            auto pth = paths[i];
+            memset(now, 0, sizeof now);
+            int p = 1, t = 0, sz = pth.size();
+            for (int j = 0; j < sz; ++ j ) {
+                int c = pth[j];
+                while (p > 1 && !node[p].ch[c])
+                    p = node[p].fa, t = node[p].len;
+                if (node[p].ch[c])
+                    p = node[p].ch[c], t ++ ;
+                now[p] = max(now[p], t);
+            }
+            dfs(1);
+            for (int j = 1; j <= tot; j ++ )
+                ans[j] = min(ans[j], now[j]);
+        }
+        
+        int res = 0;
+        for (int i = 1; i <= tot; ++ i )
+            res = max(res, ans[i]);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

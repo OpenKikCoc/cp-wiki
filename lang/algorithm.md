@@ -91,70 +91,6 @@ cout << a[k - 1];
 
 ## 习题
 
-> [!NOTE] **[Luogu NOIP2011 普及组 统计单词数](https://www.luogu.com.cn/problem/P1308)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> `getline` 与 `string.find`
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    string a, b;
-
-    getline(cin, a); // 读入一行
-    getline(cin, b);
-
-    transform(a.begin(), a.end(), a.begin(), ::tolower); //转小写
-    transform(b.begin(), b.end(), b.begin(), ::tolower);
-
-    a = ' ' + a + ' ';  // 防止识别在单词内
-    b = ' ' + b + ' ';
-
-    int pos = b.find(a); //find()函数找到返回第一次下标，否则返回-1
-
-    int idx = 0, res = 0;
-    if(pos != -1){
-        idx = pos;
-
-        while (pos != -1){
-            res ++ ;
-            pos = b.find(a, pos + 1);
-        }
-    } else {
-        cout << -1 << endl;
-        return 0;
-    }
-
-    cout << res << " " << idx <<endl;
-
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
 ### next_permutation (一系列 包括周赛逆操作)
 
 > [!NOTE] **[Luogu NOIP2004 普及组 火星人](https://www.luogu.com.cn/problem/P1088)**
@@ -282,3 +218,194 @@ class Solution:
 
 * * *
 
+> [!NOTE] **[LeetCode 1830. 使字符串有序的最少操作次数](https://leetcode-cn.com/problems/minimum-number-of-operations-to-make-string-sorted/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 逆序观察 操作的过程（与求下一个排列恰好是逆操作）恰好是全排列
+> 
+> 故原题可以转化为求原排列是初始（升序）排列的第几个排列
+> 
+> 显然有 **康托展开** 或 **数位DP** ==> TODO 整理
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 康托展开**
+
+```cpp
+// 康托展开
+class Solution {
+public:
+    using LL = long long;
+    const int MOD = 1e9 + 7;
+    
+    LL quick_pow(LL a, LL b, LL m) {
+        LL res = 1;
+        a %= m;
+        while (b) {
+            if (b & 1)
+                res = res * a % m;
+            a = a * a % m;
+            b >>= 1;
+        }
+        return res;
+    }
+    
+    int makeStringSorted(string s) {
+        int n = s.size();
+        LL fact = 1, dup = 1;
+        LL res = 0;
+        vector<int> seen(26, 0);
+        for (int i = n - 1; i >= 0; -- i ) {
+            seen[s[i] - 'a'] ++ ;
+            dup = dup * seen[s[i] - 'a'] % MOD;
+            
+            LL rk = 0;
+            for (int j = 0; j < s[i] - 'a'; ++ j )
+                rk += seen[j];
+            
+            res = (res + rk * fact % MOD * quick_pow(dup, MOD - 2, MOD) % MOD) % MOD;
+            fact = fact * (n - i) % MOD;
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 数位DP**
+
+```cpp
+// 数位DP
+class Solution {
+public:
+    using LL = long long;
+    const int MOD = 1e9 + 7;
+    const static int N = 3010;
+    
+    LL f[N], g[N];
+    
+    LL qmi(LL a, int b) {
+        LL res = 1;
+        while (b) {
+            if (b & 1)
+                res = res * a % MOD;
+            a = a * a % MOD;
+            b >>= 1;
+        }
+        return res;
+    }
+    
+    // 重复排列问题
+    int get(vector<int> & cnt) {
+        int sum = 0;
+        for (int i = 0; i < 26; ++ i )
+            sum += cnt[i];
+        int res = f[sum];
+        for (int i = 0; i < 26; ++ i )
+            res = (LL)res * g[cnt[i]] % MOD;
+        return res;
+    }
+    
+    int makeStringSorted(string s) {
+        f[0] = g[0] = 1;
+        for (int i = 1; i <= s.size(); ++ i ) {
+            f[i] = f[i - 1] * i % MOD;
+            g[i] = qmi(f[i], MOD - 2);
+        }
+        
+        int res = 0;
+        vector<int> cnt(26, 0);
+        for (auto c : s)
+            cnt[c - 'a'] ++ ;
+        for (auto c : s) {
+            int x = c - 'a';
+            for (int i = 0; i < x; ++ i ) {
+                if (!cnt[i])
+                    continue;
+                cnt[i] -- ;
+                res = (res + get(cnt)) % MOD;
+                cnt[i] ++ ;
+            }
+            cnt[x] -- ;
+        }
+        return res;
+    }
+};
+```
+
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### min
+
+> [!NOTE] **[LeetCode 1189. “气球” 的最大数量](https://leetcode-cn.com/problems/maximum-number-of-balloons/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> STL min 用法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int maxNumberOfBalloons(string text) {
+        unordered_map<char, int> cnt;
+        for (auto c : text) ++ cnt[c];
+        int res = INT_MAX;
+        res = min(res, cnt['b']);
+        res = min(res, cnt['a']);
+        res = min(res, cnt['l'] / 2);
+        res = min(res, cnt['o'] / 2);
+        res = min(res, cnt['n']);
+        return res;
+    }
+};
+```
+
+##### **C++ STL**
+
+```cpp
+class Solution {
+public:
+    int maxNumberOfBalloons(string text) {
+        map<char, int> F;
+        for (auto c : text) F[c] ++;
+        return min({F['b'], F['a'], F['l']/2, F['o']/2, F['n']});
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

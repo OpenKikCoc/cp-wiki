@@ -11,14 +11,14 @@
 > LIFO 表达的是 **当前在容器** 内最后进来的最先出去。
 > 
 > 我们考虑这样一个栈
-    
+
 ```text
     push(1)
     pop(1)
     push(2)
     pop(2)
 ```
-    
+
     如果从整体考虑，1 最先入栈，最先出栈，2 最后入栈，最后出栈，这样就成了一个先进先出表，显然是错误的。
     
     所以，在考虑数据结构是 LIFO 还是 FIFO 的时候，应当考虑在当前容器内的情况。
@@ -344,6 +344,128 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 1249. 移除无效的括号](https://leetcode-cn.com/problems/minimum-remove-to-make-valid-parentheses/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    string minRemoveToMakeValid(string s) {
+        int n = s.size();
+        stack<int> st;
+        vector<bool> vis(n + 1);
+        for (int i = 0; i < n; ++i) {
+            if (s[i] == '(')
+                st.push(i);
+            else if (s[i] == ')') {
+                if (!st.empty()) {
+                    int t = st.top();
+                    st.pop();
+                    vis[t] = vis[i] = true;  // 合法
+                }
+            } else
+                vis[i] = true;
+        }
+        string res;
+        for (int i = 0; i < n; ++i)
+            if (vis[i]) res.push_back(s[i]);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1541. 平衡括号字符串的最少插入次数](https://leetcode-cn.com/problems/minimum-insertions-to-balance-a-parentheses-string/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+>
+> 某个 ( 需在连续两个的 )) 左侧 才可以形成平衡。
+>
+> 模拟一遍即可，注意模拟规则。
+>
+> 有用栈模拟的代码：
+>
+> >   在检查字符的时候分两种情况：
+> >
+> >   1.字符是 '(' 这个时候只需要把它的位置压进栈里就行
+> >
+> >   2.字符是 ')' 这个时候，检查它后面的那个字符是不是')'，如果不是')'，说明需要插入一个')'。然后再检查栈是不是空的，如果非空则匹配pop掉；如果栈是空的，说明没有与之匹配的'('，所以需要插入一个'('。直到检查结束，统计到的需要插入的数目。
+> >
+> >   字符串遍历完毕 当字符串遍历完毕的时候，如果这时候栈不空，那么就把栈里的左括号数目乘以2加到结果上，因为每个左括号需要插入两个右括号去匹配。
+> >
+> >   栈的代替 由于栈里面只有'('，因此我们可以用一个整形数据代替栈里面左括号的数目，这样可以节省时间。
+>
+> 思路与之前的仍然是一致的，用数值 `l` 代替了栈
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int minInsertions(string s) {
+        int n = s.size(), l = 0, res = 0;
+        for (int i = 0; i < n; ++i) {
+            if (s[i] == '(')
+                ++l;
+            else {
+                if (i + 1 < n && s[i + 1] == ')')
+                    ++i;    // 匹配
+                else
+                    ++res;  // 缺少一个 加一个来匹配
+                if (l > 0)
+                    --l;    // 匹配
+                else
+                    ++res;  // 缺少 (
+            }
+        }
+        res += 2 * l;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 栈维护
 
 > [!NOTE] **[LeetCode 636. 函数的独占时间](https://leetcode-cn.com/problems/exclusive-time-of-functions/)**
@@ -383,6 +505,75 @@ public:
             }
         }
         return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 其他操作
+
+> [!NOTE] **[LeetCode 1190. 反转每对括号间的子串](https://leetcode-cn.com/problems/reverse-substrings-between-each-pair-of-parentheses/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 栈操作
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    string reverseParentheses(string s) {
+        vector<string> v(1);
+        for (auto c : s) {
+            if (c == '(') v.push_back("");
+            else if (c == ')') {
+                auto t = v.back(); v.pop_back();
+                reverse(t.begin(), t.end());
+                v.back() += t;
+            } else v.back() += c;
+        }
+        return v[0];
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    string reverseParentheses(string s) {
+        stack<string> st;
+        st.push("");
+        string res;
+        for (auto c : s) {
+            if (c == '(') st.push("");
+            else if (c == ')') {
+                auto t = st.top(); st.pop();
+                reverse(t.begin(), t.end());
+                st.top() += t;
+            } else st.top().push_back(c);
+        }
+        return st.top();
     }
 };
 ```

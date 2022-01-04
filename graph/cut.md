@@ -265,3 +265,66 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 1192. 查找集群内的「关键连接」](https://leetcode-cn.com/problems/critical-connections-in-a-network/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 求桥
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<vector<int>> v;
+    vector<int> dfn, low;
+    int timestamps;
+    vector<vector<int>> ret;
+    
+    void tarjan(int x, int fa) {
+        dfn[x] = low[x] = ++ timestamps;
+        for (auto y : v[x]) {
+            if (y == fa) continue;
+            if (!dfn[y]) {
+                tarjan(y, x);
+                low[x] = min(low[x], low[y]);
+                if (low[y] > dfn[x]) ret.push_back({x, y});
+            } else low[x] = min(low[x], dfn[y]);
+        }
+    }
+    
+    vector<vector<int>> criticalConnections(int n, vector<vector<int>>& connections) {
+        v = vector<vector<int>>(n);
+        dfn = low = vector<int>(n);
+        timestamps = 0;
+        ret.clear();
+        for (auto e : connections) {
+            v[e[0]].push_back(e[1]);
+            v[e[1]].push_back(e[0]);
+        }
+        for (int i = 0; i < n; ++ i )
+            if (!dfn[i]) tarjan(i, -1);
+        return ret;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

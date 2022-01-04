@@ -567,6 +567,78 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 1175. 质数排列](https://leetcode-cn.com/problems/prime-arrangements/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 数值较大，筛法求质数以及快速乘
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const int mod = 1e9 + 7;
+    
+    vector<int> primes;
+    
+    void init(int n) {
+        primes.clear();
+        vector<bool> st(n + 1);
+        for (int i = 2; i <= n; ++ i ) {
+            if (!st[i]) primes.push_back(i);
+            for (int j = 0; primes[j] <= n / i; ++ j ) {
+                st[i * primes[j]] = true;
+                if (i % primes[j] == 0) break;
+            }
+        }
+    }
+    
+    LL qadd(LL a, int b) {
+        LL res = 0;
+        while (b) {
+            if (b & 1) res = (res + a) % mod;
+            a = (a + a) % mod;
+            b >>= 1;
+        }
+        return res;
+    }
+    
+    int numPrimeArrangements(int n) {
+        init(n);
+        
+        int pc = primes.size();
+        
+        vector<LL> ve(n + 1);
+        ve[0] = 1;
+        for (int i = 1; i <= n; ++ i )
+            ve[i] = qadd(ve[i - 1], i);
+        
+        return ve[pc] * ve[n - pc] % mod;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 简单应用
 
 > [!NOTE] **[Luogu USACO1.5 回文质数 Prime Palindromes](https://www.luogu.com.cn/problem/P1217)**

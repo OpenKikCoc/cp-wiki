@@ -435,6 +435,120 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 1319. 连通网络的操作次数](https://leetcode-cn.com/problems/number-of-operations-to-make-network-connected/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> n 个节点已有连接 connections , 检查至少还需要拆多少个绳子
+> 
+> 一开始做法是检查有多少个节点完全没有绳子连接 返回个数 但这样没有考虑到已经用绳子连接的部分可能不联通 有绳子不联通的统一需要加绳子
+> 
+> ==> 并查集 检查联通量个数即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int find(int x, vector<int>& fa) {
+        return x == fa[x] ? x : fa[x] = find(fa[x], fa);
+    }
+    int makeConnected(int n, vector<vector<int>>& connections) {
+        int cn = connections.size();
+        if (n > cn + 1) return -1;
+
+        vector<int> fa(n);
+        for (int i = 0; i < n; ++i) fa[i] = i;
+        int part = n;
+        for (auto v : connections) {
+            int f0 = find(v[0], fa), f1 = find(v[1], fa);
+            if (f0 != f1) {
+                --part;
+                fa[f0] = f1;
+            }
+        }
+        return part - 1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1627. 带阈值的图连通性](https://leetcode-cn.com/problems/graph-connectivity-with-threshold/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 枚举因子，然后将其所有的倍数与这一因子之间连边。
+> 
+> **一开始在想怎么找某个数的因子，重要的是先找因子再向后连接**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+    int fa[100005], sz[100005];
+    int Find(int x) {
+        if (fa[x] == x) return x;
+        return fa[x] = Find(fa[x]);
+    }
+    void Merge(int x, int y) {
+        int fx = Find(x), fy = Find(y);
+        if (fx == fy) return;
+        if (sz[fx] > sz[fy])
+            fa[fy] = fx, sz[fx] += sz[fy];
+        else
+            fa[fx] = fy, sz[fy] += sz[fx];
+    }
+
+public:
+    vector<bool> areConnected(int n, int threshold,
+                              vector<vector<int>>& queries) {
+        for (int i = 1; i <= n; ++i) fa[i] = i, sz[i] = 1;
+        for (int i = threshold + 1; i <= n; ++i)
+            for (int j = i; j <= n; j += i) Merge(i, j);
+        vector<bool> res;
+        for (auto& q : queries) res.push_back(Find(q[0]) == Find(q[1]));
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 带权并查集
 
 > [!NOTE] **[AcWing 240. 食物链](https://www.acwing.com/problem/content/242/)**
@@ -934,6 +1048,290 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 1361. 验证二叉树](https://leetcode-cn.com/problems/validate-binary-tree-nodes/)**
+> 
+> 题意:
+> 
+> 二叉树上有 n 个节点，按从 0 到 n - 1 编号，其中节点 i 的两个子节点分别是 leftChild[i] 和 rightChild[i]。
+> 
+> 只有 所有 节点能够形成且 只 形成 一颗 有效的二叉树时，返回 true；否则返回 false
+
+> [!TIP] **思路**
+> 
+> 并查集
+> 
+> 题解有很多按度数算是错误的
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int f[10005];
+    int find(int x) {
+        if (f[x] == x) return x;
+        return f[x] = find(f[x]);
+    }
+    void merge(int i, int j) {
+        int x = find(i), y = find(j);
+        if (x != y) f[i] = j;
+    }
+    bool judge(int i, int j) { return find(i) == find(j); }
+    bool validateBinaryTreeNodes(int n, vector<int>& leftChild,
+                                 vector<int>& rightChild) {
+        unordered_map<int, int> l, r, fa;
+        for (int i = 1; i <= n; ++i) f[i] = i;
+        int v, cnt = 0;
+        for (int i = 0; i < n; ++i) {
+            v = leftChild[i];
+            if (v != -1) {
+                ++v;
+                if (l[i + 1] || fa[v]) return false;
+                if (judge(i + 1, v)) return false;
+                l[i + 1] = v;
+                fa[v] = i + 1;
+                merge(i + 1, v);
+                ++cnt;
+            }
+        }
+        for (int i = 0; i < n; ++i) {
+            v = rightChild[i];
+            if (v != -1) {
+                ++v;
+                if (r[i + 1] || fa[v]) return false;
+                if (judge(i + 1, v)) return false;
+                r[i + 1] = v;
+                fa[v] = i + 1;
+                ++cnt;
+            }
+        }
+        return cnt == n - 1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1579. 保证图可完全遍历](https://leetcode-cn.com/problems/remove-max-number-of-edges-to-keep-graph-fully-traversable/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 重复做
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+struct DSU {
+    int f[100005];
+    int N;
+    void init(int n) {
+        N = n;
+        for (int i = 1; i <= n; ++i) f[i] = i;
+    }
+    int find(int x) {
+        if (x == f[x]) return x;
+        return f[x] = find(f[x]);
+    }
+    bool merge(int x, int y) {
+        int fx = find(x), fy = find(y);
+        if (fx == fy) return false;
+        f[fx] = fy;
+        --N;
+        return true;
+    }
+} a, b;
+
+class Solution {
+public:
+    // 先尽可能的保留公共边，并删除冗余的公共边，然后再删除单独的冗余边
+    int maxNumEdgesToRemove(int n, vector<vector<int>>& edges) {
+        a.init(n);
+        b.init(n);
+        int res = 0;
+        for (auto& e : edges)
+            if (e[0] == 3) {
+                bool f1 = a.merge(e[1], e[2]);
+                bool f2 = b.merge(e[1], e[2]);
+                if (!f1 && !f2) ++res;  // 对于AB来说都是冗余边
+            }
+        for (auto& e : edges) {
+            if (e[0] == 1 && !a.merge(e[1], e[2])) ++res;
+            if (e[0] == 2 && !b.merge(e[1], e[2])) ++res;
+        }
+        if (a.N > 1 || b.N > 1) return -1;  // 不连通
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1970. 你能穿过矩阵的最后一天](https://leetcode-cn.com/problems/last-day-where-you-can-still-cross/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> - 显然二分即可
+> 
+>   直接申请 2e4 * 2e4 的静态数组显然会爆 换 vector 即可
+> 
+> - 并查集做法
+> 
+>   因为最后一天一定是全部都是水域，因此考虑倒序且无需预处理的往前推进并还原陆地
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 二分**
+
+```cpp
+class Solution {
+public:
+    const int INF = 0x3f3f3f3f;
+    
+    int n, m, mid;
+    vector<vector<int>> g;
+    vector<vector<bool>> st;
+    
+    int dx[8] = {-1, -1, -1, 0, 1, 1, 1, 0}, dy[8] = {-1, 0, 1, 1, 1, 0, -1, -1};
+    
+    bool dfs(int x, int y) {
+        if (y == m)
+            return true;
+        st[x][y] = true;
+        for (int i = 0; i < 8; ++ i ) {
+            int nx = x + dx[i], ny = y + dy[i];
+            if (nx > 0 && nx <= n && ny > 0 && ny <= m && g[nx][ny] <= mid && !st[nx][ny]) {
+                if (dfs(nx, ny))
+                    return true;
+            }
+        }
+        return false;
+    }
+    
+    bool check() {
+        st = vector<vector<bool>>(n + 1, vector<bool>(m + 1, false));
+        for (int i = 1; i <= n; ++ i )
+            if (g[i][1] <= mid && dfs(i, 1))
+                return false;
+        return true;
+    }
+    
+    int latestDayToCross(int row, int col, vector<vector<int>>& cells) {
+        this->n = row; this->m = col;
+        this->g = vector<vector<int>>(n + 1, vector<int>(m + 1, INF));
+        int sz = cells.size();
+        for (int i = 0; i < sz; ++ i )
+            g[cells[i][0]][cells[i][1]] = i + 1;
+        int l = 0, r = n * m;
+        while (l < r) {
+            mid = l + r >> 1;
+            if (check())
+                l = mid + 1;
+            else
+                r = mid;
+        }
+        return l - 1;
+    }
+};
+```
+
+##### **C++ 并查集**
+
+```cpp
+// 逆序并查集
+class Solution {
+public:
+    int find(vector<int>& f, int x) {
+        if (f[x] == x) { return x; }
+        int nf = find(f, f[x]);
+        f[x] = nf;
+        return nf;
+    }
+
+    void merge(vector<int>& f, int x, int y) {
+        int fx = find(f, x);
+        int fy = find(f, y);
+        f[fx] = fy;
+    }
+
+    int latestDayToCross(int row, int col, vector<vector<int>>& cells) {
+        auto idx = [=](int i, int j) { return i * col + j; };
+        auto check = [=](int i, int j) { return i >= 0 && i < row && j >= 0 && j < col; };
+        int tot = (row * col);
+        vector<int> f(tot + 2);
+        for (int i = 0; i < tot + 2; i++) f[i] = i;
+
+        // tot 和 tot + 1 分别代表上下界
+        vector<vector<int>> state(row, vector<int>(col, 1));
+        vector<pair<int, int>> directions{{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+        for (int day = cells.size() - 1; day >= 0; day--) {
+            int i = cells[day][0] - 1, j = cells[day][1] - 1;
+
+            if (i == 0) { merge(f, tot, idx(0, j)); }
+            if (i == row - 1) { merge(f, tot + 1, idx(row - 1, j)); }
+
+            for (auto [di, dj] : directions) {
+                int ni = i + di, nj = j + dj;
+                if (check(ni, nj) && state[ni][nj] == 0)
+                    merge(f, idx(i, j), idx(ni, nj));
+            }
+            state[i][j] = 0;
+
+            if (find(f, tot) == find(f, tot + 1)) return day;
+        }
+        return 0;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 综合应用
 
 > [!NOTE] **[Luogu [NOI2015] 程序自动分析](https://www.luogu.com.cn/problem/P1955)**
@@ -1010,6 +1408,274 @@ int main() {
     }
     return 0;
 }
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1202. 交换字符串中的元素](https://leetcode-cn.com/problems/smallest-string-with-swaps/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<int> p;
+    int find(int x) {
+        if (p[x] != x) return p[x] = find(p[x]);
+        return p[x];
+    }
+    string smallestStringWithSwaps(string s, vector<vector<int>>& pairs) {
+        int n = s.size();
+        p.resize(n);
+        for (int i = 0; i < n; ++ i ) p[i] = i;
+        for (auto e : pairs) p[find(e[0])] = find(e[1]);
+        
+        vector<vector<char>> v(n);
+        for (int i = 0; i < n; ++ i )
+            v[find(i)].push_back(s[i]);
+        for (int i = 0; i < n; ++ i ) {
+            sort(v[i].begin(), v[i].end());
+            reverse(v[i].begin(), v[i].end());
+        }
+        
+        string res;
+        for (int i = 0; i < n; ++ i ) {
+            res.push_back(v[find(i)].back());
+            v[find(i)].pop_back();
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1722. 执行交换操作后的最小汉明距离](https://leetcode-cn.com/problems/minimize-hamming-distance-after-swap-operations/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 前几天的每日一题类似 [Weekly-155-C](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2019-09-22_Weekly-155)
+> 
+> 并查集即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int n;
+    
+    vector<int> p;
+    void init() {
+        p = vector<int>(n);
+        for (int i = 0; i < n; ++ i ) p[i] = i;
+    }
+    int find(int x) {
+        if (p[x] != x) return p[x] = find(p[x]);
+        return p[x];
+    }
+    
+    int minimumHammingDistance(vector<int>& sr, vector<int>& tr, vector<vector<int>>& as) {
+        n = sr.size();
+        
+        init();
+        
+        for (auto & e : as) 
+            p[find(e[0])] = find(e[1]);
+        
+        vector<vector<int>> v1(n), v2(n);
+        for (int i = 0; i < n; ++ i ) {
+            v1[find(i)].push_back(sr[i]);
+            v2[find(i)].push_back(tr[i]);
+        }
+        
+        int cnt = 0;
+        for (int i = 0; i < n; ++ i )
+            if (find(i) == i) {
+                sort(v1[i].begin(), v1[i].end());
+                sort(v2[i].begin(), v2[i].end());
+                int sz = v1[i].size();
+                for (int j = 0, k = 0; j < sz && k < sz; ) {
+                    if (v1[i][j] == v2[i][k]) {
+                        ++ cnt;
+                        ++ j, ++ k;
+                    } else if (v1[i][j] < v2[i][k]) ++ j;
+                    else ++ k;
+                }
+            }
+        return n - cnt;
+    }
+};
+```
+
+##### **C++ STL**
+
+```cpp
+class Solution {
+public:
+    vector<int> p;
+
+    int find(int x) {
+        if (p[x] != x) p[x] = find(p[x]);
+        return p[x];
+    }
+
+    int minimumHammingDistance(vector<int>& a, vector<int>& b, vector<vector<int>>& as) {
+        int n = a.size();
+        for (int i = 0; i < n; i ++ ) p.push_back(i);
+        for (auto& t: as) p[find(t[0])] = find(t[1]);
+
+        vector<unordered_multiset<int>> hash(n);
+        for (int i = 0; i < n; i ++ )
+            hash[find(i)].insert(a[i]);
+        int res = 0;
+        for (int i = 0; i < n; i ++ ) {
+            auto& h = hash[find(i)];
+            if (h.count(b[i])) h.erase(h.find(b[i]));
+            else res ++ ;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1998. 数组的最大公因数排序](https://leetcode-cn.com/problems/gcd-sort-of-an-array/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 很好的综合练习题，考验熟练度
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 100010;
+    
+    // 并查集
+    int p[N];
+    int find(int x) {
+        if (p[x] != x)
+            p[x] = find(p[x]);
+        return p[x];
+    }
+    void merge(int a, int b) {
+        int pa = find(a), pb = find(b);
+        if (pa != pb)
+            p[pa] = pb;
+    }
+    
+    // 线性筛
+    int primes[N], cnt;
+    bool st[N];
+    
+    void get_primes() {
+        for (int i = 2; i < N; ++ i ) {
+            if (!st[i])
+                primes[cnt ++ ] = i;
+            for (int j = 0; primes[j] <= (N - 1) / i; ++ j ) {
+                st[primes[j] * i] = true;
+                if (i % primes[j] == 0)
+                    break;
+            }
+        }
+    }
+    
+    // init
+    void init() {
+        for (int i = 0; i < N; ++ i )
+            p[i] = i;
+        
+        memset(st, 0, sizeof st);
+        cnt = 0;
+        get_primes();
+    }
+    
+    bool gcdSort(vector<int>& nums) {
+        init();
+        
+        int n = nums.size();
+        auto sorted_nums = nums;
+        sort(sorted_nums.begin(), sorted_nums.end());
+        
+        for (int i = 0; i < n; ++ i ) {
+            int x = nums[i];
+            for (int j = 0; j < cnt && primes[j] <= x / primes[j]; ++ j ) {
+                int y = primes[j];
+                if (x % y == 0) {
+                    merge(nums[i], y);
+                    while (x % y == 0)
+                        x /= y;
+                }
+            }
+            if (x > 1)
+                merge(nums[i], x);
+        }
+        
+        // trick 直接与排序后的数组比对
+        for (int i = 0; i < n; ++ i )
+            if (find(nums[i]) != find(sorted_nums[i]))
+                return false;
+        return true;
+    }
+};
 ```
 
 ##### **Python**

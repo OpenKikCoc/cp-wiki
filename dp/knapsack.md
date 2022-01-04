@@ -1594,6 +1594,61 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 1449. 数位成本和为目标值的最大数字](https://leetcode-cn.com/problems/form-largest-integer-with-digits-that-add-up-to-target/)**
+> 
+> 题意: 
+> 
+> 每一个数字有其消耗，在总消耗为target的情况下选出【最大整数】（其实就是选出的数字个数最多 且这些数字组合起来最大）
+
+> [!TIP] **思路**
+> 
+> 完全背包，实现的时候选择数字最多的即可。
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    string largestNumber(vector<int>& cost, int target) {
+        int n = cost.size();
+        vector<int> dp(target + 1, -1);
+        vector<int> fa(target + 1);
+        dp[0] = 0;
+        for (int i = 0; i < n; ++i) {
+            int w = cost[i];
+            for (int j = w; j <= target; ++j) {
+                if (dp[j - w] != -1 && dp[j - w] + 1 >= dp[j]) {
+                    dp[j] = dp[j - w] + 1;
+                    fa[j] = i;
+                }
+            }
+        }
+        if (dp[target] == -1) return "0";
+        string s;
+        for (int i = target; i; i -= cost[fa[i]]) s += '1' + fa[i];
+        sort(s.begin(), s.end(), greater<char>());
+        return s;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 二维背包
 
 > [!NOTE] **[AcWing 1020. 潜水员](https://www.acwing.com/problem/content/description/1022/)**
@@ -2190,6 +2245,55 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 1155. 掷骰子的N种方法](https://leetcode-cn.com/problems/number-of-dice-rolls-with-target-sum/)** TAG
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 分组背包
+    const static int MOD = 1e9 + 7;
+    int numRollsToTarget(int d, int f, int target) {
+        vector<int> ff(target + 1);
+        ff[0] = 1;
+        for (int i = 1; i <= d; ++ i )
+            for (int j = target; j >= 0; -- j ) {   // j >= 0 因为后面可能用到 ff[0]
+                ff[j] = 0;                          // ATTENTION 一维状态下必须初始化为 0
+                for (int k = 1; k <= f; ++ k )
+                    if (j - k >= 0)
+                        ff[j] = (ff[j] + ff[j - k]) % MOD;
+            }
+                
+        return ff[target];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 有依赖背包 树
 
 > [!NOTE] **[AcWing 10. 有依赖的背包问题](https://www.acwing.com/problem/content/description/10/)**

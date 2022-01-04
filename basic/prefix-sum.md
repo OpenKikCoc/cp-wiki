@@ -708,6 +708,141 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 1895. 最大的幻方](https://leetcode-cn.com/problems/largest-magic-square/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 前缀和处理 遍历即可
+> 
+> 暴力也可过
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    vector<vector<int>> g;
+    int n, m;
+    vector<vector<LL>> sr, sd, sadd, ssub;  // i + j, i - j + m
+    
+    void init() {
+        sr = sd = vector<vector<LL>>(n + 1, vector<LL>(m + 1));
+        sadd = vector<vector<LL>>(n + m + 1, vector<LL>(n + 1));
+        ssub = vector<vector<LL>>(n + m + 1, vector<LL>(m + 1));
+        for (int i = 1; i <= n; ++ i )
+            for (int j = 1; j <= m; ++ j ) {
+                LL v = g[i - 1][j - 1];
+                sr[i][j] = sr[i][j - 1] + v;
+                sd[i][j] = sd[i - 1][j] + v;
+                sadd[i + j][i] = sadd[i + j][i - 1] + v;
+                ssub[i - j + m][j] = ssub[i - j + m][j - 1] + v;
+            }
+    }
+    
+    bool f(int x, int y, int k) {
+        int l = y - k, u = x - k;
+        int v = sr[x][y] - sr[x][l];
+        for (int i = x - 1; i > u; -- i )
+            if (sr[i][y] - sr[i][l] != v)
+                return false;
+                
+        for (int j = y; j > l; -- j )
+            if (sd[x][j] - sd[u][j] != v)
+                return false;
+                
+        if (sadd[x + l + 1][x] - sadd[u + y + 1][u] != v ||
+            ssub[x - y + m][y] - ssub[u - l + m][l] != v)
+            return false;
+        return true;
+    }
+    
+    bool check(int k) {
+        for (int i = k; i <= n; ++ i )
+            for (int j = k; j <= m; ++ j )
+                if (f(i, j, k))
+                    return true;
+        return false;
+    }
+    
+    int largestMagicSquare(vector<vector<int>>& grid) {
+        this->g = grid;
+        n = g.size(), m = g[0].size();
+        init();
+        
+        for (int k = min(n, m); k; -- k )
+            if (check(k))
+                return k;
+        return 0;   // never
+    }
+};
+```
+
+##### **C++ 暴力**
+
+```cpp
+// 暴力
+typedef long long LL;
+
+class Solution {
+public:
+    bool check(vector<vector<int>>& g, int a, int b, int c, int d) {
+        LL sum = 0;
+        for (int i = a; i <= c; i ++ ) {
+            LL s = 0;
+            for (int j = b; j <= d; j ++ ) s += g[i][j];
+            if (sum && sum != s) return false;
+            sum = s;
+        }
+
+        for (int i = b; i <= d; i ++ ) {
+            LL s = 0;
+            for (int j = a; j <= c; j ++ ) s += g[j][i];
+            if (sum != s) return false;
+        }
+
+        LL s = 0;
+        for (int i = a, j = b; i <= c; i ++, j ++ )
+            s += g[i][j];
+        if (s != sum) return false;
+
+        s = 0;
+        for (int i = a, j = d; i <= c; i ++, j -- )
+            s += g[i][j];
+        return s == sum;
+    }
+
+    int largestMagicSquare(vector<vector<int>>& g) {
+        int n = g.size(), m = g[0].size();
+        for (int k = min(n, m); k; k -- )
+            for (int i = 0; i + k - 1 < n; i ++ )
+                for (int j = 0; j + k - 1 < m; j ++ )
+                    if (check(g, i, j, i + k - 1, j + k - 1))
+                        return k;
+        return 1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 前缀和维护
 
 > [!NOTE] **[Luogu ]()**
@@ -832,7 +967,259 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 1139. 最大的以 1 为边界的正方形](https://leetcode-cn.com/problems/largest-1-bordered-square/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然前缀和 略
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 110;
+    
+    int n, m;
+    int sl[N][N], su[N][N];
+    
+    bool check(int k) {
+        for (int i = k; i <= n; ++ i )
+            for (int j = k; j <= m; ++ j ) {
+                int dv = sl[i][j], rv = su[i][j];
+                int uv = sl[i - k + 1][j], lv = su[i][j - k + 1];
+                if (dv >= k && rv >= k && uv >= k && lv >= k)
+                    return true;
+            }
+        return false;
+    }
+    
+    int largest1BorderedSquare(vector<vector<int>>& grid) {
+        this->n = grid.size(), this->m = grid[0].size();
+        memset(sl, 0, sizeof sl);
+        memset(su, 0, sizeof su);
+        for (int i = 1; i <= n; ++ i )
+            for (int j = 1; j <= m; ++ j )
+                if (grid[i - 1][j - 1])
+                    sl[i][j] = sl[i][j - 1] + 1;
+                else
+                    sl[i][j] = 0;
+        for (int j = 1; j <= m; ++ j )
+            for (int i = 1; i <= n; ++ i )
+                if (grid[i - 1][j - 1])
+                    su[i][j] = su[i - 1][j] + 1;
+                else
+                    su[i][j] = 0;
+        
+        for (int k = min(n, m); k; -- k )
+            if (check(k))
+                return k * k;
+        return 0;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1248. 统计「优美子数组」](https://leetcode-cn.com/problems/count-number-of-nice-subarrays/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 前缀和统计
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int numberOfSubarrays(vector<int>& nums, int k) {
+        int n = nums.size(), res = 0, odd = 0;
+        vector<int> c(n + 1);
+        c[0] = 1;
+        for (int i = 0; i < n; ++i) {
+            odd += (nums[i] & 1);
+            if (odd >= k) res += c[odd - k];
+            ++c[odd];
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1658. 将 x 减到 0 的最小操作数](https://leetcode-cn.com/problems/minimum-operations-to-reduce-x-to-zero/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 前缀和 TLE
+> 
+> 反向求和为 `tot - x` 的最长子数组
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 前缀和 TLE**
+
+```cpp
+// 最后一个用例超时 88 / 88
+class Solution {
+public:
+    typedef long long LL;
+    int minOperations(vector<int>& nums, int x) {
+        int n = nums.size(), minv = INT_MAX;
+        for (int i = 0; i < n; ++ i ) nums.push_back(nums[i]), minv = min(minv, nums[i]);
+        if (minv > x) return -1;
+        vector<LL> psum(2 * n + 1);
+        unordered_map<LL, int> hash;
+        hash[0] = 0;
+        int res = INT_MAX;
+        for (int i = 1; i <= 2 * n; ++ i ) {
+            psum[i] = psum[i - 1] + nums[i - 1];
+            if (i >= n) {
+                LL tar = psum[i] - x;
+                if (hash.count(tar) && hash[tar] + n >= i && hash[tar] <= n)
+                    res = min(res, i - hash[tar]);
+            }
+            hash[psum[i]] = i;
+        }
+        return res == INT_MAX ? -1 : res;
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int minOperations(vector<int>& nums, int x) {
+        int n = nums.size(), tot = 0;
+        for (auto v : nums) tot += v;
+        if (tot < x) return -1;
+        // 区间为空 特判
+        if (tot == x) return n;
+        
+        unordered_map<int, int> hash;
+        hash[0] = 0;
+        int res = INT_MAX, sum = 0;
+        for (int i = 1; i <= n; ++ i ) {
+            sum += nums[i - 1];
+            // sum - tar = tot - x
+            int tar = x + sum - tot;
+            if (hash.count(tar)) res = min(res, n - i + hash[tar]);
+            if (!hash.count(sum)) hash[sum] = i;
+        }
+        return res == INT_MAX ? -1 : res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 差分
+
+> [!NOTE] **[LeetCode 1674. 使数组互补的最少操作次数](https://leetcode-cn.com/problems/minimum-moves-to-make-array-complementary/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // ATTENTION 重要条件:  nums[i] <= limit 意味着最终的和一定小于等于2*limit
+    // 预处理每对数字，利用差分数组的思想，在分界线插入变更值，最后求前缀和就是 [2,2∗limit] 上的答案
+    int minMoves(vector<int>& nums, int limit) {
+        int n = nums.size();
+        vector<int> sum(limit * 2 + 2);
+        for (int i = 0, j = n - 1; i < j; ++ i , -- j ) {
+            sum[2] += 2;
+            sum[min(nums[i], nums[j]) + 1] -= 2;
+            sum[min(nums[i], nums[j]) + 1] += 1;
+            sum[nums[i] + nums[j]] -= 1;
+            sum[nums[i] + nums[j] + 1] += 1;
+            sum[max(nums[i], nums[j]) + limit + 1] -= 1;
+            sum[max(nums[i], nums[j]) + limit + 1] += 2;
+        }
+        int res = n;
+        for (int i = 2; i <= 2 * limit; ++ i ) {
+            sum[i] += sum[i - 1];
+            res = min(res, sum[i]);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 ### 差分思想 比如用map / 区间 / trick
 

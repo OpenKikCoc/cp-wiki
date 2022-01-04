@@ -198,3 +198,101 @@ class Solution:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 1238. 循环码排列](https://leetcode-cn.com/problems/circular-permutation-in-binary-representation/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 二进制码转格雷码：`G = B ^ B >> 1` ；
+> 
+> 格雷码转二进制码：`B = ^(G >> i), i = 0 .. n - 1` , n 为格雷码二进制位数。
+> 
+> 题解区有先生成 n 位格雷码再旋转数组的操作 也可 TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+    vector<int> circularPermutation(int n, int start) {
+        vector<int> res = {start};
+        int b = start;
+        while(start >>= 1) b ^= start;
+        n = (1 << n)-1;
+        for(int i = 1; i <= n; ++i)
+            res.push_back(b + i & n ^ (b + i & n) >> 1);
+        return res;
+    }
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1611. 使整数变为 0 的最少操作次数](https://leetcode-cn.com/problems/minimum-one-bit-operations-to-make-integers-zero/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 递归TODO
+> 
+> 题目要求的处理规则其实对应格雷码解码，故直接向零方向解码即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+/*
+ * 其实这种变为全0的操作就是格雷码为n的解码
+ * [格雷码百度百科](https://baike.baidu.com/item/%E6%A0%BC%E9%9B%B7%E7%A0%81)
+ * 格雷码→二进制码（解码）：
+ * 从左边第二位起，将每位与左边一位解码后的值异或，作为该位解码后的值（最左边一位依然不变）。
+ * 依次异或，直到最低位。依次异或转换后的值（二进制数）就是格雷码转换后二进制码的值。
+ * eg:n=1110
+   1. n的左边第二位：1，与前一位已经解码：1，进行异或，1^1=0，所以数字变成10xx
+   2. n的左边第三位：1，与前一位已经解码：0，进行异或，1^0=1，所以数字变成101x
+   3. n的左边第四位：0，与前一位已经解码：1，进行异或，0^1=1，所以数字变成1011
+   所以答案就是1011B=11D
+ */
+class Solution {
+public:
+    int minimumOneBitOperations(int n) {
+        int res = 0;
+        while (n) {
+            res ^= n;
+            n /= 2;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

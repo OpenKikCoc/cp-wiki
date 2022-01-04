@@ -991,6 +991,88 @@ class Solution:
 
 * * *
 
+> [!NOTE] **[LeetCode 1944. 队列中可以看到的人数](https://leetcode-cn.com/problems/number-of-visible-people-in-a-queue/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 此类题目显然先想考虑 `按高度加入` or `按方向加入`
+> 
+> 本题按方向先加入右侧的点 需注意找到的是当前点右侧第一个大于等于当前点的数作为右边界
+> 
+> > 部分题解使用了大于等于当前点的最后一个数，是错误的
+> 
+> **数组可以简化栈操作**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 1e5 + 10;
+    
+    int stk[N], top;
+    
+    vector<int> canSeePersonsCount(vector<int>& heights) {
+        int n = heights.size();
+        this->top = 0;
+        
+        vector<int> res(n);
+        for (int i = n - 1; i >= 0; -- i ) {
+            int cnt = 0;
+            while (top && heights[stk[top - 1]] < heights[i])
+                top -- , cnt ++ ;
+            if (top)
+                cnt ++ ;
+            res[i] = cnt;
+            // 等于 后面的看不到
+            while (top && heights[stk[top - 1]] == heights[i])
+                top -- ;
+            stk[top ++ ] = i;
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 数组简化栈操作**
+
+```cpp
+class Solution {
+public:
+    vector<int> canSeePersonsCount(vector<int>& heights) {
+        int n = heights.size();
+        vector<int> ans(n), v;
+        for (int i = n - 1; i >= 0; i -= 1) {
+            int j = lower_bound(v.begin(), v.end(), heights[i], greater<int>()) - v.begin();
+            ans[i] = v.size() - j + (j != 0);
+            while (not v.empty() and v.back() <= heights[i])
+                v.pop_back();
+            v.push_back(heights[i]);
+        }
+        return ans;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 删数类问题
 
 > [!NOTE] **[Luogu 删数问题](https://www.luogu.com.cn/problem/P1106)**
@@ -1433,6 +1515,55 @@ class Solution(object):
             stack.append(c)
         return ''.join(stack[:remain]).lstrip('0') or '0' # 踩坑：stack[:remain]
        
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1673. 找出最具竞争力的子序列](https://leetcode-cn.com/problems/find-the-most-competitive-subsequence/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<int> mostCompetitive(vector<int>& nums, int k) {
+        stack<int> st;
+        int n = nums.size(), tot = n - k;
+        for (auto v : nums) {
+            while (!st.empty() && st.top() > v && tot) st.pop(), -- tot;
+            st.push(v);
+        }
+        while (tot -- ) st.pop();
+        vector<int> res;
+        while (!st.empty()) {
+            res.push_back(st.top());
+            st.pop();
+        }
+        reverse(res.begin(), res.end());
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
 ```
 
 <!-- tabs:end -->

@@ -860,6 +860,314 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 1136. 平行课程](https://leetcode-cn.com/problems/parallel-courses/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 拓扑排序板子题 略
+> 
+> **这类转移较简单的可以直接在 topo 中计算**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 5010;
+    
+    int h[N], e[N], ne[N], idx;
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+    }
+    void add(int a, int b) {
+        e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    int n;
+    int d[N], q[N];
+    int f[N];
+    
+    int topo() {
+        int hh = 0, tt = -1;
+        for (int i = 1; i <= n; ++ i )
+            if (!d[i])
+                q[ ++ tt] = i;
+        while (hh <= tt) {
+            int t = q[hh ++ ];
+            for (int i = h[t]; ~i; i = ne[i]) {
+                int j = e[i];
+                if ( -- d[j] == 0)
+                    q[ ++ tt] = j;
+            }
+        }
+        if (hh != n)
+            return -1;
+        
+        int res = 0;
+        for (int i = n - 1; i >= 0; -- i ) {
+            int t = q[i];
+            f[t] = 1;   // min
+            for (int j = h[t]; ~j; j = ne[j]) {
+                int k = e[j];
+                f[t] = max(f[t], f[k] + 1);
+            }
+            res = max(res, f[t]);
+        }
+        return res;
+    }
+    
+    int minimumSemesters(int n, vector<vector<int>>& relations) {
+        init();
+        memset(f, 0, sizeof f);
+        this->n = n;
+        for (auto & re : relations)
+            add(re[0], re[1]), d[re[1]] ++ ;
+        return topo();
+    }
+};
+```
+
+##### **C++ topo中计算**
+
+```cpp
+class Solution {
+public:
+    int minimumSemesters(int N, vector<vector<int>>& relations) {
+        vector<int> v[N + 1];
+        vector<int> d(N + 1), f(N + 1, N + 1);
+        for (auto e : relations) {
+            v[e[0]].push_back(e[1]);
+            d[e[1]] ++;
+        }
+        queue<int> Q;
+        for (int i = 1; i <= N; ++ i)
+            if (d[i] == 0) {
+                Q.push(i);
+                f[i] = 1;
+            }
+        while (!Q.empty()) {
+            int x = Q.front();
+            Q.pop();
+            for (auto y : v[x])
+                if (! -- d[y]) {
+                    Q.push(y);
+                    f[y] = f[x]+1;
+                }
+        }
+        int ans = 0;
+        for (int i = 1; i <= N; ++ i)
+            ans = max(ans, f[i]);
+        if (ans == N + 1) return -1;
+        return ans;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1857. 有向图中最大颜色值](https://leetcode-cn.com/problems/largest-color-value-in-a-directed-graph/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 一开始写了判环 然后跑拓扑 其实直接拓扑就可以
+> 
+> 随后正序递推即可 （正序dfs会TLE, 当然拓扑序性质注定无需搜索, 可以直接递推）
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+const int N = 1e5 + 10, M = 2e5 + 10;
+
+int h[N], e[M], ne[M], idx;
+
+void add(int a, int b) {
+    e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+int q[N], d[N];
+int f[N][26];
+
+void init() {
+    memset(h, -1, sizeof h);
+    idx = 0;
+    memset(d, 0, sizeof d);
+    memset(f, 0, sizeof f);
+}
+
+class Solution {
+public:
+    int n;
+    bool topsort() {
+        int hh = 0, tt = -1;
+        for (int i = 0; i < n; i ++ )
+            if (!d[i])
+                q[ ++ tt] = i;
+
+        while (hh <= tt) {
+            int t = q[hh ++ ];
+            for (int i = h[t]; ~i; i = ne[i]) {
+                int j = e[i];
+                if (-- d[j] == 0)
+                    q[ ++ tt] = j;
+            }
+        }
+        return tt == n - 1;
+    }
+    
+    int largestPathValue(string colors, vector<vector<int>>& edges) {
+        n = colors.size();
+        init();
+        for (auto & es : edges) {
+            int a = es[0], b = es[1];
+            add(a, b);
+            d[b] ++ ;
+        }
+        if (!topsort())
+            return -1;
+        
+        int res = 0;
+        // 正序就是拓扑序列
+        for (int i = 0; i < n; ++ i ) {
+            int j = q[i], ci = colors[j] - 'a';  // 这里写成了colors[i] - 'a'比赛的时候WA
+            f[j][ci] = max(f[j][ci], 1);     // 细节
+            for (int k = h[j]; ~k; k = ne[k]) {
+                int v = e[k], cv = colors[v] - 'a';
+                for (int c = 0; c < 26; ++ c )
+                    f[v][c] = max(f[v][c], f[j][c] + (c == cv));
+            }
+        }
+        
+        for (int i = 0; i < n; ++ i )
+            for (int j = 0; j < 26; ++ j )
+                res = max(res, f[i][j]);
+        
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 2050. 并行课程 III](https://leetcode-cn.com/problems/parallel-courses-iii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典求拓扑序再根据拓扑序计算值 略
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 5e4 + 10, M = 5e4 + 10;
+    
+    int n;
+    int h[N], e[M], ne[M], idx;
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+    }
+    void add(int a, int b) {
+        e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    int din[N];
+    vector<int> topology() {
+        vector<int> q(n);
+        int hh = 0, tt = -1;
+        for (int i = 1; i <= n; ++ i )
+            if (!din[i])
+                q[ ++ tt] = i;
+        
+        while (hh <= tt) {
+            int t = q[hh ++ ];
+            for (int i = h[t]; ~i; i = ne[i]) {
+                int j = e[i];
+                if ( -- din[j] == 0)
+                    q[ ++ tt] = j;
+            }
+        }
+        
+        return q;
+    }
+    
+    int minimumTime(int n, vector<vector<int>>& relations, vector<int>& time) {
+        this->n = n;
+        init();
+        
+        memset(din, 0, sizeof din);
+        for (auto & r : relations)
+            add(r[0], r[1]), din[r[1]] ++ ;
+        
+        auto q = topology();
+        vector<int> f(n);
+        int res = 0;
+        for (int i = n - 1; i >= 0; -- i ) {
+            int u = q[i], t = 0;
+            for (int j = h[u]; ~j; j = ne[j])
+                t = max(t, f[e[j] - 1]);
+            f[u - 1] = t + time[u - 1];
+            res = max(res, f[u - 1]);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 拓扑排序方案数（可重集排序问题）
 
 > [!NOTE] **[LeetCode 1916. 统计为蚁群构筑房间的不同顺序](https://leetcode-cn.com/problems/count-ways-to-build-rooms-in-an-ant-colony/)**
@@ -1187,6 +1495,418 @@ class Solution:
             return res
         else:
             return []
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 进阶应用
+
+> [!NOTE] **[LeetCode 1203. 项目管理](https://leetcode-cn.com/problems/sort-items-by-groups-respecting-dependencies/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 双层拓扑排序
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    //const static int N = 30010;
+    const static int N = 34010; // 33010 wa 35010 ac
+    int e[N], ne[N], h[N], idx;
+    int din[N], q[N];
+    void init() {
+        idx = 0;
+        memset(h, -1, sizeof h);
+        memset(din, 0, sizeof din);
+    }
+    void addedge(int a, int b) {
+        e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    bool topo(int n) {
+        int hh = 0, tt = -1;
+        for (int i = 0; i < n; ++ i )
+            if (!din[i])
+                q[ ++ tt] = i;
+        while (hh <= tt) {
+            int t = q[hh ++ ];
+            for (int i = h[t]; ~i; i = ne[i]) {
+                int j = e[i];
+                if (! --din[j])
+                    q[ ++ tt] = j;
+            }
+        }
+        // 注意判断
+        return tt == n - 1;
+    }
+    
+    vector<int> sortItems(int n, int m, vector<int>& group, vector<vector<int>>& beforeItems) {
+        // 1. 项目之间 拓扑排序
+        init();
+        for (int i = 0; i < n; ++ i )
+            for (auto x : beforeItems[i])
+                addedge(x, i), din[i] ++ ;
+        if (!topo(n)) return {};
+        
+        // 2. 为不属于某个小组的项目新建虚拟小组
+        int tmp_m = m;
+        for (int i = 0; i < n; ++ i )
+            if (group[i] == -1)
+                group[i] = m ++ ;
+        // 3. 所有本小组的项目加入小组内 保存在v数组
+        vector<vector<int>> v(m);
+        for (int i = 0; i < n; ++ i )
+            v[group[q[i]]].push_back(q[i]);
+        
+        // 4. 小组之间建边
+        init();
+        for (int i = 0; i < n; ++ i )
+            for (auto x : beforeItems[i]) {
+                if (group[x] == group[i]) continue;
+                addedge(group[x], group[i]), din[group[i]] ++ ;
+            }
+        if (!topo(m)) return {};
+        
+        // 5. 结果
+        vector<int> res;
+        for (int i = 0; i < m; ++ i )
+            for (auto x : v[q[i]])
+                res.push_back(x);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1591. 奇怪的打印机 II](https://leetcode-cn.com/problems/strange-printer-ii/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 每个颜色染一个矩形 颜色不能重复使用 问能否达成目标染色情况
+> 
+> 显然先统计颜色并求每个颜色的左上与右下边界
+> 
+> 随后：枚举每个矩阵内的所有其他颜色，建图，跑拓扑排序
+> 
+> 判断是否有环，原理是：颜色只能用一次 则前述有向图不能有环
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 考虑统计每个颜色出现的左上、右下坐标
+    int m, n;
+    vector<vector<int>> G;
+    vector<unordered_set<int>> es;
+    vector<int> vis;
+    bool dfs(int u) {
+        vis[u] = -1;
+        for (auto& v : es[u]) {
+            if (vis[v] < 0)
+                return false;
+            else if (!vis[v] && !dfs(v))
+                return false;
+        }
+        vis[u] = 1;
+        return true;
+    }
+    bool isPrintable(vector<vector<int>>& targetGrid) {
+        this->G = targetGrid;
+        m = G.size(), n = G[0].size();
+        vector<int> l(61, 60), u(61, 60), r(61, -1), d(61, -1);
+        es = vector<unordered_set<int>>(61);
+        vis = vector<int>(61);
+        unordered_set<int> color;
+        for (int i = 0; i < m; ++i)
+            for (int j = 0; j < n; ++j) {
+                int c = G[i][j];
+                color.insert(c);
+                l[c] = min(l[c], j);
+                u[c] = min(u[c], i);
+                r[c] = max(r[c], j);
+                d[c] = max(d[c], i);
+            }
+        for (int i = 0; i < m; ++i)
+            for (int j = 0; j < n; ++j) {
+                int c = G[i][j];
+                for (auto& uc : color)
+                    if (c != uc && l[uc] <= j && u[uc] <= i && r[uc] >= j &&
+                        d[uc] >= i)
+                        es[uc].insert(c);
+            }
+        for (auto& c : color)
+            if (!vis[c])
+                if (!dfs(c)) return false;
+        return true;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1632. 矩阵转换后的秩](https://leetcode-cn.com/problems/rank-transform-of-a-matrix/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思路：并查集+拓扑排序
+> 
+> 比赛想到了拓扑排序【二维点转化一维，每行、每列排序建边】，节点数太多感觉要爆
+> 
+> **需要想得到结合并查集减少节点数**
+> 
+> liuzhou 的优雅模版
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// 记录 liuzhou_101 聚聚的写法
+template<class T>
+inline bool freshmin(T& a, const T& b) {
+    if (a > b) {
+        a = b;
+        return true;
+    } else return false;
+}
+
+template<class T>
+inline bool freshmax(T& a, const T& b) {
+    if (a < b) {
+        a = b;
+        return true;
+    } else return false;
+}
+
+struct directed_graph {
+    int n;
+    vector<vector<int>> v;
+    
+    directed_graph (int n = 0) {
+        init(n);
+    }
+    void init(int n) {
+        assert(n >= 0);
+        this->n = n;
+        v = vector<vector<int>>(n+1);
+    }
+    void addedge(int x, int y) {
+        assert(1 <= x && x <= n);
+        assert(1 <= y && y <= n);
+        v[x].push_back(y);
+    }
+    void erase_multiedges() {
+        for (int i = 1; i <= n; ++ i) {
+            sort(v[i].begin(), v[i].end());
+            v[i].erase(unique(v[i].begin(), v[i].end()), v[i].end());
+        }
+    }
+    
+    vector<int> in_degree() {
+        vector<int> ret(n+1);
+        for (int x = 1; x <= n; ++ x)
+            for (auto y : v[x])
+                ret[y] ++;
+        return ret;
+    }
+    vector<int> topsort(int bound) {
+        vector<int> deg = in_degree();
+        vector<int> dp = vector<int>(n + 1);
+        
+        vector<int> ret;
+        queue<int> q;
+        for (int i = 1; i <= n; ++ i)
+            if (!deg[i]) q.push(i);
+        while (!q.empty()) {
+            int x = q.front();
+            q.pop();
+            ret.push_back(x);
+            for (auto y : v[x]) {
+                dp[y] = max(dp[y], dp[x] + (x <= bound));
+                if (!-- deg[y]) q.push(y);
+            }
+        }
+        return dp;
+    }
+    
+    int times;
+    vector<int> dfn, low, in;
+    vector<int> st;
+    int scc;
+    vector<int> belong;
+    void tarjan(int x) {
+        dfn[x] = low[x] = ++ times;
+        st.push_back(x);
+        in[x] = 1;
+        for (auto y : v[x]) {
+            if (!dfn[y]) {
+                tarjan(y);
+                freshmin(low[x], low[y]);
+            }
+            else if (in[y])
+                freshmin(low[x], dfn[y]);
+        }
+        if (dfn[x] == low[x]) {
+            scc ++;
+            while (1) {
+                int y = st.back();
+                st.pop_back();
+                in[y] = 0;
+                belong[y] = scc;
+                if (x == y) break;
+            }
+        }
+    }
+    directed_graph strong_connected_component() {
+        times = 0;
+        dfn = vector<int>(n+1);
+        low = vector<int>(n+1);
+        in = vector<int>(n+1);
+        st = vector<int>();
+        scc = 0;
+        belong = vector<int>(n+1);
+        for (int i = 1; i <= n; ++ i)
+            if (!dfn[i]) tarjan(i);
+        directed_graph ret(scc);
+        for (int x = 1; x <= n; ++ x)
+            for (auto y : v[x]) if (belong[x] != belong[y])
+                ret.addedge(belong[x], belong[y]);
+        // ret.erase_multiedges();
+        return ret;
+    }
+};
+
+template<class T>
+auto arr(int n = 0) {
+    return vector<T>(n);
+}
+
+template<class T, class... Args>
+auto arr(int n, Args... args) {
+    return vector<decltype(arr<T>(args...))>(n, arr<T>(args...));
+}
+
+class Solution {
+public:
+    vector<vector<int>> matrixRankTransform(vector<vector<int>>& a) {
+        int n = a.size(), m = a[0].size();
+        
+        int N = n*m;
+        auto place = [&](int x, int y) {
+            return x * m + y + 1;
+        };
+        
+        vector<int> f(N + 1);
+        for (int i = 0; i <= N; ++i) f[i] = i;
+        function<int(int)> father = [&](int x) {
+            return f[x] == x ? x : f[x] = father(f[x]);
+        };
+        
+        for (int i = 0; i < n; ++i) {
+            vector<int> p(m);
+            for (int j = 0; j < m; ++j) p[j] = j;
+            sort(p.begin(), p.end(), [&](int x, int y) {
+                    return a[i][x] < a[i][y];
+                });
+            for (int k = 1; k < m; ++k)
+                if (a[i][p[k - 1]] == a[i][p[k]])
+                    f[father(place(i, p[k - 1]))] = father(place(i, p[k]));
+        }
+        for (int j = 0; j < m; ++j) {
+            vector<int> p(n);
+            for (int i = 0; i < n; ++i) p[i] = i;
+            sort(p.begin(), p.end(), [&](int x, int y) {
+                    return a[x][j] < a[y][j];
+                });
+            for (int k = 1; k < n; ++k)
+                if (a[p[k - 1]][j] == a[p[k]][j])
+                    f[father(place(p[k - 1], j))] = father(place(p[k], j));
+        }
+        
+        directed_graph G(N + 1);
+        
+        for (int i = 0; i < n; ++i) {
+            vector<int> p(m);
+            for (int j = 0; j < m; ++j) p[j] = j;
+            sort(p.begin(), p.end(), [&](int x, int y) {
+                    return a[i][x] < a[i][y];
+                });
+            for (int k = 1; k < m; ++k)
+                if (a[i][p[k - 1]] < a[i][p[k]])
+                    G.addedge(father(place(i, p[k - 1])), father(place(i, p[k])));
+        }
+        
+        for (int j = 0; j < m; ++j) {
+            vector<int> p(n);
+            for (int i = 0; i < n; ++i) p[i] = i;
+            sort(p.begin(), p.end(), [&](int x, int y) {
+                    return a[x][j] < a[y][j];
+                });
+            for (int k = 0; k < n; ++k)
+                if (k - 1 >= 0 && a[p[k - 1]][j] < a[p[k]][j])
+                    G.addedge(father(place(p[k - 1], j)), father(place(p[k], j)));
+        }
+        
+        auto dp = G.topsort(N);
+        auto res = arr<int>(n, m);
+        for (int i = 0; i < n; ++i)
+            for (int j = 0; j < m; ++j)
+                res[i][j] = dp[father(place(i, j))] + 1;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
 ```
 
 <!-- tabs:end -->

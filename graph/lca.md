@@ -1457,3 +1457,74 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 1257. 最小公共区域](https://leetcode-cn.com/problems/smallest-common-region/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> LCA思想 实现TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    unordered_map<string, vector<string>> mp;
+    unordered_map<string, bool> in;
+    string dfs(string& t, string& s1, string& s2) {
+        if (t == s1 || t == s2) return t;
+        if (mp[t].empty()) return "";
+        string res;
+        int cnt = 0;
+        for (auto& s : mp[t]) {
+            string ret = dfs(s, s1, s2);
+            if (ret != "") res = ret, ++cnt;
+        }
+        if (cnt == 1)
+            return res;
+        else if (cnt == 2)
+            return t;
+        return "";
+    }
+    string findSmallestRegion(vector<vector<string>>& regions, string region1,
+                              string region2) {
+        vector<string> out;
+        for (auto& regs : regions) {
+            int sz = regs.size();
+            out.push_back(regs[0]);
+            for (int i = 1; i < sz; ++i) {
+                mp[regs[0]].push_back(regs[i]);
+                in[regs[i]] = true;
+            }
+        }
+        vector<string> ve;
+        for (auto t : out)
+            if (in[t] == false) ve.push_back(t);
+        string res;
+        for (auto& t : ve) {
+            res = dfs(t, region1, region2);
+            if (res != "") return res;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

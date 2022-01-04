@@ -841,3 +841,133 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 1201. 丑数 III](https://leetcode-cn.com/problems/ugly-number-iii/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 模拟显然 TLE
+> 
+> 考虑【二分 + 容斥原理】
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = unsigned long long;
+    int nthUglyNumber(int n, int a, int b, int c) {
+        auto lcm = [](LL a, LL b) {
+            return a * b / __gcd(a, b);
+        };
+        LL ab = lcm(a, b);
+        LL bc = lcm(b, c);
+        LL ca = lcm(c, a);
+        LL abc = lcm(ab, c);
+        auto calc = [&](LL m) -> LL {
+            return m / a + m / b + m / c - m / ab - m / bc - m / ca + m / abc;
+        };
+        
+        LL L = 0, R = 2e9 + 10;
+        while (L < R) {
+            LL m = L + (R - L) / 2;
+            //cout << m << endl;
+            if (calc(m) < n) L = m + 1;
+            else R = m;
+        }
+        //cout << endl;
+        return L;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1782. 统计点对的数目]()** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 需优化枚举点对的过程
+> 
+> **容斥原理**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<int> countPairs(int n, vector<vector<int>>& edges, vector<int>& queries) {
+        vector<int> d(n + 1);
+        unordered_map<int, int> cnt;
+        for (auto & e : edges) {
+            int a = e[0], b = e[1];
+            if (a > b)
+                swap(a, b);
+            cnt[a * 100000 + b] ++ ;
+            d[a] ++ , d[b] ++ ;
+        }
+        vector<int> ds(d.begin() + 1, d.end());
+        sort(ds.begin(), ds.end());
+        
+        vector<int> res;
+        for (auto & q : queries) {
+            // 遍历所有边
+            // 先求满足条件且 d[a,b] > 0 的部分
+            // s1:  d[a] + d[b] - d[a,b] > cnt && d[a,b] > 0
+            // 容斥求满足条件且 d[a,b] = 0 的部分
+            // s2:  d[a] + d[b] > cnt && d[a,b] > 0
+            // s3:  d[a] + d[b] > cnt
+            int s1 = 0, s2 = 0, s3 = 0;
+            for (auto [k, v] : cnt) {
+                // 循环内所有点对的 v 都不为 0
+                int a = k / 100000, b = k % 100000;
+                if (d[a] + d[b] - v > q) s1 ++ ;
+                if (d[a] + d[b] > q) s2 ++ ;
+            }
+            // 双指针计算 s3
+            for (int i = n - 1, j = 0; j < i; -- i ) {
+                while (j < i && ds[i] + ds[j] <= q) ++ j ;
+                if (j < i && ds[i] + ds[j] > q) s3 += i - j;
+            }
+            res.push_back(s1 + s3 - s2);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

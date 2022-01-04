@@ -425,3 +425,64 @@ class Solution:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 1452. 收藏清单](https://leetcode-cn.com/problems/people-whose-list-of-favorite-companies-is-not-a-subset-of-another-list/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 多组字符串，返回不是其他组子集的组。
+> 
+> 排序后暴力即可
+> 
+> bitset可以优化 因为每一个字符串都不同 可以对字符串编码
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<int> peopleIndexes(vector<vector<string>>& a) {
+        int n = a.size();
+        unordered_map<string, int> vis;
+        int vcnt = 0;  // 1~vcnt 闭区间
+        for (int i = 0; i < n; ++i)
+            for (int j = 0; j < a[i].size(); ++j)
+                if (!vis[a[i][j]]) vis[a[i][j]] = ++vcnt;
+        bitset<50500> f[110];
+        for (int i = 0; i < n; ++i)
+            for (int j = 0; j < a[i].size(); ++j) f[i][vis[a[i][j]]] = 1;
+        vector<int> res;
+        for (int i = 0; i < n; ++i) {
+            bool flag = false;
+            for (int j = 0; j < n; ++j)
+                if (j != i) {
+                    if ((f[i] & f[j]) == f[i]) {
+                        flag = true;
+                        break;
+                    }
+                }
+            if (!flag) res.push_back(i);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

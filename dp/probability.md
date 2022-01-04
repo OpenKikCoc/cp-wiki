@@ -243,3 +243,109 @@ int main() {
 ## 参考文献
 
 [kuangbin 概率 DP 总结](https://www.cnblogs.com/kuangbin/archive/2012/10/02/2710606.html)
+
+
+## 习题
+
+> [!NOTE] **[LeetCode 1377. T 秒后青蛙的位置](https://leetcode-cn.com/problems/frog-position-after-t-seconds/)** [TAG]
+> 
+> 题意: 
+> 
+> 青蛙从根开始跳 求 t 秒后在 target 点的概率
+
+> [!TIP] **思路**
+> 
+> TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+    double pr[105];  // 表示跳到每个节点的概率,初始值pr[1] = 1.0
+    bool vis[105];   // dfs过程会使用到，用于记录该节点有没有被遍历过。
+    map<int, vector<int>> mp;             // 记录边的连接信息
+    void dfs(int cur, int t) {
+        if (t <= 0) return;               // 如果时间到了，那就退出
+        int to_count = 0;
+        for (auto next : mp[cur])
+            if (!vis[next]) to_count++;   // 首先观察青蛙能去的地方
+        if (to_count == 0) return;        // 如果已经没有地方能去了，那就退出
+        double p = pr[cur] / to_count;    // 跳往每个地方都是均匀分布的，概率均匀
+        for (auto next : mp[cur]) {
+            if (!vis[next]) {
+                vis[next] = true;
+                pr[cur] -= p;
+                pr[next] += p;            // 开始跳之前，将概率转移
+                dfs(next, t - 1);         // 这样青蛙就可以安心跳过去了
+                vis[next] = false;
+            }
+        }
+    }
+
+public:
+    double frogPosition(int n, vector<vector<int>>& edges, int t, int target) {
+        // 题目的数据量很小，才100个节点，本来担心暴力dfs模拟的话会不会超时。
+        // 但是青蛙不会走回头路，这样就可以去掉很多很多的情况，对于dfs来说，应该不会超时的，然后开始干！
+        for (int i = 0; i < n; i++)
+            pr[i] = 0, vis[i] = false;
+        for (auto edge : edges) {
+            mp[edge[0]].push_back(edge[1]);
+            mp[edge[1]].push_back(edge[0]);  //因为是无向图
+        }
+        pr[1] = 1, vis[1] = true;  //初始化表示在当前1节点。
+        dfs(1, t);
+        return pr[target];
+    }
+};
+
+// 作者：wu-bin-cong
+```
+
+##### **C++ TODO**
+
+```cpp
+class Solution {
+public:
+    double f[105][55];
+    vector<int> G[105];
+    void dfs(int cur, int fa, int curt) {
+        int sz = G[cur].size();
+        if (fa) --sz;
+        if (sz == 0) {
+            f[cur][curt] += f[cur][curt - 1];
+            return;
+        }
+        for (int x : G[cur]) {
+            if (x == fa) continue;
+            f[x][curt] = 1.0 * f[cur][curt - 1] * (1.0 / sz);
+            dfs(x, cur, curt);
+        }
+    }
+    double frogPosition(int n, vector<vector<int>>& edges, int t, int target) {
+        for (auto e : edges) {
+            G[e[0]].push_back(e[1]);
+            G[e[1]].push_back(e[0]);
+        }
+        f[1][0] = 1;
+        for (int i = 1; i <= t; ++i) { dfs(1, 0, i); }
+        return f[target][t];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

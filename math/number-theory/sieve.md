@@ -554,3 +554,101 @@ def pre():
 ## 其他线性函数
 
 **本节部分内容译自博文 [Решето Эратосфена](http://e-maxx.ru/algo/eratosthenes_sieve) 与其英文翻译版 [Sieve of Eratosthenes](https://cp-algorithms.com/algebra/sieve-of-eratosthenes.html)。其中俄文版版权协议为 Public Domain + Leave a Link；英文版版权协议为 CC-BY-SA 4.0。**
+
+## 习题
+
+> [!NOTE] **[LeetCode 1390. 四因数](https://leetcode-cn.com/problems/four-divisors/)**
+> 
+> 题意: 
+> 
+> 整数数组 nums，返回该数组中恰有四个因数的这些整数的各因数之和。
+
+> [!TIP] **思路**
+> 
+> 用预处理+筛
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int sumFourDivisors(vector<int>& nums) {
+        // C 是数组 nums 元素的上限，C3 是 C 的立方根
+        int C = 100000, C3 = 46;
+        
+        vector<int> isprime(C + 1, 1);
+        vector<int> primes;
+
+        // 埃拉托斯特尼筛法
+        for (int i = 2; i <= C; ++i) {
+            if (isprime[i]) {
+                primes.push_back(i);
+            }
+            for (int j = i + i; j <= C; j += i) {
+                isprime[j] = 0;
+            }
+        }
+
+        // 欧拉筛法
+        /*
+        for (int i = 2; i <= C; ++i) {
+            if (isprime[i]) {
+                primes.push_back(i);
+            }
+            for (int prime: primes) {
+                if (i * prime > C) {
+                    break;
+                }
+                isprime[i * prime] = 0;
+                if (i % prime == 0) {
+                    break;
+                }
+            }
+        }
+        */
+        
+        // 通过质数表构造出所有的四因数
+        unordered_map<int, int> factor4;
+        for (int prime: primes) {
+            if (prime <= C3) {
+                factor4[prime * prime * prime] = 1 + prime + prime * prime + prime * prime * prime;
+            }
+        }
+        for (int i = 0; i < primes.size(); ++i) {
+            for (int j = i + 1; j < primes.size(); ++j) {
+                if (primes[i] <= C / primes[j]) {
+                    factor4[primes[i] * primes[j]] = 1 + primes[i] + primes[j] + primes[i] * primes[j];
+                }
+                else {
+                    break;
+                }
+            }
+        }
+
+        int ans = 0;
+        for (int num: nums) {
+            if (factor4.count(num)) {
+                ans += factor4[num];
+            }
+        }
+        return ans;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

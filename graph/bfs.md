@@ -294,6 +294,199 @@ if __name__ == '__main__':
 
 * * *
 
+> [!NOTE] **[LeetCode 1210. 穿过迷宫的最少移动次数](https://leetcode-cn.com/problems/minimum-moves-to-reach-target-with-rotations/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const int INF = 0x3f3f3f3f;
+    using TIII = tuple<int, int, int>;
+    using PTI = pair<TIII, int>;
+    int n;
+    vector<vector<int>> g;
+    set<TIII> vis;
+    
+    int minimumMoves(vector<vector<int>>& grid) {
+        n = grid.size();
+        if (!n) return 0;
+        g = grid;
+        
+        queue<PTI> q;
+        // x, y, st, dis
+        q.push({{0, 0, 0}, 0});
+        while (!q.empty()) {
+            auto [t, d] = q.front(); q.pop();
+            if (vis.count(t)) continue;
+            vis.insert(t);
+            
+            auto [x, y, st] = t;
+            //cout << " x = " << x << "  y = " << y << " st = " << st << "  d = " << d << endl;
+            if (x == n - 1 && y == n - 2) return d;
+            if (st == 0 && y + 2 < n && g[x][y + 2] == 0) q.push({{x, y + 1, st}, d + 1});
+            if (st == 1 && y + 1 < n && g[x][y + 1] == 0 && x + 1 < n && g[x + 1][y + 1] == 0) q.push({{x, y + 1, st}, d + 1});
+            if (st == 0 && x + 1 < n && g[x + 1][y] == 0 && g[x + 1][y + 1] == 0) q.push({{x + 1, y, st}, d + 1});
+            if (st == 1 && x + 2 < n && g[x + 2][y] == 0) q.push({{x + 1, y, st}, d + 1});
+            if (st == 0 && x + 1 < n && g[x + 1][y] == 0 && g[x + 1][y + 1] == 0) q.push({{x, y, !st}, d + 1});
+            if (st == 1 && y + 1 < n && g[x][y + 1] == 0 && g[x + 1][y + 1] == 0) q.push({{x, y, !st}, d + 1});
+        }
+        //cout << endl;
+        return -1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1926. 迷宫中离入口最近的出口](https://leetcode-cn.com/problems/nearest-exit-from-entrance-in-maze/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 多源 bfs 即可
+> 
+> 加点的细节写错WA了几发。。。
+> 
+> 也可以单源最短路 trick
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using PII = pair<int, int>;
+    const static int N = 110;
+    const int INF = 0x3f3f3f3f;
+    
+    vector<vector<char>> g;
+    vector<vector<int>> d;
+    int n, m;
+    PII q[N * N];
+    
+    int dx[4] = {-1, 0, 0, 1}, dy[4] = {0, -1, 1, 0};
+    
+    int nearestExit(vector<vector<char>>& maze, vector<int>& entrance) {
+        this->g = maze;
+        this->n = g.size(), m = g[0].size();
+        d = vector<vector<int>>(n, vector<int>(m, INF));
+        
+        int sx = entrance[0], sy = entrance[1];
+        
+        int hh = 0, tt = -1;
+        for (int i = 0; i < n; ++ i ) {
+            if (!(i == sx && 0 == sy) && g[i][0] == '.')
+                q[ ++ tt] = {i, 0}, d[i][0] = 0;
+            if (!(i == sx && m - 1 == sy) && g[i][m - 1] == '.')
+                q[ ++ tt] = {i, m - 1}, d[i][m - 1] = 0;
+        }
+        for (int i = 0; i < m; ++ i ) {
+            if (!(0 == sx && i == sy) && g[0][i] == '.')
+                q[ ++ tt] = {0, i}, d[0][i] = 0;
+            if (!(n - 1 == sx && i == sy) && g[n - 1][i] == '.')
+                q[ ++ tt] = {n - 1, i}, d[n - 1][i] = 0;
+        }
+        
+        while (hh <= tt) {
+            auto [x, y] = q[hh ++ ];
+            
+            if (g[x][y] == '+')
+                continue;
+            g[x][y] = '+';
+            if (x == sx && y == sy)
+                break;
+            
+            for (int i = 0; i < 4; ++ i ) {
+                int nx = x + dx[i], ny = y + dy[i];
+                if (nx >= 0 && nx < n && ny >= 0 && ny < m && g[nx][ny] == '.') {
+                    // ATTENTION if 一定要写 否则加太多点 数组越界
+                    if (d[x][y] + 1 < d[nx][ny])
+                        q[ ++ tt] = {nx, ny}, d[nx][ny] = d[x][y] + 1;
+                }
+            }
+        }
+        
+        if (d[sx][sy] > INF / 2)
+            return -1;
+        return d[sx][sy];
+    }
+};
+```
+
+##### **C++ 单源最短路**
+
+```cpp
+#define x first
+#define y second
+
+typedef pair<int, int> PII;
+
+class Solution {
+public:
+    int nearestExit(vector<vector<char>>& g, vector<int>& s) {
+        int n = g.size(), m = g[0].size(), INF = 1e8;
+        int dx[4] = {-1, 0, 1, 0}, dy[4] = {0, 1, 0, -1};
+        vector<vector<int>> dist(n, vector<int>(m, INF));
+        queue<PII> q;
+        q.push({s[0], s[1]});
+        dist[s[0]][s[1]] = 0;
+        while (q.size()) {
+            auto t = q.front();
+            q.pop();
+            
+            for (int i = 0; i < 4; i ++ ) {
+                int x = t.x + dx[i], y = t.y + dy[i];
+                if (x >= 0 && x < n && y >= 0 && y < m && g[x][y] == '.' && dist[x][y] > dist[t.x][t.y] + 1) {
+                    dist[x][y] = dist[t.x][t.y] + 1;
+                    if (x == 0 || x == n - 1 || y == 0 || y == m - 1) return dist[x][y];
+                    q.push({x, y});
+                }
+            }
+        }
+        return -1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### trick bfs
 
 > [!NOTE] **[LeetCode 675. 为高尔夫比赛砍树](https://leetcode-cn.com/problems/cut-off-trees-for-golf-event/)**
@@ -379,6 +572,240 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 1263. 推箱子](https://leetcode-cn.com/problems/minimum-moves-to-move-a-box-to-their-target-location/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 本质是bfs **双端队列确保遍历的层次性**
+> 
+> 经典 理解记忆
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const int inf = 0x3f3f3f3f;
+    int dx[4] = {-1, 0, 0, 1}, dy[4] = {0, -1, 1, 0};
+    int minPushBox(vector<vector<char>>& grid) {
+        int m = grid.size(), n = grid[0].size();
+        int sx, sy, bx, by, tx, ty;
+        for (int i = 0; i < m; ++i)
+            for (int j = 0; j < n; ++j) {
+                if (grid[i][j] == 'S') sx = i, sy = j;
+                if (grid[i][j] == 'B') bx = i, by = j;
+                if (grid[i][j] == 'T') tx = i, ty = j;
+            }
+        vector<vector<vector<vector<int>>>> f(
+            m, vector<vector<vector<int>>>(
+                   n, vector<vector<int>>(m, vector<int>(n, inf))));
+        // 初始位置状态
+        f[sx][sy][bx][by] = 0;
+        deque<tuple<int, int, int, int>> dq;
+        dq.push_back({sx, sy, bx, by});
+        auto go_back = [&](int sx, int sy, int bx, int by, int d) {
+            if (f[sx][sy][bx][by] > d) {
+                f[sx][sy][bx][by] = d;
+                dq.push_back({sx, sy, bx, by});
+            }
+        };
+        auto go_front = [&](int sx, int sy, int bx, int by, int d) {
+            if (f[sx][sy][bx][by] > d) {
+                f[sx][sy][bx][by] = d;
+                dq.push_front({sx, sy, bx, by});
+            }
+        };
+        auto check = [&](int x, int y) {
+            return x >= 0 && x < m && y >= 0 && y < n && grid[x][y] != '#';
+        };
+        while (!dq.empty()) {
+            auto [sx, sy, bx, by] = dq.front();
+            dq.pop_front();
+            for (int i = 0; i < 4; ++i) {
+                int x = sx + dx[i], y = sy + dy[i];
+                if (check(x, y)) {
+                    if (x == bx && y == by) {
+                        int px = bx + dx[i], py = by + dy[i];
+                        if (check(px, py))
+                            go_back(x, y, px, py, f[sx][sy][bx][by] + 1);
+                    } else
+                        go_front(x, y, bx, by, f[sx][sy][bx][by]);
+                }
+            }
+        }
+        int res = inf;
+        for (int i = 0; i < m; ++i)
+            for (int j = 0; j < n; ++j) res = min(res, f[i][j][tx][ty]);
+        return res == inf ? -1 : res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1293. 网格中的最短路径](https://leetcode-cn.com/problems/shortest-path-in-a-grid-with-obstacles-elimination/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+>
+> 网格最短路 bfs
+>
+> >   **题目类型扩展：**
+> >
+> >   1.  若题目要求求解最小层级搜索（节点间距离固定为1），通过统计层级计数，遇到终止条件终止即可。
+> >   2.  若节点间有加权值，求解最短路径时可以在Node中增加cost记录，比较获取最佳值
+> >   3.  若需要求解最短路径，可以逆向根据visited访问记录情况回溯
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    struct node {
+        int x, y, k;
+        node(){};
+        node(int _x, int _y, int _k) : x(_x), y(_y), k(_k){};
+    };
+    int dx[4] = {-1, 0, 0, 1}, dy[4] = {0, -1, 1, 0};
+    int shortestPath(vector<vector<int>>& grid, int k) {
+        int m = grid.size(), n = grid[0].size();
+        vector<vector<vector<int>>> dis(
+            m + 1, vector<vector<int>>(n + 1, vector<int>(k + 1, -1)));
+        dis[0][0][0] = 0;
+        queue<node> q;
+        q.push({0, 0, 0});
+        while (!q.empty()) {
+            auto [x, y, d] = q.front();
+            q.pop();
+            for (int i = 0; i < 4; ++i) {
+                int nx = x + dx[i], ny = y + dy[i];
+                if (nx < 0 || nx >= m || ny < 0 || ny >= n) continue;
+                int nd = d + grid[nx][ny];
+                if (nd > k) continue;
+                if (dis[nx][ny][nd] != -1) continue;
+                dis[nx][ny][nd] = dis[x][y][d] + 1;
+                q.push({nx, ny, nd});
+            }
+        }
+        int res = 0x3f3f3f3f;
+        for (int i = 0; i <= k; ++i)
+            if (dis[m - 1][n - 1][i] != -1)
+                res = min(res, dis[m - 1][n - 1][i]);
+        if (res == 0x3f3f3f3f) return -1;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1298. 你能从盒子里获得的最大糖果数](https://leetcode-cn.com/problems/maximum-candies-you-can-get-from-boxes/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 每次循环校验即可 要敢于暴力
+> 
+> 经典
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int maxCandies(vector<int>& status, vector<int>& candies,
+                   vector<vector<int>>& keys,
+                   vector<vector<int>>& containedBoxes,
+                   vector<int>& initialBoxes) {
+        int n = status.size();
+        vector<bool> open(n), haskey(n), hasbox(n), used(n);
+        int res = 0;
+        queue<int> q;
+        for (int i = 0; i < n; ++i) open[i] = (status[i] == 1);
+        for (auto v : initialBoxes) {
+            hasbox[v] = true;
+            if (open[v]) {
+                q.push(v);
+                used[v] = true;
+                res += candies[v];
+            }
+        }
+        while (!q.empty()) {
+            int b = q.front();
+            q.pop();
+            for (auto k : keys[b]) haskey[k] = true;
+            for (auto k : containedBoxes[b]) hasbox[k] = true;
+            for (auto k : keys[b]) {
+                if (!used[k] && hasbox[k] && (open[k] || haskey[k])) {
+                    q.push(k);
+                    used[k] = true;
+                    res += candies[k];
+                }
+            }
+            for (auto k : containedBoxes[b]) {
+                if (!used[k] && hasbox[k] && (open[k] || haskey[k])) {
+                    q.push(k);
+                    used[k] = true;
+                    res += candies[k];
+                }
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 01 bfs
 
 > [!NOTE] **[AcWing 175. 电路维修](https://www.acwing.com/problem/content/177/)**
@@ -386,7 +813,7 @@ public:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
+>
 > 
 
 <details>
@@ -458,6 +885,68 @@ int main() {
             cout << t << endl;
     }
 }
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1368. 使网格图至少有一条有效路径的最小代价](https://leetcode-cn.com/problems/minimum-cost-to-make-at-least-one-valid-path-in-a-grid/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 最短路 可以直接到达的边权为0 需要翻转的点边权为1
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+const int dx[5] = {0, 1, -1, 0, 0};
+const int dy[5] = {0, 0, 0, 1, -1};
+typedef pair<int, int> pii;
+
+class Solution {
+public:
+    int minCost(vector<vector<int>>& grid) {
+        int n = grid.size(), m = grid[0].size();
+        deque<pii> pq;
+        pq.push_back(make_pair(0, 0));
+        vector<vector<bool>> vis(n, vector<bool>(m));
+        while (!pq.empty()) {
+            pii f = pq.front();
+            pq.pop_front();
+            int y = f.second / m, x = f.second % m;
+            if (vis[y][x]) continue;
+            vis[y][x] = true;
+            if (y == n - 1 && x == m - 1)
+                return f.first;
+            for (int k = 1; k <= 4; ++k) {
+                int nx = x + dx[k], ny = y + dy[k];
+                if (nx < 0 || nx >= m || ny < 0 || ny >= n)
+                    continue;
+                if (grid[y][x] == k) 
+                    pq.push_front(make_pair(f.first, ny * m + nx));
+                else
+                    pq.push_back(make_pair(f.first + 1, ny * m + nx));
+            }
+        }
+        return 0;
+    }
+};
 ```
 
 ##### **Python**
