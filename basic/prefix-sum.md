@@ -261,7 +261,7 @@ $$
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++**
+##### **C++ 1**
 
 ```cpp
 class NumArray {
@@ -285,7 +285,7 @@ public:
  */
 ```
 
-##### **C++**
+##### **C++ 2**
 
 ```cpp
 class NumArray {
@@ -399,33 +399,48 @@ public:
     }
     int query(int x) {
         int res = 0;
-        for (int i = x; i; i -= lowbit(i)) res += tr[i];
+        for (int i = x; i; i -= lowbit(i))
+            res += tr[i];
         return res;
     }
     void add(int x, int v) {
-        for (int i = x; i <= n; i += lowbit(i)) tr[i] += v;
+        for (int i = x; i <= n; i += lowbit(i))
+            tr[i] += v;
     }
 
     NumArray(vector<int>& nums) {
         this->nums = nums;
         n = nums.size();
         tr.resize(n + 1);
-        for (int i = 1; i <= n; ++i) {
-            tr[i] = nums[i - 1];
-            for (int j = i - 1; j > i - lowbit(i); j -= lowbit(j))
-                tr[i] += tr[j];
+        for (int i = 1; i <= n; ++ i ) {
+            // Op 1:
+            // tr[i] = nums[i - 1];
+            // for (int j = i - 1; j > i - lowbit(i); j -= lowbit(j))
+            //     tr[i] += tr[j];
+
+            // Op 2:
+            tr[i] += nums[i - 1];
+            if (i + lowbit(i) <= n)
+                tr[i + lowbit(i)] += tr[i]; // ATTENTION: tr[i] instead of nums[i]
         }
     }
     
-    void update(int i, int val) {
-        add(i + 1, val - nums[i]);
-        nums[i] = val;
+    void update(int index, int val) {
+        add(index + 1, val - nums[index]);
+        nums[index] = val;
     }
     
-    int sumRange(int i, int j) {
-        return query(j + 1) - query(i);
+    int sumRange(int left, int right) {
+        return query(right + 1) - query(left);
     }
 };
+
+/**
+ * Your NumArray object will be instantiated and called as such:
+ * NumArray* obj = new NumArray(nums);
+ * obj->update(index,val);
+ * int param_2 = obj->sumRange(left,right);
+ */
 
 /**
  * Your NumArray object will be instantiated and called as such:
@@ -478,7 +493,7 @@ public:
 };
 ```
 
-##### **C++**
+##### **C++ yxc**
 
 ```cpp
 // yxc
@@ -538,7 +553,7 @@ class Solution:
 
 ### 前缀和优化
 
-> [!NOTE] **[Luogu ]()**
+> [!NOTE] **[Luogu [NOIP2015 普及组] 求和](https://www.luogu.com.cn/problem/P2671)**
 > 
 > 题意: TODO
 
@@ -665,7 +680,9 @@ int main() {
 
 > [!TIP] **思路**
 > 
+> 状态定义思想 **我们假定每次放的都是最大的一个**
 > 
+> ==》和某次周赛的假定操作一致
 
 <details>
 <summary>详细代码</summary>
@@ -845,7 +862,7 @@ public:
 
 ### 前缀和维护
 
-> [!NOTE] **[Luogu ]()**
+> [!NOTE] **[Luogu 最大加权矩形](https://www.luogu.com.cn/problem/P1719)**
 > 
 > 题意: TODO
 
@@ -1293,7 +1310,7 @@ public:
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++**
+##### **C++ 1**
 
 ```cpp
 class MyCalendarThree {
@@ -1323,7 +1340,7 @@ public:
  */
 ```
 
-##### **C++**
+##### **C++ 2**
 
 ```cpp
 class MyCalendarThree {

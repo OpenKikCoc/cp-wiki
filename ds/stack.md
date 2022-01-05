@@ -25,7 +25,7 @@
 
 我们可以方便的使用数组来模拟一个栈，如下：
 
-> [!NOTE] **[AcWing ]()**
+> [!NOTE] **[AcWing 828. 模拟栈](https://www.acwing.com/problem/content/830/)**
 > 
 > 题意: TODO
 
@@ -36,49 +36,43 @@
 ##### **C++**
 
 ```cpp
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
-const int maxn = 1e5+5;
+const int maxn = 1e5 + 5;
 
 int st[maxn], tot;
 
-void init() {
-    tot = 0;
-}
+void init() { tot = 0; }
 
-void push(int x) {
-    st[++tot] = x;
-}
+void push(int x) { st[++tot] = x; }
 
 void pop() {
-    if(tot) --tot;  // 保险
+    if (tot) --tot;  // 保险
 }
 
-bool empty() {
-    return !tot;
-}
+bool empty() { return !tot; }
 
-int query() {
-    return st[tot];
-}
+int query() { return st[tot]; }
 
 int main() {
     init();
     int m, x;
     string c;
-    cin >>m;
-    while(m--) {
+    cin >> m;
+    while (m--) {
         cin >> c;
-        if(c == "push") {
+        if (c == "push") {
             cin >> x;
             push(x);
-        } else if(c == "pop") {
+        } else if (c == "pop") {
             pop();
-        } else if(c == "empty") {
-            if(empty()) cout <<"YES"<<endl;
-            else cout <<"NO"<<endl;
-        } else if(c == "query") {
-            cout <<query()<<endl;
+        } else if (c == "empty") {
+            if (empty())
+                cout << "YES" << endl;
+            else
+                cout << "NO" << endl;
+        } else if (c == "query") {
+            cout << query() << endl;
         }
     }
 }

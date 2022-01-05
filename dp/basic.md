@@ -885,7 +885,7 @@ if __name__ == '__main__':
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++**
+##### **C++ 1**
 
 ```cpp
 class Solution {
@@ -913,7 +913,7 @@ public:
 };
 ```
 
-##### **C++**
+##### **C++ 2**
 
 ```cpp
 // yxc
@@ -1162,7 +1162,7 @@ public:
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++**
+##### **C++ 1**
 
 ```cpp
 class Solution {
@@ -1206,7 +1206,7 @@ public:
 };
 ```
 
-##### **C++**
+##### **C++ 2**
 
 ```cpp
 const int N = 55;
@@ -1918,7 +1918,7 @@ public:
 };
 ```
 
-##### **C++**
+##### **C++ 手写二分**
 
 ```cpp
 class Solution {
@@ -2003,7 +2003,7 @@ public:
 };
 ```
 
-##### **C++**
+##### **C++ 暴力**
 
 ```cpp
 class Solution {
@@ -2040,7 +2040,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1626. 无矛盾的最佳球队][(](https://leetcode-cn.com/problems/best-team-with-no-conflicts/))**
+> [!NOTE] **[LeetCode 1626. 无矛盾的最佳球队](https://leetcode-cn.com/problems/best-team-with-no-conflicts/)**
 > 
 > 题意: TODO
 
@@ -2164,7 +2164,7 @@ public:
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++**
+##### **C++ 1**
 
 ```cpp
 class Solution {
@@ -2226,7 +2226,7 @@ public:
 };
 ```
 
-##### **C++**
+##### **C++ 2**
 
 ```cpp
 class Solution {
@@ -2313,7 +2313,7 @@ public:
 };
 ```
 
-##### **C++**
+##### **C++ 比赛代码**
 
 ```cpp
 // 比赛时
@@ -2338,7 +2338,7 @@ public:
 };
 ```
 
-##### **C++**
+##### **C++ 赛榜**
 
 ```cpp
 class Solution {
@@ -2388,7 +2388,7 @@ public:
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++**
+##### **C++ yxc**
 
 ```cpp
 // yxc
@@ -2724,7 +2724,7 @@ if __name__=='__main__':
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++**
+##### **C++ yxc**
 
 ```cpp
 // yxc
@@ -3429,7 +3429,7 @@ public:
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++**
+##### **C++ 1**
 
 ```cpp
 class Solution {
@@ -3461,7 +3461,7 @@ public:
 };
 ```
 
-##### **C++**
+##### **C++ 2**
 
 ```cpp
 class Solution {

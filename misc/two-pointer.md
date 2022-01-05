@@ -796,7 +796,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode ]()**
+> [!NOTE] **[LeetCode 457. 环形数组循环](https://leetcode-cn.com/problems/circular-array-loop/)**
 > 
 > 题意: TODO
 
@@ -1685,7 +1685,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode ]()**
+> [!NOTE] **[LeetCode 1793. 好子数组的最大分数](https://leetcode-cn.com/problems/maximum-score-of-a-good-subarray/)** [TAG]
 > 
 > 题意: TODO
 

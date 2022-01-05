@@ -1639,7 +1639,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode ]()**
+> [!NOTE] **[LeetCode 665. 非递减数列](https://leetcode-cn.com/problems/non-decreasing-array/)**
 > 
 > 题意: TODO
 

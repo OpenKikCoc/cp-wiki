@@ -265,6 +265,7 @@ int main() {
 
 <br>
 
+* * *
 
 > [!NOTE] **例 2 [hdu 2089 不要62](https://acm.hdu.edu.cn/showproblem.php?pid=2089)**
 > 
@@ -347,6 +348,8 @@ int main() {
 </details>
 
 <br>
+
+* * *
 
 > [!NOTE] **例 3 [SCOI2009 windy 数 ](https://loj.ac/problem/10165)**
 > 
@@ -489,6 +492,7 @@ TODO@binacs
 
 <br>
 
+* * *
 
 > [!NOTE] **例 5. [P3311 数数](https://www.luogu.com.cn/problem/P3311)**
 > 
@@ -527,6 +531,8 @@ TODO@binacs
 <br>
 
 此题可以很好地帮助理解数位 DP 的原理。
+
+* * *
 
 ## 习题
 

@@ -874,7 +874,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode ]()**
+> [!NOTE] **[LeetCode 406. 根据身高重建队列](https://leetcode-cn.com/problems/queue-reconstruction-by-height/)**
 > 
 > 题意: TODO
 

@@ -2892,7 +2892,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode ]()**
+> [!NOTE] **[LeetCode 282. 给表达式添加运算符](https://leetcode-cn.com/problems/expression-add-operators/)**
 > 
 > 题意: TODO
 

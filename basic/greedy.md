@@ -427,6 +427,8 @@ public:
 > [!TIP] **思路**
 > 
 > 贪心 每次选满意度最高的 然后向后移动(sum) 相当于后面的菜全部又加了后面的菜满意度之和: v + sum
+> 
+> 坑点在于题意的理解 以及基于贪心思考的实现转化
 
 <details>
 <summary>详细代码</summary>
@@ -438,12 +440,12 @@ public:
 class Solution {
 public:
     int maxSatisfaction(vector<int>& satisfaction) {
-        int res = 0, sum = 0, v = 0;
         sort(satisfaction.begin(), satisfaction.end());
-        int n = satisfaction.size();
-        for (int i = n - 1; i >= 0; --i) {
-            v = v + sum + satisfaction[i];
-            if (v > res) res = v;
+        int n = satisfaction.size(), res = 0;
+        for (int i = n - 1, tot = 0, sum = 0; i >= 0; -- i ) {
+            tot = tot + sum + satisfaction[i];
+            if (res < tot)
+                res = tot;
             sum += satisfaction[i];
         }
         return res;
@@ -598,6 +600,8 @@ public:
 > [!TIP] **思路**
 > 
 > 对每一个方块贪心排列
+> 
+> 【有去除长度限制 可任意翻转的版本 TODO 解决这个题】
 
 <details>
 <summary>详细代码</summary>
@@ -2165,6 +2169,8 @@ vector<int> minAvailableDuration(vector<vector<int>>& slots1,
 > 1. i 表示第几个任务，f[i] 表示 i 号之前所有工作能取得的最大收益。则需使用 pre 维护某个任务前面最近结束的任务，计算比较麻烦
 > 
 > 2. i 表示时间点，f[i] 表示时间点 i 为止的最大收益，随后跑 01 背包 【需要对时间离散化以压缩空间】
+> 
+> 和 **建筑维修有点类似** 但是又不同 **注意区分**
 
 <details>
 <summary>详细代码</summary>
@@ -2175,33 +2181,42 @@ vector<int> minAvailableDuration(vector<vector<int>>& slots1,
 ```cpp
 class Solution {
 public:
-    int jobScheduling(vector<int>& startTime, vector<int>& endTime,
-                      vector<int>& profit) {
-        vector<int> T({0});
-        for (auto t : startTime) T.emplace_back(t);
-        for (auto t : endTime) T.emplace_back(t);
-        sort(T.begin(), T.end());
-        T.erase(unique(T.begin(), T.end()), T.end());
-        int n = T.size();
-        vector<int> dp(n, INT_MIN);
-        dp[0] = 0;
-        vector<pair<int, int> > a;
-        for (int i = 0; i < startTime.size(); ++i)
-            a.emplace_back(make_pair(endTime[i], i));
-        sort(a.begin(), a.end());
+    using PII = pair<int, int>;
+    int jobScheduling(vector<int>& startTime, vector<int>& endTime, vector<int>& profit) {
+        // Sorting
+        vector<PII> ve;
+        {
+            for (int i = 0; i < profit.size(); ++ i )
+                ve.push_back({endTime[i], i});  // endTime & index
+            sort(ve.begin(), ve.end());
+        }
 
-        for (int i = 1, j = 0; i < n; ++i) {
-            dp[i] = dp[i - 1];
-            while (j < int(a.size()) && a[j].first == T[i]) {
-                int idx = a[j].second;
-                int k =
-                    lower_bound(T.begin(), T.end(), startTime[idx]) - T.begin();
-                int f = profit[idx];
-                dp[i] = max(dp[i], dp[k] + f);
-                ++j;
+        // 离散化 Discretization
+        vector<int> ts;
+        {
+            for (auto t : startTime) ts.push_back(t);
+            for (auto t : endTime) ts.push_back(t);
+            sort(ts.begin(), ts.end());
+            ts.erase(unique(ts.begin(), ts.end()), ts.end());
+        }
+
+        // DP
+        int n = ts.size(), tot = ve.size();
+        vector<int> f(n, INT_MIN);
+        f[0] = 0;
+        for (int i = 1, j = 0; i < n; ++ i ) {
+            f[i] = f[i - 1];
+            // Thinking: 为相同结束时间的每一个 j 寻找满足 startTIME 的最优答案
+            while (j < tot && ve[j].first == ts[i]) {
+                int idx = ve[j].second;
+                // ts[k] >= startTime[idx]
+                // [!] 本质就是离散化后找这个时间所对应的位置
+                int k = lower_bound(ts.begin(), ts.end(), startTime[idx]) - ts.begin();
+                f[i] = max(f[i], f[k] + profit[idx]);
+                j ++ ;
             }
         }
-        return dp[n - 1];
+        return f[n - 1];
     }
 };
 ```
@@ -2922,6 +2937,8 @@ public:
 > 堆模拟 以及非常好的贪心
 > 
 > 贪心的trick思维 转化为连续组
+> 
+> 重复理解 **注意要求：升序数组 heap也要理解**
 
 <details>
 <summary>详细代码</summary>
@@ -3354,6 +3371,8 @@ public:
 > 维护堆即可 略
 > 
 > 注意 `当时间 i 为 st 时仍需弹出 used` ，或者直接加个 break 即可
+> 
+> **two-pointer trick**
 
 <details>
 <summary>详细代码</summary>
@@ -3396,7 +3415,7 @@ public:
 };
 ```
 
-##### **C++ 直接扫完*
+##### **C++ 直接扫完**
 
 或者直接扫完返回结果
 

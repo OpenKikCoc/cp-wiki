@@ -168,7 +168,6 @@ int main() {
 
 <details>
 <summary>详细代码</summary>
-<!-- tabs:start -->
 
 $f[i]$ 表示前 $i$ 头牛 符合条件的最大
 
@@ -177,6 +176,8 @@ $f[i]$ 表示前 $i$ 头牛 符合条件的最大
 $f[i] = max(f[i-j-1] + s[i] - s[i-j]);  1 <= j <= k$ 因为题目要求不超过k都可
 
 对于不适用i牛的情况： $f[i] = f[i-1]$
+
+<!-- tabs:start -->
 
 ##### **C++**
 

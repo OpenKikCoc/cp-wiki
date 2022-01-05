@@ -271,7 +271,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode ]()**
+> [!NOTE] **[LeetCode 464. 我能赢吗](https://leetcode-cn.com/problems/can-i-win/)**
 > 
 > 题意: TODO
 

@@ -1754,7 +1754,7 @@ if __name__ == '__main__':
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++**
+##### **C++ 1**
 
 ```cpp
 class Solution {
@@ -1775,7 +1775,7 @@ public:
 };
 ```
 
-##### **C++**
+##### **C++ 2**
 
 ```cpp
 class Solution {

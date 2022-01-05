@@ -696,7 +696,7 @@ public:
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++**
+##### **C++ 1**
 
 ```cpp
 class Solution {
@@ -725,7 +725,7 @@ public:
 };
 ```
 
-##### **C++**
+##### **C++ 2**
 
 ```cpp
 class Solution {
@@ -793,7 +793,7 @@ public:
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++**
+##### **C++ 1**
 
 ```cpp
 class Solution {
@@ -821,7 +821,7 @@ public:
 };
 ```
 
-##### **C++**
+##### **C++ 2**
 
 ```cpp
 const int N = 10010;
@@ -1842,7 +1842,7 @@ public:
 };
 ```
 
-##### **C++**
+##### **C++ yxc**
 
 ```cpp
 // yxc
@@ -1968,7 +1968,7 @@ public:
 };
 ```
 
-##### **C++**
+##### **C++ yxc**
 
 ```cpp
 // yxc
@@ -1988,48 +1988,6 @@ public:
     }
 };
 ```
-
-> [!NOTE] **[LeetCode 714. 买卖股票的最佳时机含手续费](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-class Solution {
-public:
-    int maxProfit(vector<int>& prices, int fee) {
-        int n = prices.size();
-        vector<int> fin(n + 1, INT_MIN / 2), fout(n + 1, 0);
-        for (int i = 1; i <= n; ++ i ) {
-            fin[i] = max(fin[i - 1], fout[i - 1] - prices[i - 1]);
-            fout[i] = max(fout[i - 1], fin[i - 1] + prices[i - 1] - fee);
-        }
-        return fout[n];
-    }
-};
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
 
 ##### **Python**
 
@@ -2065,6 +2023,48 @@ class Solution:
             f[i][2] = max(f[i-1][1], f[i-1][2]) 
         return max(f[n][1], f[n][2])
         # 2的状态可以由1转移过来，不会增加w值；但存在极端情况，如数列递减，这时不交易才是最大收益，就是f[n][2]，所以出口需要加上f[n][2]
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 714. 买卖股票的最佳时机含手续费](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int maxProfit(vector<int>& prices, int fee) {
+        int n = prices.size();
+        vector<int> fin(n + 1, INT_MIN / 2), fout(n + 1, 0);
+        for (int i = 1; i <= n; ++ i ) {
+            fin[i] = max(fin[i - 1], fout[i - 1] - prices[i - 1]);
+            fout[i] = max(fout[i - 1], fin[i - 1] + prices[i - 1] - fee);
+        }
+        return fout[n];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
 ```
 
 <!-- tabs:end -->
