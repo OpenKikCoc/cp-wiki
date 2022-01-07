@@ -443,7 +443,7 @@ int main() {
 
 ### 离线并查集
 
-> [!NOTE] **[LeetCode 1697. 检查边长度限制的路径是否存在](https://leetcode-cn.com/problems/checking-existence-of-edge-length-limited-paths/)**
+> [!NOTE] **[LeetCode 1697. 检查边长度限制的路径是否存在](https://leetcode-cn.com/problems/checking-existence-of-edge-length-limited-paths/)** [TAG]
 > 
 > [Weekly-220](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2020-12-20_Weekly-220)
 > 
@@ -518,162 +518,11 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1697. 检查边长度限制的路径是否存在](https://leetcode-cn.com/problems/checking-existence-of-edge-length-limited-paths/)** [TAG]
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 离线并查集
-> 
-> 还有 LCA 优化的做法，虚拟比赛的时候想的是 MST + LCA
-> 
-> TODO 补上这部分代码
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-const int N = 100010;
-
-struct Node {
-    int a, b, c, d;
-    bool operator< (const Node& t) const {
-        return c < t.c;
-    }
-}e[N], q[N];
-
-class Solution {
-public:
-    vector<int> p;
-
-    int find(int x) {
-        if (p[x] != x) p[x] = find(p[x]);
-        return p[x];
-    }
-
-    vector<bool> distanceLimitedPathsExist(int n, vector<vector<int>>& ee, vector<vector<int>>& qq) {
-        int m = ee.size(), k = qq.size();
-        for (int i = 0; i < m; ++ i )
-            e[i] = {ee[i][0], ee[i][1], ee[i][2]};
-        for (int i = 0; i < k; ++ i )
-            q[i] = {qq[i][0], qq[i][1], qq[i][2], i};
-        sort(e, e + m), sort(q, q + k);
-        p.resize(n);
-        for (int i = 0; i < n; ++ i ) p[i] = i;
-        vector<bool> res(k);
-        for (int i = 0, j = 0; i < k; ++ i ) {
-            while (j < m && e[j].c < q[i].c) {
-                int a = e[j].a, b = e[j].b;
-                p[find(a)] = find(b);
-                ++ j ;
-            }
-            res[q[i].d] = find(q[i].a) == find(q[i].b);
-        }
-        return res;
-    }
-};
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
 ### 并查集线段染色
 
-> [!NOTE] **[LeetCode 1851. 包含每个查询的最小区间](https://leetcode-cn.com/problems/minimum-interval-to-include-each-query/)**
+> [!NOTE] **[LeetCode 1851. 包含每个查询的最小区间](https://leetcode-cn.com/problems/minimum-interval-to-include-each-query/)** [TAG]
 > 
 > [weekly-239](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-05-02_Weekly-239)
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-class Solution {
-public:
-    // 并查集 经典模型 疯狂的馒头
-    vector<int> xs, p, w;
-    
-    int find(int x) {
-        if (p[x] != x)
-            p[x] = find(p[x]);
-        return p[x];
-    }
-    
-    int get(int x) {
-        return lower_bound(xs.begin(), xs.end(), x) - xs.begin();
-    }
-    
-    vector<int> minInterval(vector<vector<int>>& segs, vector<int>& queries) {
-        for (auto & s : segs)
-            xs.push_back(s[0]), xs.push_back(s[1]);
-        for (auto x : queries)
-            xs.push_back(x);
-        sort(xs.begin(), xs.end());
-        xs.erase(unique(xs.begin(), xs.end()), xs.end());
-        
-        int n = xs.size();
-        p.resize(n + 1), w.resize(n + 1, -1);
-        for (int i = 0; i < n + 1; ++ i )
-            p[i] = i;
-        
-        // 按区间长度排序 优先染短区间【细节】
-        sort(segs.begin(), segs.end(), [](vector<int> & a, vector<int> & b) {
-            return a[1] - a[0] < b[1] - b[0];
-        });
-        
-        for (auto & s : segs) {
-            int l = get(s[0]), r = get(s[1]), len = s[1] - s[0] + 1;
-            while (find(l) <= r) {
-                l = find(l);
-                w[l] = len;
-                p[l] = l + 1;
-            }
-        }
-        
-        vector<int> res;
-        for (auto x : queries)
-            res.push_back(w[get(x)]);
-        return res;
-    }
-};
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[LeetCode 1851. 包含每个查询的最小区间](https://leetcode-cn.com/problems/minimum-interval-to-include-each-query/)** [TAG]
 > 
 > 题意: TODO
 

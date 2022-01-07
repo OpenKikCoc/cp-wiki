@@ -215,18 +215,36 @@ class Solution:
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++**
+##### **C++ 标准 trick**
 
 ```cpp
+class Solution {
+public:
+    vector<int> circularPermutation(int n, int start) {
+        vector<int> res(1 << n);
+        for (int i = 0; i < 1 << n; ++ i )
+            // i ^ (i >> 1) 得到格雷码
+            res[i] = i ^ (i >> 1) ^ start;
+        return res;
+    }
+};
+```
+
+##### **C++ 构造坐标偏移**
+
+```cpp
+class Solution {
+public:
     vector<int> circularPermutation(int n, int start) {
         vector<int> res = {start};
         int b = start;
-        while(start >>= 1) b ^= start;
-        n = (1 << n)-1;
-        for(int i = 1; i <= n; ++i)
+        while (start >>= 1) b ^= start;
+        n = (1 << n) - 1;
+        for (int i = 1; i <= n; ++i)
             res.push_back(b + i & n ^ (b + i & n) >> 1);
         return res;
     }
+};
 ```
 
 ##### **Python**

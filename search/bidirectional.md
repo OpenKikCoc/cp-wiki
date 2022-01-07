@@ -27,6 +27,12 @@ while (队列 q 不为空) {
 
 ## Meet in the middle
 
+> [!TIP] **FYI**
+> 
+> 较多情况下与状态压缩结合较为密切 大量习题请移步 [状压 DP - meet in the middle](dp/state.md#状压-meet-in-the-middle)
+
+* * *
+
 > [!WARNING]
 > 
 > 本节要介绍的不是 [**二分搜索**](basic/binary.md)（二分搜索的另外一个译名为“折半搜索”）。

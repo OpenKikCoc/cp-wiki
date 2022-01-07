@@ -301,7 +301,7 @@ public:
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++**
+##### **C++ 前后缀分解**
 
 ```cpp
 class Solution {
@@ -355,7 +355,7 @@ public:
 };
 ```
 
-##### **C++**
+##### **C++ 二分**
 
 ```cpp
 class Solution {

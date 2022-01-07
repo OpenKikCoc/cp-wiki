@@ -355,42 +355,46 @@ int main() {
 // 设计到查询区间最值 显然可以RMQ
 class Solution {
 public:
-    int n, k;
-    vector<vector<int>> f;
-    vector<int> nums;
+    const static int N = 1010, M = 10;
 
+    int f[N][M];
+    void init() {
+        memset(f, 0, sizeof f);
+        for (int j = 0; j < M; ++ j )
+            for (int i = 0; i + (1 << j) - 1 < n; ++ i )
+                if (!j)
+                    // f[i][j] = nums[i];
+                    f[i][j] = i;
+                else {
+                    // f[i][j] = max(f[i][j - 1], f[i + (1 << j - 1)][j - 1]);
+                    int a = f[i][j - 1], b = f[i + (1 << j - 1)][j - 1];
+                    f[i][j] = nums[a] > nums[b] ? a : b;
+                }
+
+                    
+    }
     int query(int l, int r) {
-        int len = r - l + 1;
-        int k = log(len) / log(2);
+        int len = r - l + 1, k = log(len) / log(2);
         int a = f[l][k], b = f[r - (1 << k) + 1][k];
-        if (nums[a] > nums[b]) return a;
-        return b;
+        return nums[a] > nums[b] ? a : b;
     }
 
-    TreeNode* build(int l, int r) {
-        if (l > r) return nullptr;
+    vector<int> nums;
+    int n;
+
+    TreeNode* dfs(int l, int r) {
+        if (l > r)
+            return nullptr;
         int k = query(l, r);
         auto root = new TreeNode(nums[k]);
-        root->left = build(l, k - 1);
-        root->right = build(k + 1, r);
+        root->left = dfs(l, k - 1), root->right = dfs(k + 1, r);
         return root;
     }
 
     TreeNode* constructMaximumBinaryTree(vector<int>& nums) {
-        this->nums = nums;
-        n = nums.size();
-        k = log(n) / log(2);
-        f = vector<vector<int>>(n, vector<int>(k + 1));
-        for (int j = 0; j <= k; ++ j )
-            for (int i = 0; i + (1 << j) - 1 < n; ++ i ) {
-                if (!j) f[i][j] = i;
-                else {
-                    int l = f[i][j - 1], r = f[i + (1 << j - 1)][j - 1];
-                    if (nums[l] > nums[r]) f[i][j] = l;
-                    else f[i][j] = r;
-                }
-            }
-        return build(0, n - 1);
+        this->nums = nums, this->n = nums.size();
+        init();
+        return dfs(0, n - 1);
     }
 };
 ```

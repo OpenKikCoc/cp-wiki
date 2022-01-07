@@ -1311,6 +1311,8 @@ public:
 > [!TIP] **思路**
 > 
 > 二维dp 记录方案数即可
+> 
+> trick **使用 PII 来同时记录数值和方案**
 
 <details>
 <summary>详细代码</summary>
@@ -1388,7 +1390,7 @@ public:
 > >   重新设计一种新的状态：**字母下标**（可以代表**第一个**指头键位），**另外一个指头的键位**。
 > >
 > >   每次按下一个字母时，要么是字母下标所在的指头（**第一个指头**）移动，要么是**另外一个指头**移动。
->
+> > 
 > >   因此我们可以直接使用 dp[i][rest] 进行状态转移，其表示一只手在 word[i] 的位置，另一只手在 rest 的位置的最小移动距离。
 > >
 > >   我们并不需要关心具体哪只手在 word[i] 的位置，因为两只手是完全对称的。
@@ -2796,58 +2798,6 @@ class Solution:
                     dp[i][j]=min(dp[i-1][j],dp[i][j-1])+1
         return dp[-1][-1]
 #代码和编辑距离72题一样...      
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[LeetCode 1713. 得到子序列的最少操作次数](https://leetcode-cn.com/problems/minimum-operations-to-make-a-subsequence/)** [TAG]
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 模板题
-> 
-> 最长公共子序列 LCS 转化为 最长上升子序列 LIS
-> 
-> 复杂度由 O(n^2) -> O(nlogn)
-> 
-> 要求：整数互不相同
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-class Solution {
-public:
-    int minOperations(vector<int>& target, vector<int>& arr) {
-        unordered_map<int, int> pos;
-        for (int i = 0; i < target.size(); ++ i ) pos[target[i]] = i;   // target无重复数组
-        vector<int> ve;
-        for (auto & x : arr)
-            if (pos.count(x)) ve.push_back(pos[x]);
-        
-        vector<int> f;
-        for (auto & x : ve)
-            if (f.empty() || f.back() < x) f.push_back(x);
-            else *lower_bound(f.begin(), f.end(), x) = x;
-        return target.size() - f.size();
-    }
-};
-```
-
-##### **Python**
-
-```python
-
 ```
 
 <!-- tabs:end -->

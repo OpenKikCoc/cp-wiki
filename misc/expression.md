@@ -100,6 +100,8 @@ int calc(const std::string &s) {  // 计算转换好的后缀表达式
 
 > [!NOTE] **[LeetCode 1896. 反转表达式值的最少操作次数](https://leetcode-cn.com/problems/minimum-cost-to-change-the-final-value-of-expression/)** [TAG]
 > 
+> [biweekly-54](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-06-12_Biweekly-54#1896-反转表达式值的最少操作次数-tag)
+> 
 > 题意: TODO
 
 > [!TIP] **思路**
@@ -423,7 +425,7 @@ public:
             if (c == ' ') continue;
             if (isdigit(c)) {
                 int x = 0, j = i;
-                while(j < s.size() && isdigit(s[j])) x = x * 10 + (s[j++] - '0');
+                while (j < s.size() && isdigit(s[j])) x = x * 10 + (s[j ++ ] - '0');
                 i = j - 1;
                 num.push(x);
             } else if (c == '(') op.push(c);
@@ -813,95 +815,6 @@ class Solution:
             else:
                 stack.append(int(t))
         return stack[-1]
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[1896. 反转表达式值的最少操作次数](https://leetcode-cn.com/problems/minimum-cost-to-change-the-final-value-of-expression/)**
-> 
-> [biweekly-54](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-06-12_Biweekly-54#1896-反转表达式值的最少操作次数-tag)
-> 
-> 题意: 后缀表达式求值 + 树形dp 【重复做】
-
-> [!TIP] **思路**
-> 
-> 
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-class Solution {
-public:
-    stack<vector<int>> num; // 取0 取1分别需要操作多少次
-    stack<char> op;
-    
-    int get_min(vector<int> s) {
-        int x = INT_MAX;
-        for (auto v : s)
-            x = min(x, v);
-        return x;
-    }
-    
-    void eval() {
-        auto a = num.top(); num.pop();
-        auto b = num.top(); num.pop();
-        char c = op.top(); op.pop();
-        
-        if (c == '&') {
-            // 得到 0 需 {0, 0}, {0, 1}, {1, 0}, 或改变符号后 {0, 0} + 1
-            vector<int> s0 = {a[0] + b[0], a[0] + b[1], a[1] + b[0], a[0] + b[0] + 1};
-            // 得到 1 ...
-            vector<int> s1 = {a[1] + b[1], a[1] + b[0] + 1, a[0] + b[1] + 1, a[1] + b[1] + 1};
-            num.push({get_min(s0), get_min(s1)});
-        } else {
-            vector<int> s0 = {a[0] + b[0], a[0] + b[1] + 1, a[1] + b[0] + 1, a[0] + b[0] + 1};
-            vector<int> s1 = {a[1] + b[1], a[0] + b[1], a[1] + b[0], a[1] + b[1] + 1};
-            num.push({get_min(s0), get_min(s1)});
-        }
-    }
-    
-    int minOperationsToFlip(string expression) {
-        for (auto c : expression)
-            if (isdigit(c)) {
-                if (c == '0')
-                    num.push({0, 1});
-                else
-                    num.push({1, 0});
-            } else if (c == '(') {
-                op.push(c);
-            } else if (c == ')') {
-                while (op.top() != '(')
-                    eval();
-                op.pop();   // (
-            } else {
-                // 一般字符
-                // 中缀表达式 故先把前面算完
-                while (op.size() && op.top() != '(')
-                    eval();
-                op.push(c);
-            }
-        
-        while (op.size())
-            eval();
-        // 一定有一个是0(即什么都不修改时的值) 而非0的较大的数即为所求
-        return max(num.top()[0], num.top()[1]);
-    }
-};
-```
-
-##### **Python**
-
-```python
-
 ```
 
 <!-- tabs:end -->
