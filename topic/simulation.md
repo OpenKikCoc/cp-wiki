@@ -1276,7 +1276,7 @@ public:
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++**
+##### **C++ 栈 trick**
 
 ```cpp
 class Solution {
@@ -1299,7 +1299,7 @@ public:
 }
 ```
 
-##### **C++**
+##### **C++ 纯模拟**
 
 ```cpp
 class Solution {
@@ -2114,7 +2114,7 @@ public:
 };
 ```
 
-##### **C++**
+##### **C++ 赛榜**
 
 ```cpp
 class Solution {
@@ -2404,7 +2404,7 @@ public:
     }
 ```
 
-##### **C++**
+##### **C++ 栈**
 
 ```cpp
     string decodeString(string s) {

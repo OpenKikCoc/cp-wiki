@@ -543,16 +543,18 @@ int main() {
 > 求最长路
 > 
 > $$
-> s[i] - s[i - 1] >= 0
+> s[i] - s[i - 1] >= 0      \\
 > s[i] - s[i - 1] <= num[i]
+> $$
 > 
+> ```python
 > if i >= 8:
 >     s[i] - s[i - 8] >= r[i]
 > else:
 >     s[i] + s[24] - s[24 - i] >= r[i]
 >     ===>
 >     s[i] + c - s[16 + i] >= r[i]
-> $$
+> ```
 
 <details>
 <summary>详细代码</summary>

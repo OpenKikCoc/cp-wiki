@@ -3479,7 +3479,7 @@ public:
 };
 ```
 
-##### **C++**
+##### **C++ 标准**
 
 ```cpp
 class Solution {

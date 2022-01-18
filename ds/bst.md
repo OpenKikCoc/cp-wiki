@@ -1112,7 +1112,7 @@ public:
 
 - 先序
 
-  ```
+  ```c++
   // [144. 二叉树的前序遍历](https://leetcode-cn.com/problems/binary-tree-preorder-traversal/)
   class Solution {
   public:
@@ -1149,7 +1149,7 @@ public:
 
 - 中序
 
-  ```
+  ```c++
           while (cur) {
               if (cur->left) {
                   auto p = cur->left;
@@ -1172,7 +1172,7 @@ public:
 
 - 后序
 
-  ```
+  ```c++
   class Solution {
   public:
       vector<int> res;
@@ -1219,7 +1219,7 @@ public:
 
   `printNode` 可以同样规避对数组的使用：
 
-  ```
+  ```c++
       TreeNode * reverseEdge(TreeNode * node) {
           TreeNode * pre = nullptr, * cur = node;
           while (cur) {
@@ -1241,9 +1241,9 @@ public:
       }
   ```
 
-  ### 构造 BST
+### 构造 BST
 
-  > [!NOTE] **[LeetCode 108. 将有序数组转换为二叉搜索树](https://leetcode-cn.com/problems/convert-sorted-array-to-binary-search-tree/)**
+> [!NOTE] **[LeetCode 108. 将有序数组转换为二叉搜索树](https://leetcode-cn.com/problems/convert-sorted-array-to-binary-search-tree/)**
 > 
 > 题意: TODO
 

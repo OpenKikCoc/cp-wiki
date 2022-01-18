@@ -712,9 +712,6 @@ class Solution {
 
 * * *
 
-[leetcode 1438. 绝对差不超过限制的最长连续子数组](https://leetcode-cn.com/problems/longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit/)
-
-
 ### 快慢指针思想
 
 > 链表判环、找中点的快慢指针应用参见链表部分
@@ -1509,7 +1506,7 @@ public:
 };
 ```
 
-##### **C++**
+##### **C++ yxc**
 
 ```cpp
 // yxc

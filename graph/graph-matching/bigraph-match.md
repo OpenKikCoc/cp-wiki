@@ -338,13 +338,13 @@ if __name__ == '__main__':
 
 * * *
 
-> [!NOTE] **[P1640 [SCOI2010]连续攻击游戏](https://www.luogu.com.cn/problem/P1640) **
+> [!NOTE] **[P1640 [SCOI2010]连续攻击游戏](https://www.luogu.com.cn/problem/P1640)**
 > 
-> None
+> TODO
 
-> [!NOTE] **[Codeforces 1139E - Maximize Mex](https://codeforces.com/problemset/problem/1139/E) **
+> [!NOTE] **[Codeforces 1139E - Maximize Mex](https://codeforces.com/problemset/problem/1139/E)**
 > 
-> None
+> TODO
 
 
 ## 习题

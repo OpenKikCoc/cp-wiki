@@ -895,7 +895,7 @@ class Solution:
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++**
+##### **C++ 标准**
 
 ```cpp
 class Solution {
@@ -1025,7 +1025,7 @@ class Solution:
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++**
+##### **C++ trick**
 
 ```cpp
 class Solution {
