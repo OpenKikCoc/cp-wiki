@@ -850,6 +850,8 @@ int main() {
 
 ## 习题
 
+### 最大流
+
 > [!NOTE] **[AcWing 412. 排水沟](https://www.acwing.com/problem/content/414/)**
 > 
 > 题意: TODO
@@ -931,6 +933,468 @@ int main() {
         add(a, b, c);
     }
     cout << dinic() << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 2171. EK求最大流](https://www.acwing.com/problem/content/2173/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 1010, M = 20010, INF = 1e8;
+
+int n, m, S, T;
+int h[N], e[M], f[M], ne[M], idx;   // f 表示容量
+int q[N], d[N], pre[N];             // d 当前路径上所有边的容量最小值
+bool st[N];
+
+// 残留网络
+void add(int a, int b, int c) {
+    e[idx] = b, f[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+    e[idx] = a, f[idx] = 0, ne[idx] = h[b], h[b] = idx ++ ;
+}
+
+bool bfs() {
+    memset(st, 0, sizeof st);
+    int hh = 0, tt = -1;
+    q[ ++ tt] = S, st[S] = true, d[S] = INF;
+    while (hh <= tt) {
+        int t = q[hh ++ ];
+        for (int i = h[t]; ~i; i = ne[i]) {
+            int ver = e[i];
+            if (!st[ver] && f[i]) {
+                st[ver] = true;
+                d[ver] = min(d[t], f[i]);
+                pre[ver] = i;
+                if (ver == T)
+                    return true;
+                q[ ++ tt] = ver;
+            }
+        }
+    }
+    return false;
+}
+
+int EK() {
+    int r = 0;
+    while (bfs()) {
+        r += d[T];
+        for (int i = T; i != S; i = e[pre[i] ^ 1])
+            f[pre[i]] -= d[T], f[pre[i] ^ 1] += d[T];
+    }
+    return r;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
+    cin >> n >> m >> S >> T;
+    memset(h, -1, sizeof h);
+    while (m -- ) {
+        int a, b, c;
+        cin >> a >> b >> c;
+        add(a, b, c);
+    }
+    cout << EK() << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 2172. Dinic/ISAP求最大流](https://www.acwing.com/problem/content/2174/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 10010, M = 200010, INF = 1e8;
+
+int n, m, S, T;
+int h[N], e[M], f[M], ne[M], idx;
+// d 所有点在分层图中的编号 本质就是与源点的距离
+// cur 优化: 当前弧优化 存储从当前节点开始还需要遍历的节点的编号
+int q[N], d[N], cur[N];     
+
+void add(int a, int b, int c) {
+    e[idx] = b, f[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+    e[idx] = a, f[idx] = 0, ne[idx] = h[b], h[b] = idx ++ ;
+}
+
+bool bfs() {
+    memset(d, -1, sizeof d);
+    int hh = 0, tt = -1;
+    q[ ++ tt] = S, d[S] = 0, cur[S] = h[S];
+    while (hh <= tt) {
+        int t = q[hh ++ ];
+        for (int i = h[t]; ~i; i = ne[i]) {
+            int ver = e[i];
+            if (d[ver] == -1 && f[i]) { // 增光路要求 f[i] > 0
+                d[ver] = d[t] + 1;
+                cur[ver] = h[ver];
+                if (ver == T)
+                    return true;
+                q[ ++ tt] = ver;
+            }
+        }
+    }
+    return false;
+}
+
+// 从起点 S 到当前点 u 允许流过的最大流量为 limit
+int find(int u, int limit) {
+    if (u == T)
+        return limit;
+    
+    // flow 从 u 开始向后面流的最大的流量
+    int flow = 0;
+    
+    // i = cur[u] 跳过前面从 u 出去的已经流满的路径
+    // 【优化】 1. flow < limit 说明还有必要搜从 u 出去的剩余的边
+    for (int i = cur[u]; ~i && flow < limit; i = ne[i]) {
+        // 【优化】 2. 弧优化
+        // 如果进入循环 说明搜到从 u 出去编号为 i 的弧(边)
+        // 进而说明前面从 u 指出去的弧已经被搜完了，这些弧的流量已经被榨干了
+        // 因此 dinic 下一次调用 find 时直接从 i 开始搜即可
+        cur[u] = i;
+        
+        int ver = e[i];
+        if (d[ver] == d[u] + 1 && f[i]) {
+            int t = find(ver, min(f[i], limit - flow));
+            
+            // t == 0 说明不能找到从 ver 到 T 的增光路
+            // 因此下一次遍历到 ver 时直接跳过即可，故将其置为-1
+            if (!t)
+                d[ver] = -1;    // 【优化】 3. 删点
+            
+            f[i] -= t, f[i ^ 1] += t, flow += t;    // 更新残留网络
+        }
+    }
+    return flow;
+}
+
+int dinic() {
+    int r = 0, flow;
+    // bfs建立分层图过程中发现有增广路, 则找出所有的增广路, 将所有能够增加的流量加到答案中
+    // 这里不能只进行一遍bfs遍历然后对find进行循环, 因为find会使得残留网络改变，下次得到的分层图会不同
+    while (bfs())
+        while (flow = find(S, INF))
+            r += flow;
+    return r;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
+    memset(h, -1, sizeof h);
+    cin >> n >> m >> S >> T;
+    while (m -- ) {
+        int a, b, c;
+        cin >> a >> b >> c;
+        add(a, b, c);
+    }
+    
+    cout << dinic() << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 二分匹配
+
+> [!NOTE] **[AcWing 2175. 飞行员配对方案问题](https://www.acwing.com/problem/content/2177/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// dinic O(m*sqrt(n))
+
+const int N = 110, M = 5210, INF = 1e8;
+
+int n, m, S, T;
+int h[N], e[M], f[M], ne[M], idx;
+int q[N], d[N], cur[N];
+
+void add(int a, int b, int c) {
+    e[idx] = b, f[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+    e[idx] = a, f[idx] = 0, ne[idx] = h[b], h[b] = idx ++ ;
+}
+
+bool bfs() {
+    memset(d, -1, sizeof d);
+    int hh = 0, tt = -1;
+    q[ ++ tt] = S, d[S] = 0, cur[S] = h[S];
+    while (hh <= tt) {
+        int t = q[hh ++ ];
+        for (int i = h[t]; ~i; i = ne[i]) {
+            int ver = e[i];
+            if (d[ver] == -1 && f[i]) {
+                d[ver] = d[t] + 1;
+                cur[ver] = h[ver];
+                if (ver == T)
+                    return true;
+                q[ ++ tt] = ver;
+            }
+        }
+    }
+    return false;
+}
+
+int find(int u, int limit) {
+    if (u == T)
+        return limit;
+    int flow = 0;
+    // for (int i = h[u]; ~i && flow < limit; i = ne[i]) {
+    // 弧优化
+    for (int i = cur[u]; ~i && flow < limit; i = ne[i]) {
+        cur[u] = i;
+        int ver = e[i];
+        if (d[ver] == d[u] + 1 && f[i]) {
+            int t = find(ver, min(f[i], limit - flow));
+            if (!t)
+                d[ver] = -1;
+            f[i] -= t, f[i ^ 1] += t, flow += t;
+        }
+    }
+    return flow;
+}
+
+int dinic() {
+    int r = 0, flow;
+    while (bfs())
+        while (flow = find(S, INF))
+            r += flow;
+    return r;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
+    memset(h, -1, sizeof h);
+    cin >> m >> n;
+    // 建模建图
+    S = 0, T = n + 1;
+    for (int i = 1; i <= m; ++ i )
+        add(S, i, 1);
+    for (int i = m + 1; i <= n; ++ i )
+        add(i, T, 1);
+    
+    int a, b;
+    while (cin >> a >> b, a != -1)
+        add(a, b, 1);
+    
+    cout << dinic() << endl;
+    
+    for (int i = 0; i < idx; i += 2)
+        if (e[i] > m && e[i] <= n && !f[i])
+            cout << e[i ^ 1] << ' ' << e[i] << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 2179. 圆桌问题](https://www.acwing.com/problem/content/2181/)**
+> 
+> 题意: 二分图多重匹配
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 430, M = (150 * 270 + N) * 2, INF = 1e8;
+
+int m, n, S, T;
+int h[N], e[M], f[M], ne[M], idx;
+int q[N], d[N], cur[N];
+
+void add(int a, int b, int c) {
+    e[idx] = b, f[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+    e[idx] = a, f[idx] = 0, ne[idx] = h[b], h[b] = idx ++ ;
+}
+
+bool bfs() {
+    memset(d, -1, sizeof d);
+    int hh = 0, tt = -1;
+    q[ ++ tt] = S, d[S] = 0, cur[S] = h[S];
+    while (hh <= tt) {
+        int t = q[hh ++ ];
+        for (int i = h[t]; ~i; i = ne[i]) {
+            int ver = e[i];
+            if (d[ver] == -1 && f[i]) {
+                d[ver] = d[t] + 1;
+                cur[ver] = h[ver];
+                if (ver == T)
+                    return true;
+                q[ ++ tt] = ver;
+            }
+        }
+    }
+    return false;
+}
+
+int find(int u, int limit) {
+    if (u == T)
+        return limit;
+    int flow = 0;
+    for (int i = cur[u]; ~i && flow < limit; i = ne[i]) {
+        cur[u] = i;
+        int ver = e[i];
+        if (d[ver] == d[u] + 1 && f[i]) {
+            int t = find(ver, min(f[i], limit - flow));
+            if (!t)
+                d[ver] = -1;
+            f[i] -= t, f[i ^ 1] += t, flow += t;
+        }
+    }
+    return flow;
+}
+
+int dinic() {
+    int r = 0, flow;
+    while (bfs())
+        while (flow = find(S, INF))
+            r += flow;
+    return r;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
+    memset(h, -1, sizeof h);
+    cin >> m >> n;
+    S = 0, T = m + n + 1;
+    int tot = 0;
+    for (int i = 1; i <= m; ++ i ) {
+        int c;
+        cin >> c;
+        add(S, i, c);
+        tot += c;
+    }
+    for (int i = 1; i <= n; ++ i ) {
+        int c;
+        cin >> c;
+        add(m + i, T, c);
+    }
+    for (int i = 1; i <= m; ++ i )
+        for (int j = 1; j <= n; ++ j )
+            add(i, m + j, 1);
+    
+    if (dinic() != tot)
+        cout << 0 << endl;
+    else {
+        cout << 1 << endl;
+        for (int i = 1; i <= m; ++ i ) {
+            for (int j = h[i]; ~j; j = ne[j])
+                if (e[j] > m && e[j] <= m + n && !f[j])
+                    cout << e[j] - m << ' ';
+            cout << endl;
+        }
+    }
     
     return 0;
 }
