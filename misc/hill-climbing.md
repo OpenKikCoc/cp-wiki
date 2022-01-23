@@ -1,3 +1,5 @@
+> [!NOTE] **【爬山法】其实就是个【牛顿迭代】**
+
 ## 简介
 
 爬山算法是一种局部择优的方法，采用启发式方法，是对深度优先搜索的一种改进，它利用反馈信息帮助生成解的决策。
@@ -105,3 +107,85 @@
 ## 劣势
 
 其实爬山算法的劣势上文已经提及：它容易陷入一个局部最优解。当目标函数不是单峰函数时，这个劣势是致命的。因此我们要引进 [**模拟退火**](./simulated-annealing.md)。
+
+## 习题
+
+> [!NOTE] **[AcWing 207. 球形空间产生器](https://www.acwing.com/problem/content/209/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 高斯消元 or 爬山算法
+> 
+> **爬山法解决的问题必须是单峰的**
+> 
+> **爬山法未必需要把记分函数实现出来 只要知道朝哪个方向走可以走到最优解即可 (只需知道方向)**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// 爬山法解决的问题必须是单峰的
+
+const int N = 15;
+
+int n;
+double d[N][N];
+double res[N], dist[N], delta[N];
+
+void calc() {
+    double avg = 0;
+    for (int i = 0; i < n + 1; ++ i ) {
+        dist[i] = delta[i] = 0;
+        for (int j = 0; j < n; ++ j )
+            dist[i] += (d[i][j] - res[j]) * (d[i][j] - res[j]);
+        dist[i] = sqrt(dist[i]);
+        avg += dist[i] / (n + 1);
+    }
+    for (int i = 0; i < n + 1; ++ i )
+        for (int j = 0; j < n; ++ j )
+            delta[j] += (dist[i] - avg) * (d[i][j] - res[j]) / avg;
+}
+
+int main() {
+    cin >> n;
+    for (int i = 0; i < n + 1; ++ i )
+        for (int j = 0; j < n; ++ j ) {
+            cin >> d[i][j];
+            res[j] += d[i][j] / (n + 1);
+        }
+    
+    // 爬山法未必需要把记分函数实现出来
+    // 只要知道朝哪个方向走可以走到最优解即可 (只需知道方向)
+    for (double t = 1e4; t > 1e-6; t *= 0.99995) {
+        calc();
+        for (int i = 0; i < n; ++ i )
+            res[i] += delta[i] * t;
+    }
+    for (int i = 0; i < n; ++ i )
+        printf("%.3lf ", res[i]);
+    cout << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

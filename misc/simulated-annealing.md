@@ -94,6 +94,278 @@ $$
 - [「JSOI 2016」炸弹攻击](https://loj.ac/problem/2076)
 - [「HAOI 2006」均分数据](https://www.luogu.com.cn/problem/P2503)
 
+> [!NOTE] **[AcWing 3167. 星星还是树](https://www.acwing.com/problem/content/3170/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// 显然可以三分来做(单峰) 类似【通电围栏】
+// 也可以模拟退火随机化
+
+#define x first
+#define y second
+
+using PDD = pair<double, double>;
+const int N = 110;
+
+int n;
+PDD q[N];
+double res = 1e8;   // 全局最优解
+
+// 每次随机一个点 [l, r)
+double rand(double l, double r) {
+    return (double)rand() / RAND_MAX * (r - l) + l;
+}
+
+double get_dist(PDD a, PDD b) {
+    double dx = a.x - b.x, dy = a.y - b.y;
+    return sqrt(dx * dx + dy * dy);
+}
+
+double calc(PDD p) {
+    double ret = 0;
+    for (int i = 0; i < n; ++ i )
+        ret += get_dist(p, q[i]);
+    res = min(res, ret);
+    return ret;
+}
+
+void simulate_anneal() {
+    PDD cur(rand(0, 10000), rand(0, 10000));
+    // 初始温度 终止温度 降温系数0.999
+    for (double t = 1e4; t > 1e-4; t *= 0.9) {
+        PDD np(rand(cur.x - t, cur.x + t), rand(cur.y - t, cur.y + t));
+        double dt = calc(np) - calc(cur);
+        // ATTENTION
+        // 本题取函数最小值
+        // Case 1: dt < 0 则必跳
+        // Case 2: dt > 0 则有一定概率跳 且大的越多跳的概率越小
+        if (exp(-dt / t) > rand(0, 1))
+            cur = np;   // 跳到新点
+    }
+}
+
+int main() {
+    cin >> n;
+    for (int i = 0; i < n; ++ i )
+        cin >> q[i].x >> q[i].y;
+    
+    // 随机过程执行100次以减少单次误差
+    for (int i = 0; i < 100; ++ i )
+        simulate_anneal();
+    printf("%.0lf\n", res);
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 2424. 保龄球](https://www.acwing.com/problem/content/2426/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 求有限集合的最优解
+> 
+> 前提：函数必须有连续性
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+#define x first
+#define y second
+
+using PII = pair<int, int>;
+const int N = 55;
+
+int n, m;
+PII q[N];
+int res;
+
+// 函数计算规则
+int calc() {
+    int ret = 0;
+    for (int i = 0; i < m; ++ i ) {
+        ret += q[i].x + q[i].y;
+        if (i < n) {
+            if (q[i].x == 10)
+                ret += q[i + 1].x + q[i + 1].y;
+            else if (q[i].x + q[i].y == 10)
+                ret += q[i + 1].x;
+        }
+    }
+    res = max(res, ret);
+    return ret;
+}
+
+void simulate_anneal() {
+    for (double t = 1e4; t > 1e-4; t *= 0.99) {
+        // 随机策略实现：找两个点交换一下，来生成序列
+        int a = rand() % m, b = rand() % m;
+        int x = calc();
+        swap(q[a], q[b]);
+        if (n + (q[n - 1].x == 10) == m) {   // if 交换合法
+            int y = calc();
+            int dt = y - x;
+            // 求最大值
+            if (exp(dt / t) < (double)rand() / RAND_MAX)
+                // 不跳
+                swap(q[a], q[b]);
+        } else                              // 交换不合法 恢复
+            swap(q[a], q[b]);
+    }
+}
+
+int main() {
+    cin >> n;
+    for (int i = 0; i < n; ++ i )
+        cin >> q[i].x >> q[i].y;
+    if (q[n - 1].x == 10)
+        m = n + 1, cin >> q[n].x >> q[n].y;
+    else
+        m = n;
+    
+    for (int i = 0; i < 100; ++ i )
+        simulate_anneal();
+    
+    cout << res << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 2680. 均分数据](https://www.acwing.com/problem/content/2682/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 25, M = 10;
+
+int n, m;
+int w[N], s[M];
+double res = 1e8;
+
+double calc() {
+    memset(s, 0, sizeof s);
+    for (int i = 0; i < n; ++ i ) {
+        int k = 0;
+        for (int j = 0; j < m; ++ j )
+            if (s[j] < s[k])
+                k = j;
+        s[k] += w[i];
+    }
+    
+    double avg = 0;
+    for (int i = 0; i < m; ++ i )
+        avg += (double)s[i] / m;
+    double ret = 0;
+    for (int i = 0; i < m; ++ i )
+        ret += (s[i] - avg) * (s[i] - avg);
+    ret = sqrt(ret / m);
+    res = min(res, ret);
+    return ret;
+}
+
+void simulate_anneal() {
+    random_shuffle(w, w + n);
+    for (double t = 1e6; t > 1e-6; t *= 0.95) {
+        int a = rand() % n, b = rand() % n;
+        double x = calc();
+        swap(w[a], w[b]);
+        double y = calc();
+        double delta = y - x;
+        // 求最小值
+        if (exp(-delta / t) < (double)rand() / RAND_MAX)
+            // 恢复(不跳转)
+            swap(w[a], w[b]);
+    }
+}
+
+int main() {
+    cin >> n >> m;
+    for (int i = 0; i < n; ++ i )
+        cin >> w[i];
+    
+    for (int i = 0; i < 100; ++ i )
+        simulate_anneal();
+    printf("%.2lf\n", res);
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[LeetCode 1521. 找到最接近目标值的函数值](https://leetcode-cn.com/problems/find-a-value-of-a-mysterious-function-closest-to-target/)** [TAG]
 > 
 > 题意: TODO
