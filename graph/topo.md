@@ -1179,102 +1179,6 @@ public:
 
 * * *
 
-### 拓扑排序方案数（可重集排序问题）
-
-> [!NOTE] **[LeetCode 1916. 统计为蚁群构筑房间的不同顺序](https://leetcode-cn.com/problems/count-ways-to-build-rooms-in-an-ant-colony/)**
-> 
-> [weekly-247](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-06-27_Weekly-247)
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-class Solution {
-public:
-    using LL = long long;
-    const static int N = 1e5 + 10, MOD = 1e9 + 7;
-    int h[N], e[N], ne[N], idx;
-    int f[N], g[N];
-    int s[N], sz[N];
-    int n;
-    
-    int qmi(int a, int k) {
-        int ret = 1;
-        while (k) {
-            if (k & 1)
-                ret = (LL)ret * a % MOD;
-            a = (LL)a * a % MOD;
-            k >>= 1;
-        }
-        return ret;
-    }
-    
-    void init() {
-        memset(h, -1, sizeof h);
-        idx = 0;
-        f[0] = g[0] = 1;
-        for (int i = 1; i <= n; ++ i ) {
-            f[i] = f[i - 1] * (LL)i % MOD;
-            g[i] = g[i - 1] * (LL)qmi(i, MOD - 2) % MOD;
-        }
-    }
-    
-    void add(int a, int b) {
-        e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
-    }
-    
-    // 单向边 不需要记录fa
-    int dfs(int u) {
-        sz[u] = 0;  // 初始时不包括跟节点
-        for (int i = h[u]; ~i; i = ne[i]) {
-            int j = e[i];
-            dfs(j);
-            sz[u] += sz[j];
-        }
-        // 所有子树的和的阶乘
-        s[u] = f[sz[u]];
-        for (int i = h[u]; ~i; i = ne[i]) {
-            int j = e[i];
-            // 子树数量逆元 子树方案数
-            s[u] = (LL)s[u] * g[sz[j]] % MOD;
-            s[u] = (LL)s[u] * s[j] % MOD;
-        }
-        sz[u] ++ ;
-        return s[u];
-    }
-    
-    int waysToBuildRooms(vector<int>& prevRoom) {
-        this->n = prevRoom.size();
-        init();
-        for (int i = 1; i < n; ++ i )
-            add(prevRoom[i], i);
-        return dfs(0);
-    }
-};
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
 > [!NOTE] **[LeetCode 207. 课程表](https://leetcode-cn.com/problems/course-schedule/)**
 > 
 > 题意: TODO
@@ -1506,6 +1410,102 @@ class Solution:
             return res
         else:
             return []
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 拓扑排序方案数（可重集排序问题）
+
+> [!NOTE] **[LeetCode 1916. 统计为蚁群构筑房间的不同顺序](https://leetcode-cn.com/problems/count-ways-to-build-rooms-in-an-ant-colony/)**
+> 
+> [weekly-247](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-06-27_Weekly-247)
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 1e5 + 10, MOD = 1e9 + 7;
+    int h[N], e[N], ne[N], idx;
+    int f[N], g[N];
+    int s[N], sz[N];
+    int n;
+    
+    int qmi(int a, int k) {
+        int ret = 1;
+        while (k) {
+            if (k & 1)
+                ret = (LL)ret * a % MOD;
+            a = (LL)a * a % MOD;
+            k >>= 1;
+        }
+        return ret;
+    }
+    
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+        f[0] = g[0] = 1;
+        for (int i = 1; i <= n; ++ i ) {
+            f[i] = f[i - 1] * (LL)i % MOD;
+            g[i] = g[i - 1] * (LL)qmi(i, MOD - 2) % MOD;
+        }
+    }
+    
+    void add(int a, int b) {
+        e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    // 单向边 不需要记录fa
+    int dfs(int u) {
+        sz[u] = 0;  // 初始时不包括跟节点
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i];
+            dfs(j);
+            sz[u] += sz[j];
+        }
+        // 所有子树的和的阶乘
+        s[u] = f[sz[u]];
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i];
+            // 子树数量逆元 子树方案数
+            s[u] = (LL)s[u] * g[sz[j]] % MOD;
+            s[u] = (LL)s[u] * s[j] % MOD;
+        }
+        sz[u] ++ ;
+        return s[u];
+    }
+    
+    int waysToBuildRooms(vector<int>& prevRoom) {
+        this->n = prevRoom.size();
+        init();
+        for (int i = 1; i < n; ++ i )
+            add(prevRoom[i], i);
+        return dfs(0);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
 ```
 
 <!-- tabs:end -->

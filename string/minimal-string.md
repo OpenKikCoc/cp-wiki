@@ -92,6 +92,81 @@ i = min(i, j)
 
 ### 最小表示法
 
+> [!NOTE] **[AcWing 158. 项链](https://www.acwing.com/problem/content/160/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 2000010;
+
+int n;
+char a[N], b[N];
+
+int get_min(char s[]) {
+    int i = 0, j = 1;
+    while (i < n && j < n) {
+        int k = 0;
+        while (k < n && s[i + k] == s[j + k])
+            k ++ ;
+        if (k == n)
+            break;
+        if (s[i + k] > s[j + k])
+            i += k + 1;
+        else
+            j += k + 1;
+        if (i == j)
+            j ++ ;
+    }
+    int k = min(i, j);
+    s[k + n] = 0;   // 标记
+    return k;
+}
+
+int main() {
+    // scanf("%s%s", a, b);
+    cin >> a >> b;
+    n = strlen(a);
+    memcpy(a + n, a, n);
+    memcpy(b + n, b, n);
+    
+    int x = get_min(a), y = get_min(b);
+    if (strcmp(a + x, b + y))
+        cout << "No" << endl;
+    else {
+        cout << "Yes" << endl;
+        cout << a + x << endl;
+    }
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[AcWing 1410. 隐藏密码](https://www.acwing.com/problem/content/1412/)**
 > 
 > 题意: TODO

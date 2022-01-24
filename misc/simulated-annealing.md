@@ -1,3 +1,21 @@
+> [!NOTE] **ATTENTION**
+> 
+> 一般来说，在求最小值时我们有 $e^\frac{-\Delta E}{T}$
+> 
+> 1. **正负号**:
+> 
+>    - 求最小值时使用 -
+> 
+>    - 求最大值时使用 +
+> 
+> 2. **大于小于号**:
+> 
+>    - 大于则跳
+> 
+>    - 小于则恢复
+> 
+> **总结和记忆几种常见的形态**
+
 ## 简介
 
 模拟退火是一种随机化算法。当一个问题的方案数量极大（甚至是无穷的）而且不是一个单峰函数时，我们常使用模拟退火求解。
@@ -498,7 +516,51 @@ public:
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++ 模拟退火**
+
+##### **C++ 模拟退火 自己**
+
+```cpp
+class Solution {
+public:
+    int n, m, res;
+    vector<int> w;
+
+    int calc() {
+        int ret = 0;
+        for (int i = 0, s = 0; i < n; ++ i ) {
+            if (!s)
+                ret ++ ;
+            s = (s + w[i]) % m;
+        }
+        res = max(res, ret);
+        return ret;
+    }
+
+    void simulate_anneal() {
+        random_shuffle(w.begin(), w.end());
+        for (double t = 1e6; t > 1e-5; t *= 0.975) {
+            int a = rand() % n, b = rand() % n;
+            int x = calc();
+            swap(w[a], w[b]);
+            int y = calc();
+            int delta = y - x;
+            if (exp(delta / t) < (double)rand() / RAND_MAX)
+                swap(w[a], w[b]);
+        }
+    }
+
+    int maxHappyGroups(int batchSize, vector<int>& groups) {
+        this->w = groups;
+        this->n = w.size(), m = batchSize;
+        res = 0;
+        for (int i = 0; i < 20; ++ i )
+            simulate_anneal();
+        return res;
+    }
+};
+```
+
+##### **C++ 模拟退火 参考**
 
 ```cpp
 class Solution {

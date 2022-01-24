@@ -211,6 +211,87 @@ for i in range(0, n):
 
 ### 一般应用
 
+> [!NOTE] **[AcWing 3188. manacher算法](https://www.acwing.com/problem/content/3190/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// 原串的任意一个子字符串都可以映射到新串的【长度为奇数】的字符串
+// 原串的回文子串的长度x 对应新串的半径r-1  ==> x=r-1
+
+const int N = 2e7 + 10;
+
+int n;
+char a[N], b[N];
+int p[N];
+
+void init() {
+    int k = 0;
+    b[k ++ ] = '$', b[k ++ ] = '#';
+    for (int i = 0; i < n; ++ i )
+        b[k ++ ] = a[i], b[k ++ ] = '#';
+    b[k ++ ] = '^';
+    n = k;
+}
+
+void manacher() {
+    int mr = 0, mid;
+    for (int i = 1; i < n; ++ i ) {
+        if (i < mr)
+            p[i] = min(p[mid * 2 - i], mr - i);
+        else
+            p[i] = 1;
+        while (b[i - p[i]] == b[i + p[i]])
+            p[i] ++ ;
+        if (i + p[i] > mr) {
+            mr = i + p[i];
+            mid = i;
+        }
+    }
+}
+
+int main() {
+    cin >> a;
+    n = strlen(a);
+    
+    init();
+    manacher();
+    
+    int res = 0;
+    for (int i = 0; i < n; ++ i )
+        res = max(res, p[i]);
+    cout << res - 1 << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[LeetCode 5. 最长回文子串](https://leetcode-cn.com/problems/longest-palindromic-substring/)**
 > 
 > 题意: TODO
@@ -274,6 +355,90 @@ class Solution:
         #            j += 1
         #    self.res = max(self.res, s[i+1:j], key = len)
         
+        for i in range(n):
+            dfs(i, i)
+            dfs(i, i + 1)
+        return self.res
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 647. 回文子串](https://leetcode-cn.com/problems/palindromic-substrings/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+
+    int countSubstrings(string s) {
+        string ms = "$#";
+        for (auto c : s) ms.push_back(c), ms.push_back('#');
+
+        int n = ms.size();
+        vector<int> mp(n);
+        int id = 0, mx = 0, maxid = 0;
+        int res = 0;
+        for (int i = 1; i < n; ++ i ) {
+            mp[i] = i < mx ? min(mp[2 * id - i], mx - i) : 1;
+            while (ms[i + mp[i]] == ms[i - mp[i]]) ++ mp[i];
+            if (i + mp[i] > mx) {
+                mx = i + mp[i];
+                id = i;
+            }
+            // diff
+            res += mp[i] / 2;
+        }
+        return res;
+    }
+
+    int countSubstrings_2(string s) {
+        int n = s.size();
+        vector<vector<bool>> f(n + 1, vector<bool>(n + 1));
+
+        int res = n;
+        for (int i = 1; i <= n; ++ i ) f[i][i] = 1;
+        for (int len = 2; len <= n; ++ len )
+            for (int l = 1; l + len - 1 <= n; ++ l ) {
+                int r = l + len - 1;
+                if (s[l - 1] == s[r - 1] && (l + 1 > r - 1 || f[l + 1][r - 1]))
+                    f[l][r] = 1;
+                res += f[l][r];
+            }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+class Solution:
+    def countSubstrings(self, s: str) -> int:
+        self.res = 0 
+        n = len(s)
+
+        def dfs(i, j):
+            while i >= 0 and j < n and s[i] == s[j]:
+                self.res += 1 
+                i -= 1 
+                j += 1 
+            
         for i in range(n):
             dfs(i, i)
             dfs(i, i + 1)

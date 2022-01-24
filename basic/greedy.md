@@ -2234,6 +2234,67 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 1751. 最多可以参加的会议数目 II](https://leetcode-cn.com/problems/maximum-number-of-events-that-can-be-attended-ii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 与上题 [LeetCode 1235. 规划兼职工作](https://leetcode-cn.com/problems/maximum-profit-in-job-scheduling/) 一样
+> 
+> 但做法不同
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    int maxValue(vector<vector<int>>& events, int k) {
+        int n = events.size();
+        sort(events.begin(), events.end(),
+             [](const vector<int> & a, const vector<int> & b) {
+                return a[1] < b[1];
+        });
+        events.insert(events.begin(), vector<int>{0, 0, 0});
+        
+        vector<vector<LL>> f(n + 1, vector<LL>(k + 1));
+        f[0][0] = 0;
+        
+        for (int i = 1; i <= n; ++ i ) {
+            int l = 0, r = i - 1;
+            while (l < r) {
+                int mid = l + r >> 1;
+                if (events[mid + 1][1] >= events[i][0]) r = mid;
+                else l = mid + 1;
+            }
+            
+            f[i][0] = 0;
+            for (int j = 1; j <= k; ++ j )
+                f[i][j] = max(f[i - 1][j], f[l][j - 1] + events[i][2]);
+        }
+        return f[n][k];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[LeetCode 1272. 删除区间](https://leetcode-cn.com/problems/remove-interval/)**
 > 
 > 题意: TODO

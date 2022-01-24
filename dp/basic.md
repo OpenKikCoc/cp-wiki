@@ -3460,3 +3460,83 @@ public:
 <br>
 
 * * *
+
+#### 类似编辑距离的进阶
+
+> [!NOTE] **[LeetCode 2060. 同源字符串检测](https://leetcode-cn.com/problems/check-if-an-original-string-exists-given-two-encoded-strings/)** TAG
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 状态转移
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 41, M = 2010, D = 1000;
+
+    bool f[N][N][M];    // 第二个串比第一个串场多少
+
+    bool possiblyEquals(string s1, string s2) {
+        int n = s1.size(), m = s2.size();
+        s1 = ' ' + s1, s2 = ' ' + s2;
+
+        memset(f, 0, sizeof f);
+        f[0][0][D] = true;
+        for (int i = 0; i <= n; ++ i )
+            for (int j = 0; j <= m; ++ j )
+                for (int k = 1; k <= 2000; ++ k )
+                    if (f[i][j][k]) {
+                        // k == D 为什么要加 k 和 D 的限制条件 ?
+                        // "98u8v8v8v89u888u998v88u98v88u9v99u989v8u"
+                        // "9v898u98v888v89v998u98v9v888u9v899v998u9"
+                        if (k == D && i + 1 <= n && j + 1 <= m && s1[i + 1] == s2[j + 1])
+                            f[i + 1][j + 1][k] = true;
+                        if (k < D && j + 1 <= m && isalpha(s2[j + 1]))
+                            f[i][j + 1][k + 1] = true;
+                        if (k > D && i + 1 <= n && isalpha(s1[i + 1]))
+                            f[i + 1][j][k - 1] = true;
+                        
+                        {
+                            int u = i + 1, v = 0;
+                            while (u <= n && isdigit(s1[u])) {
+                                v = v * 10 + s1[u] - '0';
+                                if (k - v >= 1)
+                                    f[u][j][k - v] = true;
+                                u ++ ;
+                            }
+                        }
+                        {
+                            int u = j + 1, v = 0;
+                            while (u <= m && isdigit(s2[u])) {
+                                v = v * 10 + s2[u] - '0';
+                                if (k + v <= 2000)
+                                    f[i][u][k + v] = true;
+                                u ++ ;
+                            }
+                        }
+                    }
+        return f[n][m][D];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

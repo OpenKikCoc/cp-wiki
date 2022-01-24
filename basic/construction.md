@@ -265,3 +265,145 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[AcWing 516. 神奇的幻方](https://www.acwing.com/problem/content/518/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 模拟即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// 按题意模拟即可
+
+const int N = 40;
+
+int n;
+int a[N][N];
+
+int main() {
+    cin >> n;
+    int x = 1, y = n / 2 + 1;
+    for (int i = 1; i <= n * n; ++ i ) {
+        a[x][y] = i;
+        if (x == 1 && y == n)
+            x ++ ;
+        else if (x == 1)
+            x = n, y ++ ;
+        else if (y == n)
+            x -- , y = 1;
+        else if (a[x - 1][y + 1])
+            x ++ ;
+        else
+            x -- , y ++ ;
+    }
+    for (int i = 1; i <= n; ++ i ) {
+        for (int j = 1; j <= n; ++ j )
+            cout << a[i][j] << ' ';
+        cout << endl;
+    }
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 2268. 时态同步](https://www.acwing.com/problem/content/2270/)**
+> 
+> 题意: 如何使得叶子结点路径总和相同
+
+> [!TIP] **思路**
+> 
+> 贪心
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// 贪心 很多时候可以作为转化的模版
+// 如何使得叶子结点路径总和相同
+
+using LL = long long;
+const int N = 500010, M = N << 1;
+
+int n, root;
+int h[N], e[M], w[M], ne[M], idx;
+LL d[N], res;
+
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+void dfs(int u, int pa) {
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (j == pa)
+            continue;
+        dfs(j, u);
+        d[u] = max(d[u], d[j] + w[i]);
+    }
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (j == pa)
+            continue;
+        // 所有儿子到达当前节点的值必然需要相同
+        res += d[u] - (d[j] + w[i]);
+    }
+}
+
+int main() {
+    cin >> n >> root;
+    memset(h, -1, sizeof h);
+    for (int i = 0; i < n - 1; ++ i ) {
+        int a, b, c;
+        cin >> a >> b >> c;
+        add(a, b, c), add(b, a, c);
+    }
+    
+    dfs(root, -1);
+    cout << res << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
