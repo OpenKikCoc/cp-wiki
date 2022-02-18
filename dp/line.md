@@ -667,6 +667,34 @@ public:
 };
 ```
 
+##### **C++ 转化 组合数**
+
+[题解](https://leetcode-cn.com/problems/number-of-sets-of-k-non-overlapping-line-segments/solution/da-xiao-wei-k-de-bu-zhong-die-xian-duan-de-shu-mu-/)
+
+```cpp
+class Solution {
+public:
+    const static int N = 2010, MOD = 1e9 + 7;
+
+    int C[N][N];
+
+    void init() {
+        for (int i = 0; i < N; ++ i )
+            for (int j = 0; j <= i; ++ j )
+                if (!j)
+                    C[i][j] = 1;
+                else
+                    C[i][j] = (C[i - 1][j] + C[i - 1][j - 1]) % MOD;
+    }
+
+    // C_{n+k-1}^{2*k}
+    int numberOfSets(int n, int k) {
+        init();
+        return C[n + k - 1][2 * k];
+    }
+};
+```
+
 ##### **Python**
 
 ```python
