@@ -9,8 +9,18 @@
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> 1. 首先思考递归的出口：
+>
+> ​		当 *左边括号的数量 == 右边括号数量 == n*：这种情况下的有效路径可以加入到 res 中。
+>
+> 2. 那么，如何保证加入到的路径是有效的呢？也就是递归的顺序。
+>
+>    1） 每次可以加入左括号的条件是：当前左括号的数目不超过  n 
+>
+>    2） 每次可以加入右括号的条件是：当前右括号的数目不超过  n，并且右括号的数目不能超过左括号的数目。（这样才能保证生成的括号是有效的）
+>
+> **时间复杂度**
 
 <details>
 <summary>详细代码</summary>
@@ -71,11 +81,6 @@ public:
 ##### **Python**
 
 ```python
-# 递归，当左边括号的数量 == 右边括号数量 == n：就可以加入到答案中
-# 如何保证加入到的路径是有效的呢？
-# 1. 每次可以放置左括号的条件是：当前左括号的数目不超过 n。
-# 2. 每次可以放置右括号的条件是：当前右括号的数目不超过左括号的数目。
-
 class Solution:
     def generateParenthesis(self, n: int) -> List[str]:
         res = []
@@ -106,8 +111,20 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> 暴搜：递归所有方案
+>
+> 1. 对于每段连续的序列 l, l + 1, ..., l + k, ... , r, 枚举二叉搜索树根节点 root 的位置 i 
+>
+> 2. 分别递归求出左右子树的所有方案：
+>
+>    1） 对于左子树而言，节点的数值范围是：[l, i - 1]
+>
+>    2） 对于右子树而言，节点的数值范围是：[i + 1, r]
+>
+> 3. 左子树的任意一种方案和右子树的任意一种方案拼在一起，就可以得到当前节点的一种方案（因为根据步骤2求出的左右子树，始终都满足 **左子树 < 根节点 < 右子树**），所以将左右子树的所有方案两两组和，并记录到答案中
+>
+> **时间复杂度**
 
 <details>
 <summary>详细代码</summary>
@@ -158,24 +175,19 @@ public:
 ##### **Python**
 
 ```python
-# 暴搜：递归所有方案
-# 1. 对于每段连续的序列 l, l+1,...,r, 枚举二叉搜索树根节点的位置
-# 2. 分别递归求出左右子树的所有方案
-# 3. 左子树的任意一种方案和右子树的任意一种方案拼在一起，可以得到当前节点的一种方案，所以将左右子树的所有方案两两组和，并记录到答案中
-
 class Solution:
     def generateTrees(self, n: int) -> List[TreeNode]:
         if not n:return []
 
         def dfs(l, r):
-            res = []   # 踩坑1: res一定要放在递归函数里，每次进来都是[]！
+            res = []   # 踩坑1: res 一定要放在递归函数里，每次进来都是空列表
             if l > r:return [None]
-            for i in range(l, r + 1):# 遍历根节点的位置，每个数值都可能成为根节点
+            for i in range(l, r + 1): # 遍历根节点的位置，每个数值都可能成为根节点
                 left = dfs(l, i - 1)
                 right = dfs(i + 1, r)
                 for j in left:
                     for k in right:
-                        root = TreeNode(i)  # 踩坑2:每次都要生成一个新的root节点树
+                        root = TreeNode(i)  # 踩坑2: 每次都要生成一个新的 root 节点树
                         root.left, root.right = j, k
                         res.append(root)
             return res
@@ -195,8 +207,13 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> - 区间 dp
+>
+> 1. 状态表示：f[n] 表示 n 个节点的二叉搜索树共有多少种。
+> 2. 左子树可以有 0,1,…, n−1 个节点，对应的右子树有 n−1, n−2, …, 0 个节点，f[n] 是所有这些情况的加和；f[n]=∑n−1k=0 f[k]∗f[n−1−k]
+>
+> **时间复杂度**：状态总共有 n 个，状态转移的复杂度是 *O(n)*，所以总时间复杂度是 *O($n^2$)*
 
 <details>
 <summary>详细代码</summary>
@@ -249,14 +266,6 @@ public:
 ##### **Python**
 
 ```python
-"""
-(动态规划) O(n2)
-状态表示：f[n] 表示 n个节点的二叉搜索树共有多少种。
-状态转移：左子树可以有 0,1,…n−1 个节点，对应的右子树有 n−1,n−2,…,0 个节点，f[n] 是所有这些情况的加和，所以 f[n]=∑n−1k=0 f[k]∗f[n−1−k]
-
-时间复杂度分析：状态总共有 nn 个，状态转移的复杂度是 O(n)，所以总时间复杂度是 O(n2)。
-"""
-
 class Solution:
     def numTrees(self, n: int) -> int:
         f = [0] * (n + 1)
@@ -281,8 +290,10 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> 1. DFS：子集问题，是属于 **不区分顺序**
+> 2. 对于这类不区分顺序的题，不用额外用一个数组标记是否被用过，可以直接从前到后遍历一遍就可以保证不会被重复使用。
+> 3. 全排列这类题都是区分顺序的题，是需要一个额外的数组进行标记状态的。
 
 <details>
 <summary>详细代码</summary>
@@ -341,8 +352,6 @@ public:
 ##### **Python**
 
 ```python
-# DFS：子集问题，是属于 【不区分顺序】，而全排列这类题都是区分顺序的题
-
 class Solution:
     def subsets(self, nums: List[int]) -> List[List[int]]:
         if not nums:return []
@@ -371,8 +380,11 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> 这道题和上道题的区别在于，原数组可能会存在重复数字，需要进行判重：
+>
+> 1. 排序
+> 2. 每次在进入递归的时候，把当前数字和上一个数字进行对比。（详细见代码）
 
 <details>
 <summary>详细代码</summary>
@@ -414,7 +426,8 @@ class Solution:
         def dfs(path, i):
             res.append(path[:])
             for k in range(i, n):
-                if k > i and nums[k] == nums[k-1]:continue  # 踩坑2 ：if k > i !这个条件！
+                if k > i and nums[k] == nums[k-1]:
+                  	continue # 踩坑2: k > i（missed）
                 path.append(nums[k])
                 dfs(path, k + 1)
                 path.pop()
@@ -508,8 +521,11 @@ public:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> 1. DFS + 回溯
+>
+> 2. 用一个数组标记当前数字是否被用过
+> 3. 递归出口：len(path) == n
 
 <details>
 <summary>详细代码</summary>
@@ -593,8 +609,12 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> `!vis[i - 1]`
+>
+> 可能存在重复数字，需要判重。
+>
+> 1. 排序
+> 2. 每次在进入递归的时候，把当前数字和上一个数字进行对比。
+> 3. 详细见代码，需要注意的地方：`!vis[i - 1]`
 
 <details>
 <summary>详细代码</summary>
@@ -642,7 +662,7 @@ class Solution:
         if not nums:return []
         n = len(nums)
         res = []
-        nums.sort()   # 踩坑1:一定要先排序！
+        nums.sort()   # 踩坑1: 一定要先排序！
         used = [False] * n
 
         def dfs(path):
@@ -673,7 +693,9 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
+>
+> DFS：从左到右枚举；
+>
 > 注意写法 无需 `for` 以及 `^32的trick`
 
 <details>
@@ -714,9 +736,6 @@ public:
 ##### **Python**
 
 ```python
-# 特别简单的暴搜DFS...从左到右枚举遍历
-# 直接用字符串这个数据结构
-
 class Solution:
     def letterCasePermutation(self, S: str) -> List[str]:
         res = []
@@ -731,6 +750,7 @@ class Solution:
             else:
                 dfs(path + c, s[1:])
         
+        # 可以直接用字符串这个数据结构；也可以用 list，会比字符串效率要高
         dfs('', S)
         return res
 ```
@@ -749,8 +769,10 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> 这道题其实是子集类型的题。实际上是求由1 ~ n的数字组成集合的子集，并且子集的个数刚好是k的所有子集方案。
+>
+> 从 1 到 n 依次枚举加入（递增加入，不需要判重），当路径里的个数等于 k 时，就可以把当前路径加入到 res 中（记得回溯）
 
 <details>
 <summary>详细代码</summary>
@@ -787,12 +809,6 @@ public:
 ##### **Python**
 
 ```python
-"""
-深度优先搜索，每层枚举第 u 个数选哪个，一共枚举 k 层。由于这道题要求组合数，不考虑数的顺序，所以我们需要再记录一个值，表示当前数需要从几开始选，来保证所选的数递增。
-
-时间复杂度分析：一共有 Ckn 个方案，另外记录每个方案时还需要 O(k)的时间，所以时间复杂度是 O(Ckn×k)。
-"""
-
 class Solution:
     def combine(self, n: int, k: int) -> List[List[int]]:
         if not n:return []
@@ -803,7 +819,7 @@ class Solution:
                 res.append(path[:])
                 return 
             for u in range(i, n + 1):
-                # 踩坑：需要在循环里把当前数加入到path中，否则就是必须从第一个数字开始组合
+                # 踩坑：需要在循环里把当前数加入到 path 中，否则组合就是必须从第一个数字开始组合
                 path.append(u)   
                 dfs(path, u + 1)
                 path.pop()
@@ -824,8 +840,11 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> 1. 先对原数组排序，方便后续剪枝（当  nums[k] > target的时，不符合条件，可以直接 return）
+> 2. 从前往后枚举数组，由于可以重复添加，所以每次递归都可以从当前数添加，同时将当前 target 值减 nums[i]
+> 3. 递归的出口是：target == 0 时候，递归结束；还有一个是当 nums[i] > target，也直接 return
+> 4. 避免重复：对于这一类可以以 **任意顺序**  返回结果（类似于集合不计顺序）的问题，在搜索的时候就需要 **按某种顺序搜索**，才可以避免重复。具体的做法是：只要限制下一次选择的起点，是基于本次的选择，这样下一次就不会选到本次选择同层左边的数。也就是：通过控制 for 遍历的起点，去掉会产生重复组合的选项。
 
 <details>
 <summary>详细代码</summary>
@@ -861,13 +880,11 @@ public:
 ##### **Python**
 
 ```python
-# 无重复元素，并且 每个数字可以用无数次
-
 class Solution:
     def combinationSum(self, nums: List[int], target: int) -> List[List[int]]:
         if not nums:return []
         n = len(nums)
-        # 要先排序，排序是为了剪枝；不然后面 nums[k] > target的时候 就没办法直接 return
+        # !! 要先排序
         nums.sort()
         res = []
 
@@ -875,22 +892,51 @@ class Solution:
             if target == 0:
                 res.append(path[:])
                 return 
-            # 这里的顺序k开始搜索，可以保证每个数在其他结果中不会被重复用，不需要用另外一个变量st
+            # 这里的顺序 k 开始搜索，可以保证每个数在其他结果中不会被重复用 
             for k in range(i, n):  
-                if nums[k] > target:return 
+                if nums[k] > target:return  # 剪枝的过程
                 path.append(nums[k])
                 dfs(path, target - nums[k], k)
                 path.pop()
 
         dfs([], target, 0)
         return res
-      
-      
-      
-      
-      # !!!这种 dfs 是错误的，这个代码的意思是，不管怎么样，一定要把第一个元素加入到路径中
-      # 这种代码是类似 求 二叉树的 根 到 叶子结点的路径的题
-        def dfs(idx, path, target):
+```
+
+**Python 答案重复**
+
+```python
+# 这样的写法 res: [[2,2,3],[2,3,2],[3,2,2],[7]]
+# 正确答案 res：[[2,2,3],[7]]
+class Solution:
+    def combinationSum(self, nums: List[int], target: int) -> List[List[int]]:
+        res = []
+        n = len(nums)
+        nums.sort()
+
+        def dfs(path, target):
+            if target == 0:
+                res.append(path[:])
+                return 
+            for i in range(n):
+                if nums[i] > target:return
+                path.append(nums[i])
+                dfs(path, target - nums[i])
+                path.pop()
+        
+        dfs([], target)
+        return res
+```
+
+**Python 错误答案**
+
+```python
+"""
+以下 dfs 对于这道题来说是错误的，这个代码的意思是，不管怎么样，一定要把第一个元素加入到路径中
+这种代码是类似求 【二叉树的 根 到 叶子结点的路径】的题
+"""      
+
+  def dfs(idx, path, target):
             if nums[idx] > target:return 
             path.append(nums[idx])
             target -= nums[idx]
@@ -904,6 +950,8 @@ class Solution:
         return res
 ```
 
+ 
+
 <!-- tabs:end -->
 </details>
 
@@ -916,8 +964,11 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> 和  **[LeetCode 39. 组合总和](https://leetcode-cn.com/problems/combination-sum/)** 思路类似，不同点在于：
+>
+> 1. 递归出口规则稍微有点不同：这道题是 个数 == k
+> 2. 这道题不允许有重复数字，所以在进行本层递归的下一次添加数字，要从 u + 1 开始
 
 <details>
 <summary>详细代码</summary>
@@ -959,13 +1010,13 @@ class Solution:
         res = []
 
         def dfs(path, n, i):
-            if n == 0 and len(path) == k:  # 踩坑1: 别忘了 个数 要为 k 这个条件！！
+            if n == 0 and len(path) == k:  # 踩坑1: 别忘了【个数为 k 】这个条件！！
                 res.append(path[:])
                 return 
-            for j in range(i, 10):  # 踩坑2：这里遍历的尾部 不能写 n, 因为n在每次递归的过程中 都发生了变化
-                if j > n:return  # 剪枝
-                path.append(j)
-                dfs(path, n - j, j + 1) 
+            for u in range(i, 10):  # 踩坑2：这里遍历的尾部 不能写 n, 因为 n 在每次递归的过程中都发生了变化
+                if u > n:return  # 剪枝
+                path.append(u)
+                dfs(path, n - u, u + 1) 
                 path.pop()
         dfs([], n, 1)
         return res
@@ -983,8 +1034,15 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> 本题用 DFS 会超时。这其实是一道经典的 dp 完全背包问题。
+>
+> 转换一下题意就是：每个数字可以用无数次，不区分先后顺序。
+>
+> 1. f[i]：表示总和为i的所有方案(有多少个数字无所谓)
+> 2. 状态转移计算：以最后一个数的数值为转移，最后一个数可以是[nums[0],num[1],nums[2],..nums[k],...,nums[n-1]]
+> 3. 当最后一个数是nums[k], f[i] = f[i-nums[k]]
+> 4. 由于nums[k] > 0, 所以从小到大循环遍历就可以算出来了。
 
 <details>
 <summary>详细代码</summary>
@@ -1035,37 +1093,35 @@ class Solution:
         self.ans=0
         nums.sort()
 
-        def dfs(index,target):
-            if target==0:
-                self.ans+=1             
+        def dfs(index, target):
+            if target == 0:
+                self.ans += 1             
             for i in range(len(nums)):
-                if nums[i]>target:
+                if nums[i] > target:
                     return
-                dfs(i,target-nums[i])
+                dfs(i, target - nums[i])
                 
         dfs(0,target)
         return self.ans
-        
-#法二，用dp（其实就是经典的完全背包问题）：每个数字可以用无数次，不区分先后顺序
-#dp[i]：表示总和为i的所有方案(有多少个数字无所谓)
-#状态转移计算：以最后一个数的数值为转移，最后一个数可以是[nums[0],num[1],nums[2],..nums[k],...,nums[n-1]]
-#当最后一个数是nums[k], dp[i]=dp[i-nums[k]]
-#由于nums[k]>0, 所以从小到达循环就可以算出来了。
+```
 
+**Python dp**
+
+```python
 class Solution:
     def combinationSum4(self, nums: List[int], target: int) -> int:
-        n=len(nums)
-        if n==0 or target<=0:return 0
-        dp=[0 for _ in range(target+1)]
-        dp[0]=1
-        for i in range(1,target+1):
+        n = len(nums)
+        if n == 0 or target <= 0:return 0
+        f = [0 for _ in range(target + 1)]
+        f[0] = 1
+        for i in range(1, target + 1):
             for j in range(n):
-                if i>=nums[j]:
-                    dp[i]+=dp[i-nums[j]]
-        return dp[target]
-
-
+                if i >= nums[j]:
+                    f[i] += f[i - nums[j]]
+        return f[target]
 ```
+
+
 
 <!-- tabs:end -->
 </details>
