@@ -407,3 +407,79 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2081. k 镜像数字的和](https://leetcode-cn.com/problems/sum-of-k-mirror-numbers/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典模型：**求k进制下的第n个回文数字**
+> 
+> - 折半搜索缩小至 `sqrt(n)` 规模
+> - 将当前数翻转并追加到当前数后面
+> - 显然形成 `奇/偶` 两种长度情况，根据有序性质推理先生成前者
+> - 规定搜索的范围，`i` 需要在 `[10^k, 10^(k+1)]` 的范围内，使用 `[l, r]` 维护
+> 
+> 显然也可以打表... 略
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 基础知识: [求 k 进制下的第 n 个回文数]
+    // 在此基础上加上 10 进制回文的判断，中间累加和即可
+    // 
+    // Knowledge: 1e9里的十进制回文数有109998个
+    using LL = long long;
+    
+    bool check(LL x) {
+        string s = to_string(x);
+        for (int i = 0, j = s.size() - 1; i < j; ++ i , -- j )
+            if (s[i] != s[j])
+                return false;
+        return true;
+    }
+    
+    long long kMirror(int k, int n) {
+        LL res = 0, l = 1;
+        while (n) {
+            LL r = l * k;
+            for (int op = 0; op < 2; ++ op )
+                for (int i = l; i < r && n; ++ i ) {
+                    int x = (op ? i : i / k);   // 生成奇数还是偶数位 0代表奇数
+                    LL conbined = i;
+                    while (x) {
+                        conbined = conbined * k + x % k;
+                        x /= k;
+                    }
+                    // 本题要求 10 进制回文  特殊处理
+                    if (check(conbined) && n) {
+                        res += conbined;
+                        n -- ;
+                    }
+                }
+            l = r;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

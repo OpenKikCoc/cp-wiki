@@ -4171,3 +4171,210 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2071. 你可以安排的最多任务数目](https://leetcode-cn.com/problems/maximum-number-of-tasks-you-can-assign/)** TAG
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 细节贪心
+> 
+> 另有 **单调队列** 解法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+
+##### **C++ 单调队列 最优**
+
+```cpp
+class Solution {
+public:
+    // [v, has_use_pill, id] , ATTENTION: has_use_pill should be takon account
+    using TIII = tuple<int, int, int>;
+    const static int N = 5e4 + 10;
+    
+    int n, m, ps, st;
+    vector<int> ts, ws;
+    int q[N];
+    
+    // https://leetcode-cn.com/problems/maximum-number-of-tasks-you-can-assign/solution/c-er-fen-tao-tan-xin-by-blackskygg-kmbu/
+    bool check(int mid) {
+        // 维护 [..., v + st] 的队列，当前worker的最优解一定是选择第一个or最后一个 或false
+        int hh = 0, tt = -1, pills = ps;
+        for (int i = max(m - mid, 0), j = 0; i < m; ++ i ) {
+            int v = ws[i];
+            while (j < mid && ts[j] <= v + st)
+                q[ ++ tt] = j ++;
+            // 为空 当前worker找不到可以解决的task
+            if (hh > tt)
+                return false;
+            if (ts[q[hh]] <= v)
+                hh ++ ;
+            else {
+                // 吃药 解决一个可解决的最大的
+                if (pills)
+                    tt -- , pills -- ;
+                else
+                    return false;
+            }
+        }
+        return true;
+    }
+    
+    int maxTaskAssign(vector<int>& tasks, vector<int>& workers, int pills, int strength) {
+        this->ts = tasks, this->ws = workers;
+        sort(ts.begin(), ts.end());
+        sort(ws.begin(), ws.end());
+        n = ts.size(), m = ws.size();
+        this->ps = pills, this->st = strength;
+        
+        int l = 1, r = min(n, m) + 1;
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+            if (check(mid))
+                l = mid + 1;
+            else
+                r = mid;
+        }
+        return l - 1;
+    }
+};
+```
+
+##### **C++ 二分+二分贪心**
+
+```cpp
+
+class Solution {
+public:
+    // [v, has_use_pill, id] , ATTENTION: has_use_pill should be takon account
+    using TIII = tuple<int, int, int>;
+    
+    int n, m, ps, st;
+    vector<int> ts, ws;
+    
+    bool check(int mid) {
+        multiset<int> S;
+        for (int i = max(m - mid, 0); i < m; ++ i )
+            S.insert(ws[i]);
+        
+        vector<int> ve;
+        for (int i = 0; i < mid && i < n; ++ i )
+            ve.push_back(ts[i]);
+        
+        // 从大到小考虑
+        int pills = ps;
+        for (int i = ve.size() - 1; i >= 0; -- i ) {
+            auto it = S.lower_bound(ve[i]);
+            if (it != S.end())
+                S.erase(it);
+            else {
+                // ATTENTION: 找到一个吃药后可以解决当前任务的最小的一个
+                it = S.lower_bound(ve[i] - st);
+                if (it != S.end() && pills) {
+                    S.erase(it), pills -- ;
+                } else
+                    return false;
+            }
+        }
+        return true;
+    }
+    
+    int maxTaskAssign(vector<int>& tasks, vector<int>& workers, int pills, int strength) {
+        this->ts = tasks, this->ws = workers;
+        sort(ts.begin(), ts.end());
+        sort(ws.begin(), ws.end());
+        n = ts.size(), m = ws.size();
+        this->ps = pills, this->st = strength;
+        
+        int l = 1, r = min(n, m) + 1;
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+            if (check(mid))
+                l = mid + 1;
+            else
+                r = mid;
+        }
+        return l - 1;
+    }
+};
+```
+
+##### **C++ WA**
+
+显然容易想到二分并选择最小的 mid 个任务与最强的 mid 个工人。但二分策略有问题（TODO），比赛时的 WA 代码：
+
+错误原因：**显然并非需要尽着最小的去吃药**
+
+```cpp
+// 46 / 48 个通过测试用例
+class Solution {
+public:
+    // [v, has_use_pill, id] , ATTENTION: has_use_pill should be takon account
+    using TIII = tuple<int, int, int>;
+    
+    int n, m, ps, st;
+    vector<int> ts, ws;
+    
+    bool check(int mid) {
+        priority_queue<TIII, vector<TIII>, greater<TIII>> heap;
+        for (int i = max(m - mid, 0); i < m; ++ i )
+            heap.push({ws[i], i, 0}), heap.push({ws[i] + st, i, 1});
+        
+        vector<int> ve;
+        for (int i = 0; i < mid && i < n; ++ i )
+            ve.push_back(ts[i]);
+        
+        int p = 0, pills = ps;
+        unordered_set<int> hash;
+        while (heap.size() && p < mid) {
+            auto [v, id, used] = heap.top(); heap.pop();
+            if (v < ve[p] || hash.count(id))
+                continue;
+            
+            if (used && pills > 0) {
+                hash.insert(id);
+                p ++ ;
+                pills -- ;
+            } else if (!used) {
+                hash.insert(id);
+                p ++ ;
+            }
+        }
+        return p >= mid;
+    }
+    
+    int maxTaskAssign(vector<int>& tasks, vector<int>& workers, int pills, int strength) {
+        this->ts = tasks, this->ws = workers;
+        sort(ts.begin(), ts.end());
+        sort(ws.begin(), ws.end());
+        n = ts.size(), m = ws.size();
+        this->ps = pills, this->st = strength;
+        
+        int l = 1, r = min(n, m) + 1;
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+            if (check(mid))
+                l = mid + 1;
+            else
+                r = mid;
+        }
+        return l - 1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

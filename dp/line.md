@@ -2914,15 +2914,124 @@ public:
 
 > [!TIP] **思路**
 > 
-> 组合数 其中左右边界限制约束组合数计算 ?
+> 组合数 其中左右边界限制约束组合数计算
 > 
 > 直接dp
+> 
+> 压掉一维：
+> 
+> > 当 `f[i][j] = f[i - 1][j] + f[i - ][j] + f[i - 1][j + 1]` 的形式时 
+> > 
+> > 【形式可能略微有所变动，但基本是本维依赖上一维度，且依赖上一维度某个循环更新顺序】
+> > 
+> > ```c++
+> > for (int j = 0; j <= longest; ++ j ) {
+> >     f[i][j] = f[i - 1][j - 1] + f[i - 1][j] + f[i - 1][j + 1];
+> >
+> >     // === >
+> >     //     已被本维度覆盖    未被覆盖的部分
+> >     f[j] = f[j - 1]  +   f[j] + f[j + 1];
+> >     // 显然需要临时变量每次记录当前 j [左侧且上一维度] 的值
+> > }
+> >     // === > 
+> > int t = 0;  // memo the f[i - 1][j - 1]
+> > for (int j = 0; j < longest; ++ j ) {
+> >     int t_next = f[j];
+> >     f[j] = t + f[j] + f[j + 1];
+> >     t = t_next;
+> > }
+> > ```
+> > 
+> > 显然，`int t_next = f[j]; ... t = t_next;` 这样的操作可以直接用一个 swap 实现
+> > ```c++
+> > int t = 0;
+> > for (int j = 0; j <= longest; ++ j ) {
+> >     swap(t, f[j]);
+> >     f[j] = (f[j] + t + f[j + 1]) % MOD;
+> > }
+> > ```
+> 
+> **经典优化 待归类整理**
 
 <details>
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
 ##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int MOD = 1e9 + 7;
+
+    int numWays(int steps, int arrLen) {
+        int longest = min(steps, arrLen - 1);
+        vector<vector<int>> f(steps + 1, vector<int>(longest + 1));
+        f[0][0] = 1;
+        for (int i = 1; i <= steps; ++ i )
+            for (int j = 0; j <= longest; ++ j ) {
+                f[i][j] = f[i - 1][j];
+                if (j > 0)
+                    (f[i][j] += f[i - 1][j - 1]) %= MOD;
+                if (j < longest)
+                    (f[i][j] += f[i - 1][j + 1]) %= MOD;
+            }
+        return f[steps][0];
+    }
+};
+```
+
+##### **C++ 优化**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int MOD = 1e9 + 7;
+
+    int numWays(int steps, int arrLen) {
+        int longest = min(steps, arrLen - 1);
+        vector<LL> f(longest + 1 + 1);
+        f[0] = 1;
+        for (int i = 1; i <= steps; ++ i ) {
+            LL t = 0;   // avoid overflow
+            for (int j = 0; j <= longest; ++ j ) {
+                LL tt = f[j];
+                f[j] = (f[j] + t + f[j + 1]) % MOD;
+                t = tt;
+            }
+        }
+        return f[0];
+    }
+};
+```
+
+##### **C++ 优化 swap**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int MOD = 1e9 + 7;
+
+    int numWays(int steps, int arrLen) {
+        int longest = min(steps, arrLen - 1);
+        vector<LL> f(longest + 1);
+        f[0] = 1;
+        for (int i = 1; i <= steps; ++ i ) {
+            LL t = 0;   // avoid overflow
+            for (int j = 0; j <= longest; ++ j ) {
+                swap(t, f[j]);
+                // 可以直接给数组长度再加一 避免下面的 j != longest 的判断
+                f[j] = (f[j] + t + (j != longest ? f[j + 1] : 0)) % MOD;
+            }
+        }
+        return f[0];
+    }
+};
+```
+
+##### **C++ 另一 经典优化**
 
 ```cpp
 class Solution {
@@ -3008,8 +3117,6 @@ public:
 > 复杂线性递推 + 前缀和优化
 > 
 > TODO: 重复做 更优雅的实现
-> 
-> [FIXME](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2020-04-19_Weekly-185)
 
 <details>
 <summary>详细代码</summary>
@@ -3019,43 +3126,45 @@ public:
 
 ```cpp
 class Solution {
-private:
-    int f[51][51][101];
-    static constexpr int mod = 1000000007;
-
 public:
-    int numOfArrays(int n, int m, int k) {
-        // 不存在搜索代价为 0 的数组
-        if (!k) {
+    using LL = long long;
+    const static int N = 55, M = 110, MOD = 1e9 + 7;
+
+    // 有 i 个数，搜索代价为 j ，最大值为 k 的所有方案
+    int f[N][N][M];
+
+    int numOfArrays(int n, int m, int _k) {
+        if (!_k)
             return 0;
-        }
+        // 只有一个数，搜索代价为 1 的方案
+        memset(f, 0, sizeof f);
+        for (int i = 1; i <= m; ++ i )
+            f[1][1][i] = 1;
         
-        memset(f, 0, sizeof(f));
-        // 边界条件，所有长度为 1 的数组的搜索代价都为 1
-        for (int j = 1; j <= m; ++j) {
-            f[1][1][j] = 1;
-        }
-        for (int i = 2; i <= n; ++i) {
-            // 搜索代价不会超过数组长度
-            for (int s = 1; s <= k && s <= i; ++s) {
-                // 前缀和
-                int presum_j = 0;
-                for (int j = 1; j <= m; ++j) {
-                    f[i][s][j] = (long long)f[i - 1][s][j] * j % mod;
-                    f[i][s][j] = (f[i][s][j] + presum_j) % mod;
-                    presum_j = (presum_j + f[i - 1][s - 1][j]) % mod;
+        // i: 数的个数
+        for (int i = 2; i <= n; ++ i )
+            // j: 搜索代价
+            for (int j = 1; j <= _k && j <= i; ++ j ) {
+                // 优化代码:
+                int sum = 0;
+
+                // k: 最大值
+                for (int k = 1; k <= m; ++ k ) {
+                    // 1. 最大值出现在前 i - 1 个元素中，则数组末尾的元素可以从 1 到 k 中随便取
+                    f[i][j][k] = (LL)f[i - 1][j][k] * k % MOD;
+                    // 2. 最大值出现在数组末尾，则此前搜索代价为 j - 1
+                    // for (int x = 0; x < k; ++ x )
+                    //     f[i][j][k] = ((LL)f[i][j][k] + f[i - 1][j - 1][x]) % MOD;
+                    // 优化代码:
+                    f[i][j][k] = ((LL)f[i][j][k] + sum) % MOD;
+                    sum = (sum + f[i - 1][j - 1][k]) % MOD;
                 }
             }
-        }
-
-        // 最终的答案是所有 f[n][k][..] 的和
-        // 即数组长度为 n，搜索代价为 k，最大值任意
-        int ans = 0;
-        for (int j = 1; j <= m; ++j) {
-            ans += f[n][k][j];
-            ans %= mod;
-        }
-        return ans;
+        
+        int res = 0;
+        for (int i = 1; i <= m; ++ i )
+            res = (res + f[n][_k][i]) % MOD;
+        return res;
     }
 };
 ```
@@ -3079,7 +3188,9 @@ public:
 
 > [!TIP] **思路**
 > 
-> dp+组合数
+> dp + 组合数
+> 
+> [题解](https://leetcode-cn.com/problems/probability-of-a-two-boxes-having-the-same-number-of-distinct-balls/solution/cdong-tai-gui-hua-bi-sai-de-shi-hou-bei-fan-yi-ken/)
 > 
 > 重复做 todo
 

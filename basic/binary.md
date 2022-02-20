@@ -898,6 +898,108 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2080. 区间内查询数字的频率](https://leetcode-cn.com/problems/range-frequency-queries/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典二分应用，【二分下标】
+> 
+> 注意加引用
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class RangeFreqQuery {
+public:
+    const static int N = 10010;
+    
+    vector<int> vs[N];
+    
+    RangeFreqQuery(vector<int>& arr) {
+        for (int i = 0; i < N; ++ i )
+            vs[i].clear();
+        
+        int n = arr.size();
+        for (int i = 0; i < n; ++ i )
+            vs[arr[i]].push_back(i);
+    }
+    
+    int query(int left, int right, int value) {
+        auto & ve = vs[value];
+        auto l = lower_bound(ve.begin(), ve.end(), left);
+        auto r = lower_bound(ve.begin(), ve.end(), right + 1);
+        return r - l;
+    }
+};
+
+/**
+ * Your RangeFreqQuery object will be instantiated and called as such:
+ * RangeFreqQuery* obj = new RangeFreqQuery(arr);
+ * int param_1 = obj->query(left,right,value);
+ */
+```
+
+##### **C++ 并不关键的简单优化**
+
+```cpp
+class RangeFreqQuery {
+public:
+    const static int N = 10010;
+    
+    vector<int> vs[N];
+    
+    RangeFreqQuery(vector<int>& arr) {
+        for (int i = 0; i < N; ++ i )
+            vs[i].clear();
+        
+        int n = arr.size();
+        for (int i = 0; i < n; ++ i )
+            vs[arr[i]].push_back(i);
+    }
+    
+    int query(int left, int right, int value) {
+        auto & ve = vs[value];
+        if (ve.empty())
+            return 0;
+        vector<int>::iterator l, r;
+        if (left <= ve.front())
+            l = ve.begin();
+        else
+            l = lower_bound(ve.begin(), ve.end(), left);
+        if (right >= ve.back())
+            r = ve.end();
+        else
+            r = lower_bound(ve.begin(), ve.end(), right + 1);
+        return r - l;
+    }
+};
+
+/**
+ * Your RangeFreqQuery object will be instantiated and called as such:
+ * RangeFreqQuery* obj = new RangeFreqQuery(arr);
+ * int param_1 = obj->query(left,right,value);
+ */
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 二分答案
 
 > [!NOTE] **[LeetCode 410. 分割数组的最大值](https://leetcode-cn.com/problems/split-array-largest-sum/)**
