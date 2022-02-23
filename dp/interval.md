@@ -1061,6 +1061,8 @@ public:
 > **区间dp进阶 重复做**
 > 
 > **有一个更好的解法**
+> 
+> trick ==> **左右区间并非简单的 `i/j` 而是队列里的头和尾**
 
 <details>
 <summary>详细代码</summary>
@@ -1205,7 +1207,11 @@ public:
 
 > [!TIP] **思路**
 > 
-> dp 解释参考 [题解](https://leetcode-cn.com/problems/string-compression-ii/solution/dong-tai-gui-hua-shi-jian-on3kong-jian-on2-by-newh/)
+> dp 解释参考 [题解](https://leetcode-cn.com/problems/string-compression-ii/solution/zhuan-zai-dp-by-mike-meng/)
+> 
+> 状态定义 十分十分 trick 的状态转移与推理 ==> `前 i 个字符中最多选择 j 个字符进行删除`
+> 
+> 非常经典 细节居多 反复做
 
 <details>
 <summary>详细代码</summary>
@@ -1223,7 +1229,9 @@ public:
         dp[0][0] = 0;
         for (int i = 1; i <= n; i++) {
             for (int j = 1; j <= k + 1; j++) {
+                // 1. 删除字符 i
                 dp[i][j] = min(dp[i][j], dp[i - 1][j - 1]);
+                // 2. 保留字符 i , 后续尽量选择保留与字符 i 相同的字符 ==> trick
                 int cnt = 0, del = 0;
                 for (int l = i; l <= n; l++) {
                     cnt += s[l - 1] == s[i - 1];
@@ -1263,6 +1271,8 @@ public:
 > [!TIP] **思路**
 > 
 > $f[l][r]$ 表示左侧使用 l 个右侧使用 r 个的分数 与传统区间 dp 定义略有不同
+> 
+> 类似状压递推的**状态转移思想** 十分经典
 
 <details>
 <summary>详细代码</summary>
@@ -1289,6 +1299,7 @@ public:
         for (int len = 1; len <= m; ++ len )
             for (int l = 1; l < len; ++ l ) {
                 int r = len - l;
+                // ATTENTION
                 f[l][r] = max(f[l - 1][r] + nums[l - 1] * mp[len - 1], f[l][r - 1] + nums[n - r] * mp[len - 1]);
             }
         int res = INT_MIN;
@@ -1520,128 +1531,6 @@ public:
 * * *
 
 ### 进阶
-
-> [!NOTE] **[LeetCode 546 移除盒子](https://github.com/OpenKikCoc/LeetCode/blob/master/0501-0600/0546/README.md)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> [acwing 题解](https://www.acwing.com/solution/content/6168/)
-> 
-> 区间DP进阶。基础版的问题为：最少需要多少次操作（操作的规则一样）能删除掉所有的盒子。
-> 
-> TODO 重复做
-
-
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-class Solution {
-public:
-    const static int N = 110;
-
-    // f[i][j][k] 所有将区间 [i, j] 清空，且最后删除i，且最后删除时的长度为k的最大取值
-    // g[i][j] = max(f[i][j][0], f[i][j][1] ... f[i][j][k])
-    int f[N][N][N], g[N][N];
-
-    int removeBoxes(vector<int>& boxes) {
-        int n = boxes.size();
-        memset(f, 0xcf, sizeof f);
-        memset(g, 0xcf, sizeof g);
-
-        for (int len = 1; len <= n; ++ len )
-            for (int l = 0; l + len - 1 < n; ++ l ) {
-                int r = l + len - 1;
-                for (int k = 1; k <= len; ++ k ) {
-                    if (len == 1)
-                        f[l][r][k] = 1;
-                    else if (k == 1)
-                        f[l][r][k] = 1 + g[l + 1][r];
-                    else
-                        // 枚举时因为 l 总是第一个被删除的数
-                        // 因此不同点设置为【第二个会被删除的数】并以其作为 u 
-                        // 此时 总取值为
-                        //   `l`    +     `range_l`       +  `u as the beginning of range_r`
-                        //   `l`    +  `g[l + 1][u - 1]`  +  `f[u][r][k - 1]`
-                        // 又因为最终删除时 l 与 range_r 一体
-                        //      其价值为 f[u][r][k-1] - (k-1)*(k-1) + k*k 【思考】
-                        // 综上有以下代码实现
-                        for (int u = l + 1; u <= r - k + 2; ++ u ) {
-                            if (boxes[u] != boxes[l])
-                                continue;
-                            int t = 0;
-                            if (l + 1 <= u - 1)
-                                t = g[l + 1][u - 1];
-                            f[l][r][k] = max(f[l][r][k], t + f[u][r][k - 1] - (k - 1) * (k - 1) + k * k);
-                        }
-                    g[l][r] = max(g[l][r], f[l][r][k]);
-                }
-            }
-        return g[0][n - 1];
-    }
-};
-```
-
-##### **C++ 新理解**
-
-```cpp
-class Solution {
-public:
-    const static int N = 110;
-
-    int f[N][N][N], g[N][N];
-
-    int removeBoxes(vector<int>& boxes) {
-        int n = boxes.size();
-        memset(f, 0xcf, sizeof f);
-        memset(g, 0xcf, sizeof g);
-
-        for (int i = 0; i < n; ++ i )
-            g[i][i] = f[i][i][1] = 1;
-
-        for (int len = 2; len <= n; ++ len )
-            for (int l = 0; l + len - 1 < n; ++ l ) {
-                int r = l + len - 1;
-                for (int k = 1; k <= len; ++ k ) {
-                    if (k == 1)
-                        f[l][r][k] = 1 + g[l + 1][r];
-                    else
-                        // u 可以取到最右侧时为 u + （k - 1) - 1 == r
-                        // 也即 u == r - (k - 1) + 1
-                        for (int u = l + 1; u <= r - (k - 1) + 1; ++ u ) {
-                            if (boxes[u] != boxes[l])
-                                continue;
-                            int t = 0;
-                            if (l + 1 <= u - 1)
-                                t = g[l + 1][u - 1];
-                            f[l][r][k] = max(f[l][r][k], t + f[u][r][k - 1] - (k - 1) * (k - 1) + k * k);
-                        }
-                    g[l][r] = max(g[l][r], f[l][r][k]);
-                }
-            }
-        return g[0][n - 1];
-    }
-};
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
 
 > [!NOTE] **[LeetCode 2019. 解出数学表达式的学生分数](https://leetcode-cn.com/problems/the-score-of-students-solving-math-expression/)**
 > 
@@ -2088,11 +1977,17 @@ public:
 
 > [!TIP] **思路**
 > 
-> 区间dp进阶 状态定义
+> [acwing 题解](https://www.acwing.com/solution/content/6168/)
 > 
-> **使用 g 数组本质是区间 dp 的优化**
+> 区间DP进阶。基础版的问题为：最少需要多少次操作（操作的规则一样）能删除掉所有的盒子。
 > 
-> 重复做
+> 状态定义
+> 
+> **使用 g 数组本质是区间 dp 的优化, 用 g 来辅助记录某个区间限制下的最大值**
+> 
+> **复杂区间 dp** 重复做
+> 
+> **经典优化 TODO 待集中整理**
 
 <details>
 <summary>详细代码</summary>
@@ -2130,6 +2025,7 @@ public:
                             int t = 0;
                             if (l + 1 <= u - 1)
                                 t = g[l + 1][u - 1];
+                            // ATTENTION: (k-1)^2 是相当于不删 u~r 的部分 而删 i 连上 u~r 的部分
                             f[l][r][k] = max(f[l][r][k], t + f[u][r][k - 1] - (k - 1) * (k - 1) + k * k);
                         }
                     g[l][r] = max(g[l][r], f[l][r][k]);
@@ -2255,6 +2151,10 @@ public:
 > - 区间DP基础上 + 记忆化 ==> AC
 > 
 > - 优化写法: [考虑不用记忆化搜索的优化](https://leetcode-cn.com/problems/stone-game-v/solution/on2dong-tai-gui-hua-jie-fa-by-huangyuyang/) ==> AC
+> 
+> **非常经典的优化（题目条件每个数都是正数 且本题特殊条件说明左右区间比大小 显然可以预处理）**
+> 
+> **TODO 集中整理**
 
 <details>
 <summary>详细代码</summary>

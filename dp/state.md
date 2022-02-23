@@ -1,3 +1,30 @@
+> [!TIP] **经典递推优化**
+>
+> **经典线性优化 状压递推复杂度 $O(n^2)$ -> $O(n)$**
+> 
+> 例: **[LeetCode 1723. 完成所有工作的最短时间](https://leetcode-cn.com/problems/find-minimum-time-to-finish-all-jobs/)**
+>
+> ```cpp
+> // 写法1
+> // 【学习记忆 这种写法更好】
+> for (int i = 1; i < (1 << n); ++ i ) {
+>     // o = 最右侧0的数量
+>     int o = __builtin_ctz(i & (-i));
+>     tot[i] = tot[i ^ (i & (-i))] + jobs[o];
+> }
+>         
+> // 写法2
+> for (int i = 1; i < (1 << n); ++ i )
+>     for (int j = 0; j < n; ++ j )
+>         if ((i & (1 << j))) {
+>             int left = i - (1 << j);
+>             tot[i] = tot[left] + jobs[j];
+>             break;
+>         }
+> ```
+>
+> 
+
 ## 例题
 
 > [!NOTE] **[「SCOI2005」互不侵犯](https://loj.ac/problem/2153)**
@@ -1897,7 +1924,11 @@ public:
 
 > [!TIP] **思路**
 > 
+> TODO
 > 
+> > 经典的 “重复覆盖问题”，即给定01矩阵，要求选择尽量少的行，将所有列覆盖住。这里标准做法是使用 Dancing Links。
+> > 
+> > 但由于 n<=18 ，因此可以直接使用状态压缩DP求解，代码更简单。
 
 <details>
 <summary>详细代码</summary>
@@ -2152,7 +2183,9 @@ int main() {
 
 > [!TIP] **思路**
 > 
+> TODO
 > 
+> 实现细节
 
 <details>
 <summary>详细代码</summary>
@@ -2313,11 +2346,9 @@ public:
 ##### **C++ 状压**
 
 ```cpp
-#define N 15
-#define M 50
-
 class Solution {
 private:
+    const static int N = 15, M = 50, INF = 0x3f3f3f3f;
     int f[1 << N], seen[M][26];
 
 public:
@@ -2333,27 +2364,25 @@ public:
             if (!pos[c].empty())
                 used.push_back(c);
 
-        const int m = stickers.size();
-        const int INF = 1000000000;
-
+        int m = stickers.size();
         for (int i = 0; i < m; i ++ ) {
             memset(seen[i], 0, sizeof(seen[i]));
             for (char c : stickers[i])
                 seen[i][c - 'a'] ++ ;
         }
 
-        for (int s = 1; s < (1 << n); s ++ )
-            f[s] = INF;
-
+        memset(f, 0x3f, sizeof f);
         f[0] = 0;
-
         for (int s = 0; s < (1 << n) - 1; s ++ ) {
-            if (f[s] == INF) continue;
+            if (f[s] > INF / 2) continue;
 
+            // 枚举再选某一个字符串
             for (int i = 0; i < m; i ++ ) {
                 int t = s;
+                // 只关注有用的字符
                 for (char c : used)
                     for (int j = 0, k = 0; j < pos[c].size() && k < seen[i][c]; j ++ , k ++ )
+                        // 已有 不需要消耗 k --
                         if ((s >> pos[c][j]) & 1) k -- ;
                         else t |= 1 << pos[c][j];
 
@@ -2361,7 +2390,7 @@ public:
             }
         }
 
-        if (f[(1 << n) - 1] == INF)
+        if (f[(1 << n) - 1] > INF / 2)
             return -1;
 
         return f[(1 << n) - 1];
@@ -2463,6 +2492,8 @@ public:
 > 爆搜优化即可 [斯特林数 TODO](https://www.acwing.com/problem/content/3169/)
 > 
 > 赛榜有 DP 做法学习下
+> 
+> **经典线性优化 状压递推复杂度 $O(n^2)$ -> $O(n)$**
 
 <details>
 <summary>详细代码</summary>
@@ -2705,121 +2736,9 @@ public:
 
 ### 三进制状压
 
+**TODO: 多进制统一整理代码风格 fix**
+
 对于三进制的状态压缩题目，可以考虑使用 `limit << 1` 的形式也可以使用 `pow(3, M)` 的形式
-
-> [!NOTE] **[LeetCode 1659. 最大化网格幸福感](https://leetcode-cn.com/problems/maximize-grid-happiness/)**
-> 
-> [weekly-215](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2020-11-15_Weekly-215)
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> m 行 n 列的网格，选一部分人放进去。n 列的状态可用三进制枚举表述。pow 随后计算递推即可。
-> 
-> 经典题，类似于下面的不同颜色涂色
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-// newhar
-class Solution {
-public:
-    int getMaxGridHappiness(int m, int n, int a, int b) {
-        // 0- 不放人 1-放内向 2-放外向 3^n
-        int cases = pow(3, n);
-        
-        int f[cases][5];
-        memset(f, 0, sizeof(f));
-        for(int i = 0; i < cases; ++i) {
-            for(int t = i, p = 0; t; t /= 3, p++) {
-                f[i][n-1-p] = t % 3;
-            }
-        }
-        
-        int M = cases - 1;
-        int dp[m+1][n][a+1][b+1][cases];
-        memset(dp, 0, sizeof(dp));
-        
-        for(int i = m-1; i >= 0; --i) {
-            for(int j = n-1; j >= 0; --j) {
-                int nei = i, nej = j + 1;
-                if(j == n) {
-                    nei = i + 1, nej = 0;
-                }
-                for(int x = 0; x <= a; ++x) {
-                    for(int y = 0; y <= b; ++y) {
-                        for(int pre = 0; pre < cases; ++pre) {
-                            int nem = (pre * 3) % cases;
-                            if(x > 0) {
-                                int diff = 120;
-                                if(j != 0 && f[pre][n-1] == 1) {
-                                    diff -= 30;
-                                    diff -= 30;
-                                }
-                                if(j != 0 && f[pre][n-1] == 2) {
-                                    diff += 20;
-                                    diff -= 30;
-                                }
-                                if(f[pre][0] == 1) {
-                                    diff -= 30;
-                                    diff -= 30;
-                                }
-                                if(f[pre][0] == 2) {
-                                    diff += 20;
-                                    diff -= 30;
-                                }
-                                //cout << "1:" << i << ',' << j << ',' << x << ',' << y << ',' << f[pre][0] << ',' << f[pre][1] << ',' << diff << endl;
-                                dp[i][j][x][y][pre] = max(dp[i][j][x][y][pre], diff + dp[nei][nej][x-1][y][nem + 1]);
-                            }
-                            if(y > 0) {
-                                int diff = 40;
-                                if(j != 0 && f[pre][n-1] == 1) {
-                                    diff -= 30;
-                                    diff += 20;
-                                }
-                                if(j != 0 && f[pre][n-1] == 2) {
-                                    diff += 20;
-                                    diff += 20;
-                                }
-                                if(f[pre][0] == 1) {
-                                    diff -= 30;
-                                    diff += 20;
-                                }
-                                if(f[pre][0] == 2) {
-                                    diff += 20;
-                                    diff += 20;
-                                }
-                                //cout << "2:" << i << ',' << j << ',' << x << ',' << y << ',' << pre << ',' << diff << endl;
-                                dp[i][j][x][y][pre] = max(dp[i][j][x][y][pre], diff + dp[nei][nej][x][y-1][nem + 2]);
-                            }
-                            dp[i][j][x][y][pre] = max(dp[i][j][x][y][pre], dp[nei][nej][x][y][nem]);
-                        }
-                    }
-                }
-            }
-        }
-        return dp[0][0][a][b][0];
-    }
-};
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
 
 > [!NOTE] **[LeetCode 1774. 最接近目标价格的甜点成本](https://leetcode-cn.com/problems/closest-dessert-cost/)**
 > 
@@ -3003,9 +2922,15 @@ public:
 
 > [!NOTE] **[LeetCode 1659. 最大化网格幸福感](https://leetcode-cn.com/problems/maximize-grid-happiness/)** [TAG]
 > 
+> [weekly-215](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2020-11-15_Weekly-215)
+> 
 > 题意: TODO
 
 > [!TIP] **思路**
+> 
+> m 行 n 列的网格，选一部分人放进去。n 列的状态可用三进制枚举表述。pow 随后计算递推即可。
+> 
+> 经典题，类似于下面的不同颜色涂色
 > 
 > 单个位置三进制表示
 > 

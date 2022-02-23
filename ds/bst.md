@@ -1112,7 +1112,7 @@ public:
 
 - 先序
 
-  ```c++
+  ```cpp
   // [144. 二叉树的前序遍历](https://leetcode-cn.com/problems/binary-tree-preorder-traversal/)
   class Solution {
   public:
@@ -1149,7 +1149,7 @@ public:
 
 - 中序
 
-  ```c++
+  ```cpp
           while (cur) {
               if (cur->left) {
                   auto p = cur->left;
@@ -1172,7 +1172,7 @@ public:
 
 - 后序
 
-  ```c++
+  ```cpp
   class Solution {
   public:
       vector<int> res;
@@ -1219,7 +1219,7 @@ public:
 
   `printNode` 可以同样规避对数组的使用：
 
-  ```c++
+  ```cpp
       TreeNode * reverseEdge(TreeNode * node) {
           TreeNode * pre = nullptr, * cur = node;
           while (cur) {
