@@ -452,11 +452,15 @@ class Solution:
 > 搜索 剪枝 重复
 >
 > 1. 先求出数组的总和，如果总和不是 k 的倍数，则直接返回 false。
-> 2. 求出子集和的目标值，如果数组中有数字大于这个子集和目标值，则返回 false。
-> 3. 将数组 从大到小 排序。贪心地来看，先安排大的数字会更容易先找到答案，这是因为小的数字再后期更加灵活。
+> 2. 求出子集和的目标值后，如果数组中有数字大于这个子集和目标值，则返回 false。
+> 3. 先去搜索第一组，再搜索第二组，以此类推。那么，组内如何搜索呢？很明显，组内的顺序是不影响总和的，所以组内是按照顺序来搜的，相对顺序不变来进行搜索的。
+> 3. 第一个优化点：【将数组 从大到小 排序】。贪心地来看，先安排大的数字会更容易先找到答案，这是因为小的数字再后期更加灵活。
+> 3. 第二个剪枝优化点：如果当前搜索的数 nums[i] == nums[i-1], 并且用 nums[i] 失败了，那么用 nums[i-1] 也一定失败。
+> 3. 第三个剪枝：如果当前组第一个数失败了，那么后面一定无解。（trick 认真思考）
+> 3. 第四个剪枝：如果当前组最后一个数失败了，那么也一定失败。（trick 认真思考）
 > 4. 我们按照子集去递归填充，即维护一个当前总和 cur，如果当前值等于了目标值，则进行下一个子集的填充。最终，如果只剩下一个子集尚未填充（无需 0 个），则可以直接返回 true。
 > 5. 还需要同时维护一个 start，即表示当前这个子集，需要从数组的哪个位置开始尝试。
-> 6. 这里还有一个非常重要的策略，就是如果当前总和 cur 为 0 时，我们直接指定第一个未被使用的数字作为当前这个子集的第一个数字（最大的数字）。这是防止重复枚举，因为第一个未被使用的数字一定要出现在某个子集中。否则，如果我们最终没有使用这个数字，在尝试下一个集合时，还会重复尝试使用这个数字，造成大量重复计算。
+> 6. 这里还有一个非常重要的策略，就是如果当前总和 cur 为 0 时，我们直接指定第一个未被使用的数字作为当前这个子集的第一个数字（最大的数字）。这是防止重复枚举，因为第一个未被使用的数字一定要出现在某个子集中。否则，如果我们最终没有使用这个数字，在尝试下一个集合时，还会重复尝试使用这个数字，造成大量重复计算。（相当于是第三 第四个剪枝）
 
 <details>
 <summary>详细代码</summary>
@@ -503,7 +507,34 @@ public:
 ##### **Python**
 
 ```python
+class Solution:
+    def canPartitionKSubsets(self, nums: List[int], k: int) -> bool:
+        def dfs(start, cur, k):
+            if k == 0:
+                return True
+            if cur == avg:
+                return dfs(0, 0, k - 1)
+            for i in range(start, len(nums)):
+                if st[i]:continue
+                if cur + nums[i] <= avg:
+                    st[i] = True
+                    if dfs(i + 1, cur + nums[i], k):
+                        return True 
+                    st[i] = False
+                # 对应第二个剪枝
+                while i + 1 < len(nums) and nums[i + 1] == nums[i]:
+                    i += 1
+                # 对应第三个 第四个剪枝
+                if not cur or (cur + nums[i] == avg):
+                    return False
 
+        nums.sort(reverse = True)
+        st = [False] * 20
+        sumn = sum(nums)
+        if sumn % k != 0:
+            return False
+        avg = sumn // k
+        return dfs(0, 0, k)
 ```
 
 <!-- tabs:end -->
@@ -591,7 +622,7 @@ class Solution:
                     path.append(nums[i])
                     dfs(path)
                     path.pop()
-                    used[i] = False
+                    used[i] = False  # 回溯：还原现场
         
         dfs([])
         return res
@@ -671,7 +702,7 @@ class Solution:
                 return 
             for i in range(n):
                 if not used[i]:
-                    if i > 0 and nums[i] == nums[i - 1] and not used[i - 1]:continue # 踩坑2: not used[i-1] !!! 
+                    if i > 0 and nums[i] == nums[i - 1] and not used[i - 1]:continue # 踩坑2: not used[i-1] 和 used[i-1] 都可以，但是 not used[i-1] 在常数级别下会更快!!! 
                     used[i] = True
                     path.append(nums[i])
                     dfs(path)
@@ -737,12 +768,12 @@ public:
 
 ```python
 class Solution:
-    def letterCasePermutation(self, S: str) -> List[str]:
+    def letterCasePermutation(self, s: str) -> List[str]:
         res = []
         def dfs(path, s):
             if not s:
                 res.append(path)
-                return  #一定要有return, 不然会继续执行下一行，导致list out of range
+                return #一定要有 return, 不然会继续执行下一行，导致list out of range
             c = s[0]
             if c.isalpha():
                 dfs(path + c.lower(), s[1:])
@@ -751,7 +782,7 @@ class Solution:
                 dfs(path + c, s[1:])
         
         # 可以直接用字符串这个数据结构；也可以用 list，会比字符串效率要高
-        dfs('', S)
+        dfs('', s)
         return res
 ```
 
@@ -770,7 +801,7 @@ class Solution:
 
 > [!TIP] **思路**
 >
-> 这道题其实是子集类型的题。实际上是求由1 ~ n的数字组成集合的子集，并且子集的个数刚好是k的所有子集方案。
+> 这道题其实是子集类型的题。实际上是求由1 ~ n的数字组成集合的子集，并且子集的个数刚好是 k 的所有子集方案。
 >
 > 从 1 到 n 依次枚举加入（递增加入，不需要判重），当路径里的个数等于 k 时，就可以把当前路径加入到 res 中（记得回溯）
 
@@ -822,7 +853,7 @@ class Solution:
                 # 踩坑：需要在循环里把当前数加入到 path 中，否则组合就是必须从第一个数字开始组合
                 path.append(u)   
                 dfs(path, u + 1)
-                path.pop()
+                path.pop()  
 
         dfs([], 1)
         return res
@@ -844,7 +875,7 @@ class Solution:
 > 1. 先对原数组排序，方便后续剪枝（当  nums[k] > target的时，不符合条件，可以直接 return）
 > 2. 从前往后枚举数组，由于可以重复添加，所以每次递归都可以从当前数添加，同时将当前 target 值减 nums[i]
 > 3. 递归的出口是：target == 0 时候，递归结束；还有一个是当 nums[i] > target，也直接 return
-> 4. 避免重复：对于这一类可以以 **任意顺序**  返回结果（类似于集合不计顺序）的问题，在搜索的时候就需要 **按某种顺序搜索**，才可以避免重复。具体的做法是：只要限制下一次选择的起点，是基于本次的选择，这样下一次就不会选到本次选择同层左边的数。也就是：通过控制 for 遍历的起点，去掉会产生重复组合的选项。
+> 4. 【注意】避免重复：对于这一类可以以 **任意顺序**  返回结果（类似于集合不计顺序）的问题，在搜索的时候就需要 **按某种顺序搜索**，才可以避免重复。具体的做法是：只要限制下一次选择的起点，是基于本次的选择，这样下一次就不会选到本次选择同层左边的数。也就是：通过控制 for 遍历的起点，去掉会产生重复组合的选项。
 
 <details>
 <summary>详细代码</summary>
@@ -937,17 +968,18 @@ class Solution:
 """      
 
   def dfs(idx, path, target):
-            if nums[idx] > target:return 
-            path.append(nums[idx])
-            target -= nums[idx]
-            if target == 0:
-                res.append(path[:])
-                return 
-            for k in range(idx, n):
-                dfs(k, path, target)
-                path.pop()
-        dfs(0, [], target)
-        return res
+    	if nums[idx] > target:
+        	return 
+      path.append(nums[idx])
+      target -= nums[idx]
+			if target == 0:
+        	res.append(path[:])
+          return 
+      for k in range(idx, n):
+          dfs(k, path, target)
+          path.pop()
+      dfs(0, [], target)
+      return res
 ```
 
  
@@ -967,7 +999,7 @@ class Solution:
 >
 > 和  **[LeetCode 39. 组合总和](https://leetcode-cn.com/problems/combination-sum/)** 思路类似，不同点在于：
 >
-> 1. 递归出口规则稍微有点不同：这道题是 个数 == k
+> 1. 递归出口规则稍微有点不同：这道题要求每种组合的个数 == k
 > 2. 这道题不允许有重复数字，所以在进行本层递归的下一次添加数字，要从 u + 1 开始
 
 <details>
@@ -1035,13 +1067,20 @@ class Solution:
 
 > [!TIP] **思路**
 >
-> 本题用 DFS 会超时。这其实是一道经典的 dp 完全背包问题。
+> 本题用 DFS 会超时。(背包问题一般都是不考虑顺序的) 但这道题不考虑顺序，所以不能用背包问题的思路来解决。
 >
-> 转换一下题意就是：每个数字可以用无数次，不区分先后顺序。
+> 1. 状态表示：f[i] 表示总和为 i 的所有划分方案的集合(有多少个数字无所谓)；属性：数量
 >
-> 1. f[i]：表示总和为i的所有方案(有多少个数字无所谓)
-> 2. 状态转移计算：以最后一个数的数值为转移，最后一个数可以是[nums[0],num[1],nums[2],..nums[k],...,nums[n-1]]
-> 3. 当最后一个数是nums[k], f[i] = f[i-nums[k]]
+> 2. 状态转移：dp 一般是把一个集合划分为若干个子集。
+>
+>    - 划分方式：以最后一个数的数值为划分转移，最后一个数可以是[nums[1],num[2],nums[3],..., nums[k],...,nums[n]]（这样划分方式，是不重不漏）
+>
+>    - 当最后一个数都是nums[k], 那不同的划分方案数量取决于除去最后一个数 nums[k] 后， 前面那些数的划分方案数量，相当于是求解 i - nums[k] 的划分数量。所以表达式为：
+>
+>       f[i] = f[i-nums[k]]
+>
+> 3. 初始化：当 target == 0，只有一种划分方案，就是空集。所以f[0] = 1
+>
 > 4. 由于nums[k] > 0, 所以从小到大循环遍历就可以算出来了。
 
 <details>
@@ -1090,19 +1129,26 @@ public:
 #法一：用dfs，会超时
 class Solution:
     def combinationSum4(self, nums: List[int], target: int) -> int:
-        self.ans=0
+        self.res = 0
+        res = []
+        n = len(nums)
         nums.sort()
 
-        def dfs(index, target):
+        def dfs(path, target):
             if target == 0:
-                self.ans += 1             
-            for i in range(len(nums)):
+                res.append(path[:])
+                self.res += 1
+                return
+            # 由于不同顺序也算不同的答案，所以这里不需要用 k 来遍历保证无重复
+            for i in range(n):
                 if nums[i] > target:
-                    return
-                dfs(i, target - nums[i])
-                
-        dfs(0,target)
-        return self.ans
+                    return 
+                path.append(nums[i])
+                dfs(path, target - nums[i])
+        
+        dfs([], target)
+        print(res)
+        return self.res
 ```
 
 **Python dp**
@@ -1113,11 +1159,11 @@ class Solution:
         n = len(nums)
         if n == 0 or target <= 0:return 0
         f = [0 for _ in range(target + 1)]
-        f[0] = 1
+        f[0] = 1  # 初始化
         for i in range(1, target + 1):
-            for j in range(n):
-                if i >= nums[j]:
-                    f[i] += f[i - nums[j]]
+            for x in nums:
+                if i >= x:
+                    f[i] += f[i - x]
         return f[target]
 ```
 
@@ -1137,8 +1183,13 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> 递归，自顶向下从根节点往叶节点走，每走过一个节点，就让 sum 减去该节点的值，则如果走到某个叶节点时，sum 恰好为0，则说明从根节点到这个叶节点的路径上的数的和等于 sum。
+> 只要找到一条满足要求的路径，递归即可返回。
+>
+> **时间复杂度**
+>
+> 每个节点仅被遍历一次，且递归过程中维护 sum 的时间复杂度是 O(1)，所以总时间复杂度是 O(n)。
 
 <details>
 <summary>详细代码</summary>
@@ -1162,7 +1213,7 @@ public:
 ```python
 class Solution:
     def hasPathSum(self, root: TreeNode, sum: int) -> bool:
-        if not root:return False   # 即使root.left不存在，也会返回false；所以不需要写if root.left 这个判断
+        if not root:return False  
         if not root.left and not root.right:return root.val == sum 
         return self.hasPathSum(root.left, sum - root.val) or  self.hasPathSum(root.right, sum - root.val)   
 ```
@@ -1180,7 +1231,7 @@ class Solution:
 
 > [!TIP] **思路**
 > 
-> 
+> 这道题目和  **[LeetCode 112. 路径总和](https://leetcode-cn.com/problems/path-sum/)** 基本一样，不同点在于需要把**所有路径**记录下来。
 
 <details>
 <summary>详细代码</summary>
@@ -1244,8 +1295,13 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> 1. 递归遍历整棵树，递归时维护从每个节点开始往下延伸的最大路径和
+>
+> 2. 对于每个点，递归计算其左右子树后，我们将左右子树维护的两条最大路径，和当前结点的值加起来，就可以得到当前点的最大路径和
+> 3. 计算出所有点的最大路径和，求个最大的返回即可。
+>
+> **时间复杂度**：每个节点仅会遍历一次，所以时间复杂度是 O(n)。
 
 <details>
 <summary>详细代码</summary>
@@ -1301,8 +1357,15 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> （暴力做法）最坏的做法就是把所有的数全部转化为 string，再对 string 排序。
+>
+> Trie 树：一般字符串用 Trie 排序，时间复杂度可以少 log(n)
+>
+> 1. 用一个 Trie 树表示所有数字，如果当前数是在 1～n 范围内，就插入答案中（由于表示了所有数，所以没必要真的模拟一个 Trie 数并插入）
+> 2. 在 Trie 中搜索，遍历的顺序按照：根，0子树，1子树，2子树...，就可以保证当前字典序是递增
+
+
 
 <details>
 <summary>详细代码</summary>
@@ -1350,7 +1413,18 @@ public:
 ##### **Python**
 
 ```python
-
+class Solution:
+    def lexicalOrder(self, n: int) -> List[int]:
+      	res=[]
+        def dfs(cur,n):
+            if cur <= n: res.append(cur)
+            else: return
+            for i in range(10):
+                dfs(10 * cur + i, n)
+  
+        for i in range(1, 10):
+            dfs(i, n)
+        return res
 ```
 
 <!-- tabs:end -->

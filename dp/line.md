@@ -2913,13 +2913,23 @@ public:
 > 题意: TODO
 
 > [!TIP] **思路**
+>
+> 1. 状态表示：`f[i][j]`表示走 i 步，在坐标为 j 时的总方案数；属性：数量。最后求的是 `f[i][0]`
+>
+> 2. 状态转移：最后一步为划分：1）第 i-1 步是在坐标 j 的位置 2） 第 i-1 步是在坐标 j-1 的位置 3） 第 i-1 步是在坐标 j+1 的位置
+>
+>    `f[i][j] = f[i - 1][j] + f[i - ][j] + f[i - 1][j + 1]` 
+>
+> 3. 初始状态：`f[0][0] = 1  `，其他的都初始化为 0
+>
 > 
+>
 > 组合数 其中左右边界限制约束组合数计算
-> 
+>
 > 直接dp
-> 
+>
 > 压掉一维：
-> 
+>
 > > 当 `f[i][j] = f[i - 1][j] + f[i - ][j] + f[i - 1][j + 1]` 的形式时 
 > > 
 > > 【形式可能略微有所变动，但基本是本维依赖上一维度，且依赖上一维度某个循环更新顺序】
@@ -2950,7 +2960,7 @@ public:
 > >     f[j] = (f[j] + t + f[j + 1]) % MOD;
 > > }
 > > ```
-> 
+>
 > **经典优化 待归类整理**
 
 <details>
@@ -3054,8 +3064,44 @@ class Solution {
 ##### **Python**
 
 ```python
-
+# 不优化会超出时间限制
+class Solution:
+    def numWays(self, steps: int, arrLen: int) -> int:
+        mod = int(1e9 + 7 )
+        f = [[0] * (arrLen + 1) for _ in range(steps + 1)]
+        f[0][0] = 1
+        longest = min(steps, arrLen - 1)
+        for i in range(1, steps + 1):
+            for j in range(longest + 1):
+                f[i][j] = f[i-1][j]
+                if (j > 0):
+                    f[i][j] = (f[i][j] + f[i - 1][j - 1]) % mod
+                if (j < longest):
+                    f[i][j] = (f[i][j] + f[i - 1][j + 1]) % mod
+        return f[steps][0]
 ```
+
+##### Python 优化
+
+```python
+class Solution:
+    def numWays(self, steps: int, arrLen: int) -> int:
+        mod = int(1e9 + 7)
+        longest = min(steps, arrLen - 1)
+        f = [0] * (longest + 1 + 1) 
+        f[0] = 1
+        for i in range(1, steps + 1):
+            t = 0
+            for j in range(longest + 1):
+                tt = f[j]
+                f[j] = (f[j] + t + f[j + 1]) % mod
+                t = tt 
+        return f[0]
+```
+
+
+
+
 
 <!-- tabs:end -->
 </details>
