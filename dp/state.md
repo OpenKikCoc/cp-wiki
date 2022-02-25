@@ -1,4 +1,4 @@
-> [!TIP] **经典递推优化**
+> [!NOTE] **经典递推优化**
 >
 > **经典线性优化 状压递推复杂度 $O(n^2)$ -> $O(n)$**
 > 
@@ -23,7 +23,43 @@
 >         }
 > ```
 >
+
+> [!NOTE] **枚举子集**
 > 
+> **部分情况下**：有时我们只需枚举子集的一半
+> 
+> 因为另一半可以通过 `^` 得到，枚举全集相对于有一半的重复计算
+> 
+> ```cpp
+> for (int i = 0; i < 1 << n; ++ i ) {
+>     // 枚举i的一半 240ms
+>     int t = i & (i - 1);
+>     for (int j = t; j; j = (j - 1) & i)
+>         res = max(res, get(j) * get(i ^ j));
+> 
+>         // 枚举全局  时间多一点点 差别不大
+>         // for (int j = i; j; j = (j - 1) & i)
+>         //    res = max(res, get(j) * get(i ^ j));
+>     }
+> }
+> ```
+
+> [!NOTE] **子集递推计数 去重**
+>
+> **枚举子集时依靠某位bit位将所有子集分为两类，从而实现去重计数**
+>
+> ```cpp
+> for (int i = 1; i < 1 << N; ++ i ) {
+>     int f = i & (-i);  // bit划分
+>     for (int j = i; j; j = (j - 1) & i)
+>         // 去重
+>         if (j & f)
+>             sum[i] = (sum[i] + (LL)cnt[j] * sum[i ^ j]) % MOD;
+> }
+> ```
+
+
+
 
 ## 例题
 
@@ -3307,172 +3343,19 @@ public:
 
 ### 状压 + 枚举子集 + 组合计数
 
-> [!NOTE] **[LeetCode 1994. 好子集的数目](https://leetcode-cn.com/problems/the-number-of-good-subsets/)**
-> 
-> [biweekly-60](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-09-04_Biweekly-60)
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> **枚举子集时依靠某位bit位将所有子集分为两类，从而实现去重计数**
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++ 1**
-
-```cpp
-class Solution {
-public:
-    using LL = long long;
-    const static int N = 10;
-    const int MOD = 1e9 + 7;
-    
-    vector<int> ps = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29};
-    
-    int numberOfGoodSubsets(vector<int>& nums) {
-        vector<int> cnt(1 << N), sum(1 << N);
-        // 1. 求每个数分解得到全素数集合，该全素数集合对应的原始数的个数
-        // 本质上是将原始数组中合法的部分重新统计一遍
-        for (auto x : nums) {
-            int t = 0;
-            for (int i = 0; i < N; ++ i )
-                if (x % ps[i] == 0) {
-                    t |= 1 << i;
-                    // ATTENTION: 如果x包含两个p[i]，必然无效
-                    if (x / ps[i] % ps[i] == 0) {
-                        t = -1;
-                        break;
-                    }
-                }
-        
-            if (t != -1)
-                cnt[t] ++ ;
-        }
-        
-        // 2. 遍历统计
-        // 为什么可以遍历到 1 << N ? 因为按照合法性规则，最多包含ps中所有的元素 即2^10
-        int res = 0;
-        for (int i = 1; i < 1 << N; ++ i ) {
-            // 该集合本身作为一个数
-            sum[i] = cnt[i];
-            // 集合拆分
-            // ATTENTION 思考细节：【为什么实现需找第一个存在位来划分】
-            // 【目的：去重】如果直接用子集去算会有重合部分
-            for (int j = 0; j < N; ++ j )
-                if (i >> j & 1) {
-                    int k = i ^ (1 << j);
-                    // 枚举k的子集（必然包含j的子集）作为第一部分【cnt[(1 << j) | x]】
-                    // 其补集作为第二部分【sum[k ^ x]】
-                    for (int x = (k - 1) & k; true; x = (x - 1) & k) {
-                        sum[i] = (sum[i] + (LL)cnt[(1 << j) | x] * sum[k ^ x]) % MOD;
-                        if (x == 0) // 注意 x 可以为空集，即第一部分只包含一个j
-                            break;
-                    }
-                    // ATTENTION 能够根据一位不同去划分为两类即可
-                    break;
-                }
-            // 统计
-            res = (res + (LL)sum[i]) % MOD;
-        }
-        // 1的数量 任意选 2^cnt[0]
-        for (int i = 0; i < cnt[0]; ++ i )
-            res = (res + (LL)res) % MOD;
-        return res;
-    }
-};
-```
-##### **C++ 2**
-
-```cpp
-class Solution {
-public:
-    using LL = long long;
-    const static int N = 10;
-    const int MOD = 1e9 + 7;
-    
-    vector<int> ps = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29};
-    
-    int qpow(int a, int b) {
-        LL res = 1;
-        while (b) {
-            if (b & 1)
-                res = res * a % MOD;
-            a = (LL)a * a % MOD;
-            b >>= 1;
-        }
-        return res;
-    }
-    
-    int numberOfGoodSubsets(vector<int>& nums) {
-        vector<int> cnt(1 << N), sum(1 << N);
-        // 1. 求每个数分解得到全素数集合，该全素数集合对应的原始数的个数
-        // 本质上是将原始数组中合法的部分重新统计一遍
-        for (auto x : nums) {
-            int t = 0;
-            for (int i = 0; i < N; ++ i )
-                if (x % ps[i] == 0) {
-                    t |= 1 << i;
-                    // ATTENTION: 如果x包含两个p[i]，必然无效
-                    if (x / ps[i] % ps[i] == 0) {
-                        t = -1;
-                        break;
-                    }
-                }
-        
-            if (t != -1)
-                cnt[t] ++ ;
-        }
-        
-        // 2. 遍历统计
-        sum[0] = qpow(2, cnt[0]);
-        
-        for (int i = 1; i < 1 << N; ++ i ) {
-            // ATTENTION 1: 只用sum不用nxt也可以过，因为是从小到大计算的
-            auto nxt = sum;
-            for (int j = 0; j < 1 << N; ++ j )
-                if (!(i & j)) {
-                    // i 与 j 无交叉
-                    nxt[j | i] = (nxt[j | i] + (LL)sum[j] * cnt[i]) % MOD;
-                }
-            sum = nxt;
-        }
-        
-        // ATTENTION 2: 这样res统计必须放在最后，因为前面for-loop未将当前结果统计完成
-        int res = 0;
-        for (int i = 1; i < 1 << N; ++ i )
-            res = (res + (LL)sum[i]) % MOD;
-        
-        return res;
-    }
-};
-```
-
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
 > [!NOTE] **[LeetCode 1994. 好子集的数目](https://leetcode-cn.com/problems/the-number-of-good-subsets/)** [TAG]
 > 
 > 题意: TODO
 
 > [!TIP] **思路**
 > 
+> [biweekly-60](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-09-04_Biweekly-60)
+> 
 > 非常好的状态压缩 + 组合计数应用题
 > 
 > 按比特位划分是为了去重，详情参考第三份代码
+> 
+> **枚举子集时依靠某位bit位将所有子集分为两类，从而实现去重计数**
 
 <details>
 <summary>详细代码</summary>

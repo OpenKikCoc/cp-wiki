@@ -754,6 +754,92 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2086. 从房屋收集雨水需要的最少水桶数](https://leetcode-cn.com/problems/minimum-number-of-buckets-required-to-collect-rainwater-from-houses/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **尽量选择一个房屋右侧的点来放水桶**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+标准解是贪心在右侧选 且是判断 `H` 的位置
+
+```cpp
+class Solution {
+public:
+    int minimumBuckets(string street) {
+        int n = street.size(), res = 0;
+        vector<bool> st(n);
+        for (int i = 0; i < n; ++ i )
+            // trick: 思维 先考虑 `H`
+            if (street[i] == 'H') {
+                if (i - 1 >= 0 && st[i - 1])
+                    continue;
+                // 优先放右边
+                if (i + 1 < n && street[i + 1] == '.')
+                    st[i + 1] = true, res ++ ;
+                else if (i - 1 >= 0 && street[i - 1] == '.')
+                    st[i - 1] = true, res ++ ;
+                else
+                    return -1;
+            }
+        
+        return res;
+    }
+};
+```
+
+##### **C++ 个人写法**
+
+```cpp
+class Solution {
+public:
+    int minimumBuckets(string street) {
+        int n = street.size(), res = 0;
+        vector<bool> st(n);
+        for (int i = 1; i < n - 1; ++ i )
+            if (street[i] == '.' && street[i - 1] == 'H' && street[i + 1] == 'H')
+                street[i] = '*', st[i - 1] = st[i + 1] = true, res ++ ;
+        for (int i = 2; i < n - 2; ++ i )
+            if (street[i] == '*' && street[i - 2] == '*' && street[i + 2] == '*')
+                street[i] = '.', res -- ;
+        for (int i = 0; i < n; ++ i )
+            if (street[i] == '.') {
+                bool need = false;
+                if (i - 1 >= 0 && street[i - 1] == 'H' && !st[i - 1])
+                    need = true, st[i - 1] = true;
+                if (i + 1 < n && street[i + 1] == 'H' && !st[i + 1])
+                    need = true, st[i + 1] = true;
+                if (need)
+                    res ++ ;
+            }
+        for (int i = 0; i < n; ++ i )
+            if (street[i] == 'H' && !st[i])
+                return -1;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 排序不等式
 
 > [!NOTE] **[AcWing 1395. 产品处理](https://www.acwing.com/problem/content/1397/)**

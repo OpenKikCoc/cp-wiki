@@ -1051,6 +1051,120 @@ class Solution:
 
 * * *
 
+> [!NOTE] **[LeetCode 2088. 统计农场中肥沃金字塔的数目](https://leetcode-cn.com/problems/count-fertile-pyramids-in-a-land/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> [biweekly-66](https://leetcode-cn.com/contest/biweekly-contest-66/)
+> 
+> 简单但经典
+> 
+> 类似最大正方形的递推思想 相对于前缀和极大降低复杂度
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ dp递推 类似最大正方形**
+
+```cpp
+class Solution {
+public:
+    const static int N = 1010;
+
+    int f[N][N];
+    int n, m;
+    vector<vector<int>> g;
+
+    int work() {
+        memset(f, -1, sizeof f);
+        int ret = 0;
+        for (int i = n - 1; i >= 0; -- i )
+            for (int j = 0; j < m; ++ j )
+                if (g[i][j]) {
+                    if (i == n - 1|| j == 0 || j == m - 1)
+                        f[i][j] = 0;
+                    else {
+                        f[i][j] = min({f[i + 1][j - 1], f[i + 1][j], f[i + 1][j + 1]}) + 1;
+                        ret += f[i][j];
+                    }
+                }
+        return ret;
+    }
+
+    int countPyramids(vector<vector<int>>& grid) {
+        this->g = grid;
+        n = g.size(), m = g[0].size();
+
+        int res = work();
+        reverse(g.begin(), g.end());
+        res += work();
+        return res;
+    }
+};
+```
+
+##### **C++ 前缀和+模拟**
+
+```cpp
+class Solution {
+public:
+    int n, m;
+    vector<vector<int>> g;
+    
+    int check(int x, int y) {
+        if (!g[x][y])
+            return 0;
+        int ret = 0;
+        {
+            int w = 1, c = 0;
+            int nx = x, ny = y;
+            while (nx <= n && ny <= m && g[nx][ny] >= w)
+                nx ++ , ny ++ , w += 2, c ++ ;
+            ret += c - 1;
+        }
+        {
+            int w = 1, c = 0;
+            int nx = x, ny = y;
+            while (nx >= 1 && ny <= m && g[nx][ny] >= w)
+                nx -- , ny ++ , w += 2, c ++ ;
+            ret += c - 1;
+        }
+        return ret;
+    }
+    
+    int countPyramids(vector<vector<int>>& grid) {
+        n = grid.size(), m = grid[0].size();
+        g = vector<vector<int>>(n + 1, vector<int>(m + 1));
+        for (int i = 1; i <= n; ++ i )
+            for (int j = 1; j <= m; ++ j )
+                if (grid[i - 1][j - 1])
+                    g[i][j] = g[i][j - 1] + 1;
+        
+        int res = 0;
+        for (int i = 1; i <= n; ++ i )
+            for (int j = 1; j <= m; ++ j )
+                res += check(i, j);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[LeetCode 1277. 统计全为 1 的正方形子矩阵](https://leetcode-cn.com/problems/count-square-submatrices-with-all-ones/)**
 > 
 > 题意: TODO

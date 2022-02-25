@@ -255,7 +255,9 @@ int main() {
 
 > [!TIP] **思路**
 > 
-> TODO
+> 大量细节
+> 
+> TODO **重复做**
 
 <details>
 <summary>详细代码</summary>
@@ -305,7 +307,7 @@ public:
 // 作者：wu-bin-cong
 ```
 
-##### **C++ TODO**
+##### **C++ dfs better**
 
 ```cpp
 class Solution {
@@ -333,6 +335,52 @@ public:
         f[1][0] = 1;
         for (int i = 1; i <= t; ++i) { dfs(1, 0, i); }
         return f[target][t];
+    }
+};
+```
+
+##### **C++ bfs better**
+
+```cpp
+class Solution {
+public:
+    double frogPosition(int n, vector<vector<int>>& edges, int t, int target) {
+        vector<vector<int>> tree(n + 1);
+
+        for (const auto &e : edges) {
+            tree[e[0]].push_back(e[1]);
+            tree[e[1]].push_back(e[0]);
+        }
+
+        vector<pair<int, double>> dis(n + 1, {INT_MAX, 0});
+        queue<int> q;
+
+        q.push(1);
+        dis[1].first = 0;
+        dis[1].second = 1;
+
+        while (!q.empty()) {
+            int u = q.front();
+            q.pop();
+
+            if (dis[u].first >= t)
+                continue;
+
+            for (int v : tree[u])
+                if (dis[v].first > dis[u].first + 1) {
+                    dis[v].first = dis[u].first + 1;
+                    dis[v].second = dis[u].second / (tree[u].size() - (int)(u != 1));
+                    q.push(v);
+                }
+        }
+
+        if (dis[target].first < t) {
+            if (target == 1 && tree[1].size() > 0
+               || tree[target].size() > 1)
+                return 0;
+        }
+
+        return dis[target].second;
     }
 };
 ```
