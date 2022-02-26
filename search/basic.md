@@ -1415,15 +1415,17 @@ public:
 ```python
 class Solution:
     def lexicalOrder(self, n: int) -> List[int]:
-      	res=[]
-        def dfs(cur,n):
-            if cur <= n: res.append(cur)
-            else: return
-            for i in range(10):
-                dfs(10 * cur + i, n)
-  
+        res = []
+
+        def dfs(u):
+            if u > n:
+                return
+            res.append(u)
+            for k in range(u * 10, u * 10 + 10):
+                dfs(k)
+
         for i in range(1, 10):
-            dfs(i, n)
+            dfs(i)
         return res
 ```
 
