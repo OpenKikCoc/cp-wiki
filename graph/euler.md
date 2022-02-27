@@ -150,6 +150,163 @@ $E = \{a_{j_1}a_{j_2}\cdots a_{j_{n-1}}|a_j \in S, 1 \leq j \leq n\}$
 
 ### 一般欧拉
 
+> [!NOTE] **[LeetCode 2097. 合法重新排列数对](https://leetcode-cn.com/problems/valid-arrangement-of-pairs/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 分析和建图较为简单直接
+> 
+> **主要在于欧拉路算法**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 标准 删边**
+
+```cpp
+class Solution {
+public:
+    // 1e9 显然需要离散化 长度不超过2e5 ==> 之前写法TLE 考虑直接 unordered_map<int, vector<int>> g;
+    //                                  以及直接一个 deg 数组而非两个 din dout
+    // 
+    // 求欧拉路径可以使用 Fleury 算法，从起点开始深度优先遍历整个图，最后记录当前点作为路径，然后反向输出路径。
+    // 如果所有点的入度等于出度，则任意点都可以当做起点。否则，需要从出度减入度等于 1 的点开始遍历。
+    
+    unordered_map<int, vector<int>> g;
+    unordered_map<int, int> deg;
+    vector<vector<int>> res;
+    
+    void dfs(int u) {
+        auto & es = g[u];
+        while (!es.empty()) {
+            int v = es.back();
+            es.pop_back();  // 删边 ==> 比设置 st[i] = true 效果好太多
+            dfs(v);
+            res.push_back(vector<int>{u, v});
+        }
+    }
+    
+    vector<vector<int>> validArrangement(vector<vector<int>>& pairs) {
+        for (auto & p : pairs) {
+            g[p[0]].push_back(p[1]);
+            deg[p[0]] -- , deg[p[1]] ++ ;
+        }
+        
+        int start = -1;
+        for (auto & [k, v] : deg)
+            if (v == -1) {
+                start = k;
+                break;
+            }
+        if (start == -1)    // 有环 任意起点
+            start = deg.begin()->first;
+        
+        dfs(start);
+        reverse(res.begin(), res.end());
+        return res;
+    }
+};
+```
+
+##### **C++ 最初版 简单修改TLE**
+
+```cpp
+// 33 / 39 个通过测试用例 TLE
+class Solution {
+public:
+    // 1e9 显然需要离散化 长度不超过2e5
+    // 
+    // 求欧拉路径可以使用 Fleury 算法，从起点开始深度优先遍历整个图，最后记录当前点作为路径，然后反向输出路径。
+    // 如果所有点的入度等于出度，则任意点都可以当做起点。否则，需要从出度减入度等于 1 的点开始遍历。
+    const static int N = 2e5 + 10;
+    
+    int n, m;
+    int h[N], e[N], w[N], ne[N], idx;
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+    }
+    void add(int a, int b, int c) {
+        e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    vector<vector<int>> ps;
+    unordered_map<int, int> ids;
+    
+    int din[N], dout[N];
+    bool st[N];
+    vector<vector<int>> res;
+    
+    void dfs(int u, int fa) {
+        for (int i = h[u]; ~i; i = ne[i])
+            if (!st[i]) {
+                st[i] = true;   // ATTENTION 删边
+                int v = e[i], idx = w[i];
+                dfs(v, u);
+                res.push_back(ps[idx]);
+            }
+    }
+    
+    vector<vector<int>> validArrangement(vector<vector<int>>& pairs) {
+        {
+            // 1. 离散化
+            ps = pairs;
+            vector<int> t;
+            for (auto & p : ps)
+                t.push_back(p[0]), t.push_back(p[1]);
+            sort(t.begin(), t.end());
+            t.erase(unique(t.begin(), t.end()), t.end());
+            
+            m = t.size();
+            for (int i = 0; i < m; ++ i )
+                ids[t[i]] = i;
+            n = ids.size();
+        }
+        {
+            // 2. 建图 ==> ATTENTION 不需要topo
+            init();
+            memset(din, 0, sizeof din);
+            int sz = ps.size();
+            for (int i = 0; i < sz; ++ i ) {
+                auto & p = ps[i];
+                add(ids[p[0]], ids[p[1]], i);
+                dout[ids[p[0]]] ++ , din[ids[p[1]]] ++ ;
+            }
+        }
+        
+        int start = -1;
+        for (int i = 0; i < n; ++ i )
+            if (din[i] + 1 == dout[i]) {
+                start = i;
+                break;
+            }
+        if (start == -1)    // 有环
+            start = 0;
+        
+        memset(st, 0, sizeof st);
+        dfs(start, -1);
+        reverse(res.begin(), res.end());
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[AcWing 1123. 铲雪车](https://www.acwing.com/problem/content/1125/)**
 > 
 > 题意: TODO

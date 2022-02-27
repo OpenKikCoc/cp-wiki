@@ -421,3 +421,69 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode FXIME 完成比赛的最少时间](https://leetcode-cn.com/problems/minimum-time-to-finish-the-race/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 2^10 = 1024 2^14
+    // 一个轮胎最多使用 1 * 2^14 跑15圈, 耗时 1e5 * 14 + 2 + 
+    using LL = long long;
+    const static int N = 1e3 + 10, M = 16;
+    
+    LL dis[M], f[N];
+    
+    int minimumFinishTime(vector<vector<int>>& tires, int changeTime, int numLaps) {
+        memset(dis, 0x3f, sizeof dis);
+        int n = tires.size();
+        for (auto & t : tires) {
+            LL d[N];
+            d[0] = 0;
+            LL f = t[0], r = t[1];
+            for (int i = 1, j = 1; i < M; ++ i , j *= r ) {
+                d[i] = d[i - 1] + f * j;
+                if (d[i] > 2e5)
+                    break;
+                dis[i] = min(dis[i], d[i]);
+            }
+        }
+        
+        for (int i = 0; i < N; ++ i )
+            f[i] = 1e18;
+        f[0] = 0;
+        for (int i = 1; i <= numLaps; ++ i ) {
+            for (int j = 1; j < M; ++ j )
+                if (i - j >= 0)
+                    f[i] = min(f[i], f[i - j] + dis[j] + changeTime);
+        }
+        
+        return f[numLaps] - changeTime;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
