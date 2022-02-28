@@ -509,7 +509,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1825. 求出 MK 平均值]()** [TAG]
+> [!NOTE] **[LeetCode 1825. 求出 MK 平均值](https://leetcode-cn.com/problems/finding-mk-average/)** [TAG]
 > 
 > 题意: TODO
 
@@ -602,6 +602,138 @@ public:
  * obj->addElement(num);
  * int param_2 = obj->calculateMKAverage();
  */
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 2102. 序列顺序查询](https://leetcode-cn.com/problems/sequentially-ordinal-rank-tracker/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然需要优化复杂度
+> 
+> - set + bit 维护 (更有普适性)
+> 
+>   **注意分数从高到低找第 p 个，所以 add 时 N - score 即可**
+> 
+> - set + 迭代器 (本题每次只会新增一个或向右侧移动一次的特殊性质)
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ set + bit**
+
+```cpp
+class SORTracker {
+ public:
+     const static int N = 1e5 + 10;
+
+     int tr[N];
+     int lowbit(int x) {
+         return x & -x;
+     }
+     void add(int x, int c) {
+         for (int i = x; i < N; i += lowbit(i))
+             tr[i] += c;
+     }
+     int sum(int x) {
+         int res = 0;
+         for (int i = x; i; i -= lowbit(i))
+             res += tr[i];
+         return res;
+     }
+     
+     set<string> ss[N];
+     int p;
+     SORTracker() {
+         for (int i = 0; i < N; ++ i )
+             ss[i].clear();
+         p = 0;
+         memset(tr, 0, sizeof tr);
+     }
+     
+     void add(string name, int score) {
+         ss[N - score].insert(name);
+         add(N - score, 1);
+     }
+     
+     string get() {
+         p ++ ;
+         int l = 1, r = N;
+         while (l < r) {
+             int m = l + r >> 1;
+             if (sum(m) < p)
+                 l = m + 1;
+             else
+                 r = m;
+         }
+         int left = p - sum(l - 1);
+         
+         for (auto & s : ss[l]) {
+             if ( -- left == 0)
+                 return s;
+         }
+             
+         return "";
+     }
+ };
+
+ /**
+  * Your SORTracker object will be instantiated and called as such:
+  * SORTracker* obj = new SORTracker();
+  * obj->add(name,score);
+  * string param_2 = obj->get();
+  */
+```
+
+##### **C++ set + 迭代器**
+
+```cpp
+class SORTracker {
+ public:
+     using PIS = pair<int, string>;
+     
+     set<PIS> S;
+     set<PIS>::iterator it;
+     
+     SORTracker() {
+         S.insert({0, ""});  // 哨兵
+         it = S.begin();
+     }
+     
+     void add(string name, int score) {
+         auto t = PIS{-score, name};
+         S.insert(t);
+         // 一次只会加入一个 性质
+         if (t < *it)
+             it -- ;
+     }
+     
+     string get() {
+         return it ++ ->second;
+     }
+ };
+
+ /**
+  * Your SORTracker object will be instantiated and called as such:
+  * SORTracker* obj = new SORTracker();
+  * obj->add(name,score);
+  * string param_2 = obj->get();
+  */
 ```
 
 ##### **Python**
