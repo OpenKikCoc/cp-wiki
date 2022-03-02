@@ -2490,6 +2490,60 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2111 使数组 K 递增的最少操作次数](https://leetcode-cn.com/problems/minimum-operations-to-make-the-array-k-increasing/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> LIS 应用
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int count(vector<int> & vs) {
+        vector<int> f;
+        for (auto x : vs)
+            if (f.empty() || f.back() <= x)
+                f.push_back(x);
+            else
+                *lower_bound(f.begin(), f.end(), x + 1) = x;
+        return vs.size() - f.size();
+    }
+    
+    int kIncreasing(vector<int>& arr, int k) {
+        vector<vector<int>> g(k);
+        int n = arr.size();
+        for (int i = 0; i < n; ++ i )
+            g[i % k].push_back(arr[i]);
+        
+        int res = 0;
+        for (int i = 0; i < k; ++ i )
+            res += count(g[i]);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 类 LIS 思想
 
 > [!NOTE] **[LeetCode 368. 最大整除子集](https://leetcode-cn.com/problems/largest-divisible-subset/)**

@@ -1178,3 +1178,64 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2106. 摘水果](https://leetcode-cn.com/problems/maximum-fruits-harvested-after-at-most-k-steps/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 一开始想的是 trick ，考虑到最终合法范围一定是在 startPos 的左右侧：可能其中一侧重叠。
+> 
+> 随后根据重叠部分计算得到一个合法值，维护过程取 max 。
+> 
+> **但显然无需关注【在某个区间取某个值】，只需关注【取某个值时可能有哪些区间】即可** ==> 滑动窗口双指针
+> 
+> 要能想到滑动窗口性质 加强
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // trick 双指针
+    const static int N = 2e5 + 10;
+    
+    int w[N];
+    
+    int maxTotalFruits(vector<vector<int>>& fruits, int startPos, int k) {
+        memset(w, 0, sizeof w);
+        for (auto & f : fruits)
+            w[f[0]] += f[1];
+        
+        int res = 0;
+        for (int l = 0, r = 0, s = 0; l <= startPos && r < N; ++ r ) {
+            s += w[r];
+            
+            // 直接推理取某个区间的 min 消耗，而非枚举区间计算消耗
+            while (l <= r && r - l + min(abs(startPos - l), abs(r - startPos)) > k)
+                s -= w[l], l ++ ;
+            res = max(res, s);
+        }
+        
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

@@ -422,7 +422,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode FXIME 完成比赛的最少时间](https://leetcode-cn.com/problems/minimum-time-to-finish-the-race/)**
+> [!NOTE] **[LeetCode 2188 完成比赛的最少时间](https://leetcode-cn.com/problems/minimum-time-to-finish-the-race/)**
 > 
 > 题意: TODO
 

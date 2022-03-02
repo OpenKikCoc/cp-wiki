@@ -1441,11 +1441,13 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
+>
+> - 从1~9开始向下深度优先搜索所有小于等于high的步进数
+>
 > 搜索生成所有步进数即可，注意排除 `v + 1 = 10` 这类以及负数
-> 
+>
 > 也即: `if (v + 1 <= 9)` 和 `if (v - 1 >= 0)`
-> 
+>
 > 也有 bfs 构造，略
 
 <details>
@@ -1488,7 +1490,27 @@ public:
 ##### **Python**
 
 ```python
+class Solution:
+    def countSteppingNumbers(self, low: int, high: int) -> List[int]:
+        res, ans = [], []
 
+        # last 表示上一个数的个位数字的数值，num 是本轮的数值
+        def dfs(last, num):
+            if num > high:return
+            res.append(num)
+            if last != 9:
+                dfs(last + 1, num * 10 + last + 1)
+            if last != 0:
+                dfs(last - 1, num * 10 + last - 1)
+
+        if low <= 0:res.append(low)
+        for i in range(1, 10):
+            dfs(i, i)
+        for c in res:
+            if c >= low:
+                ans.append(c)
+        ans.sort()
+        return ans
 ```
 
 <!-- tabs:end -->
@@ -2122,8 +2144,14 @@ public:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> 全排列搜索的拓展：每次不仅要判断【列】有没有1，还要判断两条【对角线】有没有1
+>
+> 由于每行只能有一个皇后，所以可以依次枚举每一行的皇后放到哪个位置（这样时间复杂度会从下降）
+>
+> 对角线的表达式，可以根据画图得出：y = x + k & y = -x + k
+>
+> ==> k = y - x + n;(下标不能为负数，做一个映射)；k = y + x
 
 <details>
 <summary>详细代码</summary>
@@ -2172,9 +2200,6 @@ public:
 ##### **Python**
 
 ```python
-#全排列搜索的拓展：每次不仅要判断 列 有没有1，还要判断 对角线 有没有1
-#由于每行只能有一个皇后，所以可以依次枚举每一行的皇后放到哪个位置。这样时间复杂度会从下降
-
 class Solution:
     def solveNQueens(self, n: int) -> List[List[str]]:
         res = []
@@ -2184,12 +2209,13 @@ class Solution:
         udg = [False] * 2 * n 
 
         def dfs(u):
-           #搜到最后一行的 下一个位置（行）
+           #搜到最后一行的下一个位置（行）
             if u == n: 
                 # 把每一行都转换拼接为一个字符串
                 res.append(["".join(path[i]) for i in range(n)])
                 return
-            
+             
+            # dg[u-i+n] 写成：dg[i-u+n] 也可以 ac
             for i in range(n):
                 if not col[i] and not dg[u-i+n] and not udg[u+i]:
                     path[u][i] = "Q"
@@ -2214,7 +2240,7 @@ class Solution:
 
 > [!TIP] **思路**
 > 
-> 
+> 思路同上
 
 <details>
 <summary>详细代码</summary>
@@ -2289,8 +2315,17 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> 直接暴力搜索出所有合法方案。合法的 IP 地址由四个 0~255 的整数组成。
+> 我们直接枚举四个整数的位数，然后判断每个数的范围是否在 0~255 之间。
+>
+> 搜索题：最重要的是 搜索顺序！ 先搜第一个数 再是第二个数...
+> 1. 要求每个数都在 0~255 之间；
+> 2. 必须是一个合法的数：就是【不能有前导0】
+>
+> 搜索顺序：先搜第一个数，然后 第二个， 再三个，最后一个。
+
+
 
 <details>
 <summary>详细代码</summary>
@@ -2369,16 +2404,6 @@ public:
 ##### **Python**
 
 ```python
-"""
-直接暴力搜索出所有合法方案。合法的IP地址由四个0到255的整数组成。
-我们直接枚举四个整数的位数，然后判断每个数的范围是否在0到255。
-
-搜索题：最重要的是 搜索顺序！ 先搜第一个数 再是第二个数...
-1. 要求每个数都在0 - 255之间；2. 必须是一个合法的数：就是【不能有前导0】
-搜索顺序：先搜第一个数，然后 第二个， 再三个，最后一个。
-时间复杂度分析：一共 n 个数字，n−1 个数字间隔，相当于从 n−1个数字间隔中挑3个断点，所以计算量是 O(Cn-1 -- 3)。【一个组合】
-"""
-
 # 直接用字符串
 class Solution:
     def restoreIpAddresses(self, s: str) -> List[str]:
@@ -2408,8 +2433,13 @@ class Solution:
 
         dfs(s, 0, 0, "")
         return res
+```
 
 
+
+**Python**
+
+```python
 # 用数组保存
 class Solution:
     def restoreIpAddresses(self, s: str) -> List[str]:
@@ -2445,6 +2475,8 @@ class Solution:
         dfs(0, 0, s)
         return res
 ```
+
+
 
 <!-- tabs:end -->
 </details>
@@ -2661,8 +2693,12 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> DFS + 模拟，理解题意，一共有三种可能的情况：
+>
+> 1. 如果当前选中的点恰好是地雷，那修改其为X，然后直接返回即可
+> 2. 如果不是地雷的话，那就看周边是否有其他地雷，如果没有的话，就把这些点改为N，然后继续dfs去判断周围的其他点
+> 3. 如果不是地雷，并且周边有地雷，那就修改为对应的数字
 
 <details>
 <summary>详细代码</summary>
@@ -2740,7 +2776,34 @@ public:
 ##### **Python**
 
 ```python
+class Solution:
+    def updateBoard(self, board: List[List[str]], click: List[int]) -> List[List[str]]:
+        global n, m
+        n, m = len(board), len(board[0])
+        x, y = click
+        if board[x][y] == 'M':
+            board[x][y] = 'X'
+            return board
+        self.dfs(board, x, y)
+        return board
 
+    def dfs(self, board, x, y):
+        if board[x][y] != 'E':
+            return
+        s = 0
+        for i in range(max(x - 1, 0), min(n - 1, x + 1) + 1):
+            for j in range(max(y - 1, 0), min(m - 1, y + 1) + 1):
+                if i != x or j != y:
+                    if board[i][j] == 'M' or board[i][j] == 'X':
+                        s += 1
+        if s:
+            board[x][y] = str(s)
+            return 
+        board[x][y] = 'B'
+        for i in range(max(x - 1, 0), min(n - 1, x + 1) + 1):
+            for j in range(max(y - 1, 0), min(m - 1, y + 1) + 1):
+                if i != x or j != y:
+                    self.dfs(board, i, j)
 ```
 
 <!-- tabs:end -->
@@ -2755,8 +2818,20 @@ public:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
+>
 > 经典 递归 trick
+>
+> 由于可以从数组任意取数，所以括号可以忽略，暴搜所有方案：
+>
+> 1. 选两个数，进行运算操作，就变成了三个数的组合: 4 * 3 * 4（4种运算符）
+>
+> 2. 再从中选两个数，进行运算操作，就变成了两个数的组合: （4 * 3 * 4） * 3 * 2 *4
+>
+> 3. 最后只剩下两个数，进行运算操作，就变成了一个数的组合: 
+>
+>    （(4 * 3 * 4） * (3 * 2 * 4)) * 2 * 1 * 4 = 9216 种方案
+>
+> 4. 最后就看这剩下的一个数是不是24（由于这道题的除法不是整数除法，所以要算一个差值）
 
 <details>
 <summary>详细代码</summary>
@@ -2805,7 +2880,33 @@ public:
 ##### **Python**
 
 ```python
+class Solution:
+    def judgePoint24(self, cards: List[int]) -> bool:
+        def get(nums, i, j, x):
+            res = []
+            for k in range(len(nums)):
+                if k != i and k != j:
+                    res.append(nums[k])
+            res.append(x)
+            return res
 
+        def dfs(nums: List[float]):
+            if len(nums) == 1:
+                return abs(nums[0] - 24) < 1e-8
+            for i in range(len(nums)):
+                for j in range(len(nums)):
+                    if i != j:
+                        a, b = nums[i], nums[j]
+                        if dfs(get(nums, i, j, a + b)):
+                            return True
+                        if dfs(get(nums, i, j, a - b)):
+                            return True
+                        if dfs(get(nums, i, j, a * b)):
+                            return True
+                        if b and dfs(get(nums, i, j, a / b)):
+                            return True
+            return False
+        return dfs(cards)
 ```
 
 <!-- tabs:end -->
