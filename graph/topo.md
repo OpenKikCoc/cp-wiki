@@ -1926,3 +1926,65 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2115. 从给定原材料中找到所有可以做出的菜](https://leetcode-cn.com/problems/find-all-possible-recipes-from-given-supplies/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+ public:
+     // 标程 topo
+     using US = unordered_set<string>;
+     using USM = unordered_map<string, US>;
+     
+     USM g;
+     unordered_map<string, int> deg;
+     
+     vector<string> findAllRecipes(vector<string>& recipes, vector<vector<string>>& ingredients, vector<string>& supplies) {
+         int n = recipes.size();
+         for (int i = 0; i < n; ++ i ) {
+             auto & pa = recipes[i];
+             auto & sons = ingredients[i];
+             for (auto & son : sons)
+                 g[son].insert(pa), deg[pa] ++ ;
+         }
+         
+         queue<string> q;
+         for (auto & s : supplies)
+             q.push(s);
+         
+         vector<string> res;
+         while (!q.empty()) {
+             auto t = q.front(); q.pop();
+             for (auto & pa : g[t])
+                 if ( -- deg[pa] == 0)
+                     q.push(pa), res.push_back(pa);
+         }
+         return res;
+     }
+ };
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

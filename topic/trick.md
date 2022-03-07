@@ -4069,6 +4069,79 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2117. 一个区间内所有数乘积的缩写](https://leetcode-cn.com/problems/abbreviating-the-product-of-a-range/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 素数筛 + 质因数分解 + 大数 ==> TLE
+> 
+> **正解是直接取模截断**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+ public:
+     using LL = long long;
+     const static LL N = 1e10, M = 1e5;
+     
+     string abbreviateProduct(int left, int right) {
+         LL two = 0, five = 0;
+         for (int i = left, j; (j = i) <= right; ++ i ) {
+             while (j % 2 == 0)
+                 j /= 2, two ++ ;
+             while (j % 5 == 0)
+                 j /= 5, five ++ ;
+         }
+         two = five = min(two, five);
+         int zero = min(two, five);
+         
+         LL flag = 0, last = 1;
+         double first = 1;
+         for (int i = left; i <= right; ++ i ) {
+             {
+                 last *= i;
+                 while (last % 2 == 0 && two)
+                     last /= 2, two -- ;
+                 while (last % 5 == 0 && five)
+                     last /= 5, five -- ;
+                 if (last > N)
+                     flag = 1, last %= N;
+             }
+             {
+                 first *= i;
+                 while (first > M)
+                     first /= 10;
+             }
+         }
+         
+         return (flag == 0 ?
+                     to_string(last) : 
+                     to_string((int)first) + "..." + to_string(last % M + M).substr(1))
+                 + "e" + to_string(zero);
+     }
+ };
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 动态统计计数题
 
 > [!NOTE] **[LeetCode 1224. 最大相等频率](https://leetcode-cn.com/problems/maximum-equal-frequency/)** [TAG]

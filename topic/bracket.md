@@ -146,6 +146,59 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2116. 判断一个括号字符串是否有效](https://leetcode-cn.com/problems/check-if-a-parentheses-string-can-be-valid/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 678 进阶
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+ public:
+     bool canBeValid(string s, string locked) {
+         int n = s.size();
+         for (int i = 0; i < n; ++ i )
+             if (locked[i] == '0')
+                 s[i] = '*';
+         
+         int low = 0, high = 0;
+         for (auto c : s) {
+             if (c == '(')
+                 low ++ , high ++ ;
+             else if (c == ')')
+                 low -- , high -- ;
+             else
+                 low -- , high ++ ;
+             low = max(low, 0);
+             if (low > high)
+                 return false;
+         }
+         return !low && n % 2 == 0;
+     }
+ };
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 
 > [!NOTE] **[LeetCode 761. 特殊的二进制序列](https://leetcode-cn.com/problems/special-binary-string/)**
 > 
