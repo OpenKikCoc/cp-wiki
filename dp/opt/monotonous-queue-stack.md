@@ -498,6 +498,8 @@ int main() {
 > [!TIP] **思路**
 > 
 > 单调队列优化dp 注意细节
+> 
+> **重点在于如何通过公式转化并得到单调性质**
 
 <details>
 <summary>详细代码</summary>
@@ -543,7 +545,7 @@ public:
             f[i] = f[k] + cost(k, i) + 1;
             
             // (i, i + 1] 与 (q.back(), i] 无论右区间取哪里都是一样的 所以直接用 i+1
-            while (!q.empty() && f[q.back()] >= f[i] + cost(i, i + 1) - cost(q.back(), i))
+            while (!q.empty() && f[q.back()] >= f[i] + cost(i, i + 1) - cost(q.back(), i + 1))
                 q.pop_back();
             q.push_back(i);
         }

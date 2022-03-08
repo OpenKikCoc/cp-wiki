@@ -297,7 +297,7 @@ int main() {
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++**
+##### **C++ 标准 补全**
 
 ```cpp
 class Solution {
