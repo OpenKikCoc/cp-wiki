@@ -1525,9 +1525,13 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
+>
+> DFS 先递归搜索它的所有子节点，然后再加上当前节点的值，去判断是否为0
+>
+> （这是类似于后续遍历）
+>
 > 有种更优雅的写法
-> 
+>
 > > 之前有一种：该写法在子树被切掉时影响父节点的忧虑
 > > 
 > > 其实不必的，子树被切掉其和必然为0，直接传回 {0, 0} 即可，对父的求和无影响
@@ -1571,8 +1575,52 @@ public:
 ##### **Python**
 
 ```python
+class Solution:
+    def deleteTreeNodes(self, nodes: int, parent: List[int], value: List[int]) -> int:
+        def dfs(i):
+            val = value[i]
+            cnts = 1
+            for v in edges[i]:
+                vj, cj = dfs(v)
+                val += vj
+                cnts += cj
+            if val == 0:
+                return 0, 0 
+            else:
+                return val, cnts
 
+        edges = collections.defaultdict(list)
+        for k, v in enumerate(parent):
+            if v != -1:
+                edges[v].append(k)
+        return dfs(0)[1]
 ```
+
+
+
+##### **Python**
+
+```python
+class Solution:
+    def deleteTreeNodes(self, nodes: int, parent: List[int], value: List[int]) -> int:
+        res = [1] * nodes
+        def dfs(u):
+            for v in edges[u]:
+                dfs(v)
+                value[u] += value[v]
+                res[u] += res[v]
+            if value[u] == 0:
+                res[u] = 0
+
+        edges = collections.defaultdict(list)
+        for k, v in enumerate(parent):
+            if v != -1:
+                edges[v].append(k)
+        dfs(0)
+        return res[0]
+```
+
+
 
 <!-- tabs:end -->
 </details>
@@ -3069,8 +3117,15 @@ int main() {
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> 本题有一个限制：只能加括号，不能调整数的顺序。
+> 那么对于任意一个表达式，转化为二叉树之后，虽然树的形态各异，但是它们的中序遍历都是一样的。那这道题和 95 题就很像（知识背景）
+>
+> 直接搜索就可以。
+> 1. 先把字符串转化为列表，方便操作，并且效率会更高（list的效率高于 string）
+> 2. 枚举整个字符串的list，当遇到操作符时，就把当前操作符作为根节点，那么左子树为：[0, i-1]，右子树为：[i+1, n-1]，并将两个子树递归下去，搜索出所有形态各异的树的种类
+> 3. 左子树和右子树集合中的任意二叉树都可以两两相结合与当前根节点 i 形成新的二叉树（也就是新的组合结果）
+> 4. 当递归过程中，枚举的字符串只是一个数字时，直接返回该数。
 
 <details>
 <summary>详细代码</summary>
@@ -3115,7 +3170,44 @@ public:
 ##### **Python**
 
 ```python
-
+class Solution:
+    def diffWaysToCompute(self, s: str) -> List[int]:
+        exp = list()
+        i = 0
+        while i < len(s):
+            j = i 
+            if s[j].isdigit():
+                x = 0
+                while j < len(s) and s[j].isdigit():
+                    x = x * 10 + int(s[j])
+                    j += 1
+                exp.append(x)
+            else:
+                exp.append(s[i]) 
+                j = i + 1
+            i = j
+        
+        def dfs(l, r):
+            # 表示当前只有一个数字
+            if l == r:
+                return [int(exp[l])]
+            res = []
+            # 当前表达式，第一个和最后一个一定都是数字，然后隔一个是一个操作符
+            # 遍历字符串，枚举每一个根节点的操作符
+            for i in range(l + 1, r, 2):
+                left = dfs(l, i - 1)
+                right = dfs(i + 1, r)
+                for x in left:
+                    for y in right:
+                        if exp[i] == '+':
+                            z = x + y
+                        elif exp[i] == '-':
+                            z = x - y
+                        else:
+                            z = x * y
+                        res.append(z)
+            return res
+        return dfs(0, len(exp) - 1)
 ```
 
 <!-- tabs:end -->
