@@ -4636,6 +4636,70 @@ class Solution:
 
 * * *
 
+### STL 简化模拟
+
+> [!NOTE] **[LeetCode 2122. 还原原数组](https://leetcode-cn.com/problems/recover-the-original-array/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 原以为枚举会比较麻烦，实际上使用 STL 可以很便捷...
+> 
+> 反复练习
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<int> recoverArray(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        // nums[0] 必为 lower 的第一个元素，接下来枚举 higher 的第一个元素
+        for (int i = 1; i < nums.size(); ++ i ) {
+            int k = nums[i] - nums[0];
+            if (k == 0 || k % 2)
+                continue;
+            
+            // STL 大幅简化以下模拟过程
+            multiset<int> H(nums.begin(), nums.end());
+            vector<int> res;
+            while (H.size()) {
+                // x: lower 的下一个元素
+                int x = *H.begin(); H.erase(H.begin());
+                // x + k: higher 的下一个元素
+                auto it = H.find(x + k);
+                if (it == H.end())
+                    break;
+                H.erase(it);
+                res.push_back(x + k / 2);
+            }
+            if (res.size() == nums.size() / 2)
+                return res;
+        }
+        
+        return {};
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 数字相关
 
 > [!NOTE] **[LeetCode 7. 整数反转](https://leetcode-cn.com/problems/reverse-integer/)**
