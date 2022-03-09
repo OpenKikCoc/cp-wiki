@@ -1661,11 +1661,67 @@ public:
 };
 ```
 
-##### **Python**
+##### **Python - DFS**
 
 ```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def sumEvenGrandparent(self, root: TreeNode) -> int:
+        self.res = 0
 
+        def dfs(r, f, ff):
+            if ff % 2 == 0:
+                self.res += r.val
+            if r.left:
+                dfs(r.left, r.val, f)
+            if r.right:
+                dfs(r.right, r.val, f)
+        
+        dfs(root, -1, -1)
+        return self.res
 ```
+
+##### **Python - BFS**
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+import collections
+class Solution:
+    def sumEvenGrandparent(self, root: TreeNode) -> int:
+        q = collections.deque()
+        q.append(root)
+        res = 0
+        while q:
+            node = q.popleft()
+            if node.val % 2 == 0:
+                if node.left:
+                    if node.left.left:
+                        res += node.left.left.val 
+                    if node.left.right:
+                        res += node.left.right.val 
+                if node.right:
+                    if node.right.left:
+                        res += node.right.left.val 
+                    if node.right.right:
+                        res += node.right.right.val
+            if node.left:
+                q.append(node.left)
+            if node.right:
+                q.append(node.right)
+        return res
+```
+
+
 
 <!-- tabs:end -->
 </details>
@@ -1728,7 +1784,25 @@ public:
 ##### **Python**
 
 ```python
+class Solution:
+    def getHappyString(self, n: int, k: int) -> str:
+        self.res = ""
+        self.cnt = 0
 
+        def dfs(n, k, cur):
+            for x in ['a', 'b', 'c']:
+                if cur and x == cur[-1]:
+                    continue
+                if len(cur + x) == n:
+                    self.cnt += 1
+                    if self.cnt == k:
+                        self.res = cur + x
+                        break
+                elif self.res == "":
+                    dfs(n, k, cur + x)
+
+        dfs(n, k, "")
+        return self.res
 ```
 
 <!-- tabs:end -->
@@ -1743,8 +1817,20 @@ public:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
+>
 > 记一下这种写法
+>
+>  
+>
+> 1. 对于树这类的题目，绝大多数是可以使用递归来做的: dfs 或者 bfs
+> 2. 根据题意，只有深度有用。需要记录的就是每一个节点的叶子节点到该点的距离。(不需要管 root.val 的值)
+> 3. 对于每一个子节点，都需要更新self.res的值
+> 4. 对于 dfs, 返回的是：某个节点的所有叶子结点到该节点的距离（以 list 形式返回）
+> 5. 需要注意的是，这看上去是个后序遍历，但其实和后续遍历没有关系，因为先dfs递归右子树也完全可以AC
+
+
+
+
 
 <details>
 <summary>详细代码</summary>
@@ -1781,7 +1867,24 @@ public:
 ##### **Python**
 
 ```python
+class Solution:
+    def countPairs(self, root: TreeNode, distance: int) -> int:
+        self.res = 0
 
+        def dis(root):
+            if not root:
+                return []
+            if not root.left and not root.right:
+                return [1]
+            l, r = dis(root.left), dis(root.right)
+            for i in l:
+                for j in r:
+                    if i + j <= distance:
+                        self.res += 1
+            depth = [i + 1 for i in l + r]  # 记录该点到所有叶子结点的距离
+            return depth
+        dis(root)
+        return self.res
 ```
 
 <!-- tabs:end -->
@@ -2972,7 +3075,7 @@ class Solution:
 > 
 > 回溯思想的实现 trick
 > 
-> 一开始想复杂了，直接 tmp 记录 g 随后恢复即可
+> 一开始想复杂了，直接 tmp 记录 g 随后恢复即可（记得修改当前值为0，避免重复计算/走回头路）
 
 <details>
 <summary>详细代码</summary>
@@ -3018,7 +3121,29 @@ public:
 ##### **Python**
 
 ```python
+class Solution:
+    def getMaximumGold(self, grid: List[List[int]]) -> int:
+        n, m = len(grid), len(grid[0])
+        self.res = 0
 
+        def dfs(x, y, gold):
+            gold += grid[x][y]
+            self.res = max(self.res, gold)
+            tmp = grid[x][y]
+            grid[x][y] = 0
+            dx, dy = [0, 0, 1, -1], [1, -1, 0, 0]
+            for i in range(4):
+                nx, ny = x + dx[i], y + dy[i]
+                if 0 <= nx < n and 0 <= ny < m and grid[nx][ny] != 0:
+                    dfs(nx, ny, gold)
+            grid[x][y] = tmp
+
+        for i in range(n):
+            for j in range(m):
+                if grid[i][j] != 0:
+                    dfs(i, j, 0)
+        
+        return self.res
 ```
 
 <!-- tabs:end -->
