@@ -1252,6 +1252,71 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2132. 用邮票贴满网格图](https://leetcode-cn.com/problems/stamping-the-grid/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 前缀和处理易想到 **主要是还要想到二维差分**
+> 
+> 非常好的二维前缀和与差分问题
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<vector<int>> g, s, d;
+    
+    bool possibleToStamp(vector<vector<int>>& grid, int h, int w) {
+        this->g = grid;
+        int n = g.size(), m = g[0].size();
+        // 前缀和统计 1 的数量
+        s = vector<vector<int>>(n + 1, vector<int>(m + 1));
+        for (int i = 1; i <= n; ++ i )
+            for (int j = 1; j <= m; ++ j )
+                s[i][j] = s[i - 1][j] + s[i][j - 1] - s[i - 1][j - 1] + grid[i - 1][j - 1];
+        
+        // 差分
+        d = vector<vector<int>>(n + 2, vector<int>(m + 2));
+        for (int i = 1; i <= n; ++ i )
+            for (int j = 1; j <= m; ++ j ) {
+                // trick 位移
+                // 考虑以该点为左上角 ==> 为什么不是四个角每个都可能? 因为显然每个邮票都会有确定的左上角
+                int x = i + h - 1, y = j + w - 1;
+                if (x <= n && y <= m && s[x][y] - s[x][j - 1] - s[i - 1][y] + s[i - 1][j - 1] == 0)
+                    d[i][j] ++ , d[i][y + 1] -- , d[x + 1][j] -- , d[x + 1][y + 1] ++ ;
+            }
+        // 差分数组至最终数组
+        for (int i = 1; i <= n; ++ i )
+            for (int j = 1; j <= m; ++ j ) {
+                d[i][j] += d[i - 1][j] + d[i][j - 1] - d[i - 1][j - 1];
+                if (g[i - 1][j - 1] == 0 && d[i][j] == 0)
+                    return false;
+            }
+        return true;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 差分思想 比如用map / 区间 / trick
 
 > [!NOTE] **[LeetCode 731. 我的日程安排表 II](https://leetcode-cn.com/problems/my-calendar-ii/)**
