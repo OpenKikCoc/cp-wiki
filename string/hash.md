@@ -125,6 +125,8 @@ Hash 的核心思想在于，将输入映射到一个值域较小、可以方便
 
 ## 习题
 
+### 一般应用
+
 > [!NOTE] **[AcWing 841. 字符串哈希](https://www.acwing.com/problem/content/843/)**
 > 
 > 题意: TODO
@@ -592,6 +594,73 @@ public:
             mul = (long long)mul * base % mod;
         }
         return s.substr(0, happy);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 进阶
+
+> [!NOTE] **[LeetCode [2156. 查找给定哈希值的子串](https://leetcode-cn.com/problems/find-substring-with-given-hash-value/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 非常好的非常规【字符串hash】结合**滑动窗口**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 2e4 + 10;
+    
+    int P, M;
+    LL p[N];
+    
+    string subStrHash(string s, int power, int modulo, int k, int hashValue) {
+        this->P = power, this->M = modulo;
+        int n = s.size();
+        {
+            p[0] = 1;
+            for (int i = 1; i <= n; ++ i )
+                p[i] = p[i - 1] * P % M;
+        }
+        
+        int res = 0;
+        LL x = 0;
+        for (int i = n - k; i < n; ++ i )
+            x = (x + p[i - (n - k)] * (s[i] - 'a' + 1) % M) % M;
+        if (x == hashValue)
+            res = n - k; // DO NOT return, its the last not the first
+        
+        for (int i = n - 1; i >= k; -- i ) {
+            int j = i - k;
+            x = ((x - p[k - 1] * (s[i] - 'a' + 1) % M) % M + M) % M;
+            x = (x * P % M + (s[j] - 'a' + 1) % M) % M;
+            if (x == hashValue)
+                // return s.substr(i - k, k); // DO NOT return, its the last not the first
+                res = i - k;
+        }
+        return s.substr(res, k);
     }
 };
 ```

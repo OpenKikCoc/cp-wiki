@@ -1909,6 +1909,116 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode [2157. 字符串分组](https://leetcode-cn.com/problems/groups-of-strings/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 很好的并查集应用题
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 2e4 + 10;
+    
+    int p[N], sz[N];
+    void init() {
+        for (int i = 0; i < N; ++ i )
+            p[i] = i, sz[i] = 1;
+    }
+    int find(int x) {
+        if (p[x] != x)
+            p[x] = find(p[x]);
+        return p[x];
+    }
+    void merge(int a, int b) {
+        p[a] = b;
+        sz[b] += sz[a];
+    }
+    
+    vector<int> groupStrings(vector<string>& words) {
+        int n = words.size();
+        vector<int> st(n);
+        for (int i = 0; i < n; ++ i ) {
+            auto & w = words[i];
+            int x = 0;
+            for (auto c : w)
+                x += 1 << (c - 'a');
+            st[i] = x;
+        }
+        
+        unordered_map<int, vector<int>> hash;
+        for (int i = 0; i < n; ++ i )
+            hash[st[i]].push_back(i);
+        
+        init();
+        // inner
+        for (auto & [x, ids] : hash) {
+            int m = ids.size();
+            for (int i = 1; i < m; ++ i ) {
+                int pa = find(ids[i - 1]), pb = find(ids[i]);
+                if (pa != pb)
+                    merge(pa, pb);
+            }
+        }
+        
+        // outer
+        for (auto & [x, ids] : hash) {
+            int a = ids[0];
+            // add or sub
+            for (int i = 0; i < 26; ++ i ) {
+                int nx = x ^ (1 << i);
+                if (hash.count(nx)) {
+                    int b = hash[nx][0];
+                    int pa = find(a), pb = find(b);
+                    if (pa != pb)
+                        merge(pa, pb);
+                }
+            }
+            // modify
+            for (int i = 0; i < 26; ++ i )
+                if (x >> i & 1)
+                    for (int j = 0; j < 26; ++ j )
+                        if ((x >> j & 1) == 0) {
+                            int nx = x ^ (1 << i) ^ (1 << j);
+                            if (hash.count(nx)) {
+                                int b = hash[nx][0];
+                                int pa = find(a), pb = find(b);
+                                if (pa != pb)
+                                    merge(pa, pb);
+                            }
+                        }
+        }
+        
+        vector<int> res(2);
+        for (int i = 0; i < n; ++ i )
+            if (i == find(i))
+                res[0] ++ , res[1] = max(res[1], sz[i]);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 并查集的抽象进阶
 
 > [!NOTE] **[AcWing 1417. 塑造区域](https://www.acwing.com/problem/content/1419/)**
