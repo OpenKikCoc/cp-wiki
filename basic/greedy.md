@@ -2761,6 +2761,54 @@ if __name__ == '__main__':
 
 * * *
 
+> [!NOTE] **[LeetCode [2136. 全部开花的最早一天](https://leetcode-cn.com/problems/earliest-possible-day-of-full-bloom/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 贪心策略推导
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using PII = pair<int, int>;
+    int earliestFullBloom(vector<int>& pt, vector<int>& gt) {
+        int n = pt.size();
+        vector<PII> ve;
+        for (int i = 0; i < n; ++ i )
+            ve.push_back({gt[i], pt[i]});
+        sort(ve.begin(), ve.end());
+        reverse(ve.begin(), ve.end());  // 按 gt 降序排序
+        int res = 0;
+        for (int i = 0, s = 0; i < n; ++ i ) {
+            s += ve[i].second;
+            res = max(res, s + ve[i].first);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 堆 + 后悔
 
 > [!NOTE] **[Luogu [JSOI2007]建筑抢修](https://www.luogu.com.cn/problem/P4053)**

@@ -457,6 +457,66 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode [2141. 同时运行 N 台电脑的最长时间](https://leetcode-cn.com/problems/maximum-running-time-of-n-computers/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> [ABC227 D题](https://leetcode-cn.com/link/?target=https://atcoder.jp/contests/abc227/tasks/abc227_d)
+> 
+> 经典题目 **trick思维**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 受到二分算法的启发，最终答案的上限一定是 sum/n 下取整，但这个上限会受到一些高容量电池的限制无法达到。
+    // 将电池容量从大到小排序，如果当前大容量的电池的容量小于或等于 sum/n 下取整，则根据二分法的结论，最终是可以达到这个上限的。
+    // 否则，将最大容量的电池移除，同时分走一台电脑，问题规模缩小，直到满足条件为止。
+    
+    using LL = long long;
+    
+    long long maxRunTime(int n, vector<int>& bs) {
+        sort(bs.begin(), bs.end());
+        reverse(bs.begin(), bs.end());
+        
+        LL s = 0;
+        for (auto x : bs)
+            s += x;
+        
+        for (auto x : bs)
+            if (x > s / n)
+                // 当前电池可以给某个电脑一直用到最后（此处最后是指比后面其他所有的时间都长）
+                // 则：不再需要考虑这个电脑（n -- ）和电池（s -= x）
+                n -- , s -= x;
+            else
+                // 剩下的电池随意结合，充分使用
+                return s / n;
+        
+        return 0;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 思维 ==> TODO 细分
 
 > [!NOTE] **[AcWing 1396. 街头竞速](https://www.acwing.com/problem/content/1398/)**
