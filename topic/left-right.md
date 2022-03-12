@@ -402,3 +402,134 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode [2163. 删除元素后和的最小差值](https://leetcode-cn.com/problems/minimum-difference-in-sums-after-removal-of-elements/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 一直在想排序贪心，实际上可以使用前后缀分解的思路
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    
+    long long minimumDifference(vector<int>& nums) {
+        int m = nums.size(), n = m / 3;
+        vector<LL> l(m + 2, INT_MAX), r(m + 2, INT_MAX);
+        
+        {
+            priority_queue<int> heap;
+            LL s = 0;
+            for (int i = 1; i <= n; ++ i )
+                heap.push(nums[i - 1]), s += nums[i - 1];
+            l[n] = s;
+            for (int i = n + 1; i <= m; ++ i ) {
+                heap.push(nums[i - 1]);
+                int t = heap.top(); heap.pop();
+                s = s - t + nums[i - 1];
+                l[i] = s;
+            }
+        }
+        {
+            priority_queue<int, vector<int>, greater<int>> heap;
+            LL s = 0;
+            for (int i = m; i >= n * 2 + 1; -- i )
+                heap.push(nums[i - 1]), s += nums[i - 1];
+            r[2 * n + 1] = s;   // ATTENTION
+            for (int i = 2 * n; i >= 1; -- i ) {
+                heap.push(nums[i - 1]);
+                int t = heap.top(); heap.pop();
+                s = s - t + nums[i - 1];
+                r[i] = s;
+            }
+        }
+        
+        LL res = 1e18;
+        for (int i = n; i <= 2 * n; ++ i )
+            res = min(res, l[i] - r[i + 1]);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode [2167. 移除所有载有违禁货物车厢所需的最少时间](https://leetcode-cn.com/problems/minimum-time-to-remove-all-cars-containing-illegal-goods/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **核心在于推理得到三段不交叉的结论**
+> 
+> 重点在于理清楚【对于任意一个 1 只会作为前缀被消除或作为后缀或在中间被消除，且**三段不交叉**】
+> 
+> 明确以上结论 剩下的就很清晰 直接前后缀分解即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int minimumTime(string s) {
+        int n = s.size();
+        vector<int> l(n + 2), r(n + 2);
+        
+        l[0] = 0;
+        for (int i = 1; i <= n; ++ i )
+            if (s[i - 1] == '0')
+                l[i] = l[i - 1];
+            else
+                l[i] = min(l[i - 1] + 2, i);
+        
+        r[n + 1] = 0;
+        for (int i = n; i >= 1; -- i )
+            if (s[i - 1] == '0')
+                r[i] = r[i + 1];
+            else
+                r[i] = min(r[i + 1] + 2, n - i + 1);
+        
+        int res = 1e9;
+        for (int i = 1; i <= n; ++ i )
+            res = min(res, l[i - 1] + r[i]);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
