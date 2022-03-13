@@ -1594,13 +1594,8 @@ class Solution:
             if v != -1:
                 edges[v].append(k)
         return dfs(0)[1]
-```
-
-
-
-##### **Python**
-
-```python
+      
+      
 class Solution:
     def deleteTreeNodes(self, nodes: int, parent: List[int], value: List[int]) -> int:
         res = [1] * nodes
@@ -2584,13 +2579,8 @@ class Solution:
 
         dfs(s, 0, 0, "")
         return res
-```
-
-
-
-**Python**
-
-```python
+      
+      
 # 用数组保存
 class Solution:
     def restoreIpAddresses(self, s: str) -> List[str]:
@@ -2624,7 +2614,7 @@ class Solution:
                     
 				# 从 0 位开始搜，搜第 0 个数
         dfs(0, 0, s)
-        return res
+        return res      
 ```
 
 
@@ -3637,7 +3627,7 @@ class Solution:
     def wordBreak(self, s: str, wordDict: List[str]) -> bool:
         n = len(s)
         if not wordDict: return not s
-        f = [False] * (n + 1)  # n个字符，就有n + 1个个半 
+        f = [False] * (n + 1)  # n个字符，就有n + 1 个半 
         f[0] = True # f[0]是s[0]前面的隔板
         for i in range(1, n + 1):
             for j in range(i - 1, -1, -1):
