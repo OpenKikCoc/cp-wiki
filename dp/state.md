@@ -3160,6 +3160,80 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2172. 数组的最大与和](https://leetcode-cn.com/problems/maximum-and-sum-of-array/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **`f[i - 1][mask - 3^(k-1)]`, 后者表示将第k个篮子对应三进制减一**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 19, M = 2e4;   // 2e4 -> 3^9
+    
+    // 考虑前 i 个整数, 篮子可用状态是 j 的最大与和
+    int f[N][M];
+    
+    int maximumANDSum(vector<int>& nums, int numSlots) {
+        int n = nums.size(), m = pow(3, numSlots);
+        memset(f, 0, sizeof f);
+        for (int i = 1; i <= n; ++ i )
+            for (int j = 0; j < M; ++ j )
+                // 第 i 个数放到第 k 个篮子里, 对应状态范围为 j / w % 3
+                for (int k = 1, w = 1; k <= numSlots; ++ k , w *= 3 )
+                    // j / w % 3 != 0 说明还可以放
+                    if (j / w % 3)
+                        // ATTENTION: f[i - 1][mask - 3^(k-1)], 后者表示将第k个篮子对应三进制减一
+                        f[i][j] = max(f[i][j], f[i - 1][j - w] + (k & nums[i - 1]));
+        return f[n][m - 1];
+    }
+};
+```
+
+##### **C++ 空间压缩**
+
+```cpp
+// 空间压缩
+class Solution {
+public:
+    const static int N = 19, M = 2e4;   // 2e4 -> 3^9
+    
+    int f[M];
+    
+    int maximumANDSum(vector<int>& nums, int numSlots) {
+        int n = nums.size(), m = pow(3, numSlots);
+        memset(f, 0, sizeof f);
+        for (int i = 1; i <= n; ++ i )
+            for (int j = M - 1; j >= 0; -- j )
+                for (int k = 1, w = 1; k <= numSlots; ++ k , w *= 3 )
+                    if ((j / w % 3) && j - w >= 0)
+                        f[j] = max(f[j], f[j - w] + (k & nums[i - 1]));
+        return f[m - 1];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 八进制状压
 
 > [!NOTE] **[LeetCode 638. 大礼包](https://leetcode-cn.com/problems/shopping-offers/)**

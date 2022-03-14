@@ -1867,3 +1867,104 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2183. 统计可以被 K 整除的下标对数目](https://leetcode-cn.com/problems/count-array-pairs-divisible-by-k/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 简单数学思维 **注意如何一步一步优化**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 1e5 + 10;
+    
+    LL cnt[N], hash[N];
+    
+    long long countPairs(vector<int>& nums, int k) {
+        for (auto x : nums)
+            cnt[x] ++ ;
+        
+        // 记忆: 每个数的倍数出现了多少次
+        // O(nlogn)
+        // unordered_map<int, int> hash; ==> TLE
+        for (int i = 1; i < N; ++ i )
+            if (cnt[i])
+                hash[i] = cnt[i];
+        for (int i = 1; i < N; ++ i )
+            for (int j = i + i; j < N; j += i )
+                hash[i] += hash[j];
+        
+        LL res = 0;
+        for (int i = 1; i < N; ++ i )
+            if (cnt[i]) {
+                LL t = k / __gcd(k, i);
+                res += cnt[i] * hash[t];
+                if ((LL)i * i % k == 0)
+                    res -= cnt[i];
+            }
+        
+        return res / 2;
+    }
+};
+```
+
+##### **C++ 直观 TLE**
+
+```cpp
+// TLE 114 / 115
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 1e5 + 10;
+    
+    LL cnt[N], s[N];
+    
+    long long countPairs(vector<int>& nums, int k) {
+        for (auto x : nums)
+            cnt[x] ++ ;
+        for (int i = 1; i < N; ++ i )
+            s[i] = s[i - 1] + cnt[i];
+        
+        LL res = 0, n = nums.size();
+        for (int i = 1; i < N; ++ i )
+            if (cnt[i]) {
+                if ((LL)i * i % k == 0)
+                    res += cnt[i] * (cnt[i] - 1) / 2;
+                
+                if ((LL)i % k == 0) {
+                    res += cnt[i] * s[i - 1];
+                } else {
+                    LL t = k / __gcd(k, i);
+                    // 需要优化此处
+                    for (int j = t; j < i; j += t )
+                        if ((LL)i * j % k == 0)
+                            res += cnt[i] * cnt[j];
+                }
+            }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

@@ -1392,3 +1392,80 @@ public:
 <br>
 
 * * *
+
+### 综合应用
+
+> [!NOTE] **[LeetCode 2179. 统计数组中好三元组数目](https://leetcode-cn.com/problems/count-good-triplets-in-an-array/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 预处理转化，随后只要求单数组内递增三元组即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 1e5 + 10;
+    
+    int tr1[N], tr2[N];
+    int lowbit(int x) {
+        return x & -x;
+    }
+    void add(int tr[], int x, int c) {
+        for (int i = x; i < N; i += lowbit(i))
+            tr[i] += c;
+    }
+    int query(int tr[], int x) {
+        int ret = 0;
+        for (int i = x; i; i -= lowbit(i))
+            ret += tr[i];
+        return ret;
+    }
+    
+    long long goodTriplets(vector<int>& nums1, vector<int>& nums2) {
+        int n = nums1.size();
+        unordered_map<int, int> hash;
+        for (int i = 0; i < n; ++ i )
+            hash[nums1[i]] = i;
+        
+        vector<int> ve;
+        for (auto x : nums2)
+            ve.push_back(hash[x]);
+        
+        memset(tr1, 0, sizeof tr1);
+        memset(tr2, 0, sizeof tr2);
+        for (int i = 0; i < n; ++ i )
+            add(tr2, n - ve[i], 1);
+        LL res = 0;
+        for (int i = 0; i < n; ++ i ) {
+            int x = ve[i];
+            add(tr2, n - x, -1);
+            int l = query(tr1, x), r = query(tr2, n - x);
+            res += (LL)l * r;
+            add(tr1, x + 1, 1);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

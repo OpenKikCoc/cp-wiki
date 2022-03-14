@@ -198,3 +198,90 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2192. 有向无环图中一个节点的所有祖先](https://leetcode-cn.com/problems/all-ancestors-of-a-node-in-a-directed-acyclic-graph/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 本题可直接暴力 bitset 过
+> 
+> 数据规模再大些就是 **经典 topo**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 1e3 + 10, M = 2e3 + 10;
+    
+    int h[N], e[M], ne[M], idx;
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+    }
+    void add(int a, int b) {
+        e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    int n;
+    int din[N], q[M];
+    
+    vector<bitset<N>> mem;
+    
+    void topo() {
+        int hh = 0, tt = -1;
+        for (int i = 0; i < n; ++ i )
+            if (!din[i])
+                q[ ++ tt] = i, mem[i][i] = 1;
+        while (hh <= tt) {
+            int t = q[hh ++ ];
+            for (int i = h[t]; ~i; i = ne[i]) {
+                int j = e[i];
+                mem[j] |= mem[t];
+                mem[j][j] = 1;
+                if ( -- din[j] == 0)
+                    q[ ++ tt] = j;
+            }
+        }
+    }
+    
+    vector<vector<int>> getAncestors(int n, vector<vector<int>>& edges) {
+        init();
+        for (auto & e : edges)
+            add(e[0], e[1]), din[e[1]] ++ ;
+        
+        this->n = n;
+        this->mem.resize(n);
+        topo();
+        
+        vector<vector<int>> res;
+        for (int i = 0; i < n; ++ i ) {
+            vector<int> t;
+            for (int j = 0; j < n; ++ j )
+                if (i != j && mem[i][j])
+                    t.push_back(j);
+            res.push_back(t);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

@@ -4202,6 +4202,58 @@ class Solution {
 
 * * *
 
+> [!NOTE] **[LeetCode K 次操作后最大化顶端元素](https://leetcode-cn.com/problems/maximize-the-topmost-element-after-k-moves/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思维题：分情况讨论 + 分析
+> 
+> 分析速度需要加快
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int maximumTop(vector<int>& nums, int k) {
+        // case 1:
+        int n = nums.size();
+        if (n == 1)
+            return (k & 1 ? -1 : nums[0]);
+        
+        int res = -1;
+        // case 2:
+        for (int i = 0; i < n && i <= k; ++ i ) {
+            if (i == k - 1)
+                continue;
+            else
+                res = max(res, nums[i]);
+        }
+        
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 动态统计计数题
 
 > [!NOTE] **[LeetCode 1224. 最大相等频率](https://leetcode-cn.com/problems/maximum-equal-frequency/)** [TAG]

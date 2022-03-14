@@ -4512,3 +4512,160 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2193. 得到回文串的最少操作次数](https://leetcode-cn.com/problems/minimum-number-of-moves-to-make-palindrome/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 复杂贪心
+> 
+> 数据范围更大的同样题目: https://www.luogu.com.cn/problem/P5041
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ TODO**
+
+```cpp
+class Solution {
+public:
+    int minMovesToMakePalindrome(string s) {
+        // 记录下标
+        vector<int> p[26];
+        for (int i = 0; i < n; ++ i )
+            p[s[i] - 'a'].push_back(i);
+        
+        // 生成反串以及对应的在原串中的字符下标 ==> TODO
+        int cnt[26] = {};
+        auto t = s; reverse(t.begin(), t.end());
+        vector<int> ve(n);
+        for (int i = 0; i < n; ++ i )
+            ve[i] = p[t[i] - 'a'][c[t[i] - 'a'] ++ ];
+        
+        int res = 0;
+        for (int i = 0; i < n; ++ i )
+            for (int j = 0; j < i; ++ j )
+                if (a[j] > a[i])
+                    res ++ ;
+        return res / 2; // ==> TODO
+    }
+};
+```
+
+##### **C++ 标准贪心**
+
+```cpp
+class Solution {
+public:
+    // 贪心的思想：
+    // 每一轮对于最左侧的字符 α，找到最大的下标 j，满足 sj=α，将 sj 移动到最右侧，然后同时去掉最左侧和最右侧的字符。
+    // 如果找不到 jj，由于题意保证可以得到回文串，则说明 alphaalpha 在当前字符串中仅出现了一次，需要放到最中间的位置上。
+    // TODO: 可信证明
+    int minMovesToMakePalindrome(string s) {
+        int n = s.size(), res = 0;
+        for (int i = 0; i < n; ++ i ) {
+            int p = -1;
+            for (int j = n - 1; j > i; -- j )
+                if (s[j] == s[i]) {
+                    p = j;
+                    break;
+                }
+            
+            if (p == -1) {
+                // 奇数个 移动到中间
+                res += s.size() / 2 - i;
+                // 右边界不变 直接continue
+                continue;
+            }
+            
+            for (int j = p; j < n - 1; ++ j )
+                s[j] = s[j + 1], res ++ ;
+            n -- ;
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 贪心 + bit优化**
+
+```cpp
+class Solution {
+public:
+    // 贪心的思想：
+    // 每一轮对于最左侧的字符 α，找到最大的下标 j，满足 sj=α，将 sj 移动到最右侧，然后同时去掉最左侧和最右侧的字符。
+    // 如果找不到 jj，由于题意保证可以得到回文串，则说明 alphaalpha 在当前字符串中仅出现了一次，需要放到最中间的位置上。
+    // TODO: 可信证明
+    const static int N = 2e3 + 10;
+    
+    int tr[N];
+    void init() {
+        memset(tr, 0, sizeof tr);
+    }
+    int lowbit(int x) {
+        return x & -x;
+    }
+    void add(int x, int c) {
+        for (int i = x; i < N; i += lowbit(i))
+            tr[i] += c;
+    }
+    int query(int x) {
+        int ret = 0;
+        for (int i = x; i; i -= lowbit(i))
+            ret += tr[i];
+        return ret;
+    }
+    
+    int minMovesToMakePalindrome(string s) {
+        int n = s.size(), res = 0;
+        
+        // 预处理每个字符的位置
+        vector<deque<int>> p(26);
+        for (int i = 0; i < n; ++ i ) {
+            p[s[i] - 'a'].push_back(i);
+            add(i + 1, 1);  // 方便统计某个区间有多少个数
+        }
+        
+        // t 已删除的个数
+        int t = 0, odd = -1;
+        for (int i = 0; i < n; ++ i ) {
+            int c = s[i] - 'a';
+            if (p[c].empty())
+                continue;
+            
+            if (p[c].size() == 1) {
+                // 奇数个
+                odd = i;
+                p[c].pop_back();
+                continue;
+            }
+            
+            // 总数 - 已删除的数 - 减去前面挖空的位置 ==> 后面数字的个数
+            res += n - t - query(p[c].back() + 1);
+            
+            add(p[c].back() + 1, -1);   // 挖空当前
+            p[c].pop_back(); p[c].pop_front();
+            t ++ ;
+        }
+        if (odd != -1)
+            res += n / 2 - query(odd);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

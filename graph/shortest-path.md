@@ -1784,6 +1784,96 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 得到要求路径的最小带权子图](https://leetcode-cn.com/problems/minimum-weighted-subgraph-with-the-required-paths/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典图论：**枚举中间点**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    using PLL = pair<LL, LL>;
+    const static int N = 1e5 + 10, M = 2e5 + 10;
+    
+    int h[N], rh[N], e[M], w[M], ne[M], idx;
+    void init() {
+        memset(h, -1, sizeof h);
+        memset(rh, -1, sizeof rh);
+        idx = 0;
+    }
+    void add(int h[], int a, int b, int c) {
+        e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    int n;
+    LL d[3][N];
+    
+    void dijkstra(int src, int h[], LL d[]) {
+        for (int i = 0; i < n; ++ i )
+            d[i] = 1e18;
+        bool st[N];
+        memset(st, 0, sizeof st);
+        
+        priority_queue<PLL, vector<PLL>, greater<PLL>> heap;
+        heap.push({0, src}); d[src] = 0;
+        while (heap.size()) {
+            auto [dis, u] = heap.top(); heap.pop();
+            if (st[u])
+                continue;
+            st[u] = true;
+            for (int i = h[u]; ~i; i = ne[i]) {
+                int j = e[i], c = w[i];
+                if (d[j] > d[u] + c) {
+                    d[j] = d[u] + c;
+                    heap.push({d[j], j});
+                }
+            }
+        }
+    }
+    
+    long long minimumWeight(int n, vector<vector<int>>& edges, int src1, int src2, int dest) {
+        init();
+        for (auto & e : edges)
+            add(h, e[0], e[1], e[2]), add(rh, e[1], e[0], e[2]);
+        this->n = n;
+        
+        dijkstra(src1, h, d[0]);
+        dijkstra(src2, h, d[1]);
+        dijkstra(dest, rh, d[2]);
+        
+        LL res = 1e18;
+        for (int i = 0; i < n; ++ i )
+            res = min(res, d[0][i] + d[1][i] + d[2][i]);
+        if (res >= 1e18)
+            return -1;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### bellmanford
 
 > [!NOTE] **[LeetCode 787. K 站中转内最便宜的航班](https://leetcode-cn.com/problems/cheapest-flights-within-k-stops/)**
