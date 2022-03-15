@@ -3621,6 +3621,82 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 合作开发](https://leetcode-cn.com/contest/cnunionpay-2022spring/problems/lCh58I/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 状压 + 数学
+> 
+> 注意 **枚举非空非全真子集 + 数学计算细节TODO**
+> 
+> 重复做
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int MOD = 1e9 + 7;
+    
+    LL p[4] = {1, 1000, 1000000, 1000000000};
+    
+    int coopDevelop(vector<vector<int>>& skills) {
+        int n = skills.size();
+        map<LL, LL> hash;
+        for (auto & s : skills) {
+            sort(s.begin(), s.end());
+            // encode
+            LL st = 0;
+            for (int i = 0; i < s.size(); ++ i )
+                st += s[i] * p[i];
+            hash[st] ++ ;
+        }
+        
+        LL res = (LL)n * (n - 1) / 2;
+        for (auto [k, v] : hash) {
+            // decode
+            vector<int> ve;
+            for (LL i = 0, j = k; j; ++ i , j /= 1000 )
+                ve.push_back(j % 1000);
+            
+            int m = ve.size();
+            // 非空非全 真子集
+            for (int i = 1; i < (1 << m) - 1; ++ i ) {
+                LL st = 0, c = 0;
+                for (LL j = 0; j < m; ++ j )
+                    if (i >> j & 1)
+                        st += ve[j] * p[c ++ ];
+                
+                if (hash.count(st))
+                    res -= hash[st] * v;
+            }
+            res -= v * (v - 1) / 2;
+        }
+        return res % MOD;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 状压 + meet in the middle
 
 > [!NOTE] **[LeetCode 2035. 将数组分成两个数组并最小化数组和的差](https://leetcode-cn.com/problems/partition-array-into-two-arrays-to-minimize-sum-difference/)**

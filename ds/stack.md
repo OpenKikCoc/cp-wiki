@@ -584,3 +584,49 @@ public:
 <br>
 
 * * *
+
+### trick
+
+> [!NOTE] **[LeetCode 2197. 替换数组中的非互质数](https://leetcode-cn.com/problems/replace-non-coprime-numbers-in-array/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思维 栈
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<int> replaceNonCoprimes(vector<int>& nums) {
+        vector<int> res;
+        for (auto x : nums) {
+            while (res.size() > 0 && __gcd(res.back(), x) > 1) {
+                x = x / __gcd(res.back(), x) * res.back();
+                res.pop_back();
+            }
+            res.push_back(x);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

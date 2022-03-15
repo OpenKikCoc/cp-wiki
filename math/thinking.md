@@ -1968,3 +1968,70 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 理财产品](https://leetcode-cn.com/contest/cnunionpay-2022spring/problems/I4mOGz/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 数学计算 细节
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int MOD = 1e9 + 7;
+    
+    int maxInvestment(vector<int>& product, int limit) {
+        sort(product.begin(), product.end());
+        reverse(product.begin(), product.end());
+        
+        int n = product.size();
+        LL s = 0, tot = 0, res = 0;
+        for (int i = 0; i < n; ++ i ) {
+            s += product[i], tot += (1LL + product[i]) * product[i] / 2;
+            LL t = s - limit;
+            if (t > 0) {
+                // 平均还剩a 有b个剩余a+1
+                LL a = t / (i + 1), b = t % (i + 1);
+                // 为了后面ret计算准确 如果当前不合法直接break
+                if (a > product[i])
+                    break;
+                
+                {
+                    LL ret = 0;
+                    if (b)
+                        ret += (0LL + a + 1) * b;
+                    ret += (1LL + a) * a / 2 * (i + 1);
+                    res = max(res, tot - ret);
+                // cout << " i = " << i << " p[i] = " << product[i] << " t = " << t << " a = " << a << " b = " << b << " tot = " << tot << " ret = " << ret << " tot-ret = " << tot - ret << endl;
+                }
+            } else {
+                // cout << " i = " << i << " p[i] = " << product[i] << " t = " << t << " tot = " << tot << endl;
+                res = max(res, tot);
+            }
+        }
+        return res % MOD;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

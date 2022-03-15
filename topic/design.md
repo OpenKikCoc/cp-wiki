@@ -2287,6 +2287,87 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 优惠活动系统](https://leetcode-cn.com/contest/cnunionpay-2022spring/problems/kDPV0f/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 考虑了用 set 直接存并二分找起始来加速查找
+> 
+> 实际上暴力遍历就可以过
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class DiscountSystem {
+public:
+    struct acts {
+        int id, p, dis, num, lim;
+        unordered_map<int, int> user;
+        acts() {}
+        acts(int _id, int _p, int _dis, int _num, int _lim) {
+            id = _id, p = _p, dis = _dis, num = _num, lim = _lim;
+        }
+    };
+    
+    map<int, acts> S;
+    
+    DiscountSystem() {
+        S.clear();
+    }
+    
+    void addActivity(int actId, int priceLimit, int discount, int number, int userLimit) {
+        S[actId] = {actId, priceLimit, discount, number, userLimit};
+    }
+    
+    void removeActivity(int actId) {
+        S.erase(actId);
+    }
+    
+    int consume(int userId, int cost) {
+        int maxDis = 0, id = -1;
+        for (auto & [k, v] : S)
+            if (v.p <= cost && v.num) {
+                auto m = v.user;
+                if (m.count(userId) && m[userId] == v.lim)
+                    continue;
+                if (v.dis > maxDis)
+                    maxDis = v.dis, id = k;
+            }
+        if (id != -1) {
+            S[id].user[userId] ++ , S[id].num -- ;
+        }
+        return cost - maxDis;
+    }
+};
+
+/**
+ * Your DiscountSystem object will be instantiated and called as such:
+ * DiscountSystem* obj = new DiscountSystem();
+ * obj->addActivity(actId,priceLimit,discount,number,userLimit);
+ * obj->removeActivity(actId);
+ * int param_3 = obj->consume(userId,cost);
+ */
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 四叉树
 
 > [!NOTE] **[LeetCode 427. 建立四叉树](https://leetcode-cn.com/problems/construct-quad-tree/)**
