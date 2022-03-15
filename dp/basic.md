@@ -910,23 +910,25 @@ if __name__ == '__main__':
 >
 > 
 >
-> 这道题不能直接从正向动态规划的原因是：不确定起始点的值，但可以发现，到终点之后 健康值为1 一定是最优解。 
+> 这道题不能直接从正向动态规划的原因是：不确定起始点的值，但可以发现，到终点之后健康值为 1 一定是最优解。 
 >
-> ​	考虑从终点到起点进行dp
+> ​	考虑从终点到起点进行 dp
 >
-> 1. 状态表示：f[i,j] 表示从[i,j]成功到达终点，[i,j]处需要具备的最少能量值
+> 1. 状态表示：f[i,j] 表示从 [i,j] 成功到达终点时，在 [i,j] 处需要具备的最少能量值
 >
->    初始状态，f[n-1, m-1]即在终点的最小健康值，max(1, 1 - `w[n-1][m-1]`)  上一步 也至少为1
+>    初始状态，f[n - 1, m - 1]即在终点的最小健康值，max(1, 1 - w[n-1, m-1])  上一步的能量值也至少为 1
 >
-> 2. 状态转移，f[i, j] = min(f[i+1, j], f[i, j+1] - w[i][j]) 但是f[i,j]又必须要大于1， 所以最后还要和1比较取min
+> 2. 状态转移，f[i, j] = min(f[i + 1, j], f[i, j + 1] - w[i, j]) 但是f[i,j]又必须要大于 1， 所以最后还要和 1 比较取 min
 >
->    最终答案: `f[0][0]`
+>    最终返回的答案: **f[0, 0]** 
 >
 > 转移详解：
 >
-> 从[i,j]往下一步走，加上当前权值，一定要大于等于 到下一步最少具备的能量，也就是：f[i,j] + w[i,j] >= `f[i+1][j]`
+> 从[i,j]往下一步走，加上当前权值，一定要大于等于 到下一步最少具备的能量，也就是：f[i,j] + w[i,j] >= f[i + 1, j]
 >
-> `f[i][j]` >= `f[i+1][j]` - `w[i][j]`, 由于两个方向要取最小的，所以直接： `f[i][j] `= `f[i+1][j] `- `w[i][j] `
+> f[i, j] >= f[i + 1, j] - w[i, j], 由于两个方向要取最小的，所以直接： 
+>
+> f[i, j] = f[i + 1, j] - w[i, j ]
 
 
 
@@ -1004,6 +1006,22 @@ class Solution:
                     f[i][j] = min(f[i][j], f[i][j + 1] - w[i][j])
                 f[i][j] = max(1, f[i][j])
         return f[0][0]
+      
+# f 下标从 [1, 1] 开始      
+class Solution:
+    def calculateMinimumHP(self, w: List[List[int]]) -> int:
+        n, m = len(w), len(w[0])
+        f = [[float('inf')] * (m + 1) for _ in range(n + 1)]
+        f[n][m] = max(1, 1 - w[n - 1][m - 1])
+
+        for i in range(n, 0, -1):
+            for j in range(m, 0, -1):
+                if i < n:
+                    f[i][j] = f[i + 1][j] - w[i - 1][j - 1]
+                if j < m:
+                    f[i][j] = min(f[i][j], f[i][j + 1] - w[i - 1][j - 1])
+                f[i][j] = max(f[i][j], 1)
+        return f[1][1]
 ```
 
 <!-- tabs:end -->
@@ -1256,10 +1274,27 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
+>
 > 优雅实现
-> 
+>
 > `if` 实现合法性判断
+>
+> 1. 状态表示
+>
+>    （比较难想，多做题）一般题意给出两个字符串就是二维
+>
+>    f[i, j] 表示**完成输出单词的前 i 个字母，且输出 key[i] 时，指针位于 ring[j]的所有方案**；属性：最小值
+>
+> 2. 状态转移
+>
+>    对于f[i, j] ，且当 key[i] == ring[j] 时，(最后一个位置是位于 j ），那以倒数第二个位置不同进行转移, 可以位于[1,2,..,k,..,..n]
+>
+>    考虑位于位置 k 的最小值。也就是考虑前 i - 1 个字母并且指针位于 ring[k] 的方案最小值，也就是f[i - 1, k] （后面两步是相通的：1）从 k 转到 j； 2）按按钮
+>
+> 3. 初始值：根据题意最初 ring 的第一个字符就是在正方向, **f[0, 1] = 0** 
+> 4. 时间复杂度：状态数量是 O($n^2$), 转移数量是 m, 总的复杂度：O($mn^2$)
+
+
 
 <details>
 <summary>详细代码</summary>
@@ -1294,7 +1329,25 @@ public:
 ##### **Python**
 
 ```python
-
+class Solution:
+    def findRotateSteps(self, ring: str, key: str) -> int:
+        n, m = len(ring), len(key)
+        ring, key = ' ' + ring, ' ' + key
+        f = [[float('inf')] * (n + 1) for _ in range(m + 1)]
+        f[0][1] = 0
+        for i in range(1, m + 1):
+            for j in range(1, n + 1):
+                if key[i] == ring[j]:
+                    for k in range(1, n + 1):
+                        # 可以顺时针转，也可以逆时针转
+                        t = abs(k - j)
+                        f[i][j] = min(f[i][j], f[i - 1][k] + min(t, n - t) + 1)
+        
+        res = float('inf')
+        # 枚举指针位置，一定是要输出前 m 个字符
+        for i in range(1, n + 1):
+            res = min(res, f[m][i])
+        return res
 ```
 
 <!-- tabs:end -->
@@ -1309,8 +1362,22 @@ public:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
+>
 > 比摘花生稍复杂一点点 1A
+>
+> 假设两个人从左上角同时向右下角走，因为每个格子的樱桃只能被取一次，所以当两个人的路线重合时，我们只保证其中有一个人可以去到樱桃。
+>
+> 1. 状态表示: f[i, j, k]（一共走了 k 步，两个人的横坐标分别是 i, j,那么他们所在的坐标分别是(i, k - i), (j, k - j)），也就是**表示两个人走到(i, k - i), (j, k - j)所有路线的集合**；属性：最大值
+>
+> 2. 状态转移：这个集合可以分为几类呢？每个格子都有两个选择，两两一组合就有四个不同的组合方式：1）一起往右 2）一起往下 3）右 + 下 4）下 + 右。只要分别求每一类的最大值，然后再取这四类里的最大值即可。
+>
+> 3. 注意点：
+>
+>    1）如果两个人走到了同一个樱桃格子上，那樱桃数量只能加一次 
+>
+>    2）某些格子是不能走的
+>
+>    3）如果走 k 次取最大价值，不能用 dp 做，应该用最短路思想来做。
 
 <details>
 <summary>详细代码</summary>
@@ -1390,7 +1457,24 @@ public:
 ##### **Python**
 
 ```python
-
+class Solution:
+    def cherryPickup(self, grid: List[List[int]]) -> int:
+        N = 110
+        f = [[[float('-inf')] * N for _ in range(N)] for _ in range(N)]
+        n = len(grid)
+        if grid[0][0] != -1:
+            f[1][1][2] = grid[0][0]
+        for k in range(1, 2 * n + 1):
+            for i in range(max(1, k - n), min(n + 1, k - 1 + 1)):
+                for j in range(max(1, k - n), min(n + 1, k - 1 + 1)):
+                    if grid[i - 1][k - i - 1] == -1 or grid[j - 1][k - j - 1] == -1:continue
+                    t = grid[i - 1][k - i - 1]
+                    if i != j:
+                        t += grid[j - 1][k - j - 1]
+                    for a in range(i - 1, i + 1):
+                        for b in range(j - 1, j + 1):
+                            f[i][j][k] = max(f[i][j][k], f[a][b][k - 1] + t)
+        return max(0, f[n][n][2 * n])
 ```
 
 <!-- tabs:end -->
@@ -1405,8 +1489,18 @@ public:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
+>
 > dp 注意非法的状态转移
+>
+> 1. 状态表示：f[l, i, j]表示第一个机器人从 (0, 0) 走到 (l, i), 第二个机器人从 (0, 0) 走到 (l, j)时，收集的樱桃数；属性是：最大值
+>
+> 2. 状态转移：以走到第 l - 1行时，机器人所在的位置不同进行划分。机器人1和2都有三种可能，所以两两组合，一共有9种组合。
+>
+>    f[l, i, j] = max(f[l - 1, i - 1, j - 1], f[l - 1, i - 1, j], f[l - 1, i - 1, j + 1],...) + grid[l, i] + grid[l, j]
+>
+> 3. 初始状态:一开始在第 0 行，第一，二个机器人分别在第 0，m - 1 列:
+>
+>    f[0, 0, m-1] = grid[0, m - 1] + grid[0, 0]
 
 <details>
 <summary>详细代码</summary>
@@ -1445,11 +1539,69 @@ public:
 };
 ```
 
-##### **Python**
+##### **Python I**
 
 ```python
+class Solution:
+    def cherryPickup(self, grid: List[List[int]]) -> int:
+        n, m = len(grid), len(grid[0])
+        # 踩坑：这里 f 初始化为 -1， 表示这个状态不合法（因为机器人始终每一步都只能在下一行往左或者往右一步，下一行往左两步及以上都是不可达的）
+        f = [[[-1 for _ in range(m + 1)] for _ in range(m + 1)] for _ in range(n + 1)]
+        f[0][0][m - 1] = grid[0][0] + grid[0][m - 1]
+        dx = [-1, 0, 1]
+
+        for l in range(1, n):
+            for i in range(m):
+                # j 是从 i + 1 开始遍历的，所以两个机器人不会走到同一个格子上
+                for j in range(i + 1, m):
+                    for d1 in range(3):
+                        for d2 in range(3):
+                            p1, p2 = i + dx[d1], j + dx[d2]
+                            if p1 < 0 or p1 >= m or p2 < 0 or p2 >= m:
+                                continue
+                            if f[l - 1][p1][p2] == -1:continue # 不合法
+                            f[l][i][j] = max(f[l][i][j], f[l - 1][p1][p2] + grid[l][i] + grid[l][j])
+
+        res = 0
+        for i in range(m):
+            for j in range(i + 1, m):
+                res = max(res, f[n - 1][i][j])
+        return res
+```
+
+
+
+**Python II** 
+
+```python
+class Solution:
+    def cherryPickup(self, grid: List[List[int]]) -> int:
+        n = len(grid)
+        m = len(grid[0])
+        f = [[[0 for i in range(m + 1)] for i in range(m + 1)] for i in range(n + 1)]
+        f[0][0][m - 1] = grid[0][-1] + grid[0][0]
+        maxn = 0
+        for l in range(1, n):
+            for i in range(m):
+                for j in range(m):
+                    # 不能超过对角线（trick的排除不合法的情况）
+                    if i > l: continue
+                    if m - 1 - j > l: continue
+                    maxnum = 0
+                    for ii in range(-1, 2):
+                        for jj in range(-1, 2):
+                            if i - ii >= 0 and j - jj >= 0:
+                                maxnum = max(maxnum, f[l - 1][i - ii][j - jj])
+                    if i != j:
+                        f[l][i][j] = maxnum + grid[l][i] + grid[l][j]
+                    else:
+                        f[l][i][j] = maxnum + grid[l][i]
+                    maxn = max(maxn, f[l][i][j])
+        return maxn
 
 ```
+
+
 
 <!-- tabs:end -->
 </details>
