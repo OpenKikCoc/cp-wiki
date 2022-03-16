@@ -1615,10 +1615,22 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 二维dp 记录方案数即可
-> 
+>
 > trick **使用 PII 来同时记录数值和方案**
+>
+> 1. 状态表示：f[i, j, 2] 表示从右下角到 (i, j) 的最大得分和方案数；属性：最大得分，以及最大得分对应的方案数
+>
+> 2. 状态转移： 位置 (i, j) 可以由 (i + 1, j), (i + 1, j + 1) 和 (i, j + 1) 三个位置转移过来。
+>
+> 3. 如果右下角无法到达位置(i, j)，那么f[i, j] = [-1, 0]
+>
+>    1）位置 (i, j) 有障碍
+>
+>    2）由于有障碍，无法到达位置 (i, j)
+>
+> 4. 初始化：f[n - 1, n - 1] = [0, 1] 开始是在右下角，得分为0的方案合法，并且为1
+
+
 
 <details>
 <summary>详细代码</summary>
@@ -1670,11 +1682,95 @@ public:
 };
 ```
 
-##### **Python**
+##### **Python-I**
+
+```python
+"""
+把状态转移的过程抽象出一个 update 函数
+"""      
+class Solution:
+    def pathsWithMaxScore(self, board: List[str]) -> List[int]:
+        n = len(board)
+        mod = int(1e9 + 7)
+        f = [[[-1, 0] for _ in range(n + 1)] for _ in range(n + 1)]
+        f[n - 1][n - 1] = [0, 1]
+
+        def update(i, j, x, y):
+            if 0 <= x < n and 0 <= y < n and f[x][y][0] != -1:
+                if f[x][y][0] > f[i][j][0]:
+                    f[i][j] = f[x][y][:]
+                elif f[x][y][0] == f[i][j][0]:
+                    f[i][j][1] += f[x][y][1]
+                    f[i][j][1] %= mod
+
+        for i in range(n - 1, -1, -1):
+            for j in range(n - 1, -1, -1):
+                if board[i][j] != 'X':
+                    update(i, j, i + 1, j)
+                    update(i, j, i, j + 1)
+                    update(i, j, i + 1, j + 1)
+                    if f[i][j][0] != -1:
+                        if board[i][j].isdigit() == True:
+                            f[i][j][0] += int(board[i][j])
+        if f[0][0][0] == -1:
+            return [0, 0]
+        else:
+            return f[0][0]
+```
+
+
+
+**Python-II**
 
 ```python
 
+'''
+简单记忆化递归进行动态规划
+'''
+
+
+from typing import List
+from functools import lru_cache
+
+class Solution:
+    def pathsWithMaxScore(self, board: List[str]) -> List[int]:
+        m, n = len(board), len(board[0])
+
+        # 从ii, jj位置到起点的路径最大和以及方法数
+        @lru_cache(typed=False, maxsize=128000000)
+        def dp(ii, jj):
+            if ii < 0 or ii >= m or jj < 0 or jj >= n:
+                return (0, 0)
+
+            if ii == 0 and jj == 0:
+                return (0, 1)
+
+            if board[ii][jj] == 'X':
+                return (0, 0)
+
+            ans1 = dp(ii, jj-1)
+            ans2 = dp(ii-1, jj)
+            ans3 = dp(ii-1, jj-1)
+
+            max_score = max(ans1[0], ans2[0], ans3[0])
+            ans = [max_score + ord(board[ii][jj]) - ord('0'), 0]
+            if ii == m-1 and jj == n-1:
+                ans[0] = max_score
+
+            for length, cnt in [ans1, ans2, ans3]:
+                if length == max_score:
+                    ans[1] += cnt
+
+            if ans[1] == 0:
+                ans[0] = 0
+            ans[1] %= 1000000007
+
+            return ans
+
+        return dp(m-1, n-1)
 ```
+
+
 
 <!-- tabs:end -->
 </details>
@@ -1689,7 +1785,25 @@ public:
 
 > [!TIP] **思路**
 >
-> 经典 压掉一维状态
+> 1. 状态表示 f[i, l, r] 表示走到字符串第 i 个字母的时候，左手的位置在 l, 右手的位置在 r 时的距离；属性：min
+>
+> 2. 状态转移：对于 f[i, l, r] 来说，有一个重要的性质，在走到第 i 个字母的时候，这个时候要么左手，要么右手是在 word[i] 位置上的。
+>
+>    1）如果第 i 字母是左手在 word[i] 位置上：那就去看第 i - 1 个字母，去遍历左手和右手的所有情况，最后再加上第 i 个字母，左手从上一个位置到 i 字母的距离
+>
+>    2）如果第 i 字母是右手在 word[i] 位置上：同上，只是最后加上的就是右手从上一个位置到 i 字母的距离
+>
+>    最后的答案是：f[n, l, r] 中的最小值，因为 l 和 r 的位置并不是固定在哪就是最小
+>
+> 3. 初始化：一开始 l 和 r 的起始位置是领代价，所以不管 l 和 r 一开始在哪，
+>
+>    ​	f[0, l, r] = 0
+>
+> 4. 我们在转移过程中，还需要求从某个字母到另外一个字母的距离，这里就把二维的表转化为了一维，方便求距离
+>
+>    
+>
+> **经典 压掉一维状态**
 >
 > 减少一维：
 >
@@ -1783,7 +1897,36 @@ public:
 ##### **Python**
 
 ```python
+class Solution:
+    def minimumDistance(self, word: str) -> int:
+        n = len(word)
+        f = [[[float('inf')] * 26 for _ in range(26)] for _ in range(n + 1)]
 
+        # 二维化为一维 求距离
+        c = [[0] * 26 for _ in range(26)]
+        for i in range(26):
+            x1, y1 = i // 6, i % 6
+            for j in range(26):
+                x2, y2 = j // 6, j % 6
+                c[i][j] = c[j][i] = abs(x1 - x2) + abs(y1 - y2)
+        
+        # 初始值
+        for l in range(26):
+            for r in range(26):
+                f[0][l][r] = 0
+        
+        for i in range(1, n + 1):
+            x = ord(word[i - 1]) - ord('A')
+            for l in range(26):
+                for r in range(26):
+                    f[i][l][x] = min(f[i][l][x], f[i - 1][l][r] + c[r][x])
+                    f[i][x][r] = min(f[i][x][r], f[i - 1][l][r] + c[l][x])
+
+        res = float('inf')
+        for l in range(26):
+            for r in range(26):
+                res = min(res, f[n][l][r])
+        return res
 ```
 
 <!-- tabs:end -->
@@ -1800,8 +1943,10 @@ public:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> 最优化的问题 从“集合”的角度进行考虑
+>
+> 在原序列中，满足“先递增再递减的子序列”里找到长度最长的子序列
 
 <details>
 <summary>详细代码</summary>
@@ -1849,9 +1994,6 @@ int main() {
 ##### **Python**
 
 ```python
-# 最优化的问题 从“集合”的角度进行考虑
-# 在原序列中，满足“先递增再递减的子序列”里找到长度最长的子序列
-
 N = 1010
 a = [0]*N
 f1 = [1]*N
@@ -1886,8 +2028,10 @@ if __name__ == '__main__':
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> 所有合法的建桥方式； 上升子序列 ； 航道交叉也就是a1 >= a2 && b1 <= b2(其中a, b表示两岸)
+>
+> 方法：1. 通过排序，固定自变量的顺序； 2. 找到因变量的最大上升子序列
 
 <details>
 <summary>详细代码</summary>
@@ -1931,9 +2075,6 @@ int main() {
 ##### **Python**
 
 ```python
-# 所有合法的建桥方式； 上升子序列 ； 航道交叉也就是a1 >= a2 && b1 <= b2(其中a, b表示两岸)
-# 方法：1. 通过排序，固定自变量的顺序； 2.找到因变量的最大上升子序列
-
 N = 5010
 f = [1] * N
 
@@ -2260,14 +2401,14 @@ public:
 class Solution:
     def lengthOfLIS(self, nums: List[int]) -> int:
         if not nums:return 0
-        n=len(nums)
-        dp=[1]*(n+1)
-        res=1
-        for i in range(1,n+1):
-            for j in range(1,i):
-                if nums[i-1]>nums[j-1]:
-                    dp[i]=max(dp[i],dp[j]+1)
-            res=max(res,dp[i])
+        n = len(nums)
+        f = [1] * (n + 1)
+        res = 1
+        for i in range(1, n + 1):
+            for j in range(1, i):
+                if nums[i - 1] > nums[j - 1]:
+                    f[i] = max(f[i], f[j] + 1)
+            res = max(res, f[i])
         return res
 ```
 
