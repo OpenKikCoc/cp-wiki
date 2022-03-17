@@ -1,5 +1,5 @@
 
-> [!NOTE] **动态规划的两种实现方法**
+> t[!NOTE] **动态规划的两种实现方法**
 > 
 > - 带备忘的自顶向下法（记忆化搜索）；
 > 
@@ -2342,8 +2342,46 @@ int main() {
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> **普通 dp**
+>
+> 1. 状态表示：f[i] 表示以第 i 个字符为结尾的上升子序列长度；属性： max
+>
+> 2. 状态转移：以上一个字符是否能加入到上升序列切分。
+>
+>    只有当 nums[i - 1] < nums[i], 那 f[i] = f[i - 1] + 1
+>
+> 3. 初始化：所有的数字本身都可以构成长度为1的上升子序列，所以f[i] = 1
+>
+> 4. 时间复杂度：$O(n^2)$
+>
+> **二分优化**
+>
+> 1. 需要一个列表 p 来存储所有不同长度的上升子序列的结尾的最小值。p[i] 表示上升子序列长度为 i 的所有序列里末尾最小数的值。
+>
+> 2. 对于当前数 a[i], 通过二分先在列表 p 中找到大于当前数 a[i] 的最大数，假设是 p[r]，然后把 a[i] 接到 p[r] 后面，就可以构成以 a[i] 为结尾的最长上升子序列
+>
+>    接着，更新列表 p: p[r + 1] = a[i] 因为p[r + 1] 表示的长度和 a[i]此时形成的最长上升子序列长度一致，但是 a[i] < p[r + 1]，而 p 存储的是长度为 i 的所有序列里末尾最小的数。所以更新为 a[i].
+>
+>    这样的好处是，对于后续未知的数来说，可以接在 a[i] (比a[i]大，就可以接在后面，使得当前所有最长上升子序列的长度+1) 的数字是比接在 p[r + 1] 后面的范围更大的。
+>
+> 3. 总的来说，就是直接在列表 p 中找到第一个比 a[i] 大的数 p[l]，然后用 a[i] 替换掉这个数即可。最后返回列表 p 的长度。
+>
+> 4. 时间复杂度: $O(nlogn)$
+>
+>    
+>
+>    我们现在的贪心思想就是，数组p里要保留末尾最小的元素，这样可以获得子序列最长的答案，也就是最优解。
+>
+>    反证法：假设在最优解里，数组p里保留的不是末尾最小的元素。
+>
+>    比如数组[2,5,3,4];
+>
+>    1. 当前（2，5） （2，3）这两个子序列长度都是2，如果p数组记录的不是最小值，那么 p[2] = 5；
+>    2. 那么对于数字4，由于比数字5小，所以没有办法接到5后面形成一个上升子序列，那此时就会认为整个数组的最长上升子序列长度就是 2。
+>    3. 但这个很明显不是最优解（最长上升子序列长度是3），所以假设不成立
+
+
 
 <details>
 <summary>详细代码</summary>
@@ -2373,24 +2411,22 @@ public:
 class Solution {
 public:
     int lengthOfLIS(vector<int>& nums) {
-        int n = nums.size();
-        vector<int> q;
-        for (auto x: nums) {
-            if (q.empty() || x > q.back()) q.push_back(x);
-            else {
-                if (x <= q[0]) q[0] = x;
-                else {
-                    int l = 0, r = q.size() - 1;
-                    while (l < r) {
-                        int mid = l + r + 1 >> 1;
-                        if (q[mid] < x) l = mid;
-                        else r = mid - 1;
-                    }
-                    q[r + 1] = x;
-                }
+        vector<int> f;
+        for (auto x : nums) {
+            int l = 0, r = f.size();
+            while (l < r) {
+                int m = l + r >> 1;
+                if (f[m] < x)
+                    l = m + 1;
+                else
+                    r = m;
             }
+            if (l == f.size())
+                f.push_back(x);
+            else
+                f[l] = x;
         }
-        return q.size();
+        return f.size();
     }
 };
 ```
@@ -2412,6 +2448,33 @@ class Solution:
         return res
 ```
 
+**Python - 二分优化**
+
+```python
+class Solution:
+    def lengthOfLIS(self, nums: List[int]) -> int:
+        if not nums:return 0
+        n = len(nums)
+        p = []
+
+        for v in nums:
+          # 如果 p == null or 列表 p 的最后一个数比当前数小，直接把当前数插入
+            if not p or v > p[-1]:
+                p.append(v)
+            else:
+                l, r = 0, len(p)
+                while l < r:
+                    m = l + (r - l) // 2
+                    if p[m] < v:
+                        l = m + 1
+                    else:r = m
+                # 由于当前数比所有数都大，会直接append，所以没有数组越界问题
+                p[l] = v
+        return len(p) 
+```
+
+
+
 <!-- tabs:end -->
 </details>
 
@@ -2424,8 +2487,16 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> **二分优化**
+>
+> 1. 思路同一维的最长上升子序列的二分优化方法，这是二维的。
+>
+> 2. 进行排序，对原序列的e[0]升序，e[1]降序（
+>
+>    e[1]降序的原因：当有 [2,2], [2,3]这样的序列，如果e[1]升序的话，那[2,3]就会被接在[2,2]后面，但这样实际上是不合法的。所以给e[1]降序可以避免这个问题
+>
+> 3. 列表 p 存储的是不同长度的上升子序列的结尾的最小值。p[i] 表示上升子序列长度为 i 的所有序列里末尾最小数的值的第二维度的数值。
 
 <details>
 <summary>详细代码</summary>
@@ -2476,11 +2547,55 @@ public:
 };
 ```
 
-##### **Python**
+##### **Python 二分优化**
 
 ```python
+class Solution:
+    def maxEnvelopes(self, envelopes: List[List[int]]) -> int:
+        n = len(envelopes)
+        envelopes.sort(key=lambda x:(x[0], -x[1]))
 
+        p = []
+        for e in envelopes:
+            # 如果 p == null or 列表p的最后一个数比当前数小，直接把当前数插入
+            if not p or e[1] > p[-1]:
+                p.append(e[1])
+            else:
+                # 二分找到第一个比当前数大的数
+                l, r = 0, len(p)
+                while l < r:
+                    m = l + (r - l) // 2
+                    if p[m] < e[1]:
+                        l = m + 1
+                    else:
+                        r = m
+                # 由于当前数比所有数都大，会直接append，所以没有数组越界问题
+                p[l] = e[1]
+        return len(p)
 ```
+
+
+
+**Python dp**
+
+```python
+# 暴力会超时
+class Solution:
+    def maxEnvelopes(self, e: List[List[int]]) -> int:
+        n = len(e)
+        e.sort()
+        f = [1] * n
+
+        res = 1
+        for i in range(n):
+            for j in range(i):
+                if e[j][0] < e[i][0] and e[j][1] < e[i][1]:
+                    f[i] = max(f[i], f[j] + 1)
+            res = max(res, f[i])
+        return res
+```
+
+
 
 <!-- tabs:end -->
 </details>
@@ -2531,8 +2646,31 @@ public:
 ##### **Python**
 
 ```python
-
+class Solution:
+    def bestTeamScore(self, scores: List[int], ages: List[int]) -> int:
+        n = len(scores)
+        nums = list(zip(ages, scores))
+        nums.sort(key=lambda x: (x[0], x[1]))
+        f = [nums[i][1] for i in range(n)]
+        res = 0
+        for i in range(n):
+            for j in range(i):
+                if nums[i][1] >= nums[j][1]:
+                    f[i] = max(f[i], f[j] + nums[i][1])
+            res = max(res, f[i])
+        return res
 ```
+
+
+
+**Python-二分优化**
+
+```python
+```
+
+
+
+
 
 <!-- tabs:end -->
 </details>
