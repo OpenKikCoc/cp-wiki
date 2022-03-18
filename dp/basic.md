@@ -2359,7 +2359,7 @@ int main() {
 >
 > 1. 需要一个列表 p 来存储所有不同长度的上升子序列的结尾的最小值。p[i] 表示上升子序列长度为 i 的所有序列里末尾最小数的值。
 >
-> 2. 对于当前数 a[i], 通过二分先在列表 p 中找到大于当前数 a[i] 的最大数，假设是 p[r]，然后把 a[i] 接到 p[r] 后面，就可以构成以 a[i] 为结尾的最长上升子序列
+> 2. 对于当前数 a[i], 通过二分先在列表 p 中找到小于当前数 a[i] 的最大数，假设是 p[r]，然后把 a[i] 接到 p[r] 后面，就可以构成以 a[i] 为结尾的最长上升子序列
 >
 >    接着，更新列表 p: p[r + 1] = a[i] 因为p[r + 1] 表示的长度和 a[i]此时形成的最长上升子序列长度一致，但是 a[i] < p[r + 1]，而 p 存储的是长度为 i 的所有序列里末尾最小的数。所以更新为 a[i].
 >
@@ -2448,6 +2448,27 @@ class Solution:
         return res
 ```
 
+
+
+**Python-二分优化（bisect）**
+
+```python
+import bisect
+class Solution:
+    def lengthOfLIS(self, nums: List[int]) -> int:
+        p = []
+        for v in nums:
+            idx = bisect.bisect_left(p, v)
+            if idx == len(p):
+                p.append(v)
+            else:
+              p[idx] = v
+        return len(p)
+        
+```
+
+
+
 **Python - 二分优化**
 
 ```python
@@ -2472,6 +2493,8 @@ class Solution:
                 p[l] = v
         return len(p) 
 ```
+
+
 
 
 
@@ -2546,6 +2569,29 @@ public:
     }
 };
 ```
+
+
+
+**Python bisect**
+
+```python
+import bisect
+class Solution:
+    def maxEnvelopes(self, envelopes: List[List[int]]) -> int:
+        n = len(envelopes)
+        envelopes.sort(key=lambda x:(x[0], -x[1]))
+
+        p = []
+        for e in envelopes:
+            idx = bisect.bisect_left(p, e[1])
+            if idx == len(p):
+                p.append(e[1])
+            else:
+                p[idx] = e[1]
+        return len(p)
+```
+
+
 
 ##### **Python 二分优化**
 
@@ -2684,11 +2730,20 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
+>
 > 简单 LIS
-> 
+>
+> 假设最优解的中心是第k座山，那么T1，T2,..,Ti一定是以Ti结尾的最长上升子序列，同理Tk, Tk-1,..Ti也是以Ti结尾的最长上升子序列。
+>
+> 对于每座山，先预处理出：
+>
+> 1. 从前往后以每个点结尾的最长上升子序列长度f[i]
+> 2. 从后往前以每个点结尾的最长上升子序列长度g[i]
+>
+> 那么以k为中心的最大长度就是：f[k]+g[k]-1，遍历k=[1,n]，取最大值即可
+>
 > 必须有上升有下降 所以不统计 1 和 n 的位置， WA 1
-> 
+>
 > > 关于不使用两头的元素 其实更好的判断是
 > > 
 > > ```cpp
@@ -2720,7 +2775,8 @@ public:
         }
         int res = 0;
         for (int i = 2; i <= n - 1; ++ i )
-            res = max(res, fu[i] + fd[i] - 1);
+            if (fu[i] > 1 && fd[i] > 1)
+                res = max(res, fu[i] + fd[i] - 1);
         return n - res;
     }
 };
@@ -2729,8 +2785,31 @@ public:
 ##### **Python**
 
 ```python
-
+class Solution:
+    def minimumMountainRemovals(self, nums: List[int]) -> int:
+        n = len(nums)
+        f, g = [1] * (n + 1), [1] * (n + 1)
+        for i in range(1, n + 1):
+            for j in range(1, i):
+                if nums[j - 1] < nums[i - 1]:
+                    f[i] = max(f[i], f[j] + 1)
+        for i in range(n, 0, -1):
+            for j in range(n, i, -1):
+                if nums[j - 1] < nums[i - 1]:
+                    g[i] = max(g[i], g[j] + 1)
+        res = 0
+        for i in range(2, n):
+            if f[i] > 1 and g[i] > 1:
+                res = max(res, f[i] + g[i] - 1)
+        return n - res
 ```
+
+**Python-二分优化**
+
+```python
+```
+
+
 
 <!-- tabs:end -->
 </details>
