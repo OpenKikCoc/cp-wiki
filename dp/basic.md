@@ -2823,8 +2823,10 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
+>
 > LIS + 离散化
+>
+> 从左右两边各自算出限制中间的建筑能达到的最大高度
 
 <details>
 <summary>详细代码</summary>
@@ -2932,7 +2934,24 @@ public:
 ##### **Python**
 
 ```python
+class Solution:
+    def maxBuilding(self, n: int, nums: List[List[int]]) -> int:
+        nums.extend([[1,0],[n,n-1]])
+        nums.sort()
+        m = len(nums)
 
+        for i in range(m - 2, -1, -1):
+            nums[i][1] = min(nums[i][1], nums[i+1][1] + nums[i+1][0] - nums[i][0])
+
+        for i in range(1, m):
+            nums[i][1] = min(nums[i][1], nums[i - 1][1] + nums[i][0] - nums[i-1][0])
+
+        ans = 0
+        for i in range(1, m):
+            l, limit_l = nums[i-1]
+            r, limit_r = nums[i]
+            ans = max(ans, (r + limit_l + limit_r - l) // 2)
+        return ans
 ```
 
 <!-- tabs:end -->
@@ -2947,8 +2966,13 @@ public:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
+>
 > LIS 优化的应用 略
+>
+> 这道题和Leetcode300一样的题，只不过需要求出每个数的最长上升子序列。
+>
+> bisect.bisect(a, x, lo=0, hi=len(a))， 等同于bisect_right(): 遇到相同的元素，插入到相同元素的右边。
+> 注意，bisect()的方法都是获取插入位置，也就是列表的某个下标的，并不实际插入。但下面三个方法实际插入元素，没有返回值。
 
 <details>
 <summary>详细代码</summary>
@@ -3030,7 +3054,20 @@ public:
 ##### **Python**
 
 ```python
-
+class Solution:
+    def longestObstacleCourseAtEachPosition(self, obstacles: List[int]) -> List[int]:
+        res = []
+        q = []
+        for num in obstacles:
+            if not q or q[-1] <= num:
+                q.append(num)
+                res.append(len(q))
+            else:
+                # 相等时，插入位置要往右，所以用bisect_right
+                idx = bisect.bisect_right(q, num)
+                q[idx] = num
+                res.append(idx + 1)
+        return res
 ```
 
 <!-- tabs:end -->
@@ -3045,8 +3082,15 @@ public:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
+>
 > LIS 应用
+>
+> 1. 这道题相当于整个数组拆分成k个小组，每个小组内部ok（递增）就行
+> 2. 求每个小组需要的最少操作数了
+> 小组最小操作数 = 小组长度 - LIS
+> 注意：求LIS时，
+> 1） “严格递增”，nums[i]＜nums[i+1]: bisect.left(x) 
+> 2） “不降”， nums[i]＜= nums[i+1]: bisect.right(x)== bisect.left(x + 1)
 
 <details>
 <summary>详细代码</summary>
@@ -3084,7 +3128,26 @@ public:
 ##### **Python**
 
 ```python
+class Solution:
+    def kIncreasing(self, arr: List[int], k: int) -> int:
+        def LIS(nums):
+            q = []
+            for x in nums:
+                idx = bisect.bisect_right(q, x)
+                if idx == len(q):
+                    q.append(x)
+                else:
+                    q[idx] = x
+            return len(q)
 
+        n = len(arr)
+        res = 0
+        for i in range(k):
+            cur = []
+            for j in range(i, n, k):
+                cur.append(arr[j])
+            res += len(cur) - LIS(cur)
+        return res
 ```
 
 <!-- tabs:end -->
@@ -3101,8 +3164,23 @@ public:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> 难点不在于求dp, 这个dp是类LIS模型；而是在于要求方案。
+> 1. 所有将所有数排序（所有数不相同）
+>    1）如果选择的所有数满足：所有相邻数都有倍数关系，那肯定满足题意：任意两个数都有倍数关系
+>    （这是因为整除具有传递性）
+>    2）这样排序后，在选择集合的时候，只要保证所有相邻的数都具有倍数关系即可
+> 2. 到这儿就可以看出这题和LIS很相似
+>     LIS：满足 arr[i+1] > a[i], 本题满足：a[i+1] 是 a[i] 的倍数
+> 3. 状态表示：f[i]表示的是以 i 结尾的数最长整数子序列长度；属性：最大值
+> 6. 状态转移：以倒数第二个数来进行分类，i-1选择范围: [0, i-1]（闭区间）。以第j个数为例，那么就是：
+>             1）以最后一个数是arr[i], 倒数第二个数是arr[j]的最长整数子序列是取决于前半部分的长度
+>             2）前半部分的长度，也就是以arr[j]结尾的最长整数子序列恰好就是f[j]
+>             3）当前方案最大值就是 f[i] = f[j] + 1
+>             4) 遍历[0, i-1], 取一个 max
+> 7. 时间复杂度：状态数量O(n), 每个状态需要O(n)时间进行计算, 总的时间复杂度是O(n^2)
+> 8. 记录方案：反向递推出答案yyds
+>     记录最大整除子集的长度，每次遍历数组中所有下标找到对应f[i]， 使得f[i] == ans，然后将ans减一继续寻找前一个转移过来的值，直到ans = 1为止
 
 <details>
 <summary>详细代码</summary>
@@ -3174,7 +3252,30 @@ public:
 ##### **Python**
 
 ```python
+class Solution:
+    def largestDivisibleSubset(self, nums: List[int]) -> List[int]:
+        if not nums:return []
+        n = len(nums)
+        nums.sort()
+        f = [1] * n
 
+        k = 0  # k 记录能形成的最大子集的nums中的下标, 即f[k]最大
+        for i in range(n):
+            for j in range(i):
+                if nums[i] % nums[j] == 0:
+                    f[i] = max(f[i], f[j] + 1)
+            if f[k] < f[i]:
+                k = i 
+        
+        res = []
+        res.append(nums[k])
+        while f[k] > 1:
+            for i in range(k):
+                if nums[k] % nums[i] == 0 and f[k] == f[i] + 1:
+                    res.append(nums[i])
+                    k = i
+                    break
+        return res
 ```
 
 <!-- tabs:end -->
@@ -3189,8 +3290,10 @@ public:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> 由于我们总是在左侧找一个最近的等于 （arr[i]−d） 元素并取其对应 dp 值，因此我们直接用dp[v] 表示以 v 为结尾的最长的等差子序列的长度，这样dp[v − d] 就是我们要找的左侧元素对应的最长的等差子序列的长度，因此转移方程可以改为: dp[v] = dp[v − d]+1
+>
+> 当前数字num能构成的最长定差子序列，由上一个 (num-d)能构成的最长定差子序列的长度决定。
 
 <details>
 <summary>详细代码</summary>
@@ -3221,7 +3324,12 @@ public:
 ##### **Python**
 
 ```python
-
+class Solution:
+    def longestSubsequence(self, arr: List[int], difference: int) -> int:
+        d = defaultdict(int)
+        for num in arr:
+            d[num] = d[num - difference] + 1
+        return max(d.values())
 ```
 
 <!-- tabs:end -->
