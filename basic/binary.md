@@ -839,7 +839,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1818. 绝对差值和]()**
+> [!NOTE] **[LeetCode 1818 绝对差值和](https://leetcode-cn.com/problems/minimum-absolute-sum-difference/)**
 > 
 > 题意: TODO
 

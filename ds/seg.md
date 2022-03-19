@@ -2307,6 +2307,64 @@ public:
 };
 ```
 
+##### **C++ BIT 标准**
+
+```cpp
+class Solution {
+public:
+    const static int N = 10, M = 3e4 + 10;
+
+    // 记录有几个数被前移过，也以为着某个位置要向后移动多少位
+    int tr[M];
+    int lowbit(int x) {
+        return x & -x;
+    }
+    void add(int x, int c) {
+        for (int i = x; i < M; i += lowbit(i))
+            tr[i] += c;
+    }
+    int query(int x) {
+        int ret = 0;
+        for (int i = x; i; i -= lowbit(i))
+            ret += tr[i];
+        return ret;
+    }
+
+    deque<int> dq[N];
+    void init() {
+        memset(tr, 0, sizeof tr);
+        for (int i = 0; i < N; ++ i )
+            dq[i].clear();
+    }
+
+    string minInteger(string num, int k) {
+        init();
+
+        int n = num.size();
+        for (int i = 0; i < n; ++ i )
+            dq[num[i] - '0'].push_back(i + 1);
+        
+        string res;
+        for (int i = 1; i <= n; ++ i )
+            for (int j = 0; j < N; ++ j )
+                if (dq[j].size()) {
+                    int idx = dq[j].front();
+                    // 原本代价: idx - i
+                    // 因为后面的前移造成的代价: query(n) - query(idx);
+                    int cost = idx - i + query(n) - query(idx);
+                    if (cost <= k) {
+                        k -= cost;
+                        add(idx, 1);
+                        dq[j].pop_front();
+                        res.push_back('0' + j);
+                        break;
+                    }
+                }
+        return res;
+    }
+};
+```
+
 ##### **Python**
 
 ```python

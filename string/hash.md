@@ -613,7 +613,7 @@ public:
 
 ### 进阶
 
-> [!NOTE] **[LeetCode [2156. 查找给定哈希值的子串](https://leetcode-cn.com/problems/find-substring-with-given-hash-value/)** [TAG]
+> [!NOTE] **[LeetCode 2156. 查找给定哈希值的子串](https://leetcode-cn.com/problems/find-substring-with-given-hash-value/)** [TAG]
 > 
 > 题意: TODO
 

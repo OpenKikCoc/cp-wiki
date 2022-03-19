@@ -1909,7 +1909,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode [2157. 字符串分组](https://leetcode-cn.com/problems/groups-of-strings/)**
+> [!NOTE] **[LeetCode 2157. 字符串分组](https://leetcode-cn.com/problems/groups-of-strings/)**
 > 
 > 题意: TODO
 

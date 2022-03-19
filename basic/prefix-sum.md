@@ -1427,7 +1427,6 @@ public:
     map<int, int> S;
 
     MyCalendarThree() {
-
     }
 
     int book(int start, int end) {

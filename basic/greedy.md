@@ -2158,7 +2158,6 @@ public:
                 return a[1] < b[1];
             // 优先考虑比较短的区间 避免重复统计
             return a[0] > b[0];
-        
         });
         
         vector<int> q(1, -1);
@@ -2199,13 +2198,13 @@ public:
 > 
 > 预选 + 暴力判断
 > 
-> 可以双指针过 todo
+> 可以双指针过 ==> **推导重要**
 
 <details>
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++**
+##### **C++ 预处理暴力**
 
 ```cpp
 vector<int> minAvailableDuration(vector<vector<int>>& slots1,
@@ -2227,6 +2226,31 @@ vector<int> minAvailableDuration(vector<vector<int>>& slots1,
     if (res[0] == INT_MAX) return vector<int>{};
     return res;
 }
+```
+
+##### **C++ 双指针**
+
+```cpp
+class Solution {
+public:
+    vector<int> minAvailableDuration(vector<vector<int>>& slots1, vector<vector<int>>& slots2, int duration) {
+        // 排序 保证首先找到的最早
+        sort(slots1.begin(), slots1.end());
+        sort(slots2.begin(), slots2.end());
+        for (int i = 0, j = 0; i < slots1.size() && j < slots2.size(); ) {
+            int e1 = slots1[i][1], e2 = slots2[j][1];
+            int st = max(slots1[i][0], slots2[j][0]);
+            if (st + duration <= min(e1, e2))
+                return {st, st + duration};
+            // ATTENTION: 重要
+            if (e1 < e2)
+                i ++ ;
+            else
+                j ++ ;
+        }
+        return {};
+    }
+};
 ```
 
 ##### **Python**
@@ -2761,7 +2785,7 @@ if __name__ == '__main__':
 
 * * *
 
-> [!NOTE] **[LeetCode [2136. 全部开花的最早一天](https://leetcode-cn.com/problems/earliest-possible-day-of-full-bloom/)** [TAG]
+> [!NOTE] **[LeetCode 2136. 全部开花的最早一天](https://leetcode-cn.com/problems/earliest-possible-day-of-full-bloom/)** [TAG]
 > 
 > 题意: TODO
 
@@ -4245,7 +4269,7 @@ public:
 > 考虑某个最长的任务以及剩下其他所有任务之和
 > 
 > 1. 如果其他任务之和小于最长任务，可完成周数为其他任务之和的二倍加一
-> 2. 如果其他任务之和小于等于最长任务，则所有任务皆可完成，直接累加
+> 2. 如果其他任务之和大于等于最长任务，则所有任务皆可完成，直接累加
 > 
 > 做的太慢了。。。
 
@@ -4562,7 +4586,7 @@ class Solution {
 public:
     // 贪心的思想：
     // 每一轮对于最左侧的字符 α，找到最大的下标 j，满足 sj=α，将 sj 移动到最右侧，然后同时去掉最左侧和最右侧的字符。
-    // 如果找不到 jj，由于题意保证可以得到回文串，则说明 alphaalpha 在当前字符串中仅出现了一次，需要放到最中间的位置上。
+    // 如果找不到 jj，由于题意保证可以得到回文串，则说明 alpha 在当前字符串中仅出现了一次，需要放到最中间的位置上。
     // TODO: 可信证明
     int minMovesToMakePalindrome(string s) {
         int n = s.size(), res = 0;
@@ -4597,7 +4621,7 @@ class Solution {
 public:
     // 贪心的思想：
     // 每一轮对于最左侧的字符 α，找到最大的下标 j，满足 sj=α，将 sj 移动到最右侧，然后同时去掉最左侧和最右侧的字符。
-    // 如果找不到 jj，由于题意保证可以得到回文串，则说明 alphaalpha 在当前字符串中仅出现了一次，需要放到最中间的位置上。
+    // 如果找不到 jj，由于题意保证可以得到回文串，则说明 alpha 在当前字符串中仅出现了一次，需要放到最中间的位置上。
     // TODO: 可信证明
     const static int N = 2e3 + 10;
     
