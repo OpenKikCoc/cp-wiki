@@ -969,6 +969,102 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 1466. 重新规划路线](https://leetcode-cn.com/problems/reorder-routes-to-make-all-paths-lead-to-the-city-zero/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> - 如果 connections 的起点比终点距离近说明需要反向
+> 
+> - 可以直接压入方向 在跑最短路时统计
+> 
+> - 并查集 实现略
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int minReorder(int n, vector<vector<int>>& connections) {
+        vector<vector<int>> G(n);
+        for (auto e : connections) {
+            G[e[0]].push_back(e[1]);
+            G[e[1]].push_back(e[0]);
+        }
+        vector<int> d(n, -1);
+        d[0] = 0;
+        queue<int> q;
+        q.push(0);
+        while (!q.empty()) {
+            int u = q.front();
+            q.pop();
+            for (int v : G[u])
+                if (d[v] == -1) {
+                    d[v] = d[u] + 1;
+                    q.push(v);
+                }
+        }
+        int res = 0;
+        for (auto e : connections) res += d[e[0]] < d[e[1]];
+        return res;
+    }
+};
+```
+
+##### **C++ 压入方向**
+
+```cpp
+class Solution {
+public:
+    int minReorder(int n, vector<vector<int>>& connections) {
+        int ans = 0;
+        vector<vector<int>> edges(n), dir(n);
+        for (auto& c : connections) {
+            edges[c[0]].push_back(c[1]);
+            dir[c[0]].push_back(1);
+            edges[c[1]].push_back(c[0]);
+            dir[c[1]].push_back(0);
+        }
+
+        queue<int> q;
+        q.push(0);
+        vector<int> seen(n);
+        seen[0] = 1;
+        while (!q.empty()) {
+            int u = q.front();
+            q.pop();
+            for (int i = 0; i < edges[u].size(); ++i) {
+                int v = edges[u][i], d = dir[u][i];
+                if (!seen[v]) {
+                    q.push(v);
+                    seen[v] = 1;
+                    ans += d;
+                }
+            }
+        }
+        return ans;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 01 bfs
 
 > [!NOTE] **[AcWing 175. 电路维修](https://www.acwing.com/problem/content/177/)**

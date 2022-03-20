@@ -898,129 +898,6 @@ if __name__ == '__main__':
 
 * * *
 
-> [!NOTE] **[AcWing 853. 有边数限制的最短路](https://www.acwing.com/problem/content/855/)**
-> 
-> 题意: TODO
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include <algorithm>
-#include <cstring>
-#include <iostream>
-
-using namespace std;
-
-const int N = 510, M = 10010;
-
-struct Edge {
-    int a, b, c;
-} edges[M];
-
-int n, m, k;
-int dist[N];
-int last[N];
-
-void bellman_ford() {
-    memset(dist, 0x3f, sizeof dist);
-
-    dist[1] = 0;
-    for (int i = 0; i < k; i++) {
-        memcpy(last, dist, sizeof dist);
-        for (int j = 0; j < m; j++) {
-            auto e = edges[j];
-            dist[e.b] = min(dist[e.b], last[e.a] + e.c);
-        }
-    }
-}
-
-int main() {
-    scanf("%d%d%d", &n, &m, &k);
-
-    for (int i = 0; i < m; i++) {
-        int a, b, c;
-        scanf("%d%d%d", &a, &b, &c);
-        edges[i] = {a, b, c};
-    }
-
-    bellman_ford();
-
-    if (dist[n] > 0x3f3f3f3f / 2)
-        puts("impossible");
-    else
-        printf("%d\n", dist[n]);
-
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-"""
-- Bellman-Ford算法
-  - 与迪杰斯特拉算法最大的不同是每次都是从源点s重新出发进行“松弛”更新操作，而Dijkstra算法则是从源点出发向外扩逐个处理相邻的节点，不会去重复处理节点。（这里也可以看出Dijkstra算法效率更高）
-  - 本算法可以处理负权边的问题，并且可以限定边数!!!（特点）
-  - 核心操作：
-    - 迭代k次(for k次)：迭代k次，表示经过1号点走过不超过k条边的最短距离；如果迭代n次的时候还有更新，说明存在负环
-    - for 所有边： 遍历所有边m：a b w;d[b]=min(d[b],d[a]+w[i])
-    - 在遍历了n次之后保证了d[b]<=d[a]+w[i]（三角不等式）
-  - 在处理之前，需要对边进行备份：由于有k条边数的限制，所以需要有备份；并且还可能发生“串联”，保证每次更新的时候 都只用上一次迭代的结果，就可以不发生串联。
-  - 有边数限制的题（从1号点到n号点最多不经过k条边的最短路）只能BF算法；只要没有负环，就可以用 SPFA，绝大多数的最短路问题不存在负环。
-  - 每次循环只会迭代更新一条边。
-
-> BF算法的限制很少，不需要用邻接矩阵或者邻接表存储，可以直接用结构体存储图。
-"""
-
-
-# BF算法的存图方式很简单，开一个结构体数组就可以了==> 在python中直接用一个list，每个下标里存储三个数。
-# 算法流程：循环n次，每次循环所有边，d[b]=min(d[b],d[a]+w) ===>更新的过程叫：松弛操作 
-# 循环n次后，所有边都满足d[b]<=d[a]+w（三角不等式）
-##如果有负权回路，那最短路不一定会存在。
-# BF算法可以求出来 是否存在最短路。（但时间复杂度高，所以一般用SPFA算法）
-
-def bellman_ford():
-    d[1] = 0
-    # 遍历k次
-    for i in range(k):
-        backup = d[:]  # 注意：很容易忘了要备份距离！
-        # 遍历m条边
-        for j in range(m):
-            a = q[j][0]
-            b = q[j][1]
-            w = q[j][2]
-            if d[b] > backup[a] + w:
-                d[b] = backup[a] + w
-    if d[n] == float("inf"):
-        print("impossible")
-    else:
-        print(d[n])
-
-
-if __name__ == '__main__':
-    N = 510
-    M = 10010
-    d = [float('inf')] * N
-    backup = [float('inf')] * N
-    q = []
-
-    n, m, k = map(int, input().split())
-    for _ in range(m):
-        q.append(list(map(int, input().split())))
-    bellman_ford()
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
 > [!NOTE] **[LeetCode 743. 网络延迟时间](https://leetcode-cn.com/problems/network-delay-time/)**
 > 
 > 题意: TODO
@@ -1330,102 +1207,6 @@ int main() {
     cout << res << endl;
     return 0;
 }
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[LeetCode 1466. 重新规划路线](https://leetcode-cn.com/problems/reorder-routes-to-make-all-paths-lead-to-the-city-zero/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> - 如果 connections 的起点比终点距离近说明需要反向
-> 
-> - 可以直接压入方向 在跑最短路时统计
-> 
-> - 并查集 实现略
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-class Solution {
-public:
-    int minReorder(int n, vector<vector<int>>& connections) {
-        vector<vector<int>> G(n);
-        for (auto e : connections) {
-            G[e[0]].push_back(e[1]);
-            G[e[1]].push_back(e[0]);
-        }
-        vector<int> d(n, -1);
-        d[0] = 0;
-        queue<int> q;
-        q.push(0);
-        while (!q.empty()) {
-            int u = q.front();
-            q.pop();
-            for (int v : G[u])
-                if (d[v] == -1) {
-                    d[v] = d[u] + 1;
-                    q.push(v);
-                }
-        }
-        int res = 0;
-        for (auto e : connections) res += d[e[0]] < d[e[1]];
-        return res;
-    }
-};
-```
-
-##### **C++ 压入方向**
-
-```cpp
-class Solution {
-public:
-    int minReorder(int n, vector<vector<int>>& connections) {
-        int ans = 0;
-        vector<vector<int>> edges(n), dir(n);
-        for (auto& c : connections) {
-            edges[c[0]].push_back(c[1]);
-            dir[c[0]].push_back(1);
-            edges[c[1]].push_back(c[0]);
-            dir[c[1]].push_back(0);
-        }
-
-        queue<int> q;
-        q.push(0);
-        vector<int> seen(n);
-        seen[0] = 1;
-        while (!q.empty()) {
-            int u = q.front();
-            q.pop();
-            for (int i = 0; i < edges[u].size(); ++i) {
-                int v = edges[u][i], d = dir[u][i];
-                if (!seen[v]) {
-                    q.push(v);
-                    seen[v] = 1;
-                    ans += d;
-                }
-            }
-        }
-        return ans;
-    }
-};
 ```
 
 ##### **Python**
@@ -1876,6 +1657,129 @@ public:
 
 ### bellmanford
 
+> [!NOTE] **[AcWing 853. 有边数限制的最短路](https://www.acwing.com/problem/content/855/)**
+> 
+> 题意: TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+const int N = 510, M = 10010;
+
+struct Edge {
+    int a, b, c;
+} edges[M];
+
+int n, m, k;
+int dist[N];
+int last[N];
+
+void bellman_ford() {
+    memset(dist, 0x3f, sizeof dist);
+
+    dist[1] = 0;
+    for (int i = 0; i < k; i++) {
+        memcpy(last, dist, sizeof dist);
+        for (int j = 0; j < m; j++) {
+            auto e = edges[j];
+            dist[e.b] = min(dist[e.b], last[e.a] + e.c);
+        }
+    }
+}
+
+int main() {
+    scanf("%d%d%d", &n, &m, &k);
+
+    for (int i = 0; i < m; i++) {
+        int a, b, c;
+        scanf("%d%d%d", &a, &b, &c);
+        edges[i] = {a, b, c};
+    }
+
+    bellman_ford();
+
+    if (dist[n] > 0x3f3f3f3f / 2)
+        puts("impossible");
+    else
+        printf("%d\n", dist[n]);
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+"""
+- Bellman-Ford算法
+  - 与迪杰斯特拉算法最大的不同是每次都是从源点s重新出发进行“松弛”更新操作，而Dijkstra算法则是从源点出发向外扩逐个处理相邻的节点，不会去重复处理节点。（这里也可以看出Dijkstra算法效率更高）
+  - 本算法可以处理负权边的问题，并且可以限定边数!!!（特点）
+  - 核心操作：
+    - 迭代k次(for k次)：迭代k次，表示经过1号点走过不超过k条边的最短距离；如果迭代n次的时候还有更新，说明存在负环
+    - for 所有边： 遍历所有边m：a b w;d[b]=min(d[b],d[a]+w[i])
+    - 在遍历了n次之后保证了d[b]<=d[a]+w[i]（三角不等式）
+  - 在处理之前，需要对边进行备份：由于有k条边数的限制，所以需要有备份；并且还可能发生“串联”，保证每次更新的时候 都只用上一次迭代的结果，就可以不发生串联。
+  - 有边数限制的题（从1号点到n号点最多不经过k条边的最短路）只能BF算法；只要没有负环，就可以用 SPFA，绝大多数的最短路问题不存在负环。
+  - 每次循环只会迭代更新一条边。
+
+> BF算法的限制很少，不需要用邻接矩阵或者邻接表存储，可以直接用结构体存储图。
+"""
+
+
+# BF算法的存图方式很简单，开一个结构体数组就可以了==> 在python中直接用一个list，每个下标里存储三个数。
+# 算法流程：循环n次，每次循环所有边，d[b]=min(d[b],d[a]+w) ===>更新的过程叫：松弛操作 
+# 循环n次后，所有边都满足d[b]<=d[a]+w（三角不等式）
+##如果有负权回路，那最短路不一定会存在。
+# BF算法可以求出来 是否存在最短路。（但时间复杂度高，所以一般用SPFA算法）
+
+def bellman_ford():
+    d[1] = 0
+    # 遍历k次
+    for i in range(k):
+        backup = d[:]  # 注意：很容易忘了要备份距离！
+        # 遍历m条边
+        for j in range(m):
+            a = q[j][0]
+            b = q[j][1]
+            w = q[j][2]
+            if d[b] > backup[a] + w:
+                d[b] = backup[a] + w
+    if d[n] == float("inf"):
+        print("impossible")
+    else:
+        print(d[n])
+
+
+if __name__ == '__main__':
+    N = 510
+    M = 10010
+    d = [float('inf')] * N
+    backup = [float('inf')] * N
+    q = []
+
+    n, m, k = map(int, input().split())
+    for _ in range(m):
+        q.append(list(map(int, input().split())))
+    bellman_ford()
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[LeetCode 787. K 站中转内最便宜的航班](https://leetcode-cn.com/problems/cheapest-flights-within-k-stops/)**
 > 
 > 题意: TODO
@@ -1916,313 +1820,6 @@ public:
 
 ```python
 
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-### spfa
-
-> [!NOTE] **[AcWing 851. spfa求最短路](https://www.acwing.com/problem/content/853/)**
-> 
-> 题意: TODO
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include <algorithm>
-#include <cstring>
-#include <iostream>
-#include <queue>
-
-using namespace std;
-
-const int N = 100010;
-
-int n, m;
-int h[N], w[N], e[N], ne[N], idx;
-int dist[N];
-bool st[N];
-
-void add(int a, int b, int c) {
-    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx++;
-}
-
-int spfa() {
-    memset(dist, 0x3f, sizeof dist);
-    dist[1] = 0;
-
-    queue<int> q;
-    q.push(1);
-    st[1] = true;
-
-    while (q.size()) {
-        int t = q.front();
-        q.pop();
-
-        st[t] = false;
-
-        for (int i = h[t]; i != -1; i = ne[i]) {
-            int j = e[i];
-            if (dist[j] > dist[t] + w[i]) {
-                dist[j] = dist[t] + w[i];
-                if (!st[j]) {
-                    q.push(j);
-                    st[j] = true;
-                }
-            }
-        }
-    }
-
-    return dist[n];
-}
-
-int main() {
-    scanf("%d%d", &n, &m);
-
-    memset(h, -1, sizeof h);
-
-    while (m--) {
-        int a, b, c;
-        scanf("%d%d%d", &a, &b, &c);
-        add(a, b, c);
-    }
-
-    int t = spfa();
-
-    if (t == 0x3f3f3f3f)
-        puts("impossible");
-    else
-        printf("%d\n", t);
-
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-"""
-- SPFA算法
-  - 由BF算法优化来，在BF算法中，遍历所有边的时候 d[b]=min(d[a]+c) ： 这个表达式只有d[a]变小的时候 d[b]的值才会变小。所有SPFA将d[a]变小的点加入到队列，并更新他们所连接的边，可以省去无用的迭代。
-  - 用宽搜进行优化上述步骤。
-  - SPFA算法很推荐，正权图也可以用；但是可能会被卡时间，如果被卡时间了，就换。
-  - 核心操作：
-    - 先将节点1入队
-    - 将d[a]变小的节点放入队列中，取出队头，把队头删掉后，用t更新以t为起点的出边
-    - 更新成功后，把点b加入队列，判断，如果队列有b 则不加入
-  - 和Dijkstra堆优化版本算法的不同在于：SPFA可能会多次遍历一个点，可能会存在重复处理节点的操作；导致代码上 会有st[j]=True 然后pop出来之后又会将st[j]=False
-
-> SPFA算法用邻接表存储图；正权图也可以优先用SPFA，如果被卡时间了，再换迪杰斯特拉算法。
-"""
-
-
-def spfa():
-    from collections import deque
-    d[1] = 0
-    q = deque()
-    q.append(1)
-    st[1] = True
-    while q:
-        t = q.popleft()
-        st[t] = False
-        i = h[t]
-        while i != -1:
-            j = ev[i]
-            if d[j] > d[t] + w[i]:
-                d[j] = d[t] + w[i]
-                if not st[j]:
-                    q.append(j)
-                    st[j] = True
-            i = ne[i]
-    if d[n] == float('inf'):
-        print("impossible")
-    else:
-        print(d[n])
-
-
-def add_edge(a, b, c):
-    global idx
-    ev[idx] = b
-    w[idx] = c
-    ne[idx] = h[a]
-    h[a] = idx
-    idx += 1
-
-
-if __name__ == '__main__':
-    N = 100010
-    M = 2 * N
-    h = [-1] * N
-    ev = [0] * M
-    ne = [0] * M
-    w = [0] * M
-    idx = 0
-
-    d = [float("inf")] * N  # 存储所有点到1号点的距离
-    st = [False] * N  # 存储的是距离变短，导致后面的点会被更新的点
-
-    n, m = map(int, input().split())
-    for _ in range(m):
-        a, b, c = map(int, input().split())
-        add_edge(a, b, c)
-
-    spfa()
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[AcWing 852. spfa判断负环](https://www.acwing.com/problem/content/854/)**
-> 
-> 题意: TODO
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int N = 2010, M = 10010;
-
-int n, m;
-int h[N], e[M], w[M], ne[M], idx;
-int dist[N], cnt[N];
-
-int q[N * N];
-bool st[N];
-
-void add(int a, int b, int c) {
-    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
-}
-
-bool spfa() {
-    int hh = 0, tt = -1;
-    for (int i = 1; i <= n; ++ i )
-        q[ ++ tt ] = i, st[i] = true;
-        
-    while (hh <= tt) {
-        int t = q[hh ++ ];
-        st[t] = false;
-        
-        for (int i = h[t]; ~i; i = ne[i]) {
-            int j = e[i];
-            if (dist[j] > dist[t] + w[i]) {
-                dist[j] = dist[t] + w[i];
-                cnt[j] = cnt[t] + 1;
-                
-                if (cnt[j] >= n) return true;
-                if (!st[j]) q[ ++ tt ] = j, st[j] = true;
-            }
-        }
-    }
-    return false;
-}
-
-int main() {
-    memset(h, -1, sizeof h);
-    
-    cin >> n >> m;
-    while (m -- ) {
-        int a, b, c;
-        cin >> a >> b >> c;
-        add(a, b, c);
-    }
-    
-    if (spfa()) cout << "Yes" << endl;
-    else cout << "No" << endl;
-    
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-# 应用抽屉原理，判断是否存在负环: 统计当前每个点的最短路中所包含的边数，如果某点的最短路所包含的边数大于等于n，则也说明存在环
-# 用d[x]表示1～x的最短距离，cnt[x]：表示当前最短路边的数量
-
-# 统计当前每个点的最短路中所包含的边数，如果某点的最短路所包含的边数大于等于n，则也说明存在环
-
-# 注意：需要从每个点都出发一次，才能完全确定此图中是否有环；
-# cnt[j]=n: 表示编号为j的节点 是第n个加入到路径的节点。
-def spfa():
-    from collections import deque
-    q = deque()
-    d[1] = 0
-    # 题意是不是存在负环，而这个负环可能从一号点到不了
-    # 所以 把所有的点都放到队列里。
-    for i in range(1, n + 1):
-        q.append(i)
-        st[i] = True
-    while q:
-        t = q.popleft()
-        st[t] = False
-        i = h[t]
-        while i != -1:
-            j = ev[i]
-            if d[j] > d[t] + w[i]:
-                d[j] = d[t] + w[i]
-                cnt[j] = cnt[t] + 1
-                if cnt[j] >= n:
-                    return True
-
-                if not st[j]:
-                    q.append(j)
-                    st[j] = True
-            i = ne[i]
-    else:
-        return False
-
-
-def add_edge(a, b, c):
-    global idx
-    ev[idx] = b
-    w[idx] = c
-    ne[idx] = h[a]
-    h[a] = idx
-    idx += 1
-
-
-if __name__ == '__main__':
-    N = 100010
-    M = 2 * N
-    h = [-1] * N
-    ev = [0] * M
-    ne = [0] * M
-    w = [0] * M
-    idx = 0
-
-    d = [0] * N  # 注意！！这里不能用float("inf")，因为在比较d距离时，d[i]+w还是==float("inf")，因此不能更新距离；d[x] 表示 当前x点到1号点的最短距离。
-    st = [False] * N
-    cnt = [0] * N  # 当前最短路的边的个数
-
-    n, m = map(int, input().split())
-    for _ in range(m):
-        a, b, c = map(int, input().split())
-        add_edge(a, b, c)
-
-    res = spfa()
-    if res:
-        print("Yes")
-    else:
-        print("No")
 ```
 
 <!-- tabs:end -->
@@ -2901,6 +2498,311 @@ int main() {
 * * *
 
 ### spfa
+
+> [!NOTE] **[AcWing 851. spfa求最短路](https://www.acwing.com/problem/content/853/)**
+> 
+> 题意: TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+#include <queue>
+
+using namespace std;
+
+const int N = 100010;
+
+int n, m;
+int h[N], w[N], e[N], ne[N], idx;
+int dist[N];
+bool st[N];
+
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx++;
+}
+
+int spfa() {
+    memset(dist, 0x3f, sizeof dist);
+    dist[1] = 0;
+
+    queue<int> q;
+    q.push(1);
+    st[1] = true;
+
+    while (q.size()) {
+        int t = q.front();
+        q.pop();
+
+        st[t] = false;
+
+        for (int i = h[t]; i != -1; i = ne[i]) {
+            int j = e[i];
+            if (dist[j] > dist[t] + w[i]) {
+                dist[j] = dist[t] + w[i];
+                if (!st[j]) {
+                    q.push(j);
+                    st[j] = true;
+                }
+            }
+        }
+    }
+
+    return dist[n];
+}
+
+int main() {
+    scanf("%d%d", &n, &m);
+
+    memset(h, -1, sizeof h);
+
+    while (m--) {
+        int a, b, c;
+        scanf("%d%d%d", &a, &b, &c);
+        add(a, b, c);
+    }
+
+    int t = spfa();
+
+    if (t == 0x3f3f3f3f)
+        puts("impossible");
+    else
+        printf("%d\n", t);
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+"""
+- SPFA算法
+  - 由BF算法优化来，在BF算法中，遍历所有边的时候 d[b]=min(d[a]+c) ： 这个表达式只有d[a]变小的时候 d[b]的值才会变小。所有SPFA将d[a]变小的点加入到队列，并更新他们所连接的边，可以省去无用的迭代。
+  - 用宽搜进行优化上述步骤。
+  - SPFA算法很推荐，正权图也可以用；但是可能会被卡时间，如果被卡时间了，就换。
+  - 核心操作：
+    - 先将节点1入队
+    - 将d[a]变小的节点放入队列中，取出队头，把队头删掉后，用t更新以t为起点的出边
+    - 更新成功后，把点b加入队列，判断，如果队列有b 则不加入
+  - 和Dijkstra堆优化版本算法的不同在于：SPFA可能会多次遍历一个点，可能会存在重复处理节点的操作；导致代码上 会有st[j]=True 然后pop出来之后又会将st[j]=False
+
+> SPFA算法用邻接表存储图；正权图也可以优先用SPFA，如果被卡时间了，再换迪杰斯特拉算法。
+"""
+
+
+def spfa():
+    from collections import deque
+    d[1] = 0
+    q = deque()
+    q.append(1)
+    st[1] = True
+    while q:
+        t = q.popleft()
+        st[t] = False
+        i = h[t]
+        while i != -1:
+            j = ev[i]
+            if d[j] > d[t] + w[i]:
+                d[j] = d[t] + w[i]
+                if not st[j]:
+                    q.append(j)
+                    st[j] = True
+            i = ne[i]
+    if d[n] == float('inf'):
+        print("impossible")
+    else:
+        print(d[n])
+
+
+def add_edge(a, b, c):
+    global idx
+    ev[idx] = b
+    w[idx] = c
+    ne[idx] = h[a]
+    h[a] = idx
+    idx += 1
+
+
+if __name__ == '__main__':
+    N = 100010
+    M = 2 * N
+    h = [-1] * N
+    ev = [0] * M
+    ne = [0] * M
+    w = [0] * M
+    idx = 0
+
+    d = [float("inf")] * N  # 存储所有点到1号点的距离
+    st = [False] * N  # 存储的是距离变短，导致后面的点会被更新的点
+
+    n, m = map(int, input().split())
+    for _ in range(m):
+        a, b, c = map(int, input().split())
+        add_edge(a, b, c)
+
+    spfa()
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 852. spfa判断负环](https://www.acwing.com/problem/content/854/)**
+> 
+> 题意: TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 2010, M = 10010;
+
+int n, m;
+int h[N], e[M], w[M], ne[M], idx;
+int dist[N], cnt[N];
+
+int q[N * N];
+bool st[N];
+
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+bool spfa() {
+    int hh = 0, tt = -1;
+    for (int i = 1; i <= n; ++ i )
+        q[ ++ tt ] = i, st[i] = true;
+        
+    while (hh <= tt) {
+        int t = q[hh ++ ];
+        st[t] = false;
+        
+        for (int i = h[t]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (dist[j] > dist[t] + w[i]) {
+                dist[j] = dist[t] + w[i];
+                cnt[j] = cnt[t] + 1;
+                
+                if (cnt[j] >= n) return true;
+                if (!st[j]) q[ ++ tt ] = j, st[j] = true;
+            }
+        }
+    }
+    return false;
+}
+
+int main() {
+    memset(h, -1, sizeof h);
+    
+    cin >> n >> m;
+    while (m -- ) {
+        int a, b, c;
+        cin >> a >> b >> c;
+        add(a, b, c);
+    }
+    
+    if (spfa()) cout << "Yes" << endl;
+    else cout << "No" << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+# 应用抽屉原理，判断是否存在负环: 统计当前每个点的最短路中所包含的边数，如果某点的最短路所包含的边数大于等于n，则也说明存在环
+# 用d[x]表示1～x的最短距离，cnt[x]：表示当前最短路边的数量
+
+# 统计当前每个点的最短路中所包含的边数，如果某点的最短路所包含的边数大于等于n，则也说明存在环
+
+# 注意：需要从每个点都出发一次，才能完全确定此图中是否有环；
+# cnt[j]=n: 表示编号为j的节点 是第n个加入到路径的节点。
+def spfa():
+    from collections import deque
+    q = deque()
+    d[1] = 0
+    # 题意是不是存在负环，而这个负环可能从一号点到不了
+    # 所以 把所有的点都放到队列里。
+    for i in range(1, n + 1):
+        q.append(i)
+        st[i] = True
+    while q:
+        t = q.popleft()
+        st[t] = False
+        i = h[t]
+        while i != -1:
+            j = ev[i]
+            if d[j] > d[t] + w[i]:
+                d[j] = d[t] + w[i]
+                cnt[j] = cnt[t] + 1
+                if cnt[j] >= n:
+                    return True
+
+                if not st[j]:
+                    q.append(j)
+                    st[j] = True
+            i = ne[i]
+    else:
+        return False
+
+
+def add_edge(a, b, c):
+    global idx
+    ev[idx] = b
+    w[idx] = c
+    ne[idx] = h[a]
+    h[a] = idx
+    idx += 1
+
+
+if __name__ == '__main__':
+    N = 100010
+    M = 2 * N
+    h = [-1] * N
+    ev = [0] * M
+    ne = [0] * M
+    w = [0] * M
+    idx = 0
+
+    d = [0] * N  # 注意！！这里不能用float("inf")，因为在比较d距离时，d[i]+w还是==float("inf")，因此不能更新距离；d[x] 表示 当前x点到1号点的最短距离。
+    st = [False] * N
+    cnt = [0] * N  # 当前最短路的边的个数
+
+    n, m = map(int, input().split())
+    for _ in range(m):
+        a, b, c = map(int, input().split())
+        add_edge(a, b, c)
+
+    res = spfa()
+    if res:
+        print("Yes")
+    else:
+        print("No")
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 > [!NOTE] **[AcWing 361. 观光奶牛](https://www.acwing.com/problem/content/363/)**
 > 
@@ -3986,7 +3888,7 @@ public:
 > 
 > $2 <= n <= 10^4$
 > 
-> $n - 1 <= edges.length <= min(2 \* 104, n \* (n - 1) / 2)$
+> $n - 1 <= edges.length <= min(2 e 10 ^ 4, n * (n - 1) / 2)$
 
 <details>
 <summary>详细代码</summary>
