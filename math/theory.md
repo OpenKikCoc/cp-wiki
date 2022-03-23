@@ -381,3 +381,141 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces A. LCM Challenge](https://codeforces.com/problemset/problem/235/A)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思维题
+> 
+> 数学推导 结论
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: A. LCM Challenge
+// Contest: Codeforces - Codeforces Round #146 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/235/A
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 猜想错误
+// https://codeforces.com/contest/235/submission/109974211
+//
+// When n is odd, the answer is obviously n(n-1)(n-2).
+// When n is even, we can still get at least (n-1)(n-2)(n-3),
+// so these three numbers in the optimal answer would not be
+// very small compared to n. So we can just iterate
+// every 3 number triple in [n-50,n] and update the answer.
+//
+// 1. 相邻的两个数一定互质
+// 2. 相邻的两个奇数一定互质
+//
+// n 为奇数 ans = n * (n - 1) * (n - 2)
+// n 为偶数 【此时 n与n-2显然会有公约数】
+//        n % 3 != 0 意味着 n 和 n-3 没有约数 ans = n * (n - 1) * (n - 3)
+//        n % 3 == 0 有公约数               ans = (n - 1) * (n - 2) * (n - 3)
+using LL = long long;
+
+int main() {
+    LL n;
+    cin >> n;
+
+    if (n <= 2)
+        cout << n << endl;
+    else {
+        if (n % 2 == 0) {
+            // https://codeforces.com/contest/235/submission/109975226
+            if (n % 3)
+                cout << n * (n - 1) * (n - 3) << endl;
+            else
+                cout << (n - 1) * (n - 2) * (n - 3) << endl;
+        } else
+            cout << n * (n - 1) * (n - 2) << endl;
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces C. Divisibility by Eight](http://codeforces.com/problemset/problem/550/C)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 重复做...小学奥数
+> 
+> 一个数要被 8 整除 末尾三个数一定是 8 的倍数
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Divisibility by Eight
+// Contest: Codeforces - Codeforces Round #306 (Div. 2)
+// URL: http://codeforces.com/problemset/problem/550/C
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    string s;
+    cin >> s;
+    s = "00" + s;
+    int n = s.size();
+
+    for (int i = 0; i < n; ++i)
+        for (int j = i + 1; j < n; ++j)
+            for (int k = j + 1; k < n; ++k) {
+                int x = 100 * (s[i] - '0') + 10 * (s[j] - '0') + s[k] - '0';
+                if (x % 8 == 0) {
+                    cout << "YES" << endl << x << endl;
+                    return 0;
+                }
+            }
+    cout << "NO" << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

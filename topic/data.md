@@ -487,3 +487,176 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces B. Little Dima and Equation](https://codeforces.com/problemset/problem/460/B)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Little Dima and Equation
+// Contest: Codeforces - Codeforces Round #262 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/460/B
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// note
+// 和最大为81 故枚举和即可
+using LL = long long;
+
+LL S(LL x) {
+    // < 0 needed
+    if (x < 0)
+        return -1;
+    string s = to_string(x);
+    int ret = 0;
+    for (auto c : s)
+        ret += c - '0';
+    return ret;
+}
+
+int main() {
+    LL a, b, c;
+    cin >> a >> b >> c;
+
+    vector<LL> ve;
+    for (int i = 1; i <= 81; ++i) {
+        LL x = b * pow(i, a) + c;
+        if (S(x) == i && x < 1e9)
+            ve.push_back(x);
+    }
+    cout << ve.size() << endl;
+    for (auto v : ve)
+        cout << v << ' ';
+    cout << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces C. Mr. Kitayuta, the Treasure Hunter](https://codeforces.com/problemset/problem/505/C)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **根据推断优化空间**
+> 
+> 记忆化搜索 数组比map快很多
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Mr. Kitayuta, the Treasure Hunter
+// Contest: Codeforces - Codeforces Round #286 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/505/C
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// d 范围 30000 直接申请空间显然TLE
+// 重点在于分析出 l 从始至终变化不会超过 [d-300, d+300]
+//
+// 或者直接像自己最初的做法 直接map
+// 错误原因： 【dp 没有返回值导致子状态无法累加上去就直接 return 了】
+// https://codeforces.com/contest/505/submission/110856257
+//
+// 1. 修改 map
+// 用例就会TLE超时
+// https://codeforces.com/contest/505/submission/110857387
+// 2. 使用正常数组 AC
+// https://codeforces.com/contest/505/submission/110857161
+
+using PII = pair<int, int>;
+const int N = 30010, OFFSET = 300;
+
+int n, d;
+int w[N];
+int f[N][OFFSET << 1];
+
+int dp(int u, int l) {
+    int nl = l - d + OFFSET;
+    if (f[u][nl] != -1)
+        return f[u][nl];
+
+    int& t = f[u][nl];
+    // t = 0 的初始化很重要 否则TLE
+    t = 0;
+
+    int l1 = l - 1, l2 = l, l3 = l + 1;
+    int x1 = u + l1, x2 = u + l2, x3 = u + l3;
+
+    if (x1 > u && x1 < N && l1 > d - OFFSET && l1 < d + OFFSET)
+        t = max(t, dp(x1, l1));
+    if (x2 > u && x2 < N && l1 > d - OFFSET && l1 < d + OFFSET)
+        t = max(t, dp(x2, l2));
+    if (x3 > u && x3 < N && l1 > d - OFFSET && l1 < d + OFFSET)
+        t = max(t, dp(x3, l3));
+    t += w[u];
+    return t;
+}
+
+int main() {
+    cin >> n >> d;
+    for (int i = 0; i < n; ++i) {
+        int x;
+        cin >> x;
+        w[x]++;
+    }
+
+    memset(f, -1, sizeof f);
+    // 已累积w[0], 现在在d且l为d
+    cout << dp(d, d) << endl;
+
+    return 0;
+}
+
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

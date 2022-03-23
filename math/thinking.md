@@ -2035,3 +2035,122 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces B. Routine Problem](https://codeforces.com/problemset/problem/337/B)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思维 使用公式转化 gcd 而非浮点数
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Routine Problem
+// Contest: Codeforces - Codeforces Round #196 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/337/B
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 数学题 浮点数的思路是错误的
+// WA https://codeforces.com/contest/337/submission/109684884
+// 正解 gcd
+// 只有两种情况，长等于长，宽等于宽
+// 1. 长等于长，即有c = a，d = a*d/c;  已使用的宽占比为 a*d/(b*c)
+// 2. 宽等于宽     d = b，c = b*c/d;  已使用的长占比为 b*c/(a*d)
+
+int main() {
+    int a, b, c, d;
+    cin >> a >> b >> c >> d;
+
+    a *= d, b *= c;
+    if (a > b)
+        swap(a, b);
+
+    a = b - a;
+    c = __gcd(a, b);
+
+    cout << a / c << '/' << b / c << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces B. Friends and Presents](https://codeforces.com/problemset/problem/483/B)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Friends and Presents
+// Contest: Codeforces - Codeforces Round #275 (Div. 2)
+// URL: http://codeforces.com/problemset/problem/483/B
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 二分错误
+// http://codeforces.com/contest/483/submission/110988631
+
+int main() {
+    int a, b, x, y;
+    cin >> a >> b >> x >> y;
+
+    // https://www.luogu.com.cn/blog/over-knee-socks/solution-cf483b-o1
+    int v = 0;
+    v = max(v, (int)floor((double)(a + b - 1) * x * y / (x * y - 1)));
+    v = max(v, (int)floor((double)(a - 1) * x / (x - 1)));
+    v = max(v, (int)floor((double)(b - 1) * y / (y - 1)));
+
+    cout << v + 1 << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

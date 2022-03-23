@@ -1631,6 +1631,98 @@ public:
 
 * * *
 
+> [!NOTE] **[Codeforces C. Present](https://codeforces.com/problemset/problem/460/C)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 贪心+二分+差分 应用 边界case
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Present
+// Contest: Codeforces - Codeforces Round #262 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/460/C
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 极大化最小值 显然二分
+// 但这里涉及到区间修改 不难想到从左向右扫描 只需关注当前和右侧
+// 故二分内部实现线性扫描累加即可 注意会修改差分数组所以新建个临时数组
+
+const int N = 100010;
+
+int n, m, w;
+int a[N], d[N], t[N];
+
+bool check(int x) {
+    int s = 0, c = 0;
+    for (int i = 1; i <= n; ++i) {
+        if (s + t[i] < x) {
+            int cost = x - t[i] - s;
+            t[i] += cost;
+            if (i + w <= n)
+                t[i + w] -= cost;
+            c += cost;
+            if (c > m)
+                return false;
+        }
+        s += t[i];
+    }
+
+    return true;
+}
+
+int main() {
+    cin >> n >> m >> w;
+    for (int i = 1; i <= n; ++i)
+        cin >> a[i];
+    for (int i = 1; i <= n; ++i)
+        d[i] = a[i] - a[i - 1];
+
+    // r = 1e9 + 2e5 cause `a[i] + m` can be 1e9 + 1e5
+    // https://codeforces.com/contest/460/submission/111331064
+    int l = 0, r = 1e9 + 2e5;
+    while (l < r) {
+        memcpy(t, d, sizeof d);
+        int mid = l + r >> 1;
+        if (check(mid))
+            l = mid + 1;
+        else
+            r = mid;
+    }
+
+    cout << l - 1 << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
 ### 二分套二分
 
 > [!NOTE] **[LeetCode 2040. 两个有序数组的第 K 小乘积](https://leetcode-cn.com/problems/kth-smallest-product-of-two-sorted-arrays/)** [TAG]

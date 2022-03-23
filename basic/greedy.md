@@ -840,6 +840,150 @@ public:
 
 * * *
 
+> [!NOTE] **[Codeforces C. The Child and Toy](https://codeforces.com/problemset/problem/437/C)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 贪心 证明 思路总结
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. The Child and Toy
+// Contest: Codeforces - Codeforces Round #250 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/437/C
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using PII = pair<int, int>;
+const int N = 1010, M = 4010;
+
+int n, m;
+int h[N], e[M], ne[M], idx;
+int a[N];
+PII w[N];
+bool st[N];
+
+void add(int a, int b) { e[idx] = b, ne[idx] = h[a], h[a] = idx++; }
+
+int main() {
+    cin >> n >> m;
+
+    for (int i = 1; i <= n; ++i)
+        cin >> a[i];
+
+    for (int i = 1; i <= n; ++i)
+        w[i] = {a[i], i};
+
+    sort(w + 1, w + n + 1);
+
+    memset(h, -1, sizeof h);
+    while (m--) {
+        int a, b;
+        cin >> a >> b;
+        add(a, b), add(b, a);
+    }
+
+    int res = 0;
+    // 直觉 贪心先找权值最大的点 删掉它 消耗是其周围的边
+    for (int i = n; i >= 1; --i) {
+        auto [v, id] = w[i];
+        for (int j = h[id]; ~j; j = ne[j]) {
+            int k = e[j], c = a[k];
+            if (!st[k])
+                res += c;
+        }
+        st[id] = true;
+    }
+
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces C. Table Decorations](http://codeforces.com/problemset/problem/478/C)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 数学 思维题 思路
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Table Decorations
+// Contest: Codeforces - Codeforces Round #273 (Div. 2)
+// URL: http://codeforces.com/problemset/problem/478/C
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 贪心题 思维
+// 考虑 r,g,b 装饰桌子 每个桌子三个气球且颜色不能完全相同
+// 求最多可以装饰多少个桌子
+
+using LL = long long;
+
+int main() {
+    LL r, g, b;
+    cin >> r >> g >> b;
+    // cout << min(min(min((r + g + b) / 3, r + g), r + b), b + g) << endl;
+
+    vector<LL> ve{r, g, b};
+    sort(ve.begin(), ve.end());
+
+    if (ve[0] + ve[1] <= ve[2] / 2)
+        cout << ve[0] + ve[1] << endl;
+    else
+        cout << (ve[0] + ve[1] + ve[2]) / 3 << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 排序不等式
 
 > [!NOTE] **[AcWing 1395. 产品处理](https://www.acwing.com/problem/content/1397/)**
@@ -1355,6 +1499,75 @@ public:
         return res;
     }
 };
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
+> [!NOTE] **[Codeforces B. Polo the Penguin and Matrix](https://codeforces.com/problemset/problem/289/B)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 同 [LeetCode 2033. 获取单值网格的最小操作数](https://leetcode-cn.com/problems/minimum-operations-to-make-a-uni-value-grid/)
+> 
+> 很多博客并未提及为何可以使用中位数，直观来看使用中位数无法确保其他数可以有效转变为该中位数。
+> 
+> 但分析推导易知，矩阵中所有的数字对 d 取模的值都应相等，否则不合法。
+> 
+> 在合法的情况下所有数字必然可以通过 + / - d 的办法得到统一。具体参见 https://codeforces.com/blog/entry/7241
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Polo the Penguin and Matrix
+// Contest: Codeforces - Codeforces Round #177 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/289/B
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 10010;
+
+int n, m, d;
+int a[N];
+
+int main() {
+    cin >> n >> m >> d;
+    for (int i = 0; i < n; ++i)
+        for (int j = 0; j < m; ++j)
+            cin >> a[i * m + j];
+    sort(a, a + n * m);
+
+    int t = n * m / 2, res = 0;
+    bool f = true;
+    for (int i = 0; i < n * m; ++i) {
+        if (abs(a[t] - a[i]) % d) {
+            f = false;
+            break;
+        }
+        res += abs(a[t] - a[i]) / d;
+    }
+    cout << (f ? res : -1) << endl;
+}
 ```
 
 ##### **Python**
@@ -4546,6 +4759,8 @@ public:
 > 复杂贪心
 > 
 > 数据范围更大的同样题目: https://www.luogu.com.cn/problem/P5041
+> 
+> 关于回文串的一些重要特性：ref **[Codeforces C. Palindrome Transformation](https://codeforces.com/problemset/problem/486/C)**
 
 <details>
 <summary>详细代码</summary>
@@ -4563,6 +4778,7 @@ public:
             p[s[i] - 'a'].push_back(i);
         
         // 生成反串以及对应的在原串中的字符下标 ==> TODO
+        // 原理 ref: 
         int cnt[26] = {};
         auto t = s; reverse(t.begin(), t.end());
         vector<int> ve(n);
@@ -4679,6 +4895,568 @@ public:
         return res;
     }
 };
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces C. Palindrome Transformation](https://codeforces.com/problemset/problem/486/C)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 代码简单 推导较多 好题
+> 
+> - **回文串的几个重要特性**
+> 
+>  1. 要使成为回文串，即对应字符相等，无论变左边的 还是变右边的 亦或是左边变一点右边变一点，总步数都是一样的，所以差别就在于移动上
+> 
+>  2. 显然，全部动左边的或者全部动右边的，可以最优
+> 
+>  3. 为方便，统一动左边的，如果初始位置在右边，我们可以将它移到左边的对应位置（不计步数）
+> 
+>  4. 接下来算每一个对应的位置的最小步数
+> 
+>  5. 加上移动的最小步数就是最后的结果
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Palindrome Transformation
+// Contest: Codeforces - Codeforces Round #277 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/486/C
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 思维题
+// 一开始困于先后的移动顺序
+//
+// 左半部分和右半部分最后是对称的，因此我们发现一定只需要修改某一半的部分
+// 这取决于 p 最开始在左半部分还是右半部分，显然当 p 最开始在左半部分时
+// 我们只修改左半部分的字符，反之亦然。
+int n, p;
+string s;
+
+int main() {
+    cin >> n >> p >> s;
+    int tn = n / 2;
+
+    // 先累积需要修改的操作数 同时记录位置
+    int res = 0;
+    vector<int> ve;
+    for (int i = 0; i < tn; ++i) {
+        int t = abs(s[i] - s[n - i - 1]);
+        t = min(t, 26 - t);
+
+        res += t;
+        if (t)
+            // 哪个离起点近用哪个 【因为修改前后半段中对应位置的任意一个都可以】
+            ve.push_back(abs(i + 1 - p) < abs(n - i - p) ? i + 1 : n - i);
+    }
+    sort(ve.begin(), ve.end());
+
+    // 移动所需要的操作数
+    int sz = ve.size();
+    if (sz) {
+        // 最远的 最近的 组成的中间段 是必然要挨个遍历的区间
+        // 离起点最远的 减去最近的 为该必然要遍历的区间长度
+        // 加上 到该区间的起点的最近距离
+        int t = ve[sz - 1] - ve[0] + min(abs(ve[sz - 1] - p), abs(ve[0] - p));
+        res += t;
+    }
+
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces B. Painting Eggs](https://codeforces.com/problemset/problem/282/B)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 500 的阈值设置很精妙 和 1000 相应导致本题做起来更简单
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Painting Eggs
+// Contest: Codeforces - Codeforces Round #173 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/282/B
+// Memory Limit: 256 MB
+// Time Limit: 5000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 贪心 猜想错误
+// https://codeforces.com/contest/282/submission/109770563
+// https://codeforces.com/contest/282/submission/109770893
+// 考虑投给 a 而不是 g 实际上对二者的总投资额差距都是造成了1000的影响
+// 所以顺序和各个值就不那么重要了
+//
+// 按照题解思路：
+// Start from the 1st egg and each time give the egg to A
+//  if and only if giving it to A doesn't make the
+//  difference > 500, otherwise give it to G.
+
+int main() {
+    // needed, otherwise TLE
+    // https://codeforces.com/contest/282/submission/109775112
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(0);
+
+    int n;
+    cin >> n;
+
+    int tot = 0;
+    for (int i = 0; i < n; ++i) {
+        int a, b;
+        cin >> a >> b;
+        if (tot + a <= 500)
+            tot += a, cout << 'A';
+        else
+            tot -= b, cout << 'G';
+    }
+    cout << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces B. Playing Cubes](https://codeforces.com/problemset/problem/257/B)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思维题 贪心
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Playing Cubes
+// Contest: Codeforces - Codeforces Round #159 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/257/B
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 思维题
+// ATTENTION 该角色放置的时候才得分
+// 显然
+//    对于第一个人：每次拿和之前一个相同的方块最优
+//    对于第二个人：每次拿和之前一个不同的方块最优
+// 第二个人最高时 min(n, m)：
+//     ABABABAB-AAA...
+//     BABABABA-AAA...
+// 第一个人最高时 max(n, m)
+//     AAAAABBBBB...B
+
+int main() {
+    int n, m;
+    cin >> n >> m;
+
+    int t1 = max(n, m) - 1, t2 = min(n, m);
+    cout << t1 << ' ' << t2 << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces A. Counting Kangaroos is Fun](https://codeforces.com/problemset/problem/372/A)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思维题
+> 
+> 重点在于分析知最优的装载情况
+> 
+> 随后从中间开始贪心
+> 
+> 中间选取的位置 `n / 2 - 1` 很关键
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: A. Counting Kangaroos is Fun
+// Contest: Codeforces - Codeforces Round #219 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/372/A
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 直接从最后开始 或从最前面开始二分找都是错误思路
+// https://codeforces.com/contest/372/submission/109908153
+// 错误和这位博主相同：
+//     http://www.voidcn.com/article/p-csyzprtj-bxn.html
+//        另外一种错误的思路:
+//        从大到小给每只袋鼠a[i]分配一个最大的且它能装得下的袋鼠a[j].
+//        这种思路错误在于a[j]可能还可以给更小的袋鼠a[k]分配,
+//        但是你把a[j]装下去了,可能除了a[j],a[i]之外没有其他袋鼠能装得下a[k]了。
+//
+// 正解：从中间开始贪心，【最小的k个 一定被最大的k个所包含】
+
+const int N = 500010;
+
+int n;
+int a[N];
+
+int main() {
+    cin >> n;
+    for (int i = 0; i < n; ++i)
+        cin >> a[i];
+    sort(a, a + n);
+
+    int p = n - 1;
+    // n / 2 - 1     ==>  初始化为止很重要
+    // NOT n / 2
+    // https://codeforces.com/contest/372/submission/109908762
+    // AND NOT (n-1)/2
+    // https://codeforces.com/contest/372/submission/109909096
+    for (int i = n / 2 - 1; i >= 0; --i)
+        if (a[i] * 2 <= a[p])
+            --p;
+
+    cout << p + 1 << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces C. Median](https://codeforces.com/problemset/problem/166/C)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思维题
+> 
+> 想到了每次增加会影响总个数 n 
+> 
+> 以及想到二分找区间
+> 
+> **没想到找到区间后直接在区间内添加这个数**
+> 
+> 使得计算得到的新的中点值仍是这个数
+> 
+> **写法实现很重要 重复做**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Median
+// Contest: Codeforces - Codeforces Round #113 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/166/C
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// (n + 1) / 2
+// n 偶数 位置在前半部分最后一个
+// n 奇数 位置在中间
+//
+// 0 ~ n-1 的话 取 (n - 1) / 2
+const int N = 510;
+
+int n, x;
+int a[N];
+
+int findL(int x) {
+    int l = 0, r = n;
+    while (l < r) {
+        int m = l + r >> 1;
+        if (a[m] < x)
+            l = m + 1;
+        else
+            r = m;
+    }
+    return l;
+}
+
+int findR(int x) {
+    int l = 0, r = n;
+    while (l < r) {
+        int m = l + r >> 1;
+        if (a[m] <= x)
+            l = m + 1;
+        else
+            r = m;
+    }
+    return l - 1;
+}
+
+int main() {
+    cin >> n >> x;
+
+    for (int i = 0; i < n; ++i)
+        cin >> a[i];
+
+    sort(a, a + n);
+
+    int l = lower_bound(a, a + n, x) - a;
+    int r = upper_bound(a, a + n, x) - a - 1;
+    // int l = findL(x), r = findR(x);
+    int mid = (n - 1) / 2;
+
+    int res = 0;
+    while (mid < l || mid > r) {
+        ++res;
+        ++r;
+        mid = (++n - 1) / 2;
+    }
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces A. Fox and Box Accumulation](http://codeforces.com/problemset/problem/388/A)**
+> 
+> 题意: 
+> 
+> n 个箱子，每个箱子规定只能在它上面最多放 `a[i]` 的箱子，问最少放几列
+
+> [!TIP] **思路**
+> 
+> 显然贪心排序
+> 
+> 线性做法需要思维 重复
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: A. Fox and Box Accumulation
+// Contest: Codeforces - Codeforces Round #228 (Div. 1)
+// URL: http://codeforces.com/problemset/problem/388/A
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 110;
+
+int n;
+int x[N];
+
+int cnt = 0;
+vector<int> p[N];
+
+int main() {
+    cin >> n;
+    for (int i = 0; i < n; ++i)
+        cin >> x[i];
+    sort(x, x + n);
+
+    int k = 0;
+    for (int i = 0; i < n; ++i)
+        if (k * (x[i] + 1) <= i)
+            ++k;
+    cout << k << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces C. Painting Fence](https://codeforces.com/problemset/problem/448/C)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 非常好的贪心分治题目 重复
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Painting Fence
+// Contest: Codeforces - Codeforces Round #256 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/448/C
+// Memory Limit: 512 MB
+// Time Limit: 1000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 思维 非常非常好的分治题目 重复做
+
+using LL = long long;
+const int N = 100010;
+
+int n;
+int h[N];
+
+int paint(int s, int t) {
+    if (s > t)
+        return 0;
+
+    // 先找最低的可以横向涂的
+    int minv = 1e9, c = 0;
+    for (int i = s; i <= t; ++i)
+        minv = min(h[i], minv);
+    // 累加操作数 更新高度
+    c += minv;
+    for (int i = s; i <= t; ++i)
+        h[i] -= minv;
+
+    // 分治
+    int ns = s;
+    for (int i = s; i <= t; ++i)
+        if (i == t && h[i])
+            c += paint(ns, i), ns = i + 1;
+        else if (h[i] == 0)
+            c += paint(ns, i - 1), ns = i + 1;
+
+    // 与竖着涂对比 取最小值
+    return min(t - s + 1, c);
+}
+
+int main() {
+    cin >> n;
+    for (int i = 1; i <= n; i++)
+        cin >> h[i];
+
+    cout << paint(1, n) << endl;
+
+    return 0;
+}
 ```
 
 ##### **Python**

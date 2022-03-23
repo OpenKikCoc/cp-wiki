@@ -1988,3 +1988,204 @@ class Solution {
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces C. Fox And Names](http://codeforces.com/problemset/problem/510/C)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 拓扑序
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Fox And Names
+// Contest: Codeforces - Codeforces Round #290 (Div. 2)
+// URL: http://codeforces.com/problemset/problem/510/C
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 26, M = 110;
+
+int n;
+string ss[M];
+int sz[M];
+bool g[N][N], tg[N][N];
+int d[N], q[N];
+int hh, tt;
+
+void topo() {
+    hh = 0, tt = -1;
+    for (int i = 0; i < N; ++i)
+        if (!d[i])
+            q[++tt] = i;
+
+    while (hh <= tt) {
+        int t = q[hh++];
+
+        for (int i = 0; i < N; ++i)
+            if (g[t][i] && --d[i] == 0)
+                q[++tt] = i;
+    }
+}
+
+int main() {
+    cin >> n;
+
+    bool impossible = false;
+    for (int i = 0; i < n; ++i) {
+        cin >> ss[i];
+        sz[i] = ss[i].size();
+        // 注意脑袋理清楚 这里只需要和上一个字符串作比较即可
+        // https://codeforces.com/contest/510/submission/110623880
+        if (i) {
+            int j = i - 1;
+            bool f = false;
+            for (int k = 0; k < sz[i] && k < sz[j]; ++k)
+                if (ss[i][k] != ss[j][k]) {
+                    int a = ss[j][k] - 'a', b = ss[i][k] - 'a';
+                    // 防止重复建边 导致拓扑出错
+                    // http://codeforces.com/contest/510/submission/110623880
+                    // https://codeforces.com/contest/510/submission/110694636
+                    if (!g[a][b]) {
+                        g[a][b] = true;
+                        d[b]++;
+                    }
+
+                    f = true;
+                    break;
+                }
+            if (!f && sz[i] < sz[j])
+                impossible = true;
+        }
+    }
+
+    memcpy(tg, g, sizeof g);
+    for (int k = 0; k < N; ++k)
+        for (int i = 0; i < N; ++i)
+            for (int j = 0; j < N; ++j)
+                tg[i][j] |= tg[i][k] && tg[k][j];
+    for (int i = 0; i < N && !impossible; ++i)
+        if (tg[i][i])
+            impossible = true;
+
+    if (!impossible) {
+        topo();
+        for (int i = 0; i < N; ++i)
+            cout << char('a' + q[i]);
+        cout << endl;
+    } else
+        cout << "Impossible" << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces C. Misha and Forest](https://codeforces.com/problemset/problem/501/C)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Misha and Forest
+// Contest: Codeforces - Codeforces Round #285 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/501/C
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 初看没思路 需加强图论训练和图论敏感度
+// 考虑一棵树必然存在度为 1 的点，且该点的 s 值即为与其相连的点的编号
+// 故拓扑排序做即可 很好的图论题
+
+const int N = 66000;  // > 65535
+
+int n;
+int d[N], s[N];
+int q[N];
+
+void topo() {
+    int hh = 0, tt = -1;
+    for (int i = 0; i < n; ++i)
+        if (d[i] == 1)
+            q[++tt] = i;
+
+    while (hh <= tt) {
+        int t = q[hh++];
+        if (d[t] != 1)
+            continue;
+
+        // 当前 t 相连的只有一个点 v
+        int v = s[t];
+        // 这里是 s[v] d[v] 而非 t WA
+        // https://codeforces.com/contest/501/submission/110866847
+        s[v] ^= t, d[v]--;
+        if (d[v] == 1)
+            q[++tt] = v;
+        cout << t << ' ' << v << endl;
+    }
+}
+
+int main() {
+    cin >> n;
+
+    int m = 0;
+    for (int i = 0; i < n; ++i) {
+        cin >> d[i] >> s[i];
+        m += d[i];
+    }
+    cout << m / 2 << endl;
+
+    topo();
+
+    return 0;
+}
+
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

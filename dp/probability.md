@@ -397,3 +397,94 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces A. Little Pony and Expected Maximum](https://codeforces.com/problemset/problem/453/A)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 概率与期望
+> 
+> 重复做 期望dp
+> 
+> [Luogu](https://www.luogu.com.cn/problem/solution/CF453A)
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+https://www.luogu.com.cn/blog/da32s1da/solution-cf453a
+
+如果投 n 次，最大点数是 k ，那么情况共有 k^n − (k−1)^n 种。
+
+若 n 次投掷的点数都在 1 到 k 内，共有 k^n 种情况。
+
+若 n 次投掷的点数都在 1 到 k−1 内，共有 (k−1)^n 种情况。
+
+两数相减可得最大值是 k 的情况
+
+所以期望 = $\sum_{i=1}^m i * (i ^ n − (i − 1) ^ n)$
+
+也即 $\sum_{i=1}^m i * ((i / m) ^ n − ((i - 1) / m) ^ n)$
+
+```cpp
+// Problem: A. Little Pony and Expected Maximum
+// Contest: Codeforces - Codeforces Round #259 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/453/A
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    // ATTENTION use double here for convenient
+    // cause `pow` need double
+    double n, m;
+    cin >> m >> n;
+
+    double res = 0;
+    for (int i = 1; i <= m; ++i)
+        res += (double)i * (pow(i / m, n) - pow((i - 1) / m, n));
+    printf("%.12lf\n", res);
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+// Problem: A. Little Pony and Expected Maximum
+// Contest: Codeforces - Codeforces Round #259 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/453/A
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    // ATTENTION use double here for convenient
+    // cause `pow` need double
+    double n, m;
+    cin >> m >> n;
+
+    double res = 0;
+    for (int i = 1; i <= m; ++i)
+        res += (double)i * (pow(i / m, n) - pow((i - 1) / m, n));
+    printf("%.12lf\n", res);
+
+    return 0;
+}
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

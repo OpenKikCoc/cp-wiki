@@ -664,3 +664,160 @@ class Solution:
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces C. k-Tree](https://codeforces.com/problemset/problem/431/C)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> dp 好题
+> 
+> 状态定义和转移
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. k-Tree
+// Contest: Codeforces - Codeforces Round #247 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/431/C
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 题意分析和状态定义
+// dp 定义和转移
+const int N = 110, M = 2, MOD = 1e9 + 7;
+
+int f[N][M];
+
+void mod_add(int& a, int b) { a = (a + b) % MOD; }
+
+int main() {
+    int n, k, d;
+    cin >> n >> k >> d;
+
+    f[0][0] = 1, f[0][1] = 0;
+
+    for (int i = 1; i <= n; ++i) {
+        for (int j = 1; j <= k && j <= i; ++j)
+            if (j < d) {
+                mod_add(f[i][0], f[i - j][0]);
+                mod_add(f[i][1], f[i - j][1]);
+            } else {
+                mod_add(f[i][1], f[i - j][0]);
+                mod_add(f[i][1], f[i - j][1]);
+            }
+    }
+
+    cout << f[n][1] << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces C. Barcode](http://codeforces.com/problemset/problem/225/C)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 这题竟然是dp？
+> 
+> 状态定义 转移 前缀和技巧 **重复做**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Barcode
+// Contest: Codeforces - Codeforces Round #139 (Div. 2)
+// URL: http://codeforces.com/problemset/problem/225/C
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 给出一个矩阵，包含两种颜色，问最少修改多少个点才能让每一列的颜色一致
+// 且颜色一致的连续的列的长度在x和y之间。
+//
+// ATTENTION
+// 可以将 m 列分成一些长度为 n 宽度为 [x, y] 的矩形
+// 相邻矩形颜色不同 矩形内部颜色相同
+//   dp[i][j] 表示考虑到第i位 本位为j
+// 从下一位开始颜色不同且前面均合法的最小修改数
+
+const int N = 1010;
+
+int n, m, x, y;
+int s[N], dp[N][2];
+
+int main() {
+    cin >> n >> m >> x >> y;
+
+    for (int i = 1; i <= n; i++)
+        for (int j = 1; j <= m; j++) {
+            char c = 0;
+            while (c != '#' && c != '.')
+                c = getchar();
+            if (c == '#')
+                s[j]++;
+        }
+
+    for (int i = 1; i <= m; i++)
+        s[i] += s[i - 1];
+
+    memset(dp, 0x3f, sizeof(dp));
+    dp[0][0] = 0;
+    dp[0][1] = 0;
+    for (int i = 0; i < m; i++)
+        for (int j = x; j <= y; j++) {
+            if (i + j > m)
+                break;
+
+            dp[i + j][0] = min(dp[i + j][0], dp[i][1] + s[i + j] - s[i]);
+            dp[i + j][1] =
+                min(dp[i + j][1], dp[i][0] + n * j - s[i + j] + s[i]);
+        }
+
+    cout << min(dp[m][0], dp[m][1]);
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

@@ -549,6 +549,123 @@ public:
 
 * * *
 
+> [!NOTE] **[Codeforces B. Coach](https://codeforces.com/problemset/problem/300/B)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 并查集 重复做 提升题型敏感度
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Coach
+// Contest: Codeforces - Codeforces Round #181 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/300/B
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 需要加强对【并查集】的敏感度
+using TII = tuple<int, int>;
+using TIII = tuple<int, int, int>;
+const int N = 50;
+
+int n, m;
+int p[N], sz[N];
+vector<int> sons[N];
+
+int find(int x) {
+    if (p[x] != x)
+        p[x] = find(p[x]);
+    return p[x];
+}
+
+void merge(int a, int b) {
+    a = find(a), b = find(b);
+    if (a != b) {
+        p[a] = b;
+        sz[b] += sz[a];
+    }
+}
+
+void get_sons() {
+    for (int i = 1; i <= n; ++i) {
+        int fa = find(i);
+        if (fa != i)
+            sons[fa].push_back(i);
+    }
+}
+
+int main() {
+    cin >> n >> m;
+
+    for (int i = 1; i <= n; ++i)
+        p[i] = i, sz[i] = 1;
+
+    while (m--) {
+        int a, b;
+        cin >> a >> b;
+        merge(a, b);
+    }
+
+    get_sons();
+
+    bool f = true;
+    vector<int> one;
+    vector<TII> two;
+    vector<TIII> three;
+    for (int i = 1; i <= n; ++i)
+        if (find(i) == i) {
+            if (sz[i] > 3) {
+                f = false;
+                break;
+            }
+            if (sz[i] == 3)
+                three.push_back({i, sons[i][0], sons[i][1]});
+            else if (sz[i] == 2)
+                two.push_back({i, sons[i][0]});
+            else
+                one.push_back(i);
+        }
+
+    int sz1 = one.size(), sz2 = two.size();
+    if (f && sz1 >= sz2 && (sz1 - sz2) % 3 == 0) {
+        for (int i = 0; i < sz2; ++i) {
+            auto [x, y] = two[i];
+            auto z = one[i];
+            three.push_back({x, y, z});
+        }
+        for (int i = sz2; i < sz1; i += 3)
+            three.push_back({one[i], one[i + 1], one[i + 2]});
+
+        for (auto& [x, y, z] : three)
+            cout << x << ' ' << y << ' ' << z << endl;
+    } else
+        cout << -1 << endl;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 带权并查集
 
 > [!NOTE] **[AcWing 240. 食物链](https://www.acwing.com/problem/content/242/)**
@@ -1535,6 +1652,95 @@ public:
         return 0;
     }
 };
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces A. Ice Skating](https://codeforces.com/problemset/problem/217/A)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 想到用并查集 但方向错
+> 
+> **合并点而非合并边** 细节思考
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: A. Ice Skating
+// Contest: Codeforces - Codeforces Round #134 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/217/A
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 想到了并查集 但方向错了 【还是题意理解有误】
+// 我所理解的：
+//     如果某个方块在 [x, y] 那么 x行 和 y列 之间就可以互通【借助这个点】
+//            ==> 合并行和列
+//     题解 https://codeforces.com/blog/entry/5285 【也是这样描述】
+// 但代码错误
+// https://codeforces.com/contest/217/submission/109897950
+//
+// 本质上：
+//     如果某个方块在 [x, y] 那么 x行内的所有点 和 y列内的所有点 可以互通
+//            ==> 合并点
+
+const int N = 110;
+
+int n;
+int p[N];
+int x[N], y[N];
+
+int find(int x) {
+    if (p[x] != x)
+        p[x] = find(p[x]);
+    return p[x];
+}
+
+int main() {
+    cin >> n;
+
+    for (int i = 0; i < N; ++i)
+        p[i] = i;
+
+    for (int i = 1; i <= n; ++i)
+        cin >> x[i] >> y[i];
+
+    int cc = n;
+    for (int i = 1; i <= n; ++i)
+        for (int j = 1; j <= n; ++j)
+            if (x[i] == x[j] || y[i] == y[j]) {
+                int a = find(i), b = find(j);
+                if (a != b) {
+                    p[a] = b;
+                    --cc;
+                }
+            }
+
+    cout << cc - 1 << endl;
+
+    return 0;
+}
 ```
 
 ##### **Python**

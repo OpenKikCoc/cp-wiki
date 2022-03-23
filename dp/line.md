@@ -823,6 +823,45 @@ public:
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
+##### **C++ Codeforces**
+
+```cpp
+// Problem: A. Boredom
+// Contest: Codeforces - Codeforces Round #260 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/455/A
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 计数 转化为前面一个可选可不选后较简单
+// 思维很重要
+using LL = long long;
+const int N = 100010;
+
+int n;
+LL a[N], f[N];
+
+int main() {
+    cin >> n;
+    for (int i = 0; i < n; ++i) {
+        int x;
+        cin >> x;
+        a[x]++;
+    }
+
+    for (int i = 1; i < N; ++i)
+        f[i] = max(f[i - 1], f[i - 2] + i * a[i]);
+
+    cout << f[N - 1] << endl;
+
+    return 0;
+}
+```
+
 ##### **C++ 1**
 
 ```cpp
@@ -1608,6 +1647,188 @@ public:
         return f[n];
     }
 };
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces E. Tetrahedron](https://codeforces.com/problemset/problem/166/E)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> dp 及 **数学方法**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// 自己做法
+// 直接二维数组显然 MLE
+// https://codeforces.com/contest/166/submission/109765887
+// 下面的做法 1900ms AC
+
+using LL = long long;
+const int MOD = 1e9 + 7;
+
+// D C B A
+LL f[4], pf[4];
+
+int main() {
+    int n;
+    cin >> n;
+
+    pf[0] = 1;
+    for (int i = 1; i <= n; ++i) {
+        memset(f, 0, sizeof f);
+        for (int j = 0; j < 4; ++j)
+            for (int k = 0; k < 4; ++k)
+                if (j != k && pf[k])
+                    f[j] = (f[j] + pf[k]) % MOD;
+        memcpy(pf, f, sizeof f);
+    }
+    cout << f[0] << endl;
+
+    return 0;
+}
+```
+
+##### **C++ 数学**
+
+```cpp
+// Problem: E. Tetrahedron
+// Contest: Codeforces - Codeforces Round #113 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/166/E
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 本质上是四个点的图 求恰好 n 步还在 D 的方案数
+//
+// 数学:
+//     d表示在D处的方案数，abc表示在ABC处的方案数
+//     对于每一秒，可以到达D的方案数为前一秒在ABC时的方案数
+//     可以到达ABC的方案数为    d*3【从顶点有3种方案】
+//                          + abc*2【从ABC可以有两种方案到达ABC】
+// 280ms AC
+
+using LL = long long;
+const int MOD = 1e9 + 7;
+
+int main() {
+    int n;
+    cin >> n;
+    LL res = 0;
+    LL d = 1, abc = 0;
+    for (int i = 0; i < n; ++i) {
+        LL td = abc;
+        LL tabc = (d * 3 + abc * 2) % MOD;
+        d = td, abc = tabc;
+    }
+    cout << d << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces D. Caesar's Legions](https://codeforces.com/problemset/problem/118/D)**
+> 
+> 题意: 
+> 
+> 有一个 `01` 序列，这个序列中有 n1 个 0 ，n2 个 1 。
+> 
+> 如果这个序列最长连续的 0 不超过 k1，最长连续的 1 不超过 k2，就说这个序列是完美的。
+> 
+> 求完美 `01` 序列的方案数，并且方案数对 10^8 取模。 n1 ,n2 ≤100, k1,k2 ≤10
+
+> [!TIP] **思路**
+> 
+> 状态定义和转移
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: D. Caesar's Legions
+// Contest: Codeforces - Codeforces Beta Round #89 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/118/D
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// https://www.luogu.com.cn/problem/solution/CF118D
+// 整理 记忆状态定义和状态转移方式
+using LL = long long;
+const int N = 110, MOD = 1e8;
+
+int n1, n2, k1, k2;
+// f[i][j][k] 总长度i 第0种士兵有j个 最后一个士兵是k
+LL f[N * 2][N][2];
+
+int main() {
+    cin >> n1 >> n2 >> k1 >> k2;
+
+    f[0][0][0] = 1;
+    f[0][0][1] = 1;
+    for (int i = 1; i <= n1 + n2; ++i)
+        for (int j = 0; j <= i && j <= n1; ++j) {
+            // ATTENTION: k 枚举的是末尾有多少个连续相同
+
+            // 1. 向后插入1
+            //    i-j 是当前 [i, j] 下第1种士兵已有的数量
+            for (int k = 1; k <= k2 && k <= i - j; ++k)
+                f[i][j][1] = (f[i][j][1] + f[i - k][j][0]) % MOD;
+            // 2. 向后插入0
+            for (int k = 1; k <= k1 && k <= j; ++k)
+                f[i][j][0] = (f[i][j][0] + f[i - k][j - k][1]) % MOD;
+        }
+
+    LL res = (f[n1 + n2][n1][0] + f[n1 + n2][n1][1]) % MOD;
+    cout << res << endl;
+
+    return 0;
+}
 ```
 
 ##### **Python**
@@ -2839,6 +3060,118 @@ public:
         return c;
     }
 };
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces C. Xenia and Weights](https://codeforces.com/problemset/problem/339/C)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 要想到用 dp OR dfs **敏感度**
+> 
+> dp状态定义 以及转移四重循环 重复做
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Xenia and Weights
+// Contest: Codeforces - Codeforces Round #197 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/339/C
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 原本的贪心错误
+// https://codeforces.com/contest/339/submission/110045532
+// 应该动态规划 or 爆搜+剪枝
+// https://www.luogu.com.cn/problem/solution/CF339C
+
+using PII = pair<int, int>;
+const int N = 11, M = 1010;
+
+string s;
+int m;
+
+bool has[N];
+// f[i][j][k] 操作次数i 本次操作加上的数j 本次操作后重量差值k
+bool f[M][N][N];
+PII p[M][N][N];
+
+int main() {
+    cin >> s >> m;
+
+    for (int i = 0; i < s.size(); ++i)
+        if (s[i] == '1')
+            has[i + 1] = true;
+
+    // 因为自己写的对来源有筛选 所以必须手动初始化初次状态
+    // 去除筛选应该可以直接从 0 转移过来
+    // @binacs TODO
+    for (int i = 1; i <= 10; ++i)
+        if (has[i])
+            f[1][i][i] = true;
+    // 操作次数
+    for (int i = 2; i <= m; ++i)
+        for (int j = 1; j <= 10; ++j)
+            if (has[j])
+                // 上次差值为 [1, j - k]
+                // for (int k = 1; k <= 10; ++ k )
+                for (int k = 1; k < j; ++k)
+                    for (int u = 1; u <= 10; ++u)
+                        if (has[u] && u != j && f[i - 1][u][j - k]) {
+                            f[i][j][k] = true;
+                            p[i][j][k] = {u, j - k};
+                            break;
+                        }
+
+    bool flag = false;
+    int pi, pj;
+    for (int i = 1; i <= 10 && !flag; ++i)
+        for (int j = 1; j <= 10 && !flag; ++j)
+            if (f[m][i][j]) {
+                flag = true;
+                pi = i, pj = j;
+            }
+
+    if (!flag)
+        cout << "NO" << endl;
+    else {
+        cout << "YES" << endl;
+        vector<int> ve;
+        while (m) {
+            ve.push_back(pi);
+            auto [x, y] = p[m][pi][pj];
+            pi = x, pj = y;
+            m--;
+        }
+        reverse(ve.begin(), ve.end());
+        for (auto v : ve)
+            cout << v << ' ';
+        cout << endl;
+    }
+
+    return 0;
+}
 ```
 
 ##### **Python**

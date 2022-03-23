@@ -350,6 +350,7 @@
   * [模拟](topic/simulation.md)
   * [分情况讨论](topic/casebycase.md)
   * [前后缀分解](topic/left-right.md)
+  * [区间求解变区间减](topic/range.md)
   * [预处理](topic/prepare.md)
   * [根据数据范围求解](topic/data.md)
   * [trick](topic/trick.md)

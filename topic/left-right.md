@@ -533,3 +533,98 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces C. Ladder](http://codeforces.com/problemset/problem/279/C)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 题意转换 线性扫描即可
+> 
+> $r[a] >= l[b]$ 的小细节
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Ladder
+// Contest: Codeforces - Codeforces Round #171 (Div. 2)
+// URL: http://codeforces.com/problemset/problem/279/C
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 100010;
+
+int n, m;
+int a[N], l[N], r[N];
+
+int main() {
+    cin >> n >> m;
+    for (int i = 1; i <= n; ++i)
+        cin >> a[i];
+
+    for (int i = 1; i <= n; ++i) {
+        int j = i + 1;
+        while (j <= n && a[j] >= a[j - 1])
+            ++j;
+        for (int k = i; k < j; ++k)
+            r[k] = j - 1;
+        i = j - 1;
+    }
+
+    for (int i = n; i >= 1; --i) {
+        int j = i - 1;
+        while (j >= 1 && a[j] >= a[j + 1])
+            --j;
+        for (int k = i; k > j; --k)
+            l[k] = j + 1;
+        i = j + 1;
+    }
+
+    while (m--) {
+        int a, b;
+        cin >> a >> b;
+
+        // if (r[a] == l[b] || r[a] == r[b] || l[a] == l[b])
+        // WA
+        // http://codeforces.com/contest/279/submission/110815163
+        //
+        // 应该是有一个 corner case :
+        // 分析应该是 544[3455433]445 这样的 r[a] >= l[b] 的情况
+        // 而该情况也可以写为 r[a] - l[b] >= 0
+        //
+        // 1. AC
+        // http://codeforces.com/contest/279/submission/110819576
+        // if (r[a] >= l[b] || r[a] == r[b] || l[a] == l[b])
+        //
+        // 2. AC
+        // http://codeforces.com/contest/279/submission/110816646
+        if (r[a] - l[b] >= 0)
+            cout << "Yes" << endl;
+        else
+            cout << "No" << endl;
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

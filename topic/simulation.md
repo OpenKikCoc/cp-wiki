@@ -1476,6 +1476,103 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 6030. 由单个字符重复的最长子字符串](https://leetcode-cn.com/problems/longest-substring-of-one-repeating-character/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 模拟都是细节
+> 
+> 本题有其他做法: 珂朵莉树 TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using PII = pair<int, int>;
+    const static int N = 1e5 + 10;
+    
+    vector<int> longestRepeating(string s, string queryCharacters, vector<int>& queryIndices) {
+        set<PII> S;
+        multiset<int> MS;
+        int n = s.size();
+        for (int i = 0; i < n; ++ i ) {
+            int j = i + 1;
+            while (j < n && s[j] == s[i])
+                j ++ ;
+            S.insert({i, j - 1});
+            MS.insert(j - i);
+            i = j - 1;
+        }
+        
+        vector<int> res;
+        int m = queryCharacters.size();
+        for (int i = 0; i < m; ++ i ) {
+            char c = queryCharacters[i];
+            int id = queryIndices[i];
+            if (s[id] == c) {
+                res.push_back(*MS.rbegin());
+                continue;
+            }
+            
+            auto [l, r] = *prev(S.lower_bound({id, INT_MAX}));   // ATTENTION
+            // 先删后加 因为可能删的和加的是同一个区间
+            S.erase(S.find({l, r}));
+            MS.erase(MS.find(r - l + 1));
+            
+            if (l < id) {
+                S.insert({l, id - 1});
+                MS.insert(id - l);
+            }
+            if (id < r) {
+                S.insert({id + 1, r});
+                MS.insert(r - id);
+            }
+            
+            int nl = id, nr = id;
+            if (id + 1 < n && s[id + 1] == c) {
+                auto [pl, pr] = *S.lower_bound({id, INT_MAX});
+                nr = pr;
+                S.erase(S.find({pl, pr}));
+                MS.erase(MS.find(pr - pl + 1));
+            }
+            if (id - 1 >= 0 && s[id - 1] == c) {
+                auto [pl, pr] = *prev(S.lower_bound({id, INT_MIN}));
+                nl = pl;
+                S.erase(S.find({pl, pr}));
+                MS.erase(MS.find(pr - pl + 1));
+            }
+            
+            s[id] = c;
+            S.insert({nl, nr});
+            MS.insert(nr - nl + 1);
+            res.push_back(*MS.rbegin());
+        }
+        // cout << endl;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[LeetCode 721. 账户合并](https://leetcode-cn.com/problems/accounts-merge/)**
 > 
 > 题意: TODO
@@ -2243,6 +2340,125 @@ public:
         return false;
     }
 };
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces C. Vasya and Basketball](https://codeforces.com/problemset/problem/493/C)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 写起来细节多很慢
+> 
+> 思路正确 AC
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Vasya and Basketball
+// Contest: Codeforces - Codeforces Round #281 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/493/C
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+using PII = pair<int, int>;
+const int N = 200010;
+
+int n, m;
+int a[N], b[N];
+vector<int> vs;
+vector<PII> va, vb;
+
+vector<PII> get(int t[], int n) {
+    sort(t, t + n);
+    vector<PII> ve;
+    int v = 0;
+    for (int i = 0; i < n; ++i) {
+        if (t[i] != v) {
+            // <= v 的有 i 个
+            ve.push_back({v, i});
+        }
+        v = t[i];
+    }
+    ve.push_back({v, n});
+    // for convenience
+    ve.push_back({2e9 + 10, n});
+
+    return ve;
+}
+
+// n 与 总量 tot 的不同 需要注意 之前细节错了WA
+// https://codeforces.com/contest/493/submission/110105139
+LL f(vector<PII>& t, int n, int tot, int d) {
+    int l = 0, r = n;
+    while (l < r) {
+        int m = l + r >> 1;
+        auto [v, _] = t[m];
+        if (v <= d)
+            l = m + 1;
+        else
+            r = m;
+    }
+    --l;
+    auto [_, c] = t[l];
+    LL ret = (LL)c * 2 + (LL)(tot - c) * 3;
+    return ret;
+}
+
+int main() {
+    // 可以全部都算3分
+    vs.push_back(0);
+
+    cin >> n;
+    for (int i = 0; i < n; ++i)
+        cin >> a[i], vs.push_back(a[i]);
+    va = get(a, n);
+
+    cin >> m;
+    for (int i = 0; i < m; ++i)
+        cin >> b[i], vs.push_back(b[i]);
+    vb = get(b, m);
+
+    sort(vs.begin(), vs.end());
+    vs.erase(unique(vs.begin(), vs.end()), vs.end());
+    int vsn = vs.size();
+
+    LL av, bv, d = -2e18;
+    for (int i = 0; i < vsn; ++i) {
+        LL ta = f(va, va.size(), n, vs[i]);
+        LL tb = f(vb, vb.size(), m, vs[i]);
+        if (ta - tb > d)
+            av = ta, bv = tb, d = ta - tb;
+    }
+
+    cout << av << ':' << bv << endl;
+
+    return 0;
+}
+
 ```
 
 ##### **Python**

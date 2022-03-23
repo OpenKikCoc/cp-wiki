@@ -1649,6 +1649,99 @@ public:
 
 * * *
 
+> [!NOTE] **[Codeforces B. Color the Fence](https://codeforces.com/problemset/problem/349/B)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 自己写背包写过
+> 
+> 官方题解和 luogu 都是模拟的做法
+> 
+> **模拟思路有技巧**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Color the Fence
+// Contest: Codeforces - Codeforces Round #202 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/349/B
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 显然 首先要求个数最多 再求最多的时候都有哪些数
+// 个数相同时大的数越多越好 最后排序输出即可
+//
+// luogu 有模拟的做法 优先选最多的 然后挨个替换
+// https://www.luogu.com.cn/problem/solution/CF349B
+
+const int N = 1000010;
+
+int v;
+int a[11];
+int f[N];
+int p[N];
+
+int main() {
+    cin >> v;
+    for (int i = 1; i <= 9; ++i)
+        cin >> a[i];
+
+    // 完全背包
+    for (int i = 1; i <= 9; ++i)
+        for (int j = a[i]; j <= v; ++j) {
+            // f[j] = max(f[j], f[j - a[i]] + 1);
+            int t = f[j - a[i]] + 1;
+            if (t >= f[j]) {
+                p[j] = i;
+                f[j] = t;
+            }
+        }
+
+    vector<int> ve;
+    int id = v, x = p[id];
+    while (x) {
+        ve.push_back(x);
+        id -= a[x];
+        x = p[id];
+    }
+
+    if (ve.empty()) {
+        cout << -1 << endl;
+    } else {
+        sort(ve.begin(), ve.end());
+        for (int i = ve.size() - 1; i >= 0; --i)
+            cout << ve[i];
+        cout << endl;
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 二维背包
 
 > [!NOTE] **[AcWing 1020. 潜水员](https://www.acwing.com/problem/content/description/1022/)**
@@ -2666,6 +2759,191 @@ if __name__ == '__main__':
 #            print(i, end = ' ')
 #            val -= v[i]
 #        i += 1
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces B. Maximum Absurdity](https://codeforces.com/problemset/problem/332/B)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 记录路径方法 熟练度
+> 
+> 二维数组大小定义反了导致卡了数个小时
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Maximum Absurdity
+// Contest: Codeforces - Codeforces Round #193 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/332/B
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+#define x first
+#define y second
+
+using LL = long long;
+using PII = pair<int, int>;
+const int N = 200010, M = 3;
+
+// ATTENTION f g 二维数组大小定义反了，导致卡了数个小时
+// 路径转移仍然依赖 g
+// 有几个关键条件：
+// 1. 状态转移依赖 【从 0 开始截至某个位置】的区间最值
+//    因此需要记录【截至某个位置】的最值，使得减少一维循环
+//    ==> 新开一个 g 数组
+// 2. 需要记录方案，
+//    使用 g 数组记录  同时借助 g 的更新条件
+//    因为它的更新是真正新数值的更新
+// 3. 记录更新路径 以及输出的写法
+int n, k;
+LL s[N];
+LL f[M][N], g[M][N];
+unordered_map<int, PII> p[M];
+
+int main() {
+    cin >> n >> k;
+    for (int i = 1; i <= n; ++i)
+        cin >> s[i], s[i] += s[i - 1];
+
+    for (int i = 1; i <= 2; ++i) {
+        for (int j = k * i; j <= n; ++j) {
+            LL t = g[i - 1][j - k] + s[j] - s[j - k];
+            if (t > f[i][j]) {
+                f[i][j] = t;
+            }
+            // g[i][j] = max(f[i][j], g[i][j - 1]);
+            if (f[i][j] > g[i][j - 1]) {
+                g[i][j] = f[i][j];
+                p[i][g[i][j]] = {i, j};
+            } else
+                g[i][j] = g[i][j - 1];
+        }
+    }
+
+    vector<int> ve;
+    LL v = g[2][n];
+    for (int c = 2; c > 0; --c) {
+        auto [x, y] = p[c][v];
+        // cout << "v = " << v << " x = " << x << " y = " << y << endl;
+        ve.push_back(y - k + 1);
+        v -= (s[y] - s[y - k]);
+    }
+    for (int i = ve.size() - 1; i >= 0; --i)
+        cout << ve[i] << " \n"[i == 0];
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces C. Color Stripe](https://codeforces.com/problemset/problem/219/C)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 简单dp 记录方案
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Color Stripe
+// Contest: Codeforces - Codeforces Round #135 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/219/C
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using PII = pair<int, int>;
+const int N = 500010, M = 27;
+
+int n, k;
+string s;
+int f[N][M];
+PII p[N][M];
+
+int main() {
+    cin >> n >> k >> s;
+
+    memset(f, 0x3f, sizeof f);
+    for (int i = 0; i < k; ++i)
+        f[0][i] = 0;
+
+    for (int i = 1; i <= n; ++i)
+        for (int j = 0; j < k; ++j)
+            for (int u = 0; u < k; ++u)
+                if (j != u) {
+                    int t = f[i - 1][u] + (s[i - 1] - 'A' != j);
+                    if (t < f[i][j]) {
+                        f[i][j] = t;
+                        p[i][j] = {i - 1, u};
+                    }
+                }
+
+    int res = 1e9, pj;
+    for (int i = 0; i < k; ++i)
+        if (f[n][i] < res) {
+            res = f[n][i];
+            pj = i;
+        }
+    cout << res << endl;
+
+    string ss;
+    int x = n, y = pj;
+    while (x) {
+        ss += 'A' + y;
+        auto [nx, ny] = p[x][y];
+        x = nx, y = ny;
+    }
+    reverse(ss.begin(), ss.end());
+    cout << ss << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
 ```
 
 <!-- tabs:end -->

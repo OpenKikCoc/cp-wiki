@@ -1067,6 +1067,193 @@ public:
 
 * * *
 
+> [!NOTE] **[Codeforces C. Valera and Elections](https://codeforces.com/problemset/problem/369/C)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **从未见过的树形DP**
+> 
+> 思路 实现 重复做
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Valera and Elections
+// Contest: Codeforces - Codeforces Round #216 (Div. 2)
+// URL: http://codeforces.com/problemset/problem/369/C
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 思维题
+// 显然是树形结构 考虑类似树形DP的办法检查子树中维修所有树需要统计多少个点
+// 在遍历子树时更新 技巧 思路
+
+const int N = 100010, M = 200010;
+
+int n;
+int h[N], e[M], w[M], ne[M], idx;
+bool st[N];
+
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx++;
+}
+
+int dfs(int u, int fa) {
+    int ret = 0;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (j != fa) {
+            int t = dfs(j, u);
+            // 该路有问题 且子树没有选取的点 则选取该点
+            if (w[i] == 2 && t == 0) {
+                t = 1;
+                st[j] = true;
+            }
+            ret += t;
+        }
+    }
+    return ret;
+}
+
+int main() {
+    memset(h, -1, sizeof h);
+
+    cin >> n;
+    for (int i = 0; i < n - 1; ++i) {
+        int a, b, c;
+        cin >> a >> b >> c;
+        add(a, b, c);
+        add(b, a, c);
+    }
+
+    int s = dfs(1, 1);
+    cout << s << endl;
+    for (int i = 1; i <= n; ++i)
+        if (st[i])
+            cout << i << ' ';
+    cout << endl;
+
+    return 0;
+}
+
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces D. Valid Sets](https://codeforces.com/problemset/problem/486/D)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思维题 树形dp 重复
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: D. Valid Sets
+// Contest: Codeforces - Codeforces Round #277 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/486/D
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 思维 动态规划 树形dp 【重复做】
+// 首先考虑去重问题：
+//     定义一个点 u 比一个点 v 好，
+//     (为确保唯一)
+//     当且仅当 a[u] > a[v] 或者 a[u]=a[v] 且 u < v
+// f[u] 为子树 u 中 u 为最好节点且节点查不超过 d 的所有方案
+
+using LL = long long;
+const int N = 2010, M = 4010, MOD = 1e9 + 7;
+
+int d, n;
+int h[N], e[M], ne[M], idx;
+LL a[N], f[N];
+
+void add(int a, int b) { e[idx] = b, ne[idx] = h[a], h[a] = idx++; }
+
+bool better(int rt, int t) { return a[rt] > a[t] || a[rt] == a[t] && rt < t; }
+
+void dfs(int u, int fa, int root) {
+    f[u] = 1;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (j == fa)
+            continue;
+        // 思维 重要实现
+        if (!better(root, j) || a[root] - a[j] > d)
+            continue;
+        dfs(j, u, root);
+        (f[u] *= (f[j] + 1)) %= MOD;
+    }
+}
+
+int main() {
+    memset(h, -1, sizeof h);
+
+    cin >> d >> n;
+
+    for (int i = 1; i <= n; ++i)
+        cin >> a[i];
+
+    for (int i = 1; i < n; ++i) {
+        int a, b;
+        cin >> a >> b;
+        add(a, b), add(b, a);
+    }
+
+    LL res = 0;
+    for (int i = 1; i <= n; ++i)
+        dfs(i, -1, i), (res += f[i]) %= MOD;
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 换根
 
 - [POJ 3585 Accumulation Degree](http://poj.org/problem?id=3585)

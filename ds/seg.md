@@ -2377,3 +2377,114 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces D. Xenia and Bit Operations](https://codeforces.com/problemset/problem/339/D)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 线段树
+> 
+> 题目数据使得计算层数很简单
+> 
+> 只要最后一层为0即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: D. Xenia and Bit Operations
+// Contest: Codeforces - Codeforces Round #197 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/339/D
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 线段树 AcWing 加强模板记忆
+
+const int N = 1 << 17, M = N << 2;
+
+int n, m;
+int w[N];
+
+struct Node {
+    int l, r;
+    int v, dep;
+} tr[M];
+
+void pushup(Node& u, Node& l, Node& r) {
+    if (u.dep % 2)
+        u.v = l.v | r.v;
+    else
+        u.v = l.v ^ r.v;
+}
+
+void pushup(int u) { pushup(tr[u], tr[u << 1], tr[u << 1 | 1]); }
+
+void build(int u, int l, int r) {
+    if (l == r) {
+        // l - 1 对应原数组w所保存的值
+        tr[u] = {l, r, w[l - 1]};
+    } else {
+        tr[u] = {l, r};
+        int mid = l + (r - l) / 2;
+        build(u << 1, l, mid), build(u << 1 | 1, mid + 1, r);
+
+        // 记录深度
+        tr[u].dep = tr[u << 1].dep + 1;
+
+        pushup(u);
+    }
+}
+
+void modify(int u, int x, int v) {
+    if (tr[u].l == x && tr[u].r == x) {
+        tr[u].v = v;
+    } else {
+        int mid = tr[u].l + (tr[u].r - tr[u].l) / 2;
+        if (x <= mid)
+            modify(u << 1, x, v);
+        else
+            modify(u << 1 | 1, x, v);
+        pushup(u);
+    }
+}
+
+int main() {
+    cin >> n >> m;
+    for (int i = 0; i < 1 << n; ++i)
+        cin >> w[i];
+
+    build(1, 1, 1 << n);
+
+    while (m--) {
+        int a, b;
+        cin >> a >> b;
+        modify(1, a, b);
+        cout << tr[1].v << endl;
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

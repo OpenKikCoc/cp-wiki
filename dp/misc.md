@@ -346,3 +346,286 @@ public:
 <br>
 
 * * *
+
+### 转化模型
+
+> [!NOTE] **[Codeforces A. Flipping Game](https://codeforces.com/problemset/problem/327/A)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 转化为 **最大子序和** 模型以精妙的以线性复杂度处理
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 最大子序和**
+
+找到一个区间 区间内 [0的数量 - 1的数量] 差值最大
+
+==>
+
+**计数 最大子序和模型**
+
+把 0 翻转我们就加 1
+
+将 1 翻转我们就加 -1
+
+那么我们只需要计算子序列和最大就可以了
+
+再加上原先的 1 的和 就是最大的 1 的数量
+
+```cpp
+// Problem: A. Flipping Game
+// Contest: Codeforces - Codeforces Round #191 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/327/A
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 110;
+
+int f[N];
+
+int main() {
+    int n;
+    cin >> n;
+
+    int tot = 0;
+    for (int i = 0; i < n; ++i) {
+        int x;
+        cin >> x;
+        if (x) {
+            ++tot;
+            f[i + 1] = max(f[i] - 1, -1);
+        } else
+            f[i + 1] = max(f[i] + 1, 1);
+    }
+
+    int pre = -1e9;
+    for (int i = 1; i <= n; ++i)
+        pre = max(pre, f[i]);
+    cout << pre + tot << endl;
+
+    return 0;
+}
+```
+
+##### **C++ 前缀和暴力**
+
+```cpp
+// Problem: A. Flipping Game
+// Contest: Codeforces - Codeforces Round #191 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/327/A
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 找到一个区间 区间内 [0的数量 - 1的数量] 差值最大
+// 数据范围显然可以暴力
+
+const int N = 110;
+
+int n;
+int s0[N], s1[N];
+
+int main() {
+    cin >> n;
+    for (int i = 0; i < n; ++i) {
+        int x;
+        cin >> x;
+        if (x) {
+            s0[i + 1] = s0[i];
+            s1[i + 1] = s1[i] + 1;
+        } else {
+            s0[i + 1] = s0[i] + 1;
+            s1[i + 1] = s1[i];
+        }
+    }
+
+    // -1e9 cause it needs EXECTLY one operation
+    int res = -1e9;
+    for (int l = 1; l <= n; ++l)
+        for (int r = l; r <= n; ++r)
+            res = max(res, s0[r] - s0[l - 1] - s1[r] + s1[l - 1]);
+    cout << res + s1[n] << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces C. George and Job](https://codeforces.com/problemset/problem/467/C)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 状态定义是核心 多增加感觉
+> 
+> 一开始想的还是以 i 为结束分为 k 段
+> 
+> 实际上可以是 在 i 及之前就分为 k 段
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. George and Job
+// Contest: Codeforces - Codeforces Round #267 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/467/C
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// note 增加经验
+// TLE https://codeforces.com/contest/467/submission/109681416
+// WA  https://codeforces.com/contest/467/submission/109682744
+// 本题第三重循环要求前面的最值 显然可以直接用前面某个位置的值【需转换状态定义】
+// 一开始想成三重循环
+using LL = long long;
+const int N = 5010;
+
+int n, m, k;
+LL s[N], f[N][N];
+
+int main() {
+    cin >> n >> m >> k;
+    for (int i = 1; i <= n; ++i)
+        cin >> s[i], s[i] += s[i - 1];
+
+    for (int i = 1; i <= k; ++i)
+        for (int j = max(i, m); j <= n; ++j)
+            f[i][j] = max(f[i][j - 1], f[i - 1][j - m] + s[j] - s[j - m]);
+
+    LL res = 0;
+    for (int i = 1; i <= n; ++i)
+        res = max(res, f[k][i]);
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
+> [!NOTE] **[Codeforces C. Tourist Problem](https://codeforces.com/problemset/problem/340/C)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 数论题 规律 推导 优化
+> 
+> 非常好的题 反复做
+> 
+> 其中**将计算两重循环绝对值差转化为前缀和的思路**非常精妙 有可拓展性
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Tourist Problem
+// Contest: Codeforces - Codeforces Round #198 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/340/C
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 思维 数学
+// 根据题意推导：
+//    所有 |s[i] - s[j]| 都出现 (n - 1)! 次
+//    从 0 开始的 |s[i] - 0| 同样出现 (n - 1)! 次
+// 总情况 n! 种
+// 答案：
+//    for (int i = 1; i <= n; ++ i )
+//        for (int j = 0; j <= n; ++ j )
+//            t += abs(a[i] - a[j])
+//    t * (n - 1)! / n!
+//    也即 t / n
+// 直接枚举 abs(a[i] - a[j]) 显然 n^2 超时
+// 考虑排序维护前缀和 【此时 abs符号可以去掉】
+// 两层循环中有一部分可以反过来 值相同 所以可以直接计算一半的部分
+// 则计算绝对值差变为 2 * (s[i] * (i - 1) - s[i - 1])
+
+using LL = long long;
+const int N = 100010;
+
+LL n;
+LL a[N], s[N];
+
+int main() {
+    cin >> n;
+    for (int i = 1; i <= n; ++i)
+        cin >> a[i];
+    sort(a + 1, a + n + 1);
+    for (int i = 1; i <= n; ++i)
+        s[i] = a[i] + s[i - 1];
+
+    LL t = s[n];  // a[i] - 0
+    for (int i = 1; i <= n; ++i)
+        t += 2 * (a[i] * (i - 1) - s[i - 1]);
+    LL g = __gcd(t, n);
+
+    cout << t / g << ' ' << n / g << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

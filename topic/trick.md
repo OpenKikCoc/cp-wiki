@@ -4254,6 +4254,982 @@ public:
 
 * * *
 
+> [!NOTE] **[Codeforces B. Ciel and Flowers](https://codeforces.com/problemset/problem/322/B)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思维 非常好的题
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Ciel and Flowers
+// Contest: Codeforces - Codeforces Round #190 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/322/B
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// If there are no "mixing bouquet" then the answer will be r/3 + g/3 + b/3.
+// One important observation is that: There always exist an optimal solution
+//  with less than 3 mixing bouquet.
+// The proof is here: Once we get 3 mixing bouquet, we can change it to
+//  (1 red bouquet + 1 green bouquet + 1 blue bouquet)
+//
+// So we can try 0, 1, 2 mixing bouquet and make the remain 3 kind of bouquets
+//  use above greedy method. Output one with largest outcome.
+
+// 思维 好题
+
+int main() {
+    int r, g, b;
+    cin >> r >> g >> b;
+
+    int res = 0;
+    for (int c = 0; c < 3; ++c) {
+        if (c > r || c > g || c > b)
+            break;
+        int tr = r - c, tg = g - c, tb = b - c;
+        res = max(res, c + tr / 3 + tg / 3 + tb / 3);
+    }
+
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces C. Exams](https://codeforces.com/problemset/problem/479/C)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思维题
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Exams
+// Contest: Codeforces - Codeforces Round #274 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/479/C
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 思维题 画图做出来了但是挺花时间的
+
+#define x first
+#define y second
+
+using PII = pair<int, int>;
+const int N = 5010;
+
+int n;
+PII e[N];
+
+int main() {
+    cin >> n;
+    for (int i = 0; i < n; ++i)
+        cin >> e[i].x >> e[i].y;
+    sort(e, e + n);
+
+    int p = 0;
+    for (int i = 0; i < n; ++i) {
+        int l = e[i].y;
+
+        int j = i + 1;
+        while (j < n && e[j].x == e[j - 1].x)
+            ++j;
+
+        // ------ 本段指同一天ai的所有考试 ------
+        // 则本段不会受前一段影响 最后完成时间即最后一个的最早时间
+        if (p <= l)
+            p = e[j - 1].y;
+        // 本段的开始会受前一段影响
+        // 造成本段所有的考试都只能在同一天天完成
+        else
+            p = e[j - 1].x;
+
+        i = j - 1;
+    }
+    cout << p << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces B. Little Pony and Sort by Shift](https://codeforces.com/problemset/problem/454/B)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Little Pony and Sort by Shift
+// Contest: Codeforces - Codeforces Round #259 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/454/B
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 正确思路：
+// 检查有几个递增序列
+const int N = 100010;
+
+int n;
+int a[N];
+
+int main() {
+    cin >> n;
+    for (int i = 0; i < n; ++i)
+        cin >> a[i];
+
+    // 有重复值 如果选第一个出现的最小的 则对于
+    // [1, 2, 1] 无法解决 故找最后一个最大的
+    // https://codeforces.com/contest/454/submission/110076646
+    // TEST 6 WA 考虑找第一个最大的 则TEST 7 WA
+    // 转变思路
+
+    int c = 0, p;
+    for (int i = 1; i < n; ++i)
+        if (a[i] < a[i - 1]) {
+            ++c;
+            p = i;
+        }
+
+    if (c == 0)
+        cout << 0 << endl;
+    else if (c == 1 && a[n - 1] <= a[0])
+        cout << n - p << endl;
+    else
+        cout << -1 << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces C. Another Problem on Strings](https://codeforces.com/problemset/problem/165/C)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 滑动窗口一次过
+> 
+> luogu 有技巧性很强值得学习的做法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Another Problem on Strings
+// Contest: Codeforces - Codeforces Round #112 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/165/C
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const int N = 1000010;
+
+int k;
+char s[N];
+
+// 以下是来源于luogu的解法
+// 绝佳的思维技巧
+
+int main() {
+    cin >> k >> s;
+
+    int n = strlen(s);
+
+    // 初始化
+    vector<int> c0(n + 1);
+    c0[0] = 1;
+
+    LL res = 0, c = 0;
+    for (int i = 0; i < n; ++i) {
+        // c 总共多少个1
+        if (s[i] == '1')
+            c++;
+        // 累加 第 c-k 个1后面有多少个0
+        if (c >= k)
+            res += c0[c - k];
+        // 更新 第 c 个1后面有多少个0
+        c0[c]++;
+    }
+    cout << res << endl;
+
+    return 0;
+}
+
+// 自己的滑动窗口
+int main2() {
+    cin >> k >> s;
+
+    int n = strlen(s);
+
+    // 需要记录某个 0 右侧第一个1的最小距离
+    vector<int> d(n);
+    stack<int> st;
+    for (int i = 0; i < n; ++i) {
+        if (s[i] == '1') {
+            while (st.size()) {
+                int t = st.top();
+                st.pop();
+                d[t] = i - t;
+            }
+        } else {
+            st.push(i);
+        }
+    }
+    // https://codeforces.com/contest/165/submission/110092144
+    for (int i = 0; i < n; ++i)
+        if (s[i] == '0' && d[i] == 0)
+            d[i] = n - i;
+
+    LL res = 0;
+    for (int l = 0, r = 0, cnt = 0; r < n; ++r) {
+        if (s[r] == '1')
+            ++cnt;
+
+        while (l <= r && cnt > k) {
+            if (s[l] == '1')
+                --cnt;
+            l++;
+        }
+
+        if (cnt == k && l <= r) {
+            if (s[l] == '1')
+                res++;
+            else
+                res += min(d[l], r - l) + 1;
+            // min
+            // https://codeforces.com/contest/165/submission/110091901
+            // cout << "l = " << l << " r = " << r << " res = " << res << endl;
+        }
+    }
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces C. Gargari and Bishops](https://codeforces.com/problemset/problem/463/C)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 精简**
+
+```cpp
+// Problem: C. Gargari and Bishops
+// Contest: Codeforces - Codeforces Round #264 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/463/C
+// Memory Limit: 256 MB
+// Time Limit: 3000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const int N = 2010;
+
+int n;
+int g[N][N];
+LL add[N * 2], sub[N * 2];
+LL s[N][N];
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> n;
+    for (int i = 1; i <= n; ++i)
+        for (int j = 1; j <= n; ++j) {
+            cin >> g[i][j];
+            add[i + j] += g[i][j];
+            sub[i - j + N] += g[i][j];
+        }
+
+    // 优化前的代码
+    // https://codeforces.com/contest/463/submission/110115633
+    LL res1 = -1, pi = 0, pj = 0;
+    LL res2 = -1, qi = 0, qj = 0;
+    for (int i = 1; i <= n; ++i)
+        for (int j = 1; j <= n; ++j) {
+            LL t = add[i + j] + sub[i - j + N] - g[i][j];
+
+            if ((i + j) & 1) {
+                if (t > res1) {
+                    res1 = t;
+                    pi = i, pj = j;
+                }
+            } else {
+                if (t > res2) {
+                    res2 = t;
+                    qi = i, qj = j;
+                }
+            }
+        }
+
+    cout << res1 + res2 << endl;
+    cout << pi << ' ' << pj << ' ' << qi << ' ' << qj << endl;
+
+    return 0;
+}
+```
+
+##### **C++**
+
+```cpp
+// Problem: C. Gargari and Bishops
+// Contest: Codeforces - Codeforces Round #264 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/463/C
+// Memory Limit: 256 MB
+// Time Limit: 3000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const int N = 2010;
+
+int n;
+int g[N][N];
+LL add[N * 2], sub[N * 2];
+LL s[N][N];
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> n;
+    for (int i = 1; i <= n; ++i)
+        for (int j = 1; j <= n; ++j) {
+            cin >> g[i][j];
+            add[i + j] += g[i][j];
+            sub[i - j + N] += g[i][j];
+        }
+
+    // res1 = -1 解决全0的case
+    // https://codeforces.com/contest/463/submission/110114392
+    LL res1 = -1, pi = 0, pj = 0;
+    for (int i = 1; i <= n; ++i)
+        for (int j = 1; j <= n; ++j) {
+            LL t = add[i + j] + sub[i - j + N] - g[i][j];
+            if (t > res1) {
+                res1 = t;
+                pi = i, pj = j;
+            }
+        }
+
+    LL res2 = -1, qi = 0, qj = 0;
+    for (int i = 1; i <= n; ++i)
+        for (int j = 1; j <= n; ++j) {
+            if (i == pi && j == pj)
+                continue;
+            // 读题：要求不能有一个格子同时被两个点攻击到 所以必然可以全加到
+            // 原先题意理解有误 但是如果更改条件是可行的
+            // https://codeforces.com/contest/463/submission/110115178
+            if (((i + j) - (pi + pj)) % 2 == 0 ||
+                ((i - j + N) - (pi - pj + N)) % 2 == 0)
+                continue;
+
+            LL t = add[i + j] + sub[i - j + N] - g[i][j];
+            if (t > res2) {
+                res2 = t;
+                qi = i, qj = j;
+            }
+        }
+
+    cout << res1 + res2 << endl;
+    cout << pi << ' ' << pj << ' ' << qi << ' ' << qj << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces B. Kolya and Tandem Repeat](https://codeforces.com/problemset/problem/443/B)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思维 重复做
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Kolya and Tandem Repeat
+// Contest: Codeforces - Codeforces Round #253 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/443/B
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 暴力枚举
+// 思考 理解 重复
+
+int main() {
+    string s;
+    int k;
+    cin >> s >> k;
+    int ns = s.size();
+
+    int n = ns + k - (ns + k) % 2;
+    if (k >= ns)
+        // 可以拷贝完整的一个串
+        cout << n << endl;
+    else {
+        int res = 0;
+        // 枚举起始位置
+        for (int l = 0; l < ns; ++l)
+            // 枚举一半的长度
+            for (int len = 1; l + len - 1 < ns; ++len) {
+                int r = l + len - 1, cnt = 0;
+                for (int u = l; u <= r; ++u)
+                    if (u + len >= ns && u + len < ns + k)
+                        ++cnt;
+                    else if (s[u] == s[u + len])
+                        ++cnt;
+                if (cnt == len && 2 * cnt > res)
+                    res = 2 * cnt;
+            }
+        cout << res << endl;
+    }
+    return 0;
+}
+
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces D. Little Girl and Maximum XOR](http://codeforces.com/problemset/problem/276/D)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思维题 需要重复做
+> 
+> 思维本质上是贪心 也可以数位dp比较麻烦
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: D. Little Girl and Maximum XOR
+// Contest: Codeforces - Codeforces Round #169 (Div. 2)
+// URL: http://codeforces.com/problemset/problem/276/D
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 我们把 a, b 从大到小相同的二进制位舍去到第一个不同的位，
+// 则答案是 该位代表的值 × 2 − 1
+// a, b 相同答案是 0
+
+using LL = long long;
+
+int main() {
+    LL a, b, p;
+    cin >> a >> b;
+
+    p = 1ll << 62;
+    while (p && ((a & p) == (b & p)))
+        p >>= 1;
+
+    cout << (p ? (p << 1) - 1 : 0) << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces D. Long Jumps](https://codeforces.com/problemset/problem/479/D)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 细节
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: D. Long Jumps
+// Contest: Codeforces - Codeforces Round #274 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/479/D
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 思路：
+// 枚举刻度 检查a[i]+x/y or a[i]-x/y 是否存在
+
+const int N = 100010;
+
+int n, l, x, y;
+int a[N];
+
+bool check(int t) {
+    if (t < 0 || t > l)
+        return false;
+
+    int i = lower_bound(a, a + n, t) - a;
+    return t == a[i];
+}
+
+int main() {
+    cin >> n >> l >> x >> y;
+
+    // 方便后面好做
+    int tx = x, ty = y;
+    x = max(tx, ty), y = min(tx, ty);
+
+    for (int i = 0; i < n; ++i)
+        cin >> a[i];
+
+    int r = 0;
+    for (int i = 0; i < n; ++i) {
+        if (check(a[i] - x))
+            r |= 1;
+        if (check(a[i] - y))
+            r |= 2;
+    }
+
+    if (r == 3)
+        cout << 0 << endl;
+    else if (r == 2)
+        cout << 1 << endl << x << endl;
+    else if (r == 1)
+        cout << 1 << endl << y << endl;
+    else {
+        // x y 都没有办法达到
+        // 1. 检查能否中间插一个数
+        //    也即插一个数产生x,y
+        //    (并不是只能在x+y的区间中间插)
+        // https://codeforces.com/contest/479/submission/111089657
+        //     1.1 在中间插 如果存在 x+y的区间长度
+        //     1.2 在某个点右边插
+        //     1.3 在某个点左边插
+        // 2. 不能插 就两个都需要
+
+        int p = -1;
+        for (int i = 0; i < n; ++i) {
+            if (check(a[i] - (x + y)))
+                p = a[i] - y;  // or a[i] - x
+
+            int lx = a[i] - x;
+            if (lx >= 0 && check(lx + y))
+                p = lx;
+
+            int rx = a[i] + x;
+            if (rx <= l && check(rx - y))
+                p = rx;
+        }
+
+        if (p != -1)
+            cout << 1 << endl << p << endl;
+        else
+            cout << 2 << endl << y << ' ' << x << endl;
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces B. Wonder Room](https://codeforces.com/problemset/problem/466/B)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思维题 暴力 优化
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Wonder Room
+// Contest: Codeforces - Codeforces Round #266 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/466/B
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 暴力 及优化技巧
+//
+// 在 1000000000 1 1 TLE
+//     https://codeforces.com/contest/466/submission/111328964
+// 原因：
+//    对于只有在 y < b 的时候才 break 的写法优化程度太小
+//    其实当二者的大小关系反过来 就也可以break了
+//    因为后面的可能性只是前面的对称情况
+// WA 3
+//     https://codeforces.com/contest/466/submission/111329369
+// 原因：
+//    交换条件应为 a > b 细节见注释
+
+using LL = long long;
+
+LL n, a, b;
+
+int main() {
+    cin >> n >> a >> b;
+    n *= 6ll;
+
+    if (a * b >= n)
+        cout << a * b << endl << a << ' ' << b << endl;
+    else {
+        // 细节 应该是 if (a > b) 而非 if (a < b)
+        // 因为后面枚举x时 x逐渐增大 y是逐渐缩小的
+        // 思考
+        bool f = false;
+        if (a > b) {
+            swap(a, b);
+            f = true;
+        }
+
+        LL rx = 1e9, ry = 1e9;
+        // x 是短的一侧
+        for (LL i = a; i <= n; ++i) {
+            LL x = i, y = (n + x - 1) / x;
+            if (y < b || x > y)
+                break;
+
+            if (rx * ry >= x * y)
+                rx = x, ry = y;
+        }
+
+        if (f)
+            swap(rx, ry);
+        cout << rx * ry << endl << rx << ' ' << ry << endl;
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
+### 根据题意简化思维
+
+> [!NOTE] **[Codeforces C. Dima and Staircase](https://codeforces.com/problemset/problem/272/C)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Dima and Staircase
+// Contest: Codeforces - Codeforces Round #167 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/272/C
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 显然查询区间最值 随后区间统一修改
+// 线段树可 但太复杂
+// 考虑本题特殊之处：区间总是从最左端开始 维护左侧的最高值即可
+// 思维题
+using LL = long long;
+const int N = 100010;
+
+int n, m;
+LL a[N];
+
+int main() {
+    cin >> n;
+    for (int i = 1; i <= n; ++i)
+        cin >> a[i];
+
+    cin >> m;
+    LL mxh = 0;
+    while (m--) {
+        int w, h;
+        cin >> w >> h;
+        LL t = max(a[w], mxh);
+        cout << t << endl;
+        mxh = t + h;
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces D. Vasya and Chess](https://codeforces.com/problemset/problem/493/D)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 非常好的思维题 重复做
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: D. Vasya and Chess
+// Contest: Codeforces - Codeforces Round #281 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/493/D
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 思维题
+// 需要根据数据范围 猜测其为规律题
+//
+// 黑方可以模仿白方行动:
+// 若n为偶数，则最后一定是白方动不了
+// 若n为奇数，白方只需走到（1,2），就可以让黑方落入
+// 前文中白方的境地，于是就解决了
+
+int main() {
+    int n;
+    cin >> n;
+
+    if (n & 1)
+        cout << "black" << endl;
+    else
+        cout << "white" << endl << "1 2" << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 动态统计计数题
 
 > [!NOTE] **[LeetCode 1224. 最大相等频率](https://leetcode-cn.com/problems/maximum-equal-frequency/)** [TAG]

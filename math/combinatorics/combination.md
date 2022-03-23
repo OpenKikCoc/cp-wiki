@@ -1111,3 +1111,107 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces C. Beautiful Numbers](https://codeforces.com/problemset/problem/300/C)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 非常好的组合数题目 重复做
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Beautiful Numbers
+// Contest: Codeforces - Codeforces Round #181 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/300/C
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 非常好的组合数题目
+// 暴力会遍历跑lucas会超时 考虑记忆化
+// https://codeforces.com/contest/300/submission/110875084
+// 记忆化仍然超时
+// https://codeforces.com/contest/300/submission/110875327
+// 参考luogu的做法，这里会频繁用到组合数所以直接递推计算 而不用lucas
+// https://www.luogu.com.cn/problem/solution/CF300C
+// 预处理阶乘和逆
+
+using LL = long long;
+const int N = 1000010, MOD = 1e9 + 7;
+
+int a, b, n;
+int fact[N], infact[N];
+
+bool check(int x) {
+    while (x) {
+        int t = x % 10;
+        if (t != a && t != b)
+            return false;
+        x /= 10;
+    }
+    return true;
+}
+
+int qmi(int a, int k, int p) {
+    int res = 1;
+    while (k) {
+        if (k & 1)
+            res = (LL)res * a % p;
+        a = (LL)a * a % p;
+        k >>= 1;
+    }
+    return res;
+}
+
+void init() {
+    fact[0] = infact[0] = 1;
+    for (int i = 1; i < N; ++i) {
+        fact[i] = (LL)fact[i - 1] * i % MOD;
+        infact[i] = (LL)infact[i - 1] * qmi(i, MOD - 2, MOD) % MOD;
+    }
+}
+
+int main() {
+    init();
+
+    cin >> a >> b >> n;
+
+    LL res = 0;
+
+    // 枚举 a 的个数
+    for (int i = 0; i <= n; ++i) {
+        int s = a * i + b * (n - i);
+        if (check(s))
+            res = (res + (LL)fact[n] * infact[i] % MOD * infact[n - i]) % MOD;
+    }
+
+    cout << res << endl;
+
+    return 0;
+}
+
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

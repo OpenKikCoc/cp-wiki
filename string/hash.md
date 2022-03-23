@@ -611,6 +611,98 @@ public:
 
 * * *
 
+
+> [!NOTE] **[Codeforces D. Good Substrings](https://codeforces.com/problemset/problem/271/D)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 字符串hash 很好的应用
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: D. Good Substrings
+// Contest: Codeforces - Codeforces Round #166 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/271/D
+// Memory Limit: 512 MB
+// Time Limit: 2000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 字符串hash OR SAM OR Trie
+// 一开始想的是滑动窗口 但这种最好是解决【最长子串要求的】
+// 如果只是统计子串选取方案 显然可以再借助单调栈算当前一个
+//    good字符后面还有多少个连续good字符（显然单调栈）然后窗口累加
+// 但是本题要求对串去重 故不能用滑动窗口
+using ULL = unsigned long long;
+const int N = 1510, M = 30, P = 131;
+
+int n, k;
+string s;
+int sum[N];
+ULL h[N], p[N];
+bool st[M];
+unordered_set<ULL> S;
+
+ULL get(int l, int r) { return h[r] - h[l - 1] * p[r - l + 1]; }
+
+int main() {
+    cin >> s;
+    n = s.size();
+    for (int i = 0; i < 26; ++i) {
+        char c;
+        cin >> c;
+        st[i] = c == '0';
+    }
+    cin >> k;
+
+    // 前缀和
+    for (int i = 1; i <= n; ++i)
+        sum[i] = sum[i - 1] + st[s[i - 1] - 'a'];
+
+    // 字符串hash
+    p[0] = 1;
+    for (int i = 1; i <= n; ++i) {
+        h[i] = h[i - 1] * P + s[i - 1];
+        p[i] = p[i - 1] * P;
+    }
+
+    for (int i = 1; i <= n; ++i)
+        for (int j = i; j <= n; ++j)
+            if (sum[j] - sum[i - 1] <= k)
+                S.insert(get(i, j));
+            else
+                break;
+
+    cout << S.size() << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
 ### 进阶
 
 > [!NOTE] **[LeetCode 2156. 查找给定哈希值的子串](https://leetcode-cn.com/problems/find-substring-with-given-hash-value/)** [TAG]

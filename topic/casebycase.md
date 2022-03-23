@@ -375,3 +375,116 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces C. Arithmetic Progression](http://codeforces.com/problemset/problem/382/C)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 巨多case和细节 简单就是麻烦
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Arithmetic Progression
+// Contest: Codeforces - Codeforces Round #224 (Div. 2)
+// URL: http://codeforces.com/problemset/problem/382/C
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 100010;
+
+int n;
+int a[N];
+
+using PII = pair<int, int>;
+
+bool check(unordered_map<int, int>& S) {
+    vector<PII> ve;
+    for (auto& [k, v] : S)
+        ve.push_back({k, v});
+    sort(ve.begin(), ve.end());
+    // 第三个条件
+    // http://codeforces.com/contest/382/submission/110983876
+    return ve[0].first == 0 || ve[1].second > 1 ||
+           ve[1].first != ve[0].first * 2;
+}
+
+int main() {
+    cin >> n;
+    for (int i = 0; i < n; ++i)
+        cin >> a[i];
+    sort(a, a + n);
+
+    if (n < 2)
+        cout << -1 << endl;
+    else if (n == 2) {
+        int d = a[1] - a[0];
+        if (d == 0) {
+            cout << 1 << endl << a[0] << endl;
+        } else if (d % 2 == 0) {
+            cout << 3 << endl;
+            cout << a[0] - d << ' ' << a[0] + d / 2 << ' ' << a[1] + d << endl;
+        } else {
+            cout << 2 << endl;
+            cout << a[0] - d << ' ' << a[1] + d << endl;
+        }
+    } else {
+        // n >= 3
+        unordered_map<int, int> S;
+        for (int i = 1; i < n; ++i)
+            S[a[i] - a[i - 1]]++;
+        if (S.size() > 2 || S.size() == 2 && check(S))
+            cout << 0 << endl;
+        else {
+            int d = a[1] - a[0], d2 = d, p = 1;
+            for (int i = 2; i < n; ++i) {
+                d2 = a[i] - a[i - 1];
+                p = i;
+                if (d2 != d)
+                    break;
+            }
+
+            if (d > d2) {
+                cout << 1 << endl;
+                cout << a[0] + d2 << endl;
+            } else if (d < d2) {
+                cout << 1 << endl;
+                cout << a[p - 1] + d << endl;
+            } else {
+                // http://codeforces.com/contest/382/submission/110983324
+                if (d) {
+                    cout << 2 << endl;
+                    cout << a[0] - d << ' ' << a[n - 1] + d << endl;
+                } else {
+                    cout << 1 << endl;
+                    cout << a[0] << endl;
+                }
+            }
+        }
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

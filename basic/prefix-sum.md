@@ -1196,6 +1196,75 @@ public:
 
 * * *
 
+> [!NOTE] **[Codeforces D. A and B and Interesting Substrings](https://codeforces.com/problemset/problem/519/D)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 前缀和应用 思维题
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: D. A and B and Interesting Substrings
+// Contest: Codeforces - Codeforces Round #294 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/519/D
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 最初想的是滑动窗口 但显然不符合性质
+// 考虑前缀和维护 hash累计
+
+using LL = long long;
+using PLL = pair<LL, LL>;
+const int N = 100010;
+
+int w[30];
+LL s[N];
+map<PLL, LL> mp;
+
+int main() {
+    for (int i = 0; i < 26; ++i)
+        cin >> w[i];
+
+    string str;
+    cin >> str;
+    int n = str.size();
+
+    LL s = 0, res = 0;
+    for (int i = 0; i < n; ++i) {
+        res += mp[{s, str[i]}];
+        s += w[str[i] - 'a'];
+        mp[{s, str[i]}]++;
+    }
+
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 差分
 
 > [!NOTE] **[LeetCode 1674. 使数组互补的最少操作次数](https://leetcode-cn.com/problems/minimum-moves-to-make-array-complementary/)** [TAG]
@@ -1302,6 +1371,77 @@ public:
         return true;
     }
 };
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces C. Little Girl and Maximum Sum](https://codeforces.com/problemset/problem/276/C)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 查分数组 贪心排序即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Little Girl and Maximum Sum
+// Contest: Codeforces - Codeforces Round #169 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/276/C
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const int N = 200010;
+
+int n, q;
+int a[N];
+LL d[N];
+
+int main() {
+    cin >> n >> q;
+    for (int i = 1; i <= n; ++i)
+        cin >> a[i];
+    sort(a + 1, a + n + 1);
+
+    while (q--) {
+        int l, r;
+        cin >> l >> r;
+        d[l] += 1, d[r + 1] -= 1;
+    }
+
+    for (int i = 1; i <= n; ++i)
+        d[i] += d[i - 1];
+    sort(d + 1, d + n + 1);
+
+    LL res = 0;
+    for (int i = 1; i <= n; ++i)
+        res += d[i] * a[i];
+    cout << res << endl;
+
+    return 0;
+}
 ```
 
 ##### **Python**

@@ -652,3 +652,194 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces B. Prime Matrix](https://codeforces.com/problemset/problem/271/B)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Prime Matrix
+// Contest: Codeforces - Codeforces Round #166 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/271/B
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 510, M = 100010;
+
+int n, m;
+int g[N][N], r[N], c[N], rn[N], cn[N];
+
+int primes[M], cnt;
+bool st[M];
+
+unordered_map<int, int> Hash;
+
+void init() {
+    // st[1] needed
+    st[1] = true;
+    for (int i = 2; i < M; ++i) {
+        if (!st[i])
+            primes[cnt++] = i;
+        for (int j = 0; primes[j] <= (M - 1) / i; ++j) {
+            st[primes[j] * i] = true;
+            if (i % primes[j] == 0)
+                break;
+        }
+    }
+}
+
+int get_dis(int x) {
+    if (Hash.count(x))
+        return Hash[x];
+    int l = 0, r = cnt;
+    while (l < r) {
+        int m = l + r >> 1;
+        if (x > primes[m])
+            l = m + 1;
+        else
+            r = m;
+    }
+    return Hash[x] = primes[l] - x;
+}
+
+int main() {
+    init();
+
+    cin >> n >> m;
+    for (int i = 1; i <= n; ++i)
+        for (int j = 1; j <= m; ++j) {
+            cin >> g[i][j];
+            int x = g[i][j], y;
+            if (st[x]) {
+                y = get_dis(x);
+                rn[i] += y;
+                cn[j] += y;
+            }
+        }
+
+    int res = INT_MAX;
+    for (int i = 1; i <= n; ++i)
+        res = min(res, rn[i]);
+    for (int i = 1; i <= m; ++i)
+        res = min(res, cn[i]);
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces C. Bear and Prime Numbers](https://codeforces.com/problemset/problem/385/C)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **非常好的数论题 素数筛**
+> 
+> **以及用埃式筛法 而非线形筛 思维**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Bear and Prime Numbers
+// Contest: Codeforces - Codeforces Round #226 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/385/C
+// Memory Limit: 512 MB
+// Time Limit: 2000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 非常好的数论题
+// 考虑统计某数值出现多少次 在筛法中求该数值对和的贡献个数
+// TLE 18
+//     https://codeforces.com/contest/385/submission/111333415
+
+const int N = 1e7 + 10;
+
+int n, m;
+int d[N], s[N];
+bool st[N];
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> n;
+    for (int i = 1; i <= n; ++i) {
+        int x;
+        cin >> x;
+        d[x]++;
+    }
+
+    // 埃氏筛法 同时求前缀和
+    for (int i = 2; i < N; ++i) {
+        s[i] = s[i - 1];
+        if (st[i])
+            continue;
+        for (int j = 1; j * i < N; ++j) {
+            s[i] += d[j * i];
+            st[i * j] = true;
+        }
+    }
+
+    cin >> m;
+    while (m--) {
+        int l, r;
+        cin >> l >> r;
+        l--;
+        l = min(l, N - 2);
+        r = min(r, N - 2);
+        cout << s[r] - s[l] << endl;
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

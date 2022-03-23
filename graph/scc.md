@@ -1061,3 +1061,124 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces C. Checkposts](https://codeforces.com/problemset/problem/427/C)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 非常好的 SCC 图论题
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Checkposts
+// Contest: Codeforces - Codeforces Round #244 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/427/C
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 初看认为是找环 思考其实是找有向图SCC 非常好的图论应用题
+// 找SCC并缩点 统计每个连通块内的最小权点以及拥有该最小权的点的数量
+// 累加累乘即可
+
+using LL = long long;
+const int N = 100010, M = 300010, MOD = 1e9 + 7;
+
+int n, m;
+int v[N];
+int h[N], e[M], ne[M], idx;
+// scc
+int dfn[N], low[N], timestamp;
+int stk[N], top;
+bool in_stk[N];
+int id[N], scc_cnt, sz[N];
+int dout[N];
+
+int minv[N], minc[N];
+
+void add(int a, int b) { e[idx] = b, ne[idx] = h[a], h[a] = idx++; }
+
+void tarjan(int u) {
+    dfn[u] = low[u] = ++timestamp;
+    stk[++top] = u, in_stk[u] = true;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (!dfn[j]) {
+            tarjan(j);
+            low[u] = min(low[u], low[j]);
+        } else if (in_stk[j])
+            low[u] = min(low[u], dfn[j]);
+    }
+
+    if (dfn[u] == low[u]) {
+        ++scc_cnt;
+        int y;
+        do {
+            y = stk[top--];
+            in_stk[y] = false;
+            id[y] = scc_cnt;
+            sz[scc_cnt]++;
+
+            // for this problem
+            if (v[y] < minv[scc_cnt])
+                minv[scc_cnt] = v[y], minc[scc_cnt] = 1;
+            else if (v[y] == minv[scc_cnt])
+                minc[scc_cnt]++;
+
+        } while (y != u);
+    }
+}
+
+int main() {
+    cin >> n;
+    for (int i = 1; i <= n; ++i)
+        cin >> v[i];
+
+    memset(h, -1, sizeof h);
+    cin >> m;
+    while (m--) {
+        int a, b;
+        cin >> a >> b;
+        add(a, b);
+    }
+
+    memset(minv, 0x3f, sizeof minv);
+    for (int i = 1; i <= n; ++i)
+        if (!dfn[i])
+            tarjan(i);
+
+    LL res = 0, cnt = 1;
+    for (int i = 1; i <= scc_cnt; ++i) {
+        res += minv[i];
+        cnt = (cnt * minc[i]) % MOD;
+    }
+    cout << res << ' ' << cnt << endl;
+
+    return 0;
+}
+
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

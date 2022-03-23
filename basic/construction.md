@@ -483,3 +483,967 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces A. Adding Digits](https://codeforces.com/problemset/problem/260/A)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> At first try to add to the right one digit from 0 to 9. If it is impossible write -1.
+> 
+> In other case, the remaining n–1 digits can be 0 because divisibility doesn’t change.
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: A. Adding Digits
+// Contest: Codeforces - Codeforces Round #158 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/260/A
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int a, b, n;
+    cin >> a >> b >> n;
+
+    bool f = false;
+    for (int i = 0; i < 10; ++i) {
+        int t = a * 10 + i;
+        if (t % b == 0) {
+            f = true;
+            a = t;
+            break;
+        }
+    }
+    if (f) {
+        string res = to_string(a);
+        for (int i = 0; i < n - 1; ++i)
+            res.push_back('0');
+        cout << res << endl;
+    } else
+        cout << -1 << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces B. Flag Day](https://codeforces.com/problemset/problem/357/B)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 题意条件对解题简化很关键
+> 
+> 优雅实现的代码技巧
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Flag Day
+// Contest: Codeforces - Codeforces Round #207 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/357/B
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 注意题意 最多有一个人出现在其他组合 且最多只能出现一次
+// 这样就很好做了
+const int N = 100010;
+
+int n, m;
+int r[N];
+
+// https://codeforces.com/contest/357/submission/109691304
+int mod_add(int x) { return x % 3; }
+
+int main() {
+    cin >> n >> m;
+    while (m--) {
+        int a, b, c;
+        cin >> a >> b >> c;
+        if (r[a]) {
+            r[b] = mod_add(r[a]) + 1;
+            r[c] = mod_add(r[b]) + 1;
+        } else if (r[b]) {
+            r[a] = mod_add(r[b]) + 1;
+            r[c] = mod_add(r[a]) + 1;
+        } else if (r[c]) {
+            r[a] = mod_add(r[c]) + 1;
+            r[b] = mod_add(r[a]) + 1;
+        } else {
+            r[a] = 1, r[b] = 2, r[c] = 3;
+        }
+    }
+    for (int i = 1; i <= n; ++i)
+        cout << r[i] << ' ';
+    cout << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces C. XOR and OR](https://codeforces.com/problemset/problem/282/C)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思维题
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. XOR and OR
+// Contest: Codeforces - Codeforces Round #173 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/282/C
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 思维题
+// 暴力遍历转化的错误思路 WA：
+// https://codeforces.com/contest/282/submission/109767746
+// 本质上，串有 1 才可以转换 1数量可以变但无法被消除
+// 故 都有1 或 都没有1
+
+int main() {
+    string s1, s2;
+    cin >> s1 >> s2;
+
+    bool f1 = false, f2 = false;
+    for (auto c : s1)
+        if (c == '1') {
+            f1 = true;
+            break;
+        }
+    for (auto c : s2)
+        if (c == '1') {
+            f2 = true;
+            break;
+        }
+    cout << (s1.size() == s2.size() && f1 == f2 ? "YES" : "NO") << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces C. Valera and Tubes](https://codeforces.com/problemset/problem/441/C)**
+> 
+> 题意: 
+> 
+> 我以为是放正方块 其实放一条可以弯折的管子
+> 
+> 前面每一个都只消耗俩方格 最后一个消耗剩余所有方格即可
+
+> [!TIP] **思路**
+> 
+> 思维 构造方法很多
+> 
+> **有一个聚聚的超简洁代码**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Valera and Tubes
+// Contest: Codeforces - Codeforces Round #252 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/441/C
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+#define x first
+#define y second
+
+using PII = pair<int, int>;
+
+int main() {
+    int n, m, k;
+    cin >> n >> m >> k;
+
+    vector<PII> ve;
+    int u = 1, d = n, l = 1, r = m;
+    for (;;) {
+        for (int i = l; i <= r; ++i)
+            ve.push_back({u, i});
+        if (++u > d)
+            break;
+
+        for (int i = u; i <= d; ++i)
+            ve.push_back({i, r});
+        if (--r < l)
+            break;
+
+        for (int i = r; i >= l; --i)
+            ve.push_back({d, i});
+        if (--d < u)
+            break;
+
+        for (int i = d; i >= u; --i)
+            ve.push_back({i, l});
+        if (++l > r)
+            break;
+    }
+
+    int t = n * m - (k - 1) * 2;
+    cout << t;
+    for (int i = 0; i < t; i++)
+        cout << ' ' << ve[i].x << ' ' << ve[i].y;
+    cout << endl;
+
+    for (int i = t; i < n * m; i += 2)
+        cout << 2 << ' ' << ve[i].x << ' ' << ve[i].y << ' ' << ve[i + 1].x
+             << ' ' << ve[i + 1].y << endl;
+
+    return 0;
+}
+```
+
+##### **C++ 简洁代码**
+
+```cpp
+// Problem: C. Valera and Tubes
+// Contest: Codeforces - Codeforces Round #252 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/441/C
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+void next(int n, int m, int &x, int &y) {
+    if (x & 1)
+        y++;
+    else
+        y--;
+    if (y > m)
+        x++, y--;
+    if (y < 1)
+        x++, y++;
+}
+
+void Print(int n, int m, int &x, int &y) {
+    cout << x << " " << y << " ";
+    next(n, m, x, y);
+}
+
+int main() {
+    int n, m, k, x, y;
+    cin >> n >> m >> k;
+    x = y = 1;
+    for (int i = 1; i <= k; i++) {
+        if (i <= k - 1) {
+            cout << 2 << " ";
+            Print(n, m, x, y);
+            Print(n, m, x, y);
+            cout << endl;
+        } else {
+            cout << n * m - 2 * (k - 1) << " ";
+            while (x <= n)
+                Print(n, m, x, y);
+            cout << endl;
+        }
+    }
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces A. Escape from Stones](http://codeforces.com/problemset/problem/264/A)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 纯模拟会有精度损失
+> 
+> 思维题 根据题意来找规律
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: A. Escape from Stones
+// Contest: Codeforces - Codeforces Round #162 (Div. 1)
+// URL: http://codeforces.com/problemset/problem/264/A
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 模拟会因为double的精度损失造成错误答案
+// http://codeforces.com/contest/264/submission/110602981
+//
+// 找规律: 向右躲时先输出 顺序
+//        向左躲时后输出 倒序
+//
+// 快读也TLE
+// http://codeforces.com/contest/264/submission/110603825
+
+const int N = 1000010;
+
+char s[N];
+
+int main() {
+    scanf("%s", s);
+
+    int n = strlen(s);
+    for (int i = 0; i < n; ++i)
+        if (s[i] == 'r')
+            printf("%d\n", i + 1);
+
+    for (int i = n - 1; i >= 0; --i)
+        if (s[i] == 'l')
+            printf("%d\n", i + 1);
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces B. Convex Shape](http://codeforces.com/problemset/problem/275/B)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 实现的代码技巧
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Convex Shape
+// Contest: Codeforces - Codeforces Round #168 (Div. 2)
+// URL: http://codeforces.com/problemset/problem/275/B
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+/*
+5 5
+WBBBW
+WBBWW
+WBBWW
+BBBWW
+BBWWW
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 55;
+
+int n, m, tot;
+char g[N][N];
+
+bool check() {
+    for (int x1 = 0; x1 < n; ++x1)
+        for (int y1 = 0; y1 < m; ++y1) {
+            if (g[x1][y1] == 'W')
+                continue;
+
+            for (int x2 = 0; x2 < n; ++x2)
+                for (int y2 = 0; y2 < m; ++y2) {
+                    if (g[x2][y2] == 'W')
+                        continue;
+
+                    // 分别为两侧路径
+                    bool f1 = true, f2 = true;
+
+                    for (int i = min(x1, x2); i <= max(x1, x2); ++i) {
+                        if (g[i][y1] == 'W')
+                            f1 = false;
+                        if (g[i][y2] == 'W')
+                            f2 = false;
+                    }
+                    for (int i = min(y1, y2); i <= max(y1, y2); ++i) {
+                        if (g[x1][i] == 'W')
+                            f2 = false;
+                        if (g[x2][i] == 'W')
+                            f1 = false;
+                    }
+                    if (!f1 && !f2)
+                        return false;
+                }
+        }
+    return true;
+}
+
+int main() {
+    cin >> n >> m;
+    for (int i = 0; i < n; ++i)
+        cin >> g[i];
+
+    cout << (check() ? "YES" : "NO") << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces C. Anya and Ghosts](https://codeforces.com/problemset/problem/508/C)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思维 重复做
+> 
+> 因可以提前点蜡烛的实现技巧
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Anya and Ghosts
+// Contest: Codeforces - Codeforces Round #288 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/508/C
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 贪心 思维 重复
+
+const int N = 310;
+
+int m, t, r;
+int w[N];
+unordered_map<int, bool> up;
+
+int main() {
+    cin >> m >> t >> r;
+    for (int i = 1; i <= m; ++i)
+        cin >> w[i];
+
+    bool f = true;
+    int res = 0;
+    for (int i = 1; i <= m; ++i) {
+        int cnt = 0;
+        // 计算已点亮的 注意 点亮时间耗时1的细节
+        // 以及因为可以在午夜前点亮 直接用map记录up
+        // https://codeforces.com/contest/508/submission/110869906
+        for (int j = w[i] - 1; j >= w[i] - t; --j)
+            if (up[j])
+                ++cnt;
+        for (int j = w[i] - 1; j >= w[i] - t && cnt < r; --j)
+            if (!up[j])
+                up[j] = true, res++, cnt++;
+        if (cnt < r) {
+            f = false;
+            break;
+        }
+    }
+    cout << (f ? res : -1) << endl;
+
+    return 0;
+}
+
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces C. Removing Columns](https://codeforces.com/problemset/problem/496/C)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 好想到做法 注意 corner case
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Removing Columns
+// Contest: Codeforces - Codeforces Round #283 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/496/C
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 一开始想简单了 没有考虑复杂情况 显然WA
+// https://codeforces.com/contest/496/submission/110871573
+// 需要确定有序
+//
+// luogu也有操作结束之后删字符串的操作 达到类似 in_order 类似效果
+// https://www.luogu.com.cn/problem/solution/CF496C
+// http://hzwer.com/5685.html
+
+const int N = 110;
+
+int n, m;
+char g[N][N];
+bool st[N], in_order[N], t[N];
+
+int main() {
+    cin >> n >> m;
+    for (int i = 0; i < n; ++i)
+        cin >> g[i];
+
+    for (int j = 0; j < m; ++j) {
+        bool f = false;
+        memset(t, 0, sizeof t);
+
+        for (int i = 1; i < n; ++i)
+            if (!in_order[i] && g[i][j] < g[i - 1][j]) {
+                f = true;
+                break;
+            } else if (g[i][j] > g[i - 1][j])
+                t[i] = true;
+
+        if (f)
+            st[j] = true;
+        else {
+            int cnt = 0;
+            for (int i = 1; i < n; ++i)
+                if (t[i] || in_order[i])
+                    in_order[i] = true, cnt++;
+            // cout << "j = " << j << " cnt = " << cnt << endl;
+            if (cnt == n - 1)
+                break;
+        }
+    }
+
+    int res = 0;
+    for (int i = 0; i < m; ++i)
+        if (st[i])
+            ++res;
+    cout << res << endl;
+
+    return 0;
+}
+
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces C. Beautiful Sets of Points](https://codeforces.com/problemset/problem/268/C)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思维 构造
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Beautiful Sets of Points
+// Contest: Codeforces - Codeforces Round #164 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/268/C
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 思维题
+// 易知每行每列最多有一个点 此时显然最多有 min(n, m) + 1 个
+// 因为 [0, 0] 不行 换斜对角线即可
+
+int n, m;
+
+int main() {
+    cin >> n >> m;
+
+    cout << min(n, m) + 1 << endl;
+    for (int i = 0; i <= min(n, m); ++i)
+        cout << i << ' ' << min(n, m) - i << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces C. Devu and Partitioning of the Array](https://codeforces.com/problemset/problem/439/C)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思维题 细节case很多
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Devu and Partitioning of the Array
+// Contest: Codeforces - Codeforces Round #251 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/439/C
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// cin 快读仍然TLE
+// https://codeforces.com/contest/439/submission/111315959
+// 尝试不用vector
+//     RE
+//     https://codeforces.com/contest/439/submission/111316060
+//     目测应该是case考虑不完善
+// 结论：输出NO的if条件需要加入 pe + (no - (k - p)) / 2 < p
+// 仍然 RE
+//     https://codeforces.com/contest/439/submission/111317575
+//     问题在于输出时 pe 数量小于 p-1
+// 结果WA 58
+//     https://codeforces.com/contest/439/submission/111324015
+//     考虑 p=0 输出单个奇数元素时同样不能超过k-1 否则最后行就出错了
+//   随即AC
+//     https://codeforces.com/contest/439/submission/111324667
+// 简化代码如下
+
+const int N = 100010;
+
+int n, k, p;
+int odd[N], even[N], po, pe;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> n >> k >> p;
+    for (int i = 0; i < n; ++i) {
+        int x;
+        cin >> x;
+        if (x & 1)
+            odd[po++] = x;
+        else
+            even[pe++] = x;
+    }
+
+    int no = po, ne = pe;
+    int more = no - (k - p);
+
+    if (k > n || no < k - p || more & 1 || pe + more / 2 < p)
+        cout << "NO" << endl;
+    else {
+        cout << "YES" << endl;
+
+        // 已有 po >= k - p
+        // 输出奇数和部分 【不能超过k-1】
+        int tot_odd = min(k - p, k - 1);
+        for (int i = 0; i < tot_odd; ++i)
+            cout << 1 << ' ' << odd[--po] << endl;
+
+        // 输出偶数和部分 不能超过 k-1-tot_odd
+        int tot_even = min(p, k - 1 - tot_odd);
+        // 其中只用一个偶数的部分 可能为空
+        int use_even = min(tot_even, pe);
+        for (int i = 0; i < use_even; ++i)
+            cout << 1 << ' ' << even[--pe] << endl;
+        // 输出两个奇数的部分 可能为空
+        for (int i = use_even; i < tot_even; ++i)
+            cout << 2 << ' ' << odd[--po] << ' ' << odd[--po] << endl;
+
+        // 输出最后一个部分
+        int t = po + pe;
+        cout << t;
+        while (po)
+            cout << ' ' << odd[--po];
+        while (pe) {
+            cout << ' ' << even[--pe];
+        }
+        cout << endl;
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces C. Restore Graph](https://codeforces.com/problemset/problem/404/C)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 非常好的构造题
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Restore Graph
+// Contest: Codeforces - Codeforces Round #237 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/404/C
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 构造
+// 边权为1 n个点 已知最短路距离 求图(边)
+// 题目要求每个点的度数不超过k 其实就是bfs时层间每个点的连接限制
+//
+// WA 5
+//    https://codeforces.com/contest/404/submission/111338086
+// 考虑向下拓展时 显然已经有一条边从父连向本节点 此时最多可以再连k-1个而非k个
+//    sz*nk 需要long long 否则 signed integer overflow
+//    https://codeforces.com/contest/404/submission/111338653
+
+using LL = long long;  // 避免bfs乘法溢出
+using PII = pair<int, int>;
+const int N = 100010;
+
+LL n, k, idx;
+PII d[N], e[N];
+vector<int> deg[N];
+int q[N];
+
+bool bfs() {
+    if (deg[0].size() > 1)
+        return false;
+
+    idx = 0;
+    int hh = 0, tt = -1;
+    for (auto& v : deg[0])
+        q[++tt] = v;
+
+    int depth = 0;
+    while (hh <= tt) {
+        int sz = tt - hh + 1;
+        int tot = deg[++depth].size();
+        int nk = (depth > 1 ? k - 1 : k);  // ATTENTION
+        if (tot > (LL)sz * nk)
+            return false;
+
+        int has = 0;
+        while (sz--) {
+            int t = q[hh++];
+            for (int i = 0; i < nk && has < tot; ++i, ++has) {
+                int v = deg[depth][has];
+                e[idx++] = {t, v};
+                q[++tt] = v;
+            }
+        }
+    }
+    // 理想情况下 应该形成一颗树 如果中间有断层则失败
+    if (idx != n - 1)
+        return false;
+    return true;
+}
+
+int main() {
+    cin >> n >> k;
+    for (int i = 1; i <= n; ++i) {
+        int x;
+        cin >> x;
+        d[i] = {x, i};
+    }
+
+    for (int i = 1; i <= n; ++i) {
+        auto& [dis, id] = d[i];
+        deg[dis].push_back(id);
+    }
+
+    if (bfs()) {
+        cout << idx << endl;
+        for (int i = 0; i < idx; ++i)
+            cout << e[i].first << ' ' << e[i].second << endl;
+    } else
+        cout << -1 << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
