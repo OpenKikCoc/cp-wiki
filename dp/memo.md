@@ -7,8 +7,14 @@
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> 这个题常见的解法应该是 dfs 和bfs，dp的思想是对以及访问过的点算出来最大路径，从而每次不用重复计算，这个优化dfs本身的方法其实是一样的
+>
+> 1. 状态表示：f[i,j] 所有从(i,j)开始滑的路径。
+>
+> 2. 状态计算：按照第一步往哪个方向滑的，可以把所有情况分成四类：向上，下，左，右。
+>
+> 比如向右滑的最大值：(i,j)-->(i,j+1) ，那就是求(i,j+1)开始滑的最大值，那就是f[i,j+1],有一个前提条件：那就是h[i,j]>h[i,j+1]
 
 <details>
 <summary>详细代码</summary>
@@ -53,15 +59,9 @@ int main() {
 ##### **Python**
 
 ```python
-# 这个题常见的应该是dfs和bfs，dp的思想是对以及访问过的点算出来最大路径，从而每次不用重复计算，这个优化dfs本身的方法其实是一样的
-
-# 状态表示：f[i,j] 所有从(i,j)开始滑的路径
-# 状态计算：按照第一步往哪个方向滑的，可以把所有情况分成四类：向上，下，左，右。
-# 比如向右滑的最大值：(i,j)-->(i,j+1) ，那就是求(i,j+1)开始滑的最大值，那就是f[i,j+1],有一个前提条件：那就是h[i,j]>h[i,j+1]
-
 def dp(x, y):
-    if f[x][y] != -1:
-        return f[x][y]  # 踩坑：判断是否已经计算过了，计算过了 直接返回，这就是记忆化搜索
+    if f[x][y] != -1:  # 踩坑：判断是否已经计算过了，计算过了 直接返回，这就是记忆化搜索
+        return f[x][y] 
     f[x][y] = 1  # 如果这个点没有被计算过，那初始值是为1的。（自己也算一步）
     dx, dy = [0, 0, -1, 1], [1, -1, -0, 0]
     for i in range(4):
@@ -83,7 +83,7 @@ if __name__ == '__main__':
         for j, val in enumerate(nums):
             g[i][j + 1] = val
     # 这样处理也可以哦         
-    # g1=[[0]*N]
+    # g1=[[0]  *N]
     # for i in range(n):
     #   g1.append([0] + list(map(int, input().split())))
 
@@ -156,7 +156,31 @@ public:
 ##### **Python**
 
 ```python
+class Solution:
+    def longestIncreasingPath(self, matrix: List[List[int]]) -> int:
+        if not matrix or not matrix[0]:
+            return 0
+        n, m  = len(matrix), len(matrix[0])
 
+        f = [[-1] * m for i in range(n)]
+        res = 0
+
+        def dfs(x, y):
+            if f[x][y] != -1:return f[x][y]
+            f[x][y] = 1
+            dx, dy = [-1, 0, 1, 0], [0, -1, 0, 1]
+
+            for i in range(4):
+                a, b  = x + dx[i], y + dy[i]
+                if 0 <= a < n and 0 <= b < m and matrix[a][b] > matrix[x][y]:
+                    f[x][y] = max(f[x][y], dfs(a, b) + 1)
+            return f[x][y]
+
+        for i in range(n):
+            for j in range(m):
+                res = max(res, dfs(i, j))
+
+        return res
 ```
 
 <!-- tabs:end -->
