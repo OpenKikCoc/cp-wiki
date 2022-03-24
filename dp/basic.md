@@ -3689,6 +3689,10 @@ class Solution:
 > 求最大，就初始化为负无穷；求最小，就初始化为最大，表示为：状态不合法，没办法从这个状态转移过来
 >
 > 2）最后的结果输出问题：最后一定是进行了若干次完整的交易，手中无货才是完整交易（买了不卖，不是最优解，买要花钱）
+>
+> 3. 空间压缩，由于第i项完全依赖于i-1项，所以j从大到小 or 从小到大 遍历都是可以的
+>
+>    当第i项 依赖于i-1和i项时，j的遍历方向才有影响。
 
 
 
@@ -3762,8 +3766,6 @@ if __name__ =='__main__':
 ##### **Python 空间压缩**
 
 ```python
-# 空间压缩，由于第i项完全依赖于i-1项，所以j从大到小 or 从小到大 遍历都是可以的
-# 当第i项 依赖于i-1和i项时，j的遍历方向才有影响
 N = 100010
 f = [[float('-inf')] * 2 for _ in range(N)]
 w = [0] * N
@@ -3869,14 +3871,48 @@ if __name__ == '__main__':
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
+>
 > 线性 DP 求方案数，首先明确状态定义和状态转移
-> 
+>
 > 经典求方案，定义及转移、滚动数字压缩空间
-> 
+>
 > 核心在于 状态定义 和 转移
-> 
-> 前 i 个位置分别构成 0 / 01 / 012 形式序列的方案数
+>
+> 前 i 个位置分别构成 0 / 01 / 012 形式序列的方案数。
+>
+> 1. 状态表示：
+>
+>    1） f[i, 0] 表示前 1个数都是0组成的子序列的个数
+>
+>    2） f[i，1] 表示前 1个数是先0后1子序列的个数
+>
+>    3） f[i，1] 表示前 1个数是先0后1最后是2的子序列的个数，也就是特殊子序列
+> 2. 状态转移，根据第 i 项的值进行转移
+>
+>    1） 当 nums[i] == 0，
+>
+>    对于f[i, 0]，有选或不选两种方案，不选 0 时，f[i，0] = f[i-1，0]；选 0 时，可以单独组成一个子序列，也可以与前面的 0 组合，也是f[i-1, 0]；最后相加，f[i, 0] = 2 * f[i - 1, 0] + 1
+>
+>    对于f[i, 1] f[i, 2] 都不能用当前0，所以都依赖于i-1项对应的值
+>
+>    2） 当 nums[i] == 1，
+>
+>    对于f[i, 1]，有选或不选两种方案，不选1时，f[i，1]的值取洪于f[i-1，1]；选 0 时，可以单独和前i-1项的0组成子序列，也可以和前面i-1项的1组成子序列；最后相加，f[i,1] = f[i-1,1] + f[i-1,0] + f[i-1,1]
+>
+>    对于f[i, 1] f[i, 0] 都不能用当前1，所以都依赖于i-1项对应的值
+>    3） 当 nums[i] == 2，同理可得：，f[i,2] = f[i-1,2] + f[i-1,1] + f[i-1,2]
+>
+> 3. 优化：
+>
+>    1） 滚动数组优化
+>
+>    由于当前项f[i]永远只依赖f[i-1]，这种情况下可以用**滚动数组**压缩空间
+>
+>    - 做法是：第 i 项和 i - 1项都和1做**位与运算**
+>
+>    - 在二进制里，我们总可以在末尾加1，使得当前0变成1，1变成0
+>
+>    2） 用常量代替滚动数组进一步优化
 
 
 <details>
@@ -3909,11 +3945,91 @@ public:
 };
 ```
 
-##### **Python**
+##### **Python - 暴力dp** 
 
 ```python
+class Solution:
+    def countSpecialSubsequences(self, nums: List[int]) -> int:
+        n = len(nums)
+        f = [[0] * 3 for _ in range(n + 1)]
+
+        for i in range(1, n + 1):
+            if nums[i - 1] == 0:
+                f[i][0] = f[i - 1][0] * 2 + 1
+                f[i][1] = f[i - 1][1]
+                f[i][2] = f[i - 1][2]
+            elif nums[i - 1] == 1:
+                f[i][0] = f[i - 1][0]
+                f[i][1] = f[i - 1][0]  + f[i - 1][1] * 2
+                f[i][2] = f[i - 1][2]
+            else:
+                f[i][0] = f[i - 1][0]
+                f[i][1] = f[i - 1][1]
+                f[i][2] = f[i - 1][2] * 2 + f[i - 1][1]
+        return f[n][2] % int(1e9 + 7)
+```
+
+**Python - 滚动数组**
+
+```python
+class Solution:
+    def countSpecialSubsequences(self, nums: List[int]) -> int:
+        n = len(nums)
+        f = [[0] * 3 for _ in range(2)]
+
+        for i in range(1, n + 1):
+            if nums[i - 1] == 0:
+                f[i & 1][0] = f[(i - 1) & 1][0] * 2 + 1
+                f[i & 1][1] = f[(i - 1) & 1][1]
+                f[i & 1][2] = f[(i - 1) & 1][2]
+            elif nums[i - 1] == 1:
+                f[i & 1][0] = f[(i - 1) & 1][0]
+                f[i & 1][1] = f[(i - 1) & 1][0]  + f[(i - 1) & 1][1] * 2
+                f[i & 1][2] = f[(i - 1) & 1][2]
+            else:
+                f[i & 1][0] = f[(i - 1) & 1][0]
+                f[i & 1][1] = f[(i - 1) & 1][1]
+                f[i & 1][2] = f[(i - 1) & 1][2] * 2 + f[(i - 1) & 1][1]
+        return f[n & 1][2] % int(1e9 + 7)
+```
+
+**Python - 常量**
+
+```python
+# 执行时间1824ms...
+class Solution:
+    def countSpecialSubsequences(self, nums: List[int]) -> int:
+        n = len(nums)
+        a, b, c = 0, 0, 0
+
+        for i in range(1, n + 1):            
+            if nums[i - 1] == 2:
+                c += c + b
+            if nums[i - 1] == 1:
+                b += a + b
+            if nums[i - 1] == 0:
+                a += a + 1
+        return c % int(1e9 + 7)
+      
+      
+# 执行时间268ms...   
+class Solution:
+    def countSpecialSubsequences(self, nums: List[int]) -> int:
+        mod = int(1e9 + 7)
+        a, b, c = 0, 0, 0
+
+        for x in nums:         
+            if x == 2:
+                c = (c * 2 + b) % mod
+            if x == 1:
+                b = (b * 2 + a) % mod
+            if x == 0:
+                a = (a * 2 + 1) % mod
+        return c 
 
 ```
+
+
 
 <!-- tabs:end -->
 </details>
@@ -4132,7 +4248,7 @@ int main() {
 
 > [!TIP] **思路**
 > 
-> 
+> 简单模拟
 
 <details>
 <summary>详细代码</summary>
@@ -4160,7 +4276,20 @@ public:
 ##### **Python**
 
 ```python
-
+class Solution:
+    def checkRecord(self, s: str) -> bool:
+        a, l = 0, 0
+        for c in s:
+            if c == 'A':
+                a += 1
+                l = 0
+            elif c == 'L':
+                l += 1
+            else:
+                l = 0
+            if a > 1 or l > 2:
+                return False
+        return True
 ```
 
 <!-- tabs:end -->
@@ -4175,10 +4304,22 @@ public:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
+>
 > 经典 状态机dp
-> 
+>
 > 重复做
+>
+> 1. 状态表示：f[i, j, k] 表示已经完成前 i 次出勤记录，包含了 j 个 "A" 和末尾连续 k 个"L" 的方案；属性：max
+>
+> 2. 状态转移：考虑 f[i, j, k] 能转移到哪些状态。这道题用当前状态去推下一个状态比较好推（由以上个状态推过来不好模拟），尝试填写 i+1 次出勤记录，有三种情况：
+>
+>    1） 如果 i+1 次是'A'，那么前i天缺勤的天数只能是 0，即 f[i, j, k] → f[i+1, j+1, 0], 需要满足条件 j = 0
+>
+>    2） 如果 i+1 次是'L'，那么前i天连续迟到的天数需要<= 1，即 f[i, j, k] → f[i+1, j, k+1]，需要满足条件 k <= 1
+>
+>    3） 如果 i+1 次是'P'，那么前i天没有要求，即f[i, j, k] → f[i+1, j, 0]
+>
+> 3. 初始化 f[0, 0, 0] = 1 （一个字符都不填，是一种合法方案），最后的答案是 f[n,j,k] 的累加
 
 <details>
 <summary>详细代码</summary>
@@ -4217,11 +4358,34 @@ public:
 };
 ```
 
-##### **Python**
+
+
+**Python**
 
 ```python
+class Solution:
+    def checkRecord(self, n: int) -> int:
+        mod = int(1e9 + 7)
+        f = [[[0] * 3 for _ in range(2)] for _ in range(n + 1)]
+        f[0][0][0] = 1
 
+        for i in range(n):
+            for j in range(2):
+                for k in range(3):
+                    if j == 0:
+                        f[i + 1][j + 1][0] = (f[i + 1][j + 1][0] + f[i][j][k]) % mod
+                    if k <= 1:
+                        f[i + 1][j][k + 1] = (f[i +1][j][k + 1] + f[i][j][k]) % mod
+                    f[i + 1][j][0] = (f[i + 1][j][0] + f[i][j][k]) % mod 
+
+        res = 0
+        for j in range(2):
+            for k in range(3):
+                res = (res + f[n][j][k]) % mod 
+        return res
 ```
+
+
 
 <!-- tabs:end -->
 </details>
@@ -4237,8 +4401,25 @@ public:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> dp 细节 可以四个方向移动
+>
+> **I dp 细节 可以四个方向移动**
+>
+> （反向思考，从边界往里移动，最终移动到起始坐标上的方案数）
+>
+> 1. 状态表示: f[i, j, k] 表示的是从边界移动了k步后，移动到(i, j)坐标的所有方案数。
+> 2. 状态转移：四个方向都可以转移过来。
+> 3. 初始化：每个位于边界的格子(x, y)，当前步数是1，f(x, y, 1) = 1（但是四个角会被累加+1，就是2）
+> 4. 最终的答案：f(i, j, 1) + f(i, j, 2) + ...+ f(i, j, N) 一共走 <= N步的所有方案
+>
+> **II 记忆化搜索**
+>
+> 对于同一个状态可能会被多次用到，以及状态不确定（就是上下左右都可能用到的时候）就可以考虑用记忆化搜索。
+>
+> 1. 当出界了，就返回1
+> 2. 当移动次数用完了，就返回0
+> 3. 最后返回的答案是由起点向四个方向移动构成
+
+
 
 <details>
 <summary>详细代码</summary>
@@ -4313,11 +4494,85 @@ public:
 };
 ```
 
-##### **Python**
+##### **Python-dp**
 
 ```python
+class Solution:
+    def findPaths(self, m: int, n: int, N: int, startRow: int, startColumn: int) -> int:
+        if N == 0:
+            return 0
+        f = [[[0] * n for _ in range(m)] for k in range(N + 1)]
+        for i in range(m):
+            f[1][i][0] += 1
+            f[1][i][n - 1] += 1
+        for i in range(n):
+            f[1][0][i] += 1
+            f[1][m - 1][i] += 1
+        dx = [-1, 0, 1, 0]
+        dy = [0, 1, 0, -1]
+        for i in range(2, N + 1):
+            for x in range(m):
+                for y in range(n):
+                    for u in range(4):
+                        nx = x + dx[u]
+                        ny = y + dy[u]
+                        if nx >= 0 and nx < m and ny >= 0 and ny < n:
+                            f[i][nx][ny] += f[i - 1][x][y]
+        res = 0
+        for k in range(1, N + 1):
+            res = (res + f[k][startRow][startColumn]) % (10 ** 9 + 7)
+        return res
 
 ```
+
+
+
+**Python-记忆化搜索**
+
+```python
+# Python的记忆化搜索是需要通过修饰器实现记忆化
+# 在要记忆的函数 dfs 前面加，计算一次后的结果，下次再需要就不需要运算了，会直接返回结果
+
+import functools
+class Solution:
+    def findPaths(self, m: int, n: int, maxMove: int, startRow: int, startColumn: int) -> int:
+        mod = 10**9 + 7
+        dx, dy = [1, -1, 0, 0], [0, 0, 1, -1]
+        
+        @lru_cache(None)
+        def dfs(x, y, moveTimes):
+          	# 当前所在位置已经出界了, 说明这算一条路，return 1
+            if x < 0 or x == m or y < 0 or y == n:
+                return 1
+            if moveTimes == 0:
+                return  0
+            ans = 0 
+            for i in range(4):
+                nx, ny = x + dx[i], y + dy[i]
+                ans = (ans + dfs(nx, ny, moveTimes - 1)) % mod
+            return ans
+                
+        return dfs(startRow, startColumn, maxMove)
+         
+        
+class Solution:
+    def findPaths(self, m: int, n: int, N: int, i: int, j: int) -> int:
+        import functools
+
+        @functools.lru_cache(None)
+        def dfs(i, j, N):
+            if i < 0 or i >= m or j < 0 or j >= n:
+                return 1
+            if N == 0:
+                return 0
+            
+            return dfs(i + 1, j, N - 1) + dfs(i - 1, j, N - 1) + dfs(i, j + 1, N - 1) + dfs(i, j - 1, N - 1)
+        
+        return dfs(i, j, N) % (10 ** 9 + 7)
+        
+```
+
+
 
 <!-- tabs:end -->
 </details>

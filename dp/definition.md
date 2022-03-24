@@ -556,10 +556,32 @@ int main() {
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
+>
 > 搜索 2^20 会超时 考虑dp
-> 
+>
 > dp思路的思维 => 转化为取一些数其和达到 S / 2
+>
+> （类似01背包问题（选或不选），这题换成是了选+ 还是选-）
+>
+> **暴力DP**
+>
+> 1. 状态表示：f[i, j] 前i个数，总和为j的所有方案的集合；属性：数量
+> 2. 状态转移：分为两个子集 1) a[i]取正；f[i - 1, j - a[i]]； 2）a[i]取负 :f[i - 1， j + a[i]]
+> 3. 初始化，f[0, 0] = 1， 由于S 可能为负数，所以在坐标上做了一个映射（整体往后走offset = 1000）所以: f[0, offset] = 1
+>
+> **DP优化**
+>
+> 1. 假设所有符号为`+`的元素和为x，符号为`-`的元素和的绝对值是y。
+> 2. 那么 S = x - y; 并且已知 x + y = sum ; ==> x = (S + sum) // 2
+> 3. 上述数学计算后，也就是需要从 nums 中选出几个数，使得他们的和为  (S + sum) // 2
+> 4. 上述优化后：可以转化为选出体积为 (S + sum) // 2的 01背包问题
+> 5. 01背包可以压缩一维空间进行优化
+>
+> **记忆化搜索**
+>
+> Python通过装饰器实现记忆化
+
+
 
 <details>
 <summary>详细代码</summary>
@@ -631,15 +653,9 @@ public:
 };
 ```
 
-##### **Python**
+##### **Python-暴力dp**
 
 ```python
-#dp : 0/1背包问题：选 就是 正数；不选 就是负数
-# f[i][j] 前i个数 总和为j的所有方案的集合；属性：数量
-# 状态计算：分为两个子集：1) a[i]取正；f[i - 1][j - a[i]]
-#                     2）a[i]取负 :f[i - 1][j + a[i]]
-# f[0][0] = 1
-
 class Solution:
     def findTargetSumWays(self, a: List[int], S: int) -> int:
         if S > 1000 or S < -1000:return 0
@@ -657,6 +673,52 @@ class Solution:
 
         return f[n][S + offset]
 ```
+
+
+
+**Python-dp优化**
+
+```python
+class Solution:
+    def findTargetSumWays(self, nums: List[int], S: int) -> int:
+        sumn = sum(nums)
+        S = abs(S)
+        if S > sumn or (S + sumn) % 2:
+            return 0
+        k = (S + sumn) // 2
+        f = [0] * (k + 1)
+        f[0] = 1
+
+        for i in range(len(nums)):
+            for j in range(k, nums[i] - 1, -1):
+                f[j] = f[j] + f[j - nums[i]]
+        return f[-1]
+```
+
+
+
+**Python-DFS**
+
+```python
+class Solution:
+    def findTargetSumWays(self, nums: List[int], S: int) -> int:
+        import functools
+
+        @functools.lru_cache(None)
+        def dfs(i, S):
+            if i == len(nums):
+                # 如果此时S为0，说明找到了一种方案数
+                if S == 0:
+                    return 1
+                else:return 0
+            return dfs(i + 1, S - nums[i]) + dfs(i + 1, S + nums[i])
+
+        return dfs(0, S)
+```
+
+
+
+
 
 <!-- tabs:end -->
 </details>
