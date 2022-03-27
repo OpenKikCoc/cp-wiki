@@ -484,6 +484,98 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode TODO. 找到指定长度的回文数](https://leetcode-cn.com/problems/find-palindrome-with-fixed-length/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 观察 **折半** 构造
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 1e15 数据范围较大 观察知当前长度的第k大也即折半后的第k大 故直接折半构造
+    using LL = long long;
+    
+    vector<long long> kthPalindrome(vector<int>& queries, int intLength) {
+        int m = (intLength + 1) / 2;
+        LL base = pow(10, m - 1), upper = base * 9;
+        vector<LL> res;
+        for (auto x : queries)
+            // ATTENTION: base * 9, not base * 10
+            if (x <= upper) {
+                LL v = base + x - 1;
+                string s = to_string(v);
+                if (intLength & 1) {
+                    int n = s.size();
+                    for (int i = n - 2; i >= 0; -- i )
+                        s.push_back(s[i]);
+                    res.push_back(stoll(s));
+                } else {
+                    int n = s.size();
+                    for (int i = n - 1; i >= 0; -- i )
+                        s.push_back(s[i]);
+                    res.push_back(stoll(s));
+                }
+            } else
+                res.push_back(-1);
+        return res;
+    }
+};
+```
+
+##### **C++ Other**
+
+```cpp
+class Solution {
+public:
+    typedef long long LL;
+    vector<long long> kthPalindrome(vector<int>& q, int len) {
+        vector<LL> res;
+        int md = len + 1 >> 1;
+        LL B = 1;
+        for (int i = 1; i < md; ++i) B *= 10;
+        for (int x : q) {
+            LL t = B + x - 1;
+            if (t >= 10 * B) {
+                res.push_back(-1);
+                continue;
+            }
+            LL y = t;
+            if (len & 1) {
+                y /= 10;
+            }
+            while (y) {
+                t = t * 10 + y % 10;
+                y /= 10;
+            }
+            res.push_back(t);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[Codeforces A. Adding Digits](https://codeforces.com/problemset/problem/260/A)**
 > 
 > 题意: TODO
