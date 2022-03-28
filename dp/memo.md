@@ -110,8 +110,15 @@ if __name__ == '__main__':
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> 这是动态规划里非常经典的一道题目，几乎是所有学编程的同学都会遇到的一道题目。
+>
+> 1. 状态表示：f[i, j] 表示走到(i, j)这个格子时的长度。属性：max
+> 2. 状态转移：枚举四个方向，如果某个格子比当前格子低，那么可以用该格子更新当前格子的最大长度
+>
+> 这道题依赖关系比较复杂，所以可以用记忆化搜索来做：如果某个状态还没计算过，则递归计算该状态的值。
+>
+> 3. 时间复杂度：一共有$O(n^2)$ 状态，状态转移是常量，所以总的时间复杂度是$O(n^2)$
 
 <details>
 <summary>详细代码</summary>
@@ -153,7 +160,7 @@ public:
 };
 ```
 
-##### **Python**
+##### ****Python-记忆化搜索1****
 
 ```python
 class Solution:
@@ -162,10 +169,12 @@ class Solution:
             return 0
         n, m  = len(matrix), len(matrix[0])
 
+        # -1：未计算 0：不合法 1：合法；
         f = [[-1] * m for i in range(n)]
         res = 0
 
-        def dfs(x, y):
+        def dp(x, y):
+            # 计算过则直接返回（记忆化搜索）
             if f[x][y] != -1:return f[x][y]
             f[x][y] = 1
             dx, dy = [-1, 0, 1, 0], [0, -1, 0, 1]
@@ -173,15 +182,44 @@ class Solution:
             for i in range(4):
                 a, b  = x + dx[i], y + dy[i]
                 if 0 <= a < n and 0 <= b < m and matrix[a][b] > matrix[x][y]:
-                    f[x][y] = max(f[x][y], dfs(a, b) + 1)
+                    f[x][y] = max(f[x][y], dp(a, b) + 1)
             return f[x][y]
 
         for i in range(n):
             for j in range(m):
-                res = max(res, dfs(i, j))
+                res = max(res, dp(i, j))
 
         return res
 ```
+
+
+
+**Python-记忆化搜索2**
+
+```python
+class Solution:
+    def longestIncreasingPath(self, matrix: List[List[int]]) -> int:
+        if not matrix:return 0
+        n, m = len(matrix), len(matrix[0])
+        dx, dy = [1, -1, 0, 0], [0, 0, 1, -1]
+        
+        @lru_cache(None)
+        def dfs(x: int, y: int) -> int:
+            best = 1
+            for i in range(4):
+                nx, ny = x + dx[i], y + dy[i]
+                if 0 <= nx < n and 0 <= ny < m and matrix[nx][ny] > matrix[x][y]:
+                    best = max(best, dfs(nx, ny) + 1)
+            return best
+
+        res = 0
+        for i in range(n):
+            for j in range(m):
+                res = max(res, dfs(i, j))
+        return res
+```
+
+
 
 <!-- tabs:end -->
 </details>
@@ -195,8 +233,24 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> **记忆化搜索**
+>
+> 1. 状态表示： f[i, j] 表示跳到了第i个点，且从第i个点往后跳的长度可以为j的所有方案的集合；属性：是否为空
+>
+>    答案应该是：从f(n, 0), f(n, 1)...f(n, n) 这些集合是否存在一个非空，存在的话返回True
+>
+> 2. 状态转移：一般根据最后一个不同点作为划分依据。我们的定义是从i到下一个点的长度是j，那么从上一个点跳到i这个点的长度是[j-1, j, j+1]。所以可以用这三个作为划分（到第i个点的方案）
+>
+>    1）如果上一次跳长度是j-1，那我们就去找有没有哪个点的坐标是P[i]-(j-1), 如果没有的话，那就上一跳的长度不可能是j-1；如果可以找到的话，假设坐标是P[k]，那递推下去如果想看这类方案是否存在，其实就是f[k, j-1]
+>
+>    2）其他两种情况同理，只要这三种情况有一个不为空，就代表存在。
+>
+> 3. 这道题还需要快速判断是否存在一个点的坐标是P[i]-(j-1), 用哈希表进行映射。
+>
+> 4. 时间复杂度：状态是$O(N^2)$，每个状态有三种情况就是O(1), 整个时间复杂度是$O(N^2)$
+>
+>    记忆化搜索：可减少一些对答案无关的状态计算！优化一点常数！目前直接使用DP两层循环是超时的！
 
 <details>
 <summary>详细代码</summary>
@@ -282,10 +336,39 @@ public:
 };
 ```
 
-##### **Python**
+##### **Python 记忆化搜索**
 
 ```python
-
+class Solution:
+    def canCross(self, stones: List[int]) -> bool:
+        n = len(stones)
+        def dp(i, j):
+          	# 计算过则直接返回（记忆化搜索）
+            if f[i][j] != -1:return f[i][j]
+            f[i][j] = 0
+            
+            # 枚举上一次跳的三种情况：j - 1, j, j + 1
+            for k in range(max(1, j - 1),  j + 2):
+                if my_dict[stones[i] - k] != -1:  # 确保该位置有石头
+                    p = my_dict[stones[i] - k]
+                    if dp(p, k): 
+                        f[i][j] = 1
+                        break
+            return f[i][j]
+        
+        #  -1：未计算 0：不合法 1：合法；
+        f = [[-1] * (n + 1) for _ in range(n + 1)]
+        my_dict = collections.defaultdict(lambda: -1)
+        for i in range(n):
+            my_dict[stones[i]] = i
+        
+        f[0][1] = 1 # 初始化，0号位第一块石头跳一步状态合法（题意）
+        
+        # 枚举能否最后一块石头能否往后跳i步！有一个合法即可以跳到最后一块石头！
+        for i in range(n):
+            if dp(n - 1, i):
+                return True
+        return False
 ```
 
 <!-- tabs:end -->
@@ -300,8 +383,18 @@ public:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
+>
 > 优化后的状压搜索实现
+>
+> 1. 状态表示：由于所有整数最大不会超过20，所以可以开一个n位的二进制的状态，每一位非0即1，1表示当前位的数被用过了，用一个二进制数表示当前状态的情况。f[state]表示两个人报数的状态是state, 我要从这个state状态开始去报数，这种情况下，我是必胜还是必败的。
+>
+> 2. 状态转移：（博弈论里的经典转移）怎么去判断当前状态是必赢还是必输呢？
+>
+>    枚举一下所有没有报的数，但凡存在一种情况使得总和>=m，那就是必胜（这是边界）。
+>
+>    如果不是边界的情况呢，但凡我能走到一个对手必败的情况，那就是必胜。
+>
+>    如果我转移的所有情况，都是对手必胜，那我就是必败；如果我转移的情况有一个是对手必败，那我必胜。
 
 <details>
 <summary>详细代码</summary>
@@ -375,11 +468,66 @@ public:
 };
 ```
 
-##### **Python**
+##### **Python 记忆化搜索1**
 
 ```python
+class Solution:
+    def canIWin(self, n: int, m: int) -> bool:
+        if n * (n + 1) // 2 < m:
+            return False
+        f = [-1] * (1 << n)
 
+        def dp(x):
+            # 记忆化：已经被算过了，直接返回
+            if f[x] != -1:
+                return f[x]
+            sumn = 0
+            for i in range(n):
+                if x >> i & 1:
+                    sumn += i + 1
+            
+            for i in range(n):
+              	# 当前位是1，说明已经被人用了
+                if x >> i & 1:continue
+                # 当前状态的总和 + 选择了当前位数字 > m
+                if sumn + i + 1 >= m:
+                    f[x] = 1
+                    return f[x]
+                # 遍历所有对手可能从哪个状态开始选数字
+                if not dp(x + (1 << i)):
+                    f[x] = 1
+                    return f[x]
+            f[x] = 0
+            return f[x]
+
+        return bool(dp(0))
 ```
+
+
+
+**Python 记忆化搜索2**
+
+```python
+class Solution:
+    def canIWin(self, n, m):
+        if n * (n + 1) / 2 < m:
+            return False
+
+        @lru_cache(None)
+        def dfs(x, s):
+            for i in range(n):
+                if (x >> i) & 1:
+                    continue
+                if s + i + 1 >= m:
+                    return True 
+                if not dfs(x + (1 << i), s + i + 1):
+                    return True
+            return False 
+            
+        return dfs(0, 0)
+```
+
+
 
 <!-- tabs:end -->
 </details>
@@ -431,6 +579,10 @@ int tilingRectangle(int n, int m) {
 
 ```
 
+
+
+
+
 <!-- tabs:end -->
 </details>
 
@@ -443,10 +595,15 @@ int tilingRectangle(int n, int m) {
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
+>
 > 记忆化dfs or 记忆化bfs
-> 
+>
 > 原先写的bfs加个 map 就过了
+>
+> 1）吃一个；2）可以整除2:吃一半； 3）可以整除3，吃2/3
+>
+> 1. 尽可能选2）和3）方案
+> 2. 对于任意n，2）和3）都不行时，就先选择方案1），直到2）和3）成立，然后比较两种情况下哪种天数更少
 
 <details>
 <summary>详细代码</summary>
@@ -524,8 +681,40 @@ public:
 ##### **Python**
 
 ```python
-
+class Solution:
+    @lru_cache(None)  # 记忆化搜索
+    def minDays(self, n: int) -> int:
+        if n == 0:
+            return 0
+        if n == 1:
+            return 1
+        return 1 + min(self.minDays(n // 2) + n % 2, self.minDays(n // 3) + n % 3)
 ```
+
+
+
+**Python-BFS**
+
+```python
+class Solution:
+    def minDays(self, n: int) -> int:
+        q = deque([(n, 0)])
+        my_set = set()
+        while q:
+            nums, cnt = q.popleft()
+            if not nums:
+                return cnt
+            if nums in my_set:
+                continue
+            my_set.add(nums)
+            q.append([nums - 1, cnt + 1])
+            if nums % 2 == 0:
+                q.append([nums // 2, cnt + 1])
+            if nums % 3 == 0:
+                q.append([nums // 3, cnt + 1])
+```
+
+
 
 <!-- tabs:end -->
 </details>
