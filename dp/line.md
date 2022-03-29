@@ -64,8 +64,31 @@ int main() {
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> 思路比较难想（要去想“这种做法为什么是对的”，要想彻底）
+>
+> **动态规划**
+>
+> 1. 状态表示：f(i) 为以 i 为结尾的最长合法子串；初始时，$f(0) = 0$
+>
+> 2. 状态转移时，我们仅考虑当前字符是 ) 的时候。因为如果当前字符是"("，$f[i] == 0$
+>
+>    1）如果上一个字符是"("，即字符串的形式是"...()"，那么$f(i) = f(i − 2) + 2$
+>
+>    2）如果上一个字符是"("，即字符串的形式是"...))"，则需要判断i-f[i-1]-1的位置是够是左括号，这个位置是以s[i-1]结尾的最长合法括号长度，如果是"("，即 "...((合法))"，则可以转移:
+>
+>    ​	$f(i) = f(i − 1) + 2 + f(i − f(i − 1) − 2)$
+>
+> 3. 最终答案为动规数组中的最大值。
+>
+> **栈模拟**
+>
+> 使用栈来模拟操作。栈顶保存当前扫描的时候，当前合法序列前的一个位置位置下标是多少。初始时栈中元素为-1。然后遍历整个字符串
+>
+> 如果s[i] =='('，那么把i进栈。
+> 如果s[i] == ')',那么弹出栈顶元素 （代表栈顶的左括号匹配到了右括号）
+> 如果此时栈为空，将i进栈。说明之前没有与之匹配的左括号，那么就将当前的位置入栈。
+> 否则，$i - st[-1]$ 就是当前右括号对应的合法括号序列长度。
 
 <details>
 <summary>详细代码</summary>
@@ -93,43 +116,28 @@ public:
 };
 ```
 
-##### **Python**
+##### **Python dp**
 
 ```python
-"""
-1. 状态表示：f(i) 为以 i 为结尾的最长合法子串；初始时，f(0)=0
-2. 状态转移时，我们仅考虑当前字符是 ) 的时候。如果上一个字符是 (，即 ...() 结尾的情况，则 f(i)=f(i−1)+2。
-3. 如果上一个字符是 )，即 ...)) 的情况，则我们通过上一个字符的动规结果，判断是否能匹配末尾的 )。
-		判断 s[i - f(i - 1) - 2] 是 (，即 ...((合法))，则可以转移 f(i)=f(i−1)+2+f(i−f(i−1)−2)。
-最终答案为动规数组中的最大值。
-
-"""
-
 class Solution:
     def longestValidParentheses(self, s: str) -> int:
         n = len(s)
         f = [0] * (n + 1)
-        f[0] = 0
         res = 0
         for i in range(2, n + 1):
-            if s[i-1] == ')':
-                if s[i-2] == '(':
-                    f[i] = f[i-2] + 2
-                elif i - 2 - f[i-1] >= 0 and s[i-2-f[i-1]] == '(':
-                    f[i] = f[i-1] + f[i-2-f[i-1]] + 2
+            if s[i - 1] == ')':
+                if s[i - 2] == '(':
+                    f[i] = f[i - 2] + 2
+                elif i - 2 - f[i - 1] >= 0 and s[i - 2 - f[i - 1]] == '(':
+                    f[i] = f[i - 1] + f[i - 2 - f[i - 1]] + 2
             res = max(res, f[i])
         return res
-      
-      
-"""
-使用栈来模拟操作。栈顶保存当前扫描的时候，当前合法序列前的一个位置位置下标是多少。初始时栈中元素为-1。然后遍历整个字符串
 
-如果s[i] =='('，那么把i进栈。
-如果s[i] == ')',那么弹出栈顶元素 （代表栈顶的左括号匹配到了右括号）
-如果此时栈为空，将i进栈。说明之前没有与之匹配的左括号，那么就将当前的位置入栈。
-否则，i - st[-1]就是当前右括号对应的合法括号序列长度。
-"""
+```
 
+##### **Python 栈模拟**
+
+```python
 class Solution:
     def longestValidParentheses(self, s: str) -> int:
         n = len(s)
@@ -148,6 +156,8 @@ class Solution:
         return res
 ```
 
+
+
 <!-- tabs:end -->
 </details>
 
@@ -160,8 +170,18 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> 两个字符串 + 一个序列的所有子序列是 $2^n$（指数级别） ==> 考虑用dp
+>
+> 1. 状态表示：s(1~i) 和 t(1~j) 相等的子序列；属性：count
+>
+> 2. 状态转移：以是否选s[i]作为划分：
+>
+> 1）不选s[i]: : $f[i, j] = f[i - 1, j]$
+>
+> 2）选s[i]（必须满足s[i] == t[j]): $f[i, j] = f[i - 1, j - 1]$
+>
+> 3. 初始化，当匹配串t为空的时候，s的任意子串都可以与之匹配，所以 $f[i, 0] = 1$
 
 <details>
 <summary>详细代码</summary>
@@ -200,22 +220,19 @@ public:
 ##### **Python**
 
 ```python
-# 两个字符串 + 一个序列的所有子序列是2**n（指数级别） ==> 考虑用dp
-# 状态表示：s[1-i]的所有和t[1-j]相等的子序列；属性:count
-# 状态转移：以s[i]是否包含在内作为划分：
-# 1）不包含s[i]: s[i] != t[j]: f[i][j] = f[i-1][j] 
-# 2）包含s[i]: f[i][j] = f[i-1][j-1]
 class Solution:
     def numDistinct(self, s: str, t: str) -> int:
         n, m = len(s), len(t)
         f = [[0] * (m + 1) for _ in range(n + 1)]
-        for i in range(n+1):
+        for i in range(n + 1):
             f[i][0] = 1  # 初始化很重要！！当t字符串为空时，是有意义的 为1
         for i in range(1, n + 1):
             for j in range(1, m + 1):
-                f[i][j] = f[i-1][j]
-                if s[i-1] == t[j-1]:
-                    f[i][j] += f[i-1][j-1]
+              	# 不选s[i]
+                f[i][j] = f[i - 1][j]  
+                # 选s[i]
+                if s[i - 1] == t[j - 1]:
+                    f[i][j] += f[i - 1][j - 1]
         return f[n][m]
 ```
 
@@ -231,8 +248,14 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
+>
 > 经典
+>
+> 核心思想：记录当前的**最大值**和**最小值**
+>
+> 如果遇到负数，那么当前的最大值会变成最小值，最小值会变成最大值。
+>
+> 所以遍历过程记录当前的最小值和最大值，然后不断更新res
 
 <details>
 <summary>详细代码</summary>
@@ -275,8 +298,6 @@ public:
 ##### **Python**
 
 ```python
-# 核心思想：记录当前的最大值 和 最小值
-# 如果遇到负数，当前的最大值会变成最小值，最小值会变成最大值。
 class Solution:
     def maxProduct(self, nums: List[int]) -> int:
         n = len(nums)
@@ -284,7 +305,8 @@ class Solution:
         maxv, minv, res = nums[0], nums[0], nums[0]
         for i in range(1, n):
             mx, mn = maxv, minv
-            maxv = max(nums[i], max(nums[i] * mx, nums[i] * mn))  # 如果mx和mn为0，那么此时最大值为nums[i] 
+            # 如果mx和mn为0，那么此时最大值为nums[i] 
+            maxv = max(nums[i], max(nums[i] * mx, nums[i] * mn)) 
             minv = min(nums[i], min(nums[i] * mx, nums[i] * mn))
             res = max(maxv, res)
         return res
@@ -302,8 +324,18 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 思路更清晰的解法
+>
+> **动态规划**
+>
+> 1. 状态定义：f[i] 表示以i结尾，前i个元素可以组成的等差数列的集合；属性：个数
+> 2. 状态转移：看当前数是否能和前一个数构成等差数列。
+>
+> **差分**
+>
+> 1. 可以对原数组做差分，即对于 0 <= i < n - 1: $diff[i] = A[i + 1] - A[i]$。
+>    - 这里可以直接从后向前倒叙求原地求差分数组，使得空间复杂度为$O(1)$
+>    - 如果正序原地求解的话，在求A[2]的时候会把A[2]变成A[2] - A[1], 那在求A[3] = A[3]-A[2]的值时，就不是正确的值
+> 2. 我们找每个连续相同的差值，如果这个连续相同差值的区间长度为 k，则这段区间所产生的等差数组的个数为: $k * (k - 1) // 2$
 
 <details>
 <summary>详细代码</summary>
@@ -369,10 +401,40 @@ public:
 };
 ```
 
-##### **Python**
+##### **Python dp**
 
 ```python
+class Solution:
+    def numberOfArithmeticSlices(self, nums: List[int]) -> int:
+        n = len(nums)
+        if n <= 2: return 0
+        f = [0] * (n + 1)
+        res = 0
 
+        for i in range(2, n):
+            if nums[i] - nums[i - 1] == nums[i - 1] - nums[i - 2]:
+                f[i] = f[i - 1] + 1
+                res += f[i]
+        return res
+```
+
+##### **Python 差分**
+
+```python
+class Solution:
+    def numberOfArithmeticSlices(self, A: List[int]) -> int:
+        n = len(A)
+        for i in range(len(A) - 1, 0, -1):
+            A[i] -= A[i - 1]
+        res = 0
+        i = 1
+        while i < n:
+            j = i 
+            while j < n and A[j] == A[i]: j += 1
+            k = j - i  # 连续相等的段长度
+            res += k * (k - 1) // 2
+            i = (j - 1) + 1
+        return res
 ```
 
 <!-- tabs:end -->
@@ -446,7 +508,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 639. 解码方法 2](https://leetcode-cn.com/problems/decode-ways-ii/)**
+> [!NOTE] **[LeetCode 639. 解码方法II](https://leetcode-cn.com/problems/decode-ways-ii/)**
 > 
 > 题意: TODO
 
