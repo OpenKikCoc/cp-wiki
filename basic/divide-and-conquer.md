@@ -385,3 +385,86 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces C. Painting Fence](https://codeforces.com/problemset/problem/448/C)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 非常好的贪心分治题目 重复
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Painting Fence
+// Contest: Codeforces - Codeforces Round #256 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/448/C
+// Memory Limit: 512 MB
+// Time Limit: 1000 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 思维 非常非常好的分治题目 重复做
+
+using LL = long long;
+const int N = 100010;
+
+int n;
+int h[N];
+
+int paint(int s, int t) {
+    if (s > t)
+        return 0;
+
+    // 先找最低的可以横向涂的
+    int minv = 1e9, c = 0;
+    for (int i = s; i <= t; ++i)
+        minv = min(h[i], minv);
+    // 累加操作数 更新高度
+    c += minv;
+    for (int i = s; i <= t; ++i)
+        h[i] -= minv;
+
+    // 分治
+    int ns = s;
+    for (int i = s; i <= t; ++i)
+        if (i == t && h[i])
+            c += paint(ns, i), ns = i + 1;
+        else if (h[i] == 0)
+            c += paint(ns, i - 1), ns = i + 1;
+
+    // 与竖着涂对比 取最小值
+    return min(t - s + 1, c);
+}
+
+int main() {
+    cin >> n;
+    for (int i = 1; i <= n; i++)
+        cin >> h[i];
+
+    cout << paint(1, n) << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

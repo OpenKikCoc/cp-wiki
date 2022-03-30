@@ -474,7 +474,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode [2167. 移除所有载有违禁货物车厢所需的最少时间](https://leetcode-cn.com/problems/minimum-time-to-remove-all-cars-containing-illegal-goods/)** [TAG]
+> [!NOTE] **[LeetCode 2167. 移除所有载有违禁货物车厢所需的最少时间](https://leetcode-cn.com/problems/minimum-time-to-remove-all-cars-containing-illegal-goods/)** [TAG]
 > 
 > 题意: TODO
 

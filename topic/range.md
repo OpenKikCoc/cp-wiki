@@ -1,5 +1,56 @@
 ## 习题
 
+> [!NOTE] **[LeetCode 795. 区间子数组个数](https://leetcode-cn.com/problems/number-of-subarrays-with-bounded-maximum/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 类似差分的数学思想
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int calc(vector<int> & A, int k) {
+        int res = 0, n = A.size();
+        for (int i = 0; i < n; ++ i ) {
+            if (A[i] > k)
+                continue;
+            int j = i + 1;
+            while (j < n && A[j] <= k)
+                j ++ ;
+            int len = j - i;
+            res += len * (len + 1) / 2;
+            i = j - 1; // i = j 也可 因为 j == n || A[j] > k 必成立
+        }
+        return res;
+    }
+
+    int numSubarrayBoundedMax(vector<int>& nums, int left, int right) {
+        return calc(nums, right) - calc(nums, left - 1);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[Codeforces A. Lucky Sum](https://codeforces.com/problemset/problem/121/A)**
 > 
 > 题意: TODO
