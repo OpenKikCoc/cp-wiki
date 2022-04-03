@@ -615,9 +615,10 @@ int main() {
 > - 因为gcd更相减损 考虑转化为维护差的形式
 > 
 > 修改区间改为修改单点 则差分
+> 
 > 原理：
 > $$
-> d = gcd(x, y, z) = gcd(x, y - x, z - y)
+> d = gcd(x, y, z) = gcd(x, y - x, z - y) \\
 > d = gcd(a1, a2, a3, ... , an) = gcd(a1, a2-a1, a3-a2, ... , an-an-1)
 > $$
 > 

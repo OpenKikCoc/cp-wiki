@@ -4,7 +4,7 @@
 
 BIT 的另一种初始化方式：
 
-传统初始化 $O(nlogn)$ 存在一种 $O(n)$ 的初始化方式 核心在于理解 BIT 位的含义
+- 传统初始化 $O(nlogn)$ 存在一种 $O(n)$ 的初始化方式 核心在于理解 BIT 位的含义
 
 ```cpp
     for (int i = 1; i <= n; ++i) {
@@ -16,6 +16,13 @@ BIT 的另一种初始化方式：
 
 具体使用参见 [307. 区域和检索 - 数组可修改](https://leetcode-cn.com/problems/range-sum-query-mutable/)
 
+- 给所有的位置加 1
+
+```cpp
+    // 初始化 每一个位置都有1 与add等价
+    // for (int i = 1; i <= n; ++ i ) add(i, 1);
+    for (int i = 1; i <= n; ++ i ) tr[i] = lowbit(i);
+```
 
 
 ## 简介
@@ -475,7 +482,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[AcWing 243. 一个简单的整数问题2]()**
+> [!NOTE] **[AcWing 243. 一个简单的整数问题2](https://www.acwing.com/problem/content/244/)**
 > 
 > 题意: TODO
 

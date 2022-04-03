@@ -1517,6 +1517,148 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode TODO. 加密解密字符串](https://leetcode-cn.com/problems/encrypt-and-decrypt-strings/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> - Trie + 搜索即可
+> 
+> - **脑筋急转弯做法**
+> 
+>   一开始预处理 dictionary 里所有数加密后的结果，decrypt 函数直接查表输出即可。
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ trie + dfs**
+
+```cpp
+const static int N = 18; // 100*100*26 = 2^18
+static int tr[1 << N][26], f[1 << N];
+int idx;
+    
+
+class Encrypter {
+public:
+    unordered_map<char, string> hash1;
+    unordered_map<string, unordered_set<char>> hash2;
+
+    void insert(string s) {
+        int p = 0;
+        for (auto c : s) {
+            int t = c - 'a';
+            if (!tr[p][t])
+                tr[p][t] = ++ idx ;
+            p = tr[p][t];
+        }
+        f[p] = 1;
+    }
+    
+    Encrypter(vector<char>& keys, vector<string>& values, vector<string>& dictionary) {
+        int n = keys.size();
+        for (int i = 0; i < n; ++ i )
+            hash1[keys[i]] = values[i], hash2[values[i]].insert(keys[i]);
+        idx = 0;
+        memset(tr, 0, sizeof tr);
+        memset(f, 0, sizeof f);
+        for (auto & s : dictionary)
+            insert(s);
+    }
+    
+    string encrypt(string word1) {
+        string res;
+        for (auto c : word1)
+            res += hash1[c];
+        return res;
+    }
+    
+    int cnt, n;
+    string s;
+    
+    void dfs(int u, int p) {
+        if (u == n) {
+            if (f[p])
+                cnt ++ ;
+            return;
+        }
+        string t = s.substr(u, 2);
+        for (auto c : hash2[t]) {
+            int t = c - 'a', x = tr[p][t];
+            if (x)
+                dfs(u + 2, x);
+        }
+    }
+    
+    int decrypt(string word2) {
+        this->cnt = 0;
+        this->s = word2;
+        this->n = s.size();
+        dfs(0, 0);
+        return cnt;
+    }
+};
+
+/**
+ * Your Encrypter object will be instantiated and called as such:
+ * Encrypter* obj = new Encrypter(keys, values, dictionary);
+ * string param_1 = obj->encrypt(word1);
+ * int param_2 = obj->decrypt(word2);
+ */
+```
+
+##### **C++ trick**
+
+```cpp
+class Encrypter {
+    std::map<char, std::string> en;
+    std::map<std::string, int> cnt;
+
+public:
+    Encrypter(vector<char>& keys, vector<string>& values,
+              vector<string>& dictionary) {
+        for (int i = 0; i < int(keys.size()); i++)
+        	en[keys[i]] = values[i];
+        // 用哈希表记录每个加密后的字符串的出现次数
+        for (auto s : dictionary)
+        	cnt[encrypt(s)]++;
+    }
+
+    string encrypt(string word1) {
+        std::string s;
+        for (auto c : word1)
+        	s += en[c];
+        return s;
+    }
+
+    int decrypt(string word2) {
+    	return cnt[word2];
+    }
+};
+
+/**
+ * Your Encrypter object will be instantiated and called as such:
+ * Encrypter* obj = new Encrypter(keys, values, dictionary);
+ * string param_1 = obj->encrypt(word1);
+ * int param_2 = obj->decrypt(word2);
+ */
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 进阶构造和使用
 
 > [!NOTE] **[LeetCode 745. 前缀和后缀搜索](https://leetcode-cn.com/problems/prefix-and-suffix-search/)**

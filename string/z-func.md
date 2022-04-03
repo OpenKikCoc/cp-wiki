@@ -45,18 +45,20 @@
 ```cpp
 // C++ Version
 vector<int> z_function(string s) {
-  int n = (int)s.length();
-  vector<int> z(n);
-  for (int i = 1, l = 0, r = 0; i < n; ++i) {
-    if (i <= r && z[i - l] < r - i + 1) {
-      z[i] = z[i - l];
-    } else {
-      z[i] = max(0, r - i + 1);
-      while (i + z[i] < n && s[z[i]] == s[i + z[i]]) ++z[i];
+    int n = (int)s.length();
+    vector<int> z(n);
+    for (int i = 1, l = 0, r = 0; i < n; ++ i ) {
+        if (i <= r && z[i - l] < r - i + 1) {
+            z[i] = z[i - l];
+        } else {
+            z[i] = max(0, r - i + 1);
+            while (i + z[i] < n && s[z[i]] == s[i + z[i]])
+                ++ z[i] ;
+        }
+        if (i + z[i] - 1 > r)
+          l = i, r = i + z[i] - 1;
     }
-    if (i + z[i] - 1 > r) l = i, r = i + z[i] - 1;
-  }
-  return z;
+    return z;
 }
 ```
 
@@ -143,5 +145,71 @@ def z_function(s):
 - [LA 6439 - Pasti Pas!](https://icpcarchive.ecs.baylor.edu/index.php?option=com_onlinejudge&Itemid=8&category=588&page=show_problem&problem=4450)
 - [Codechef - Chef and Strings](https://www.codechef.com/problems/CHSTR)
 - [Codeforces - Prefixes and Suffixes](http://codeforces.com/problemset/problem/432/D)
+
+* * *
+
+## 习题
+
+> [!NOTE] **[LeetCode TODO. 构造字符串的总得分和](https://leetcode-cn.com/problems/sum-of-scores-of-built-strings/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 标准 z-func
+> 
+> 0 起始特殊计数即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    
+    string s;
+    int n;
+    
+    vector<LL> z_func() {
+        vector<LL> z(n);
+        for (int i = 1, l = 0, r = 0; i < n; ++ i ) {
+            if (i <= r && z[i - l] < r - i + 1)
+                z[i] = z[i - l];
+            else {
+                z[i] = max(0, r - i + 1);
+                while (i + z[i] < n && s[z[i]] == s[i + z[i]])
+                    z[i] ++ ;
+            }
+            if (i + z[i] - 1 > r)
+                l = i, r = i + z[i] - 1;
+        }
+        return z;
+    }
+    
+    long long sumScores(string s) {
+        this->s = s, this->n = s.size();
+        auto z = z_func();
+        LL res = 0;
+        for (auto x : z)
+            res += x;
+        return res + n; // 0 前缀在这里认为是 n 的长度
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
 
 * * *
