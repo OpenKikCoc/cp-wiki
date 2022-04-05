@@ -43,6 +43,7 @@
   * [计数 DP](dp/count.md)
   * [动态 DP](dp/dynamic.md)
   * [概率 DP](dp/probability.md)
+  * [基环树 DP](dp/pseudotree.md)
   * [DP 优化](dp/opt/README.md)
     * [单调队列/单调栈优化](dp/opt/monotonous-queue-stack.md)
     * [倍增优化](dp/opt/binary-lifting.md)
