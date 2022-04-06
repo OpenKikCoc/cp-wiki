@@ -1,3 +1,11 @@
+> [!NOTE] **ATTENTION**
+> 
+> 如果导函数递增、求最大值（[柠檬](https://www.lydsy.com/JudgeOnline/problem.php?id=4709)），或者导函数递减、求最小值，要用单调栈。
+> 
+> 如果导函数递增、求最小值（[诗人小G](https://www.luogu.com.cn/problem/P1912)），或者导函数递减、求最大值（[Lightning Conductor](https://www.cnblogs.com/flashhu/p/9488184.html)），要用单调队列。
+
+
+
 ## 区间类（2D1D）动态规划中的应用
 
 在区间类动态规划（如石子合并问题）中，我们经常遇到以下形式的 2D1D 状态转移方程：
@@ -293,7 +301,7 @@ void DP(int l, int r, int k_l, int k_r) {
 ```
 
 ###### **Python**
-    
+
 ```python
     # Python Version
     def DP(l, r, k_l, k_r):
@@ -418,5 +426,203 @@ $$
 - [noiau 的 CSDN 博客](https://blog.csdn.net/noiau/article/details/72514812)
 - [Quora Answer by Michael Levin](https://www.quora.com/What-is-divide-and-conquer-optimization-in-dynamic-programming)
 - [Video Tutorial by **Sothe" the Algorithm Wolf](https://www.youtube.com/watch?v=wLXEWuDWnzI)
+
+* * *
+
+## 习题
+
+> [!NOTE] **[AcWing 304. 诗人小G](https://www.acwing.com/problem/content/306/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 非常多细节 **反复做**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using LD = long double; // 答案可能会爆longlong
+const static int N = 1e5 + 10;
+
+int n, L, P;
+LD f[N];
+char str[N][31];
+int s[N], opt[N];   // TODO
+struct Node {
+    int x, l, r;    // 区间 [l, r] 当前的最优决策都是 x
+} q[N];             // 单调队列
+int hh, tt;
+
+LD val(int x, int i) {
+    LD res = 1, a = abs(s[i] - s[x - 1] - 1 - L);
+    for (int i = 0; i < P; ++ i )
+        res *= a;   // a^P
+    // 可以快速幂加速
+    // for (int k = P; k; k >>= 1, a *= a)
+    //     if (k & 1)
+    //         res *= a;
+    return res + f[x - 1];
+}
+
+// 将 i 插入单调队列
+void insert(int i) {
+    int pos = -1;   // 保存 i 应该插入的位置
+    // i比队尾的l决策更优
+    while (hh <= tt && val(q[tt].x, q[tt].l) >= val(i, q[tt].l))
+        pos = q[tt -- ].l;
+    // 队尾的r不比i更优，则在队尾的[l,r]中二分查找
+    if (hh <= tt && val(q[tt].x, q[tt].r) >= val(i, q[tt].r)) {
+        int l = q[tt].l, r = q[tt].r;
+        while (l < r) {
+            int m = l + r >> 1;
+            if (val(q[tt].x, m) < val(i, m))
+                l = m + 1;
+            else
+                r = m;
+        }
+        // 更新已有区间
+        // l 前面所有的决策都比 i 更优，l 及其后面的 i 更优
+        q[tt].r = r - 1, pos = l;
+    }
+    
+    if (pos != -1)
+        q[ ++ tt] = {i, pos, n};
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+    
+    int T;
+    cin >> T;
+    while (T -- ) {
+        cin >> n >> L >> P;
+        // 顺带计算前缀和
+        for (int i = 1; i <= n; ++ i ) {
+            cin >> str[i];
+            s[i] = s[i - 1] + strlen(str[i]) + 1;
+        }
+        
+        hh = 0, tt = -1;        // 队列清空
+        q[ ++ tt] = {0, 1, n};  // 所有点[1,n]的最优决策都设置为0
+        // TODO ATTENTION 【insert -> compute -> update】
+        for (int i = 1; i <= n; ++ i ) {
+            // 更新
+            insert(i);
+            
+            // 当前的最优决策是队头
+            opt[i] = q[hh].x, f[i] = val(opt[i], i);
+            
+            // 更新
+            while (hh <= tt && q[hh].r <= i)
+                hh ++ ;
+            q[hh].l = i + 1;    // TODO
+        }
+        
+        if (f[n] > 1e18)
+            cout << "Too hard to arrange" << endl;
+        else {
+            cout << (long long)f[n] << endl;
+            // 输出决策 res[i]表示第i句诗所在行中，末尾诗句是第几句
+            static int t[N];
+            for (int i = n; i >= 1; i = opt[i] - 1)
+                t[opt[i]] = i;
+            for (int i = 1; i <= n; i = t[i] + 1) {
+                for (int j = i; j <= t[i]; ++ j ) {
+                    cout << str[j];
+                    if (j != t[i])
+                        cout << ' ';
+                }
+                cout << endl;
+            }
+        }
+        cout << "--------------------" << endl;
+    }
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 2889. 再探石子合并](https://www.acwing.com/problem/content/2892/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 四边形性质证明
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 5010, INF = 0x3f3f3f3f;
+
+int n;
+// 前缀和 dp数组  最优决策
+int s[N], f[N][N], p[N][N];
+
+int main() {
+    cin >> n;
+    s[0] = 0;
+    for (int i = 1; i <= n; ++ i )
+        cin >> s[i], s[i] += s[i - 1];
+    
+    memset(f, 0x3f, sizeof f);
+    for (int i = 1; i <= n; ++ i )
+        p[i][i] = i, f[i][i] = 0;    // 最优为i
+    for (int len = 2; len <= n; ++ len )
+        for (int l = 1; l + len - 1 <= n; ++ l ) {
+            int r = l + len - 1;
+            for (int k = p[l][r - 1]; k <= p[l + 1][r]; ++ k ) {
+                int t = f[l][k] + f[k + 1][r] + s[r] - s[l - 1];
+                if (f[l][r] >= t)
+                    f[l][r] = t, p[l][r] = k;
+            }
+        }
+    
+    cout << f[1][n] << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
 
 * * *
