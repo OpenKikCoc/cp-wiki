@@ -76,7 +76,9 @@ def DFS(p):
 
 > [!NOTE] **[AcWing 395. 冗余路径](https://www.acwing.com/problem/content/397/)**
 > 
-> 题意: TODO
+> 题意: 
+> 
+> 边双联通分量
 
 > [!TIP] **思路**
 > 
@@ -163,7 +165,9 @@ int main() {
 
 > [!NOTE] **[AcWing 1183. 电力](https://www.acwing.com/problem/content/1185/)**
 > 
-> 题意: TODO
+> 题意: 
+> 
+> 点双联通分量
 
 > [!TIP] **思路**
 > 
@@ -244,7 +248,9 @@ int main() {
 
 > [!NOTE] **[AcWing 396. 矿场搭建](https://www.acwing.com/problem/content/398/)**
 > 
-> 题意: TODO
+> 题意: 
+> 
+> 求具体的点双联通分量
 
 > [!TIP] **思路**
 > 

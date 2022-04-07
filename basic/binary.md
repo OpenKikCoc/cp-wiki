@@ -1834,7 +1834,7 @@ public:
 
 * * *
 
-### 三分
+### 三分 [同样可以三分答案]
 
 > [!NOTE] **[AcWing 1420. 通电围栏](https://www.acwing.com/problem/content/1422/)**
 > 

@@ -1476,7 +1476,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 6030. 由单个字符重复的最长子字符串](https://leetcode-cn.com/problems/longest-substring-of-one-repeating-character/)** [TAG]
+> [!NOTE] **[LeetCode 2213. 由单个字符重复的最长子字符串](https://leetcode-cn.com/problems/longest-substring-of-one-repeating-character/)** [TAG]
 > 
 > 题意: TODO
 
@@ -1490,7 +1490,7 @@ public:
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++**
+##### **C++ 模拟**
 
 ```cpp
 class Solution {
@@ -1555,6 +1555,98 @@ public:
             res.push_back(*MS.rbegin());
         }
         // cout << endl;
+        return res;
+    }
+};
+```
+
+
+##### **C++ 珂朵莉树**
+
+```cpp
+class Solution {
+public:
+    int n;
+    multiset<int> S;    // 记录所有长度
+
+    struct Node_t {
+        int l, r;
+        mutable int v;
+        inline bool operator<(const Node_t & o) const {
+            return l < o.l;     // 按 l 升序排列
+        }
+    };
+    set<Node_t> odt;
+    auto split(int x) {
+        auto it = odt.lower_bound({x, 0, 0}); // 找到大于等于x的第一个
+        if (it != odt.end() && it->l == x) return it;
+        // 否则x一定被前一段包含，向前移找到该段
+        it -- ;
+        auto [l, r, v] = *it;
+        
+        // 本题特殊处理
+        S.erase(S.find(r - l + 1));
+        S.insert(x - l), S.insert(r - x + 1);   // ATTENTION 是 [x, r] 而非 [x+1, r]
+
+        odt.erase(it);
+        odt.insert({l, x - 1, v});          
+        return odt.insert({x, r, v}).first;     // ATTENTION 返回迭代器
+    }
+    void merge(set<Node_t>::iterator it) {
+        if (it == odt.end() || it == odt.begin())
+            return;
+        auto lit = prev(it);
+        auto [ll, lr, lv] = *lit;
+        auto [rl, rr, rv] = *it;
+        if (lv == rv) {
+            odt.erase(lit), odt.erase(it), odt.insert({ll, rr, lv});
+            S.erase(S.find(lr - ll + 1)), S.erase(S.find(rr - rl + 1)), S.insert(rr - ll + 1);
+        }
+    }
+    void assign(int l, int r, int v) {
+        auto itr = split(r + 1), itl = split(l);    // 顺序不能颠倒
+
+        // 对于本题需要干掉相关的数据 所以遍历一遍
+        S.insert(r - l + 1);
+        for (auto it = itl; it != itr; ++ it ) {
+            auto [l, r, _] = *it;
+            S.erase(S.find(r - l + 1));
+        }
+
+        // 清除一系列节点
+        odt.erase(itl, itr);
+        odt.insert({l, r, v});
+
+        // 维护区间
+        merge(odt.lower_bound({l, 0, 0})), merge(itr);
+    }
+
+    vector<int> longestRepeating(string s, string queryCharacters, vector<int>& queryIndices) {
+        this->n = s.size();
+
+        // build odt
+        for (int i = 0; i < n; ++ i ) {
+            int j = i;
+            while (j < n && s[j] == s[i])
+                j ++ ;
+            odt.insert({i, j - 1, s[i]});
+            S.insert(j - i);
+            i = j - 1;
+        }
+
+        vector<int> res;
+        int m = queryCharacters.size();
+        for (int i = 0; i < m; ++ i ) {
+            char c = queryCharacters[i];
+            int idx = queryIndices[i];
+            if (s[idx] == c) {
+                res.push_back(*S.rbegin());
+                continue;
+            }
+            s[idx] = c;
+            assign(idx, idx, c);
+            res.push_back(*S.rbegin());
+        }
         return res;
     }
 };

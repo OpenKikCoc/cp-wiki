@@ -161,6 +161,7 @@
   * [博弈论](math/game-theory/README.md)
     * [博弈论简介](math/game-theory/intro.md)
     * [思维博弈](math/game-theory/thinking.md)
+    * [二分图博弈](math/game-theory/bi-graph.md)
     * [公平组合游戏](math/game-theory/impartial-game.md)
     * [非公平组合游戏](math/game-theory/partizan-game.md)
     * [反常游戏](math/game-theory/misere-game.md)

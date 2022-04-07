@@ -1104,7 +1104,7 @@ int main() {
 
 * * *
 
-### 并查集与反集
+### 并查集与反集 (种类并查集)
 
 > [!NOTE] **[Luogu [BOI2003]团伙](https://www.luogu.com.cn/problem/P1892)**
 > 
