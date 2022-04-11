@@ -69,13 +69,13 @@ int main() {
 >
 > **动态规划**
 >
-> 1. 状态表示：f(i) 为以 i 为结尾的最长合法子串；初始时，$f(0) = 0$
+> 1. 状态表示：$f[i]$ 为以 $i$ 为结尾的最长合法子串；初始时，$f(0) = 0$
 >
 > 2. 状态转移时，我们仅考虑当前字符是 ) 的时候。因为如果当前字符是"("，$f[i] == 0$
 >
 >    1）如果上一个字符是"("，即字符串的形式是"...()"，那么$f(i) = f(i − 2) + 2$
 >
->    2）如果上一个字符是"("，即字符串的形式是"...))"，则需要判断i-f[i-1]-1的位置是够是左括号，这个位置是以s[i-1]结尾的最长合法括号长度，如果是"("，即 "...((合法))"，则可以转移:
+>    2）如果上一个字符是"("，即字符串的形式是"...))"，则需要判断 $i-f[i-1]-1$ 的位置是够是左括号，这个位置是以 $s[i-1]$ 结尾的最长合法括号长度，如果是"("，即 "...((合法))"，则可以转移:
 >
 >    ​	$f(i) = f(i − 1) + 2 + f(i − f(i − 1) − 2)$
 >
@@ -85,9 +85,9 @@ int main() {
 >
 > 使用栈来模拟操作。栈顶保存当前扫描的时候，当前合法序列前的一个位置位置下标是多少。初始时栈中元素为-1。然后遍历整个字符串
 >
-> 如果s[i] =='('，那么把i进栈。
-> 如果s[i] == ')',那么弹出栈顶元素 （代表栈顶的左括号匹配到了右括号）
-> 如果此时栈为空，将i进栈。说明之前没有与之匹配的左括号，那么就将当前的位置入栈。
+> 如果 $s[i] =='('$，那么把 $i$ 进栈。
+> 如果 $s[i] == ')'$， 那么弹出栈顶元素 （代表栈顶的左括号匹配到了右括号）
+> 如果此时栈为空，将 $i$ 进栈。说明之前没有与之匹配的左括号，那么就将当前的位置入栈。
 > 否则，$i - st[-1]$ 就是当前右括号对应的合法括号序列长度。
 
 <details>
@@ -171,17 +171,17 @@ class Solution:
 
 > [!TIP] **思路**
 >
-> 两个字符串 + 一个序列的所有子序列是 $2^n$（指数级别） ==> 考虑用dp
+> 两个字符串 + 一个序列的所有子序列是 $2^n$（指数级别） ==> 考虑用$dp$
 >
-> 1. 状态表示：s(1~i) 和 t(1~j) 相等的子序列；属性：count
+> 1. 状态表示：$s(1～i)$ 和 $t(1～j)$ 相等的子序列；属性：$count$
 >
 > 2. 状态转移：以是否选s[i]作为划分：
 >
-> 1）不选s[i]: : $f[i, j] = f[i - 1, j]$
+> 1）不选 $s[i]$: : $f[i, j] = f[i - 1, j]$
 >
-> 2）选s[i]（必须满足s[i] == t[j]): $f[i, j] = f[i - 1, j - 1]$
+> 2）选 $s[i]$（必须满足 $s[i] == t[j]$ ): $f[i, j] = f[i - 1, j - 1]$
 >
-> 3. 初始化，当匹配串t为空的时候，s的任意子串都可以与之匹配，所以 $f[i, 0] = 1$
+> 3. 初始化，当匹配串 $t$ 为空的时候，$s$ 的任意子串都可以与之匹配，所以 $f[i, 0] = 1$
 
 <details>
 <summary>详细代码</summary>
@@ -255,7 +255,7 @@ class Solution:
 >
 > 如果遇到负数，那么当前的最大值会变成最小值，最小值会变成最大值。
 >
-> 所以遍历过程记录当前的最小值和最大值，然后不断更新res
+> 所以遍历过程记录当前的最小值和最大值，然后不断更新 $res$
 
 <details>
 <summary>详细代码</summary>
@@ -327,15 +327,15 @@ class Solution:
 >
 > **动态规划**
 >
-> 1. 状态定义：f[i] 表示以i结尾，前i个元素可以组成的等差数列的集合；属性：个数
+> 1. 状态定义：$f[i]$ 表示以 $i$ 结尾，前 $i$ 个元素可以组成的等差数列的集合；属性：个数
 > 2. 状态转移：看当前数是否能和前一个数构成等差数列。
 >
 > **差分**
 >
-> 1. 可以对原数组做差分，即对于 0 <= i < n - 1: $diff[i] = A[i + 1] - A[i]$。
+> 1. 可以对原数组做差分，即对于 $0 <= i < n - 1: diff[i] = A[i + 1] - A[i]$。
 >    - 这里可以直接从后向前倒叙求原地求差分数组，使得空间复杂度为$O(1)$
->    - 如果正序原地求解的话，在求A[2]的时候会把A[2]变成A[2] - A[1], 那在求A[3] = A[3]-A[2]的值时，就不是正确的值
-> 2. 我们找每个连续相同的差值，如果这个连续相同差值的区间长度为 k，则这段区间所产生的等差数组的个数为: $k * (k - 1) // 2$
+>    - 如果正序原地求解的话，$在求 A[2] 的时候会把 A[2] 变成A[2] - A[1], 那在求 A[3] = A[3]-A[2]的值时，就不是正确的值$
+> 2. 我们找每个连续相同的差值，如果这个连续相同差值的区间长度为 $k$，则这段区间所产生的等差数组的个数为: $k * (k - 1) // 2$
 
 <details>
 <summary>详细代码</summary>
@@ -401,7 +401,7 @@ public:
 };
 ```
 
-##### **Python dp**
+##### **Python-dp**
 
 ```python
 class Solution:
@@ -418,7 +418,7 @@ class Solution:
         return res
 ```
 
-##### **Python 差分**
+##### **Python-差分**
 
 ```python
 class Solution:
@@ -449,17 +449,20 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
+>
+> 1. 状态表示：$f[i, k]$ 表示所有以 $i$ 结尾，且公差为 $k$ 的长度 $>=2$ 的等差数列；属性：个数
+> 2. 状态转移：以前一个数 $a[j]$ 是哪个数作为划分 $(a[0], a[1]...)$ 有一个前提：$k = a[i] - a[j]$
+>
 > 关于弱等差数列的转换，以及转换后求真等差数列。
-> 
+>
 > 求真等差数列有两种方法：
-> 
-> 其一，我们可以对真弱等差数列的数量进行直接计数。真弱等差数列即为长度为 2 的弱等差数列，故其数量为 $(i, j)$ 对的格数，即为 $n * (n - 1) / 2$
-> 
-> 其二，对于 $f[i][A[i] - A[j]] += (f[j][A[i] - A[j]] + 1)，f[j][A[i] - A[j]]$ 是现有的弱等差数列个数，而 1 是根据 $A[i]$ 和 $A[j]$ 新建的子序列。根据性质二【若在弱等差数列后添加一个元素且保持等差，则一定得到一个等差数列】，新增加的序列必为等差数列。故 $f[j][A[i] - A[j]]$ 为新生成的等差数列的个数。
-> 
+>
+> 其一，我们可以对真弱等差数列的数量进行直接计数。真弱等差数列即为长度为 $2$ 的弱等差数列，故其数量为 $(i, j)$ 对的格数，即为 $n * (n - 1) / 2$
+>
+> 其二，对于 $f[i][A[i] - A[j]] += (f[j][A[i] - A[j]] + 1)，f[j][A[i] - A[j]]$ 是现有的弱等差数列个数，而 $1$ 是根据 $A[i]$ 和 $A[j]$ 新建的子序列。根据性质二【若在弱等差数列后添加一个元素且保持等差，则一定得到一个等差数列】，新增加的序列必为等差数列。故 $f[j][A[i] - A[j]]$ 为新生成的等差数列的个数。
+>
 > ==> 也因此 真正的等差数列可以由 $res += f[j][k]$ 统计而来
-> 
+>
 > **经典 定义转化与计数方法**
 
 <details>
@@ -514,7 +517,7 @@ public:
 
 > [!TIP] **思路**
 > 
-> 
+> f[i]表示前i个字符对应的方案的个数；直接递推。
 
 <details>
 <summary>详细代码</summary>
@@ -607,8 +610,48 @@ public:
 ##### **Python**
 
 ```python
-
+class Solution:
+    def knightProbability(self, n: int, k: int, row: int, column: int) -> float:
+        f = [[[0] * (k + 1) for _ in range(n + 1)] for _ in range(n + 1)]
+        for i in range(n):
+            for j in range(n):
+                f[i][j][k] = 1
+        dx, dy = [-2, -1, 1, 2, 2, 1, -1, -2], [1, 2, 2, 1, -1, -2, -2, -1]
+        for i in range(k - 1, -1, -1):
+            for x in range(n):
+                for y in range(n):
+                    for u in range(8):
+                        nx, ny = x + dx[u], y + dy[u]
+                        if 0 <= nx < n and 0 <= ny < n:
+                            f[x][y][i] += f[nx][ny][i + 1] / 8
+        return f[row][column][0]
 ```
+
+#### **Python 记忆化搜索**
+
+```python
+class Solution:
+    def knightProbability(self, N: int, K: int, r: int, c: int) -> float:
+
+        @functools.lru_cache(None)
+        def dfs(x, y, counts):
+            # 已经走了K步还在界内的return 1
+            if counts == K:
+                return 1
+            dx, dy = [-2, -1, 1, 2, 2, 1, -1, -2], [1, 2, 2, 1, -1, -2, -2, -1]
+            res = 0
+            for i in range(8):
+                nx, ny = x + dx[i], y + dy[i]
+                if 0 <= nx < N and 0 <= ny < N:
+                    res += dfs(nx, ny, counts + 1)
+            return res / 8
+
+        return dfs(r, c, 0)
+```
+
+
+
+
 
 <!-- tabs:end -->
 </details>
@@ -622,8 +665,34 @@ public:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
+>
 > 经典线性 dp
+>
+> 1. 状态表示：
+>
+>    $f(i, 0)$ 表示前$i-1$列已经铺满了，第$i$列还没有瓷砖的方案数；
+>
+>    $f(i, 1)$ 表示前$i-1$列已经铺满了，第$i$列只有第一行有瓷砖的方案数；
+>
+>    $f(i, 2)$ 表示前$i-1$列已经铺满了，第$i$列只有第二行有瓷砖的方案数；
+>
+>    $f(i, 3)$ 表示前$i-1$列已经铺满了，第$i$列两行都有瓷砖的方案数；
+>
+> 2. 状态转移：
+>
+>    对于$f(i, 0)$ ，只能从$f(i-1, 3)$ 转化过来，因为要保证前$i-1$列都是满的才可以转移；
+>
+>    对于$f(i, 1)$ ，能从$f(i-1, 0)$ ，$f(i-1, 2)$转化过来；
+>
+>    对于$f(i, 2)$ ，能从$f(i-1, 0)$ ，$f(i-1, 1)$转化过来；
+>
+>    对于$f(i, 3)$ ，能从$f(i-1, 0)$ ，$f(i-1, 1)$，$f(i-1, 2)$， $f(i-1, 3)$转化过来；
+>
+> 3. 初始化
+>
+>    $f(0, 0)=1$, $f(0, 3)=1$. 只有这两种状态各有一种铺法，其他的都是0
+>
+>    最终返回的答案是：$f(n-1, 3)$
 
 <details>
 <summary>详细代码</summary>
@@ -680,7 +749,19 @@ public:
 ##### **Python**
 
 ```python
-
+class Solution:
+    def numTilings(self, n: int) -> int:
+        mod = 10 ** 9 + 7
+        f = [[0] * 4 for _ in range(n + 1)]
+        f[0][0] = 1
+        f[0][3] = 1
+        
+        for i in range(1, n + 1):
+            f[i][0] = f[i - 1][3]
+            f[i][1] = (f[i - 1][0] + f[i - 1][2]) % mod
+            f[i][2] = (f[i - 1][0] + f[i - 1][1]) % mod
+            f[i][3] = (f[i - 1][0] + f[i - 1][1] + f[i - 1][2] + f[i - 1][3]) % mod 
+        return f[n - 1][3]
 ```
 
 <!-- tabs:end -->
@@ -695,8 +776,32 @@ public:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> 1. 状态定义：
+>
+>    $f(i, j, 0)$：表示前 $i$ 个点构造了 $j$ 条线段，并且第 $j$ 条线段不包含第 $i$ 个点的方案数；
+>
+>    $f(i, j, 1)$：表示前 $i$ 个点构造了 $j$ 条线段，并且第 $j$ 条线段包含第 $i$ 个点的方案数；
+>
+>    两者的区别就是当记录统计前 $i+1$ 个点的方案数时，前 $i$ 个点的第 $j$ 条线段能否被延续。
+>
+> 2. 状态转移
+>
+>    $f(i, j, 0)$：第 $i$ 个点没用上，那就是看前 $i-1$ 个点构成的 $j$ 条线段： 
+>
+>    ​		$f(i, j, 0) = f(i - 1, j, 0) + f(i - 1, j, 1)$
+>
+>    $f(i, j, 1)$：第 $j$ 条线段的右端点是 $i$，根据第 $j$ 条线段的长度分情况讨论：
+>
+>    1）当第 $j$ 条线段的长度为 $1$，那么 $i-1$ 个点是属于 $j-1$ 条线段的方案里的（就是前 $i-1$ 点构成了 $j-1$ 条线段）
+>
+>    ​		$f(i, j, 1) = f(i - 1, j - 1, 0) + f(i - 1, j - 1, 1)$
+>
+>    2）如果长度为>1，那除去第j条线段包含的第 $i$ 个点，前 $i-1$ 个点仍然是构造出了 $j$ 条线段，并且点 $i-1$ 是属于第 $j$ 条线段。
+>
+>    ​		$f(i, j, 1) =  f(i - 1, j, 1)$
+>
+> 3. 初始化：$f[0, 0, 0] = 1$ (这个状态是合法的：***啥***都没有可以从***啥都没有***转移过来）
 
 <details>
 <summary>详细代码</summary>
@@ -760,7 +865,19 @@ public:
 ##### **Python**
 
 ```python
-
+class Solution:
+    def numberOfSets(self, n: int, k: int) -> int:
+        mod = 10**9 + 7
+        f = [[[0, 0] for _ in range(k + 1)] for _ in range(n)]
+        f[0][0][0] = 1
+        for i in range(1, n):
+            for j in range(k + 1):
+                f[i][j][0] = (f[i - 1][j][0] + f[i - 1][j][1]) % mod
+                f[i][j][1] = f[i - 1][j][1]
+                if j > 0:
+                    f[i][j][1] += (f[i - 1][j - 1][1] + f[i - 1][j - 1][0]) % mod
+        # return (f[n - 1][k][0] + f[n - 1][k][1]) % mod;
+        return sum(f[n - 1][k]) % mod
 ```
 
 <!-- tabs:end -->
@@ -778,7 +895,7 @@ public:
 
 > [!TIP] **思路**
 > 
-> 线性 逆序dp找方案
+> 线性 逆序dp找方案（找出三个长度为 $k$ 且总和最大的非重叠子数组）
 > 
 > 经典 重复
 
@@ -874,12 +991,38 @@ public:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
+>
 > 一开始想的状态转移可以简化
-> 
+>
 > **重点在于想到题意影响两侧本质就是上一个影响本个**
-> 
+>
 > **同样与数据范围有关**
+>
+> ------
+>
+> 选了 $x$ 不能选择 $x + 1$ 和 $x - 1$；这和打家劫舍的题很像
+>
+> 状态机dp问题：
+>
+> 有限制的选择问题（一般 有限制的选择问题 都可以用dp来做：背包问题也是有限制的选择问题）
+>
+> 1. 状态定义用一个数组存储每个数字出现的次数；考虑前i个数，每个数都后面一个数都有影响；选择了i，就不能选i + 1；
+>
+>    对于每个数都有两种情况：
+>
+>    1） 选当前数 :  $f[i][1]$
+>
+>    2） 不选当前数 : $f[i][0]$
+>
+> 2. 状态转移：
+>
+>    $f[i][0]: 不选i，那i - 1 可选 可不选；选i - 1 ；不选 i -1 ：f[i][0] = max(f[i-1][0], f[i-1][1])$
+>
+>    $f[i][1]: 选择了i，那i - 1一定不能选: f[i][1] = f[i-1][0] + i * cnt[i]$  (i选一个 还是选两个 对其他数的影响都是一样的)
+>
+> 3. 时间复杂度是$O(N)$， 一共有 $N$ 个状态
+
+
 
 <details>
 <summary>详细代码</summary>
@@ -978,15 +1121,6 @@ public:
 ##### **Python**
 
 ```python
-# 选了x 不能选择x + 1 和 x - 1；这和打家劫舍的题很像
-# 状态机dp问题：有限制的选择问题（一般 有限制的选择问题 都可以用dp来做：背包问题也是有限制的选择问题）
-# 用一个数组存储每个数字出现的次数；
-# 考虑前i个数， 每个数都后面一个数都有影响；选择了i，就不能选i + 1；
-# 对于每个数都有两种情况：选 :  f[i][1]: / 不选 : f[i][0]； 
-# f[i][0] : 不选i，那i - 1  可选 可不选；1) 选i - 1 2）不选 i -1 ：f[i][0] = max(f[i-1][0], f[i-1][1])
-# f[i][1]: 选择了i，那i-1一定不能选；f[i][1] = f[i-1][0] + i * cnt[i](i选一个 还是选两个 对其他数的影响都是一样的)
-# 时间复杂度是O(N)， 一共有N个状态
-
 class Solution:
     def deleteAndEarn(self, nums: List[int]) -> int:
         n = len(nums)
@@ -1196,11 +1330,11 @@ public:
 >
 > [何逊的题解](https://leetcode-cn.com/problems/allocate-mailboxes/solution/dong-tai-gui-hua-shi-jian-fu-za-du-oknlognkong-jia/)
 >
-> `f[i][j]` 表示前 i 个建筑用 j 个邮箱的最短距离和 预处理 `dis[i][j]` 为从 i 到 j 使用一个邮箱时的消耗
+> $f[i, j] 表示前 i 个建筑用 j 个邮箱的最短距离和 预处理 dis[i, j]为从 i 到 j 使用一个邮箱时的消耗$
 >
-> 则 `f[i][j] = min(f[d][j-1] + dis[d+1][i]) [0 < k < i-1] `
+> 则 $f[i][j] = min(f[d][j-1] + dis[d+1][i]) [0 < k < i-1]$ 
 >
-> 意即： 以 d 为最后一段的分界线 最后一段为 d+1~i 的最小消耗
+> 意即： 以 $d$ 为最后一段的分界线 最后一段为 $d+1～i$ 的最小消耗
 
 <details>
 <summary>详细代码</summary>
@@ -1914,7 +2048,21 @@ int main() {
 
 > [!TIP] **思路**
 >
-> 
+> **贪心思想**
+>
+> 1. 从左到右遍历每天的价格，如果以当天之前的最低价买入，以当天价格卖出，那么就得到了当天卖出的最大利润
+> 2. 在每一天卖出的最大利润中更新最大利润值
+>
+> ------
+>
+> **状态机dp**
+>
+> 交易过程中关注以下两种状态的最大值：
+>
+> 1. $bought$: 买入(后)的状态，此时手上有货。只能交易一次，所以买入就会花钱，利润等于： $0 - prices[i]$
+> 2. $sold$: 卖出（后）的状态，此时手上无货
+>
+> - 答案是交易一次，最终卖出，也就是手上无货 $sold$ 的最大值
 
 <details>
 <summary>详细代码</summary>
@@ -1955,14 +2103,31 @@ public:
 ```python
 class Solution:
     def maxProfit(self, prices: List[int]) -> int:
-        n = len(prices)
-        min_v = float("+inf")
         res = 0  # 如果发现交易就会赔本，可以不卖卖，就是获利是0 （所以初始化为0）
-        for i in range(n):
-            res = max(res, prices[i] - min_v)
-          	min_v = min(min_v, prices[i]) 
+        minv = float('inf')
+        for x in prices:
+            minv = min(minv, x)
+            res = max(res, x - minv)
         return res
 ```
+
+##### **Python-状态机dp**
+
+```python
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        bought, sold = float("-inf"), 0
+
+        for p in prices:
+            bought = max(bought, 0 - p)
+            sold = max(sold, bought + p)
+
+        return sold
+```
+
+
+
+
 
 <!-- tabs:end -->
 </details>
@@ -1976,8 +2141,45 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> **贪心的思想：**
+>
+> 1. 考虑相邻两天的股票价格，如果后一天的股票价格大于前一天的，那么在进行买卖操作后，肯定可以获得利润
+>
+> 2. 在不需要考虑交易次数的情况下，那么只要利润是正的，就进行交易，这样可以获得最大的利润
+>
+> 3. 直接循环判断前后两天的价格，差价为正，就进行买卖即可。
+>
+>    比如：$[1,2,3]$：在1买入，3卖出等价于每天都进行买入卖出的利润等价。
+>
+> ------
+>
+> **状态机模型1：**
+>
+> 1. 状态表示：$f[i, 0]$ 表示在第i天并且手里没有股票的最大利润；$f[i, 1]$ 表示在第i天并且手里有股票的最大利润
+>
+> 2. 状态转移：
+>
+>    $f[i, 0] = max(f[i-1,0], f[i-1,1]+w[i])$ 
+>
+>    $f[i, 1] = max(f[i-1,1], f[i-1,0]-w[i])$ 
+>
+> 3. 初始化：$f[0, 0]=1$: 第0天手里没有股票是合法的，利润是0；其他情况都不是合法的都初始化为负无穷
+>
+>    返回的结果是 $f[n, 0]$, 最后手上没有股票的时候利润肯定是最大的
+>
+> ------
+>
+> **状态机模型2**
+>
+> 交易过程中关注以下两种状态的最大值：
+>
+> 1. $bought$: 买入(后)的状态，此时手上有货
+> 2. $sold$: 卖出（后）的状态，此时手上无货
+>
+> - 答案是，无数次交易后最终卖出，也就是手上无货 $sold$ 的最大值
+
+
 
 <details>
 <summary>详细代码</summary>
@@ -2011,19 +2213,46 @@ public:
 };
 ```
 
-##### **Python**
+##### **Python 贪心**
 
 ```python
-# 所有的交易 都没有交集。
-# 遍历一次数组，低进高出，把正的价格差相加起来就是最终利润。
-# 比如：[1,2,3]：在1买入，3卖出  等价于  每天都进行买入卖出。
+class Solution:
     def maxProfit(self, prices: List[int]) -> int:
-        n = len(prices)
-        res = 0  # 不做交易，不赔不赚。
-        for i in range(1, n):
-            res += max(0, prices[i] - prices[i-1])
+        res = 0
+        for i in range(1, len(prices)):
+            res += max(0, prices[i] - prices[i - 1])
         return res
 ```
+
+##### **Python-状态机dp1**
+
+```python
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        n = len(prices)
+        f = [[float('-inf')] * 2 for _ in range(n + 1)]
+        f[0][0] = 0 
+        for i in range(1, n + 1):
+            f[i][0] = max(f[i - 1][0], f[i - 1][1] + prices[i - 1])
+            f[i][1] = max(f[i - 1][1], f[i - 1][0] - prices[i - 1])
+        return f[n][0]
+```
+
+##### **Python-状态机dp2**
+
+```python
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        bought, sold = float("-inf"), 0
+
+        for x in prices:
+            bought = max(bought, sold - x)
+            sold = max(sold, bought + x)
+
+        return sold
+```
+
+
 
 <!-- tabs:end -->
 </details>
@@ -2037,8 +2266,34 @@ public:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> **前后缀分解思想**：
+>
+> 枚举两次交易的分界点 （涉及到分两次买入的情况都可以用这种思路），假设枚举第二次交易的买入时间为第$i$天，就可以把一个问题分解成两个独立的子问题；
+>
+> 1） 前$i$天交易一次的最大收益
+>
+> 2） 在第$i$天买入，后面再卖出的一次交易的最大收益
+>
+> 1. 枚举第一次交易：遍历数组，从前向后扫描，用$f[i]$记录前$i$天中只买卖一次的最大收益（不一定在第$i$天卖）
+>
+> 2. 枚举第二次交易：遍历数组，从后向前扫描，计算只买卖一次并且在第$i$天买入的最大收益。最大收益等于第$i$天之后股票的最大价格减去第i天的价格；
+>
+>    在此基础上再加上$ $，就是两第二次交易在第$i$天买入，两次交易的总收益最大值。
+>
+> 3. 枚举过程中，维护总收益的最大值。
+>
+> ------
+>
+> **状态机dp**：
+>
+> 分别维护以下三种状态的最大值:
+>
+> $fstBought$: 第一次买入(后)的状态； $fstSold$：第一次卖出（后）的状态
+>
+> $secBought:$ 第二次买入(后)的状态； $secSold$：第二次卖出（后）的状态
+>
+> 答案是第二次卖出后的状态的最大值
 
 <details>
 <summary>详细代码</summary>
@@ -2084,31 +2339,44 @@ public:
 };
 ```
 
-##### **Python**
+##### **Python-前后缀分离**
 
 ```python
-# 可以用dp来写；这里写另外一种思路，叫：！！！前后缀分解 （枚举两次交易的分界点）==> 涉及到分两次买入的情况都可以用这种思路 ： 可以枚举第二次交易的买入时间，比如是第i次交易买入的。（如何求这一类方案的最值呢？）
-# f[i]: 在第1-i天 进行买卖一次的最大收益值（可以分为：1. 在第i天卖出；2.不在第i天卖出）
-# 总收益就转换为：第一次交易是在前i-1天内完成的,可以表示成f[i-1]；第二次交易是在第i天买入，后面再卖出，最大收益是：第i天之后股票的最大值减去第i天的价格。
-# 枚举完分界点后，就可以把一个问题分解成 两个独立的子问题；（搜Acwing--前后缀分解，会出来相关题型）
-
 class Solution:
     def maxProfit(self, prices: List[int]) -> int:
         n = len(prices)
         f = [0] * (n + 1)
 
         minv = float('inf')
-        for i in range(1, n + 1):   #f从1开始，f[i]对应的是prices[i-1]
-            f[i] = max(f[i-1], prices[i-1] - minv)
-            minv = min(minv, prices[i-1])
-        
+        for i in range(1, n + 1): 
+            f[i] = max(f[i - 1], prices[i - 1] - minv)
+            minv = min(minv, prices[i - 1])
+
         maxv = float('-inf')
         res = 0
         for i in range(n, 0, -1):
-            res = max(res, maxv - prices[i-1] + f[i-1]) 
-            maxv = max(maxv, prices[i-1])
-        return res      
+            res = max(res, maxv - prices[i - 1] + f[i - 1])
+            maxv = max(maxv, prices[i - 1])
+        return res
 ```
+
+##### **Python-状态机dp**
+
+```python
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        n = len(prices)
+        fstSold, secSold = 0, 0 
+        fstBought, secBought = -prices[0], -prices[0]
+        for i in range(1, n + 1):
+            fstSold = max(fstSold, fstBought + prices[i - 1])
+            fstBought = max(fstBought, - prices[i - 1])
+            secSold = max(secSold, secBought + prices[i - 1])
+            secBought = max(secBought, fstSold - prices[i - 1])
+        return secSold
+```
+
+
 
 <!-- tabs:end -->
 </details>
@@ -2122,8 +2390,43 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> **状态机模型dp1**
+>
+> 1. 状态定义
+>
+>    $f[i, j, 0]$ : 前 $i$ 天，进行了 $j$ 次交易，并且手中无货的购买方式的集合
+>
+>    $f[i, j, 1]$ : 前 $i$ 天，进行了 $j$ 次交易，并且手中有货的购买方式的集合。
+>
+>    第一个状态：手中无货； ==> 1) 不买，继续无货；2）买入，转移到"手上有货"的状态
+>
+>    第二个状态：手中有货； ==> 1）持有，保持有货；2）卖出，转移到"手上无货"的状态
+>
+> 2. 状态转移
+>
+>    **这里定义买入行为会构成一笔交易（也就是【买入-卖出】是一个完成的交易）**
+>
+>    $f[i, j, 0]$ : 由第 $i - 1$ 天并且手中无货 $f[i - 1, j, 0]$（保持不变，交易数也不变）和第 $i - 1$ 天并且手上有货 $f[i - 1, j, 1]$ 卖出转移（由于手中有货卖出的是一笔交易的终点，所以这里还是处于第 $j$ 笔交易）
+>
+>    $f[i, j, 1]$ : 由第 $i - 1$ 天并且手中有货 $f[i - 1, j, 1]$（保持不变，交易数也不变）和第 $i - 1$ 天并且手上无货 $f[i - 1, j - 1, 0]$ 买入转移（由于要手中无货要买入的是一笔交易的起点，所以当处于第 $i-1$ 天时，交易数是 $j-1$ 笔）
+>
+> 3. 初始化
+>
+>    $f[i,0,0]$ 表示进行 $0$ 次交易，手中无货的情况，收益就是 $0$，表示这个状态合法，可以从这个状态转移过来；不合法的状态，就要初始化负无穷大。
+>
+>    最后的结果输出问题：最后一定是进行了若干次完整的交易，手中无货才是完整交易（买了不卖，不是最优解，买要花钱）
+>
+> ------
+>
+> **状态机模型dp2**
+>
+> 维护在 $k$ 次交易过程中，以下两种状态的最大值:
+>
+> 1. $bought$: 买入(后)的状态，此时手上有货
+> 2. $sold$: 卖出（后）的状态，此时手上无货
+>
+> - 答案是在 $k$ 次交易过程中最终卖出，也就是手上无货 $sold$ 的最大值
 
 <details>
 <summary>详细代码</summary>
@@ -2196,41 +2499,23 @@ public:
 };
 ```
 
-##### **Python**
+##### **Python-状态机dp1**
 
 ```python
-# 如何把交易状态描述清楚
-# 第一个状态：手中有货； ==> 1）可以持有；2）卖出
-# 第二个状态：手中没有货； ==> 1) 不买，就继续是没货；2）第二天买入，就是持有状态
-# 状态转移的时候 是有权重的，+ w[i], - w[1]
-
-# 状态表示：f[i, j, 0] : 前i天，已经做完j次交易，并且手中无货的购买方式的集合
-#           f[i, j, 1] : 前i天，已经做完前j-1次交易，并且正在进行第j次交易，并且手中有货的购买方式的集合 ！ 注意：这里是正在进行第j次交易
-# 状态机的状态表示，实质上是把i的状态进行了，方便后续状态计算； 属性：最大值
-# 状态计算：就是状态机的转移
-
-# 注意：
-# 1. 初始化的问题：f[i,0,0]表示进行0次交易 手中无货的情况，那就是0，表示这个状态合法，可以从这个状态转移过来；状态不合法的时候，就要初始化无穷大
-#    求最大，就初始化为负无穷；求最小，就初始化为最大，表示为：状态不合法，没办法从这个状态转移过来
-# 2. 最后的结果输出问题：最后一定是进行了若干次完整的交易，手中无货才是完整交易（买了不卖，不是最优解，买要花钱）
-
 class Solution:
     def maxProfit(self, k: int, prices: List[int]) -> int:
-        # 假如一共有n天，那最多买卖n/2次（因为买卖不能在同一天），因此如果k>n/2的话，可以直接k=n/2
-        # 那就是可以交易无限次; 特判。
         n = len(prices)
-        ans = 0 
+        res = 0
+        # 特判，如果k很大，就相当于可以进行无数次交易
         if k >= n // 2:
             for i in range(n - 1):
-                if prices[i+1] > prices[i]:
-                    ans += prices[i+1] - prices[i]
-            return ans
+                if prices[i + 1] > prices[i]:
+                    res += prices[i + 1] - prices[i]
+            return res
 
-        n = len(prices)
-        N = 1010
         f = [[float('-inf')] * 2 for _ in range(n + 5)]
         f[0][0] = 0
-        
+
         for i in range(1, n + 1):
             for j in range(1, k + 1):
                 f[j][0] = max(f[j][0], f[j][1] + prices[i - 1])
@@ -2240,6 +2525,34 @@ class Solution:
             res = max(res, f[i][0])
         return res
 ```
+
+##### **Python-状态机dp2**
+
+```python
+class Solution:
+    def maxProfit(self, k: int, prices: List[int]) -> int:
+        n = len(prices)
+        res = 0
+        # 特判，如果k很大，就相当于可以进行无数次交易
+        if k >= n // 2:
+            for i in range(n - 1):
+                if prices[i + 1] > prices[i]:
+                    res += prices[i + 1] - prices[i]
+            return res
+
+        bought = [float('-inf')] * (k + 1)
+        sold = [0] * (k + 1)
+
+        for x in prices:
+            for i in range(1, k + 1):
+                bought[i] = max(bought[i], sold[i - 1] - x)
+                sold[i] = max(sold[i], bought[i] + x)
+        return sold[k]
+```
+
+
+
+
 
 <!-- tabs:end -->
 </details>
@@ -2253,8 +2566,42 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> **状态机模型1**
+>
+> 1. 状态表示：$f[i,j]$：考虑前 $i$ 天股市，当前第 $i$ 天的状态是 $j$ 的方案；属性：最大总利润
+>
+>    1） $j=0$：表示当前没有股票，且不处于冷冻期 （空仓）
+>
+>    2） $j=1$：表示当前有股票 （持仓）
+>
+>    3） $j=2$：表示当前没有股票，且处于冷冻期 （冷冻期）
+>
+> 2. 状态转移：
+>
+>    1）$f[i,0]$: 当第 $i$ 天是空仓状态，那它可以由 $i-1$ 天是空仓状态（保持不变）或冷冻期状态（保持不变）转移过来
+>
+>    2）$f[i,1]$: 当第 $i$ 天是持仓状态，那它可以由 $i-1$ 天是持仓状态（保持不变）或空仓的状态（第 $i$ 天买入）转移过来3）$f[i,2]$: 当第 $i$ 天是冷冻期状态，那它只能由 $i-1$ 天是持仓状态（第 $i$ 天卖出）转移过来
+>
+> 3. 初始化：一开始是第 $0$ 天，并且一定是可以买入股票，也就是：
+>
+>    $f[0,0]=0$；$f[0, 1]=-prices[0]$
+>    最后结果： 最后一天股票留在手里肯定是不合算的，所以最后一天要么是刚刚卖出去，要么是处于冷冻期中（或出了冷冻期）
+>    所以答案是： $ans = max(f[n, 0],f[n, 2])$
+>
+> ------
+>
+> **状态机模型2**
+>
+> 分别维护以下三种状态的最大值:
+>
+> 1. $bought$: 买入(后)的状态
+>
+> 2. $sold$: 卖出（后）的状态
+>
+> 3. $sold$: 冷冻期状态 
+>
+> - 答案由最终卖出和冷冻期的最大值组成
 
 <details>
 <summary>详细代码</summary>
@@ -2302,41 +2649,38 @@ public:
 };
 ```
 
-##### **Python**
+##### **Python-状态机dp1**
 
 ```python
-"""
-以 线性 的方式 动态规划，考虑第 i 阶段/天 的状态，需要记录的参数有哪些：
-第 i 天的 决策状态：
-(j=0) 当前没有股票，且不处于冷冻期 （空仓）
-(j=1) 当前有股票 （持仓）
-(j=2) 当前没有股票，且处于冷冻期 （冷冻期）
-
-状态机模型：
-如果第 i 天是 空仓 (j=0) 状态，则 i-1 天可能是 空仓 (j=0) 或 冷冻期 (j=1) 的状态
-如果第 i 天是 冷冻期 (j=2) 状态，则 i-1 天只可能是 持仓 (j=1) 状态 （卖出）
-如果第 i 天是 持仓 (j=1) 状态，则 i-1 天可能是 持仓 (j=1) 状态 或 空仓 (j=0) 的状态 （买入）
-
-状态表示f[i,j]—属性: 考虑前 i 天股市，当前第 i 天的状态是 j 的方案；方案的总利润 最大Max
-
-入口：一开始是第0天，并且一定是处于可以买票的状态的，所以：f[0][2]=0；其他状态全部负无穷
-出口： 最后一天票子留在手里肯定是不合算的：最后一天要么是我刚刚卖出去，要么是我处于冷冻期中（或出了冷冻期）
-所以答案应该是在f[n][0]f[n][0]和f[n][2]f[n][2]中选，即 ans = max(f[n][0],f[n][2]);
-"""
-
 class Solution:
     def maxProfit(self, w: List[int]) -> int:
         n = len(w)
         f = [[float('-inf')] * 3 for _ in range(n + 1)]
-        f[0][2] = 0  # 初始化，入口很重要
+        f[0][0] = 0  # 初始化，入口很重要
+        f[0][1] = -w[0]
 
         for i in range(1, n + 1):
-            f[i][0] = max(f[i-1][0], f[i-1][2] - w[i-1])
-            f[i][1] = f[i-1][0] + w[i-1]
-            f[i][2] = max(f[i-1][1], f[i-1][2]) 
-        return max(f[n][1], f[n][2])
-        # 2的状态可以由1转移过来，不会增加w值；但存在极端情况，如数列递减，这时不交易才是最大收益，就是f[n][2]，所以出口需要加上f[n][2]
+            f[i][0] = max(f[i - 1][0], f[i - 1][2])
+            f[i][1] = max(f[i - 1][1], f[i - 1][0] - w[i - 1])
+            f[i][2] = f[i - 1][1] + w[i - 1]
+        # return max(f[n])
+        return max(f[n][0], f[n][2])
 ```
+
+##### **Python-状态机dp2**
+
+```python
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        bought, sold, cold = -prices[0], 0, 0
+        for x in prices:
+            bought, sold, cold = max(bought, cold - x), max(sold, bought + x), max(sold, cold)
+        return max(sold, cold)
+```
+
+
+
+
 
 <!-- tabs:end -->
 </details>
@@ -2350,8 +2694,38 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> **状态机模型1**
+>
+> 1. 状态表示：$f[i, j]$ 考虑前 $i$ 天股市，当前第 $i$ 天的状态是 $j$ 的方案；属性：最大总利润
+>
+>    1） $j=0$：表示当前手上没有股票，空仓状态
+>
+>    2） $j=1$：表示当前手上有股票，持仓状态
+>
+> 2. 状态转移：
+>
+>    1） $f[i, 0]$ : 当第 $i$ 天是空仓状态，那它可以由 $i-1$ 天是空仓状态（保持不变）或持仓状态（卖股票）转移过来
+>
+>    2） $f[i, 1]$:  当第 $i$ 天是持仓状态，那它可以由 $i-1$ 天是空仓状态（买入股票）或持仓状态（保持不变）转移过来
+>
+> 3. 初始化
+>
+>    $f[0,0] = 0$ ; $f[0,1] = -prices[0]$
+>
+>    最后返回 $max(f[n])$ （其实只需要求所有空仓状态的最大值）
+>
+> ------
+>
+> **状态机模型1**
+>
+> 分别维护以下三种状态的最大值:
+>
+> 1. $bought$: 买入(后)的状态
+>
+> 2. $sold$: 卖出（后）的状态；卖出在更新时加入交易费用即可
+>
+> - 答案是最终卖出最大值
 
 <details>
 <summary>详细代码</summary>
@@ -2374,10 +2748,32 @@ public:
 };
 ```
 
-##### **Python**
+##### **Python-状态机dp1**
 
 ```python
+class Solution:
+    def maxProfit(self, prices: List[int], fee: int) -> int:
+        n = len(prices)
+        f = [[float('-inf')] * 2 for _ in range(n + 1)]
+        f[0][0], f[0][1] = 0, -prices[0]
 
+        res = 0
+        for i in range(1, n + 1):
+            f[i][0] = max(f[i - 1][0], f[i - 1][1] + prices[i - 1] - fee)
+            f[i][1] = max(f[i - 1][1], f[i - 1][0] - prices[i - 1])
+            res = max(res, f[i][0])
+        return res
+```
+
+##### **Python-状态机dp2**
+
+```python
+class Solution:
+    def maxProfit(self, prices: List[int], fee: int) -> int:
+        bought, sold = -prices[0], 0
+        for x in prices:
+            bought, sold = max(bought, sold - x), max(sold, bought + x - fee)
+        return sold
 ```
 
 <!-- tabs:end -->
@@ -2394,8 +2790,29 @@ public:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> **普通dp**
+>
+> 1. 状态表示：$f[i]$: 前 $i$ 天可以最多赚到多少钱；
+> 2. 状态转移：1）第 $i$ 天不偷，那就是 $f[i-1]$ ；2. 第 $i$ 天偷，那就只能 $i-2$ 天偷
+>
+> ------
+>
+> **状态机dp**
+>
+> 1. 状态表示：
+>
+>    $f[i]$ 表示考虑了前 $i$ 个房间，且盗窃了第 $i$ 个房间所能得到的最大收益
+>
+>    $g[i]$ 表示考虑了前 $i$ 个房间，且不盗窃第 $i$ 个房间所能得到的最大收益
+>
+> 2. 状态转移
+>
+>    $f[i]$：表示在第 $i$ 家偷，那 $i-1$ 家就不能偷，$f[i] = g[i-1] + nums[i-1]$
+>
+>    $g[i]$: 表示不偷第 $i$ 家，那 $i-1$ 家也是可偷可不偷, $g[i] = max(g[i-1], f[i-1])$
+
+
 
 <details>
 <summary>详细代码</summary>
@@ -2433,47 +2850,32 @@ public:
 };
 ```
 
-##### **Python**
+##### **Python-dp**
 
 ```python
-# 正常dp思维：f[i]: 前i天 可以最多赚到多少钱；
-# 1. 第i天不偷，那就是f[i-1] ；2. 第i天偷，那就只能i-2天偷！
-
 class Solution:
     def rob(self, nums: List[int]) -> int:
         n = len(nums)
         f = [0] * (n + 1)
         for i in range(1, n + 1):
-            f[i] = max(f[i-1], f[i-2] + nums[i-1])
+            f[i] = max(f[i - 1], f[i - 2] + nums[i - 1])
         return f[n]
-      
-# 状态机dp解法
-#  f(i) 表示考虑了前 ii 个房间，且盗窃了第 i 个房间所能得到的最大收益，g(i) 表示不盗窃第 i 个房间所能得到的最大收益
-# f[i]：表示在第i家偷，那i-1家就不能偷，f[i] = g[i-1] + nums[i-1]
-# g[i]: 表示不偷第i家，那i-1家也是可偷可不偷, g[i] = max(g[i-1], f[i-1])
-class Solution:
-    def rob(self, nums: List[int]) -> int:
-        n = len(nums)
-        f = [0] * (n + 1); g = [0] * (n + 1)
-        # f[1] = nums[0]  
-        for i in range(1, n + 1): # 由于没有直接初始化特判别f[1] = nums[0] 所以 这里需要从1开始计算
-            f[i] = g[i-1] + nums[i-1]
-            g[i] = max(f[i-1], g[i-1])
-        return max(f[n], g[n])
-
-      
-# 状态机dp解法      
-class Solution:
-    def rob(self, nums: List[int]) -> int:
-        n = len(nums)
-        f = [0] * (n + 1); g =[0] * (n + 1)
-        f[1] = nums[0]
-        for i in range(2, n + 1): 
-            f[i] = g[i - 1] + nums[i - 1]
-            g[i] = max(f[i - 1], g[i -1])
-        return max(f[n], g[n])
-
 ```
+
+##### **Python-状态机dp**
+
+```python
+class Solution:
+    def rob(self, nums: List[int]) -> int:
+        n = len(nums)
+        f, g = [0] * (n + 1), [0] * (n + 1)
+        for i in range(1, n + 1):
+            f[i] = g[i - 1] + nums[i - 1]
+            g[i] = max(f[i - 1], g[i - 1])
+        return max(f[n], g[n])
+```
+
+
 
 <!-- tabs:end -->
 </details>
@@ -2487,8 +2889,28 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> 相比上一道题，唯一的不同就是：第一个和最后一个不能同时选；
+>
+> 我们可以将第一个房间单独分离进行讨论。分别是选择第一个房间和不选择第一个房间
+>
+> 1. 状态定义：
+>
+>    不选第一个: $f[i]$ 表示不选第一个，并且选第 $i$ 个的金额；
+>
+>    ​		   $g[i]$ 表示不选第一个，并且不选第 $i$ 个的金额。
+>
+>    ​		   **结果**： $max(f[n],  g[n])$ (由于第一个不选，所以最后一个可选可不选，所以可以两个取max)
+>
+>    选 第一个：$f'[i]$ 表示选第一个，并且选第 $i$ 个的金额；
+>
+>    ​		  $g'[i]$ 表示选第一个，并且不选第 $i$ 个的金额。
+>
+>    ​		   **结果**：由于选了第一个，所以最后一个点不能选： $max = g'[n]$
+>
+> 2. 状态转移见代码
+>
+> 3. 最后，取两个情况的最大值
 
 <details>
 <summary>详细代码</summary>
@@ -2524,25 +2946,22 @@ public:
 ##### **Python**
 
 ```python
- # 相比上一道题，唯一的不同就是第一个 和 最后一个 不能同时选；我们可以将第一个房间单独分离进行讨论。分别是选择第一个房间和不选择第一个房间
-# 1. 不选第一个：f[i]表示一定不选第1个 并且选第i个的金额；g[i]表示不选第1个，并且 不选第i个的金额。max(f[n], g[n]) (n可选 可不选，所以可以两个取max)
-# 2. 选第一个：f'[i]选1，必选第i个；g'[i]选1，不选第i个。由于选了1了，所以最后一个点不能选，max = g'[n]
-# 最后 取两个情况的最大值
-
 class Solution:
     def rob(self, nums: List[int]) -> int:
         n = len(nums)
         if n == 0:return 0
         if n == 1:return nums[0]
         res = 0
-        f = [0] * (n + 1); g = [0] * (n + 1)
+        f, g = [0] * (n + 1), [0] * (n + 1)
 
-        for i in range(2, n + 1):  # 不选1
+        # 不选1
+        for i in range(2, n + 1):  
             f[i] = g[i - 1] + nums[i - 1]
             g[i] = max(f[i - 1], g[i - 1])
         res = max(f[n], g[n]) # 不选1的话，那最大值是在第n个可选 可不选里取最大
         
-        f[1] = nums[0]  # 选1 初始化
+        # 选1 初始化
+        f[1] = nums[0]  
         g[1] = float('-inf') # 选1，g[1]就不合理，置为不可达数据 即可
         for i in range(2, n + 1):
             f[i] = g[i - 1] + nums[i - 1]
@@ -2563,8 +2982,15 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+> 典型的树形DP问题。时间复杂度: $O(n)$
+>
+> 1. 状态表示：
+>    $f[i, 0]$ 表示已经偷完以 $i$ 为根的子树，且不在 $i$ 行窃的最大收益；
+>    $f[i, 1]$ 表示已经偷完以 $i$ 为根的子树，且在 $i$ 行窃的最大收益；
+>
+> 2. 状态转移：
+>    $f[i, 0]$ ：因为在 $i$ 行窃，所以在 $i$ 的子节点不能行窃，只能从 $f[i->left][0]$ 和 $f[i->right][0]$ 转移；
+>    $f[i, 1]$ ：因为不在 $i$ 行窃，所以对 $i$ 的子节点没有限制，直接用左右子节点的最大收益转移即可
 
 <details>
 <summary>详细代码</summary>
@@ -2615,28 +3041,13 @@ public:
 ##### **Python**
 
 ```python
-"""
-(树形动规) O(n)O(n)
-典型的树形DP问题。
-
-状态表示：
-f[i][0]表示已经偷完以 i 为根的子树，且不在 i 行窃的最大收益；
-f[i][1]表示已经偷完以 i 为根的子树，且在 i 行窃的最大收益；
-
-状态转移：
-f[i][1]：因为在 i 行窃，所以在 i 的子节点不能行窃，只能从f[i->left][0]和f[i->right][0]转移；
-f[i][0]：因为不在 i 行窃，所以对 i 的子节点没有限制，直接用左右子节点的最大收益转移即可；
-时间复杂度分析：总共有 n 个状态，每个状态进行转移的计算量是 O(1)。所以总时间复杂度是 O(n)。
-
-"""
-
 class Solution:
     def rob(self, root: TreeNode) -> int:
         def dfs(u):
             if not u:return [0, 0]
             l = dfs(u.left)
             r = dfs(u.right)
-            return [max(l[0],l[1]) + max(r[0], r[1]), l[0] + r[0] + u.val]
+            return [max(l[0], l[1]) + max(r[0], r[1]), l[0] + r[0] + u.val]
 
         f = dfs(root)
         return max(f[0], f[1])
@@ -2656,8 +3067,22 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> 模拟递推
+>
+> 1. 状态表示：$f[i, j]$ 表示第 $i$ 行水第 $j$ 个杯子有多少水（假设不会溢出：容量无限大）
+>
+> 2. 状态转移（递推）
+>
+>    如果 $f[i, j] > 1$，那么当前会溢出到下一行每一个杯子的容量是：$x = (f[i, j] - 1) / 2$
+>
+>    $f[i + 1, j] += x$
+>
+>    $f[i + 1, j + 1] += x$
+>
+> 3. 初始化：$f[0, 0] = poured$
+>
+>    最后的结果要跟 $1$ 取 $min$，因为杯子的实际容量最多是 $1$
 
 <details>
 <summary>详细代码</summary>
@@ -2685,7 +3110,17 @@ public:
 ##### **Python**
 
 ```python
-
+class Solution:
+    def champagneTower(self, poured: int, query_row: int, query_glass: int) -> float:
+        f = [[0] * (query_row + 1) for _ in range(query_row + 1)]
+        f[0][0] = poured
+        for i in range(query_row):
+            for j in range(i + 1):
+                if f[i][j] > 1:
+                    x = (f[i][j] - 1) / 2
+                    f[i + 1][j] += x
+                    f[i + 1][j + 1] += x
+        return min(1, f[query_row][query_glass])
 ```
 
 <!-- tabs:end -->
@@ -2816,8 +3251,16 @@ public:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 线性dp 略
+>
+> 线性dp 
+>
+> 1. 状态表示$：f[i, j]$ 表示长度为 $i$ 且以字符 $j$ 为结尾的字符串的数目。$j = 0, 1, 2, 3, 4$ 分别代表字母 $[a, e, i, o, u]$
+>
+> 2. 状态转移：见代码
+>
+> 3. 初始化：$f[1, j] = 1$
+>
+>    最后返回：$sum(f[n, j]),    0 <= j <= 4$
 
 <details>
 <summary>详细代码</summary>
@@ -2850,8 +3293,35 @@ public:
 ##### **Python**
 
 ```python
-
+class Solution:
+    def countVowelPermutation(self, n: int) -> int:
+        mod = int(1e9+7)
+        f = [[0] * 5 for _ in range(n + 1)]
+        for i in range(5):
+            f[1][i] = 1
+        
+        for i in range(2, n + 1):
+            f[i][0] = (f[i - 1][1] + f[i - 1][2] + f[i - 1][4]) % mod
+            f[i][1] = (f[i - 1][0] + f[i - 1][2]) % mod
+            f[i][2] = (f[i - 1][1] + f[i - 1][3]) % mod
+            f[i][3] = (f[i - 1][2]) % mod
+            f[i][4] = (f[i - 1][2] + f[i - 1][3]) % mod 
+        return sum(f[n]) % mod
 ```
+
+##### **Pythonic**
+
+```python
+class Solution:
+    def countVowelPermutation(self, n: int) -> int:
+        mod = 10**9 + 7
+        a = e = i = o = u = 1
+        for _ in range(n - 1):
+            a, e, i, o, u = e, (a + i) % mod, (a + e + o + u) % mod, (i + u) % mod, a
+        return sum([a, e, i, o, u]) % mod
+```
+
+
 
 <!-- tabs:end -->
 </details>
@@ -3089,10 +3559,53 @@ public:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 核心在于 **状态定义** 和 **转移**
-> 
-> 前 i 个位置分别构成 0 / 01 / 012 形式序列的方案数
+>
+> 线性 DP 求方案数，首先明确状态定义和状态转移
+>
+> 经典求方案，定义及转移、滚动数字压缩空间
+>
+> 核心在于 状态定义 和 转移
+>
+> 前 $i$ 个位置分别构成 $0 / 01 / 012$ 形式序列的方案数。
+>
+> 1. 状态表示：
+>
+>    1） $f[i, 0]$ 表示前 $i$ 个数都是 $0$ 组成的子序列的个数
+>
+>    2） $f[i，1]$ 表示前 $i$ 个数是先 $0$ 后 $1$ 子序列的个数
+>
+>    3） $f[i，2]$ 表示前 $i$ 个数是先 $0$ 后 $1$ 最后是 $2$ 的子序列的个数，也就是特殊子序列
+>
+> 2. 状态转移，根据第 $i$ 项的值进行转移
+>
+>    1） 当 $nums[i] == 0$，
+>
+>    对于 $f[i, 0]$: 不选 $0$ 时，$f[i，0] = f[i-1，0]$；
+>
+>    ​		   选 $0$ 时，可以单独组成一个子序列，也可以与前面的 $0$ 组合，也是 $f[i-1, 0]$；最后相加，$f[i, 0] = 2 * f[i - 1, 0] + 1$
+>
+>    对于 $f[i, 1], f[i, 2]$ 都不能用当前 $0$，所以都依赖于 $i-1$ 项对应的值
+>
+>    2） 当 $nums[i] == 1$，
+>
+>    对于 $f[i, 1]$: 不选 $1$ 时，$f[i，1]$ 的值取决于 $f[i-1，1]$
+>
+>    ​		   选 $0$ 时，可以单独和前 $i-1$ 项的 $0$ 组成子序列，也可以和前面 $i-1$ 项的 $1$ 组成子序列；最后相加，$f[i,1] = f[i-1,1] + f[i-1,0] + f[i-1,1]$
+>
+>    对于 $f[i, 1], f[i, 0]$ 都不能用当前 $1$，所以都依赖于 $i-1$ 项对应的值
+>    3） 当 $nums[i] == 2$，同理可得：$f[i,2] = f[i-1,2] + f[i-1,1] + f[i-1,2]$
+>
+> 3. 优化：
+>
+>    1） 滚动数组优化
+>
+>    由于当前项 $f[i]$ 永远只依赖 $f[i-1]$ ，这种情况下可以用**滚动数组**压缩空间
+>
+>    - 做法是：第 $i$ 项和 $i - 1$ 项都和 $1$ 做**位与运算**
+>
+>    - 在二进制里，我们总可以在末尾加 $1$， 使得当前 $0$ 变成 $1$，$1$ 变成 $0$ 
+>
+>    2） 用常量代替滚动数组进一步优化
 
 <details>
 <summary>详细代码</summary>
@@ -3124,10 +3637,87 @@ public:
 };
 ```
 
-##### **Python**
+##### **Python-暴力dp**
 
 ```python
+class Solution:
+    def countSpecialSubsequences(self, nums: List[int]) -> int:
+        n = len(nums)
+        f = [[0] * 3 for _ in range(n + 1)]
 
+        for i in range(1, n + 1):
+            if nums[i - 1] == 0:
+                f[i][0] = f[i - 1][0] * 2 + 1
+                f[i][1] = f[i - 1][1]
+                f[i][2] = f[i - 1][2]
+            elif nums[i - 1] == 1:
+                f[i][0] = f[i - 1][0]
+                f[i][1] = f[i - 1][0]  + f[i - 1][1] * 2
+                f[i][2] = f[i - 1][2]
+            else:
+                f[i][0] = f[i - 1][0]
+                f[i][1] = f[i - 1][1]
+                f[i][2] = f[i - 1][2] * 2 + f[i - 1][1]
+        return f[n][2] % int(1e9 + 7)
+```
+
+##### **Python-滚动数组**
+
+```python
+class Solution:
+    def countSpecialSubsequences(self, nums: List[int]) -> int:
+        n = len(nums)
+        f = [[0] * 3 for _ in range(2)]
+
+        for i in range(1, n + 1):
+            if nums[i - 1] == 0:
+                f[i & 1][0] = f[(i - 1) & 1][0] * 2 + 1
+                f[i & 1][1] = f[(i - 1) & 1][1]
+                f[i & 1][2] = f[(i - 1) & 1][2]
+            elif nums[i - 1] == 1:
+                f[i & 1][0] = f[(i - 1) & 1][0]
+                f[i & 1][1] = f[(i - 1) & 1][0]  + f[(i - 1) & 1][1] * 2
+                f[i & 1][2] = f[(i - 1) & 1][2]
+            else:
+                f[i & 1][0] = f[(i - 1) & 1][0]
+                f[i & 1][1] = f[(i - 1) & 1][1]
+                f[i & 1][2] = f[(i - 1) & 1][2] * 2 + f[(i - 1) & 1][1]
+        return f[n & 1][2] % int(1e9 + 7)
+```
+
+##### **Python-常量**
+
+```python
+# 执行时间1824ms...
+class Solution:
+    def countSpecialSubsequences(self, nums: List[int]) -> int:
+        n = len(nums)
+        a, b, c = 0, 0, 0
+
+        for i in range(1, n + 1):            
+            if nums[i - 1] == 2:
+                c += c + b
+            if nums[i - 1] == 1:
+                b += a + b
+            if nums[i - 1] == 0:
+                a += a + 1
+        return c % int(1e9 + 7)
+      
+      
+# 执行时间268ms...   
+class Solution:
+    def countSpecialSubsequences(self, nums: List[int]) -> int:
+        mod = int(1e9 + 7)
+        a, b, c = 0, 0, 0
+
+        for x in nums:         
+            if x == 2:
+                c = (c * 2 + b) % mod
+            if x == 1:
+                b = (b * 2 + a) % mod
+            if x == 0:
+                a = (a * 2 + 1) % mod
+        return c 
 ```
 
 <!-- tabs:end -->
