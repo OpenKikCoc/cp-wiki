@@ -3349,6 +3349,8 @@ class Solution:
 > 2. 状态转移：
 >
 >    根据当前数模三的余数来进行转移。详细见代码
+>    
+> 3. 初始化：前0个数，余数为0是合法的，所以 $f[0, 0] = 0$, 其他的都初始化为负无穷
 
 <details>
 <summary>详细代码</summary>
@@ -3379,24 +3381,23 @@ public:
 class Solution:
     def maxSumDivThree(self, nums: List[int]) -> int:
         n = len(nums)
-        f = [[float("-inf") for _ in range(3)] for _ in range(n)]
+        f = [[float("-inf") for _ in range(3)] for _ in range(n + 1)]
         f[0][0] = 0
-        f[0][nums[0] % 3] = nums[0]
-        for i in range(1, n):
-            if nums[i] % 3 == 0:
-                f[i][0] = max(f[i - 1][0], f[i - 1][0] + nums[i])
-                f[i][1] = max(f[i - 1][1], f[i - 1][1] + nums[i])
-                f[i][2] = max(f[i - 1][2], f[i - 1][2] + nums[i])
-            elif nums[i] % 3 == 1:
-                f[i][0] = max(f[i - 1][0], f[i - 1][2] + nums[i])
-                f[i][1] = max(f[i - 1][1], f[i - 1][0] + nums[i])
-                f[i][2] = max(f[i - 1][2], f[i - 1][1] + nums[i])
-            elif nums[i] % 3 == 2:
-                f[i][0] = max(f[i - 1][0], f[i - 1][1] + nums[i])
-                f[i][1] = max(f[i - 1][1], f[i - 1][2] + nums[i])
-                f[i][2] = max(f[i - 1][2], f[i - 1][0] + nums[i])
+        for i in range(1, n + 1):
+            if nums[i - 1] % 3 == 0:
+                f[i][0] = max(f[i - 1][0], f[i - 1][0] + nums[i - 1])
+                f[i][1] = max(f[i - 1][1], f[i - 1][1] + nums[i - 1])
+                f[i][2] = max(f[i - 1][2], f[i - 1][2] + nums[i - 1])
+            elif nums[i - 1] % 3 == 1:
+                f[i][0] = max(f[i - 1][0], f[i - 1][2] + nums[i - 1])
+                f[i][1] = max(f[i - 1][1], f[i - 1][0] + nums[i - 1])
+                f[i][2] = max(f[i - 1][2], f[i - 1][1] + nums[i - 1])
+            elif nums[i - 1] % 3 == 2:
+                f[i][0] = max(f[i - 1][0], f[i - 1][1] + nums[i - 1])
+                f[i][1] = max(f[i - 1][1], f[i - 1][2] + nums[i - 1])
+                f[i][2] = max(f[i - 1][2], f[i - 1][0] + nums[i - 1])
         
-        return 0 if f[-1][0] == float("-inf") else f[-1][0]
+        return 0 if f[n][0] == float("-inf") else f[n][0]
 ```
 
 <!-- tabs:end -->
@@ -3458,7 +3459,25 @@ public:
 ##### **Python**
 
 ```python
+class Solution:
+    def minDifficulty(self, jobDifficulty: List[int], d: int) -> int:
+        n = len(jobDifficulty)
+        if d > n: return -1
+        f = [[-1 for i in range(n + 1)] for i in range(d + 1)]
+        f[1][1] = jobDifficulty[0]
 
+        for i in range(2, n + 1):
+            f[1][i] = max(f[1][i - 1], jobDifficulty[i - 1])
+
+        for i in range(2, d + 1):
+            for j in range(i, n + 1):
+                f[i][j] = f[i - 1][j - 1] + jobDifficulty[j - 1]
+                maxv = jobDifficulty[j - 1]
+                for k in range(j - 2, i - 2, -1):
+                    maxv = max(jobDifficulty[k], maxv)
+                    if f[i - 1][k] + maxv < f[i][j]:
+                        f[i][j] = f[i - 1][k] + maxv
+        return f[d][n]
 ```
 
 <!-- tabs:end -->
@@ -3573,11 +3592,20 @@ public:
 };
 ```
 
-##### **Python**
+##### **Pythonic**
 
 ```python
-
+class Solution:
+    def concatenatedBinary(self, n: int) -> int:
+        res = ""
+        for i in range(1, n + 1) :
+            res += str(bin(i))[2:]
+        return int(res, 2) % (10 ** 9 + 7)
 ```
+
+
+
+
 
 <!-- tabs:end -->
 </details>
