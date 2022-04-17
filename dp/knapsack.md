@@ -25,7 +25,7 @@
 >
 > 1. 状态表示：$f[i, j]$ 表示的是放 $i$ 个物品，总体积不超过 $j$ 的价值；属性：$max$
 > 3. 状态转移：(曲线救国==> 第 $i$ 个物品先去掉，看前 $i-1$ 个物品的最大值怎么求）
-> 	 以第 $i$ 个物品"放"还是"不放"作为区分来进行转移。
+> 	 以第 $i$ 个物品"选"还是"不选"作为区分来进行转移。
 >
 > **滚动数组优化**
 >
@@ -38,9 +38,9 @@
 >
 > **空间压缩优化**
 >
-> 1. $f[i， j], f[i， j - v[i]]$ 这两个中的 $j$ 这一维都是小于等于 $j$ 的，在一侧（而不是在两侧），所以可以用压缩成一维来做
+> 1. $f[i， j],  f[i， j - v[i]]$ 这两个中的 $j$ 这一维都是小于等于 $j$ 的，在一侧（而不是在两侧），所以可以用压缩成一维来做
 >
-> 2. 直接删掉 $i$ 维度；
+> 2. 直接删掉 $i$ 维度
 > 		1) 
 > 	$j - v[i] < j$ 已经第 $i$ 层计算过了，循环顺序变成从大到小枚举，就可以解决。那 $f[j-v[i]]$ 存的就是 $i-1$ 层的值。
 
@@ -121,8 +121,6 @@ if __name__ == '__main__':
     print(f[n & 1][m])
 ```
 
-
-
 ##### **Python-空间压缩**
 
 ```python
@@ -139,6 +137,30 @@ if __name__ == '__main__':
         for j in range(m, v[i] - 1, -1):
             f[j] = max(f[j], f[j - v[i]] + w[i])
     print(f[m])
+```
+
+##### **en-us**
+
+```
+1. State define:
+		Let us assume f[i][j] means the max value which picks from the first i numbers and the sum of volume <= j; 
+2. Transition function:
+		For each number, we can pick it or not.
+		1) If we don't pick it: f[i][j] = f[i-1][j], which means if the first i-1 element has made it to j, f[i][j] would als make it to j, and we can just ignore nums[i]
+		2) If we pick nums[i]: f[i][j] = f[i-1][j-nums[i]], which represents that j is composed of the current value nums[i] and the remaining composed of other previous numbers. 
+3. Base case: 
+		f[0][0] = 0 ; (zero number consists of volumen 0 is 0, which reprents it's validaing）
+	 
+-----------------------------------------------------------------------------------------------------
+
+It seems that we cannot optimize it in time. But we can optimize in space.
+1. Optimize to O(2**n)
+		You can see that f[i][j] only depends on previous row, so we can optimize the space by only using two rows instead of the matrix. Let's say array1 and array2. Every time we finish updating array2, array1 have no value, you can copy array2 to array1 as the previous row of the next new row.
+
+2. Optimize to O(n)
+		You can also see that, the column indices of f[i - 1][j - nums[i] and f[i - 1][j] are <= j. The conclusion you can get is: the elements of previous row whose column index is > j will not affect the update of f[i][j] since we will not touch them.
+		Thus, if you merge array1 and array2 to a single array, if you update array backwards(从后面开始更新), all dependencies are not touched!
+		However if you update array forwards(从前面开始更新), f[j - nums[i - 1]] is updated already, you cannot use it.
 ```
 
 <!-- tabs:end -->
@@ -1643,6 +1665,94 @@ int main() {
 </details>
 
 <br>
+
+* * *
+
+> [!NOTE] **[AcWing 1023. 买书](https://www.acwing.com/problem/content/1025/)**
+>
+> 题意: TODO
+
+> [!TIP] **思路**
+>
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```C++ 
+```
+
+##### **Python-朴素dp**
+
+```python
+# 朴素dp
+class Solution:
+    def canPartition(self, nums: List[int]) -> bool:
+        # 剪枝
+        if sum(nums) % 2 == 1 or len(nums) == 1:return False
+        n, v = len(nums), int(sum(nums) / 2)
+
+        f = [[False] * (v + 1) for _ in range(n + 1)]
+        f[i][0] = True
+        for i in range(1, n + 1):
+            for j in range(v + 1):
+                if j < nums[i - 1]:
+                    f[i][j] = f[i - 1][j]
+                else:
+                    f[i][j] = f[i - 1][j - nums[i - 1]] or f[i - 1][j]
+        return f[n][v]
+```
+
+##### **Python-dp优化**
+
+```python
+# 滚动数组优化
+class Solution:
+    def canPartition(self, nums: List[int]) -> bool:
+        # 剪枝
+        if sum(nums) % 2 == 1 or len(nums) == 1:return False
+        n, v = len(nums), int(sum(nums) / 2)
+
+        f = [[False] * (v + 1) for _ in range(2)]
+        f[0][0] = True
+        for i in range(1, n + 1):
+            for j in range(v + 1):
+                if j < nums[i - 1]:
+                    f[i & 1][j] = f[(i - 1) & 1][j]
+                else:
+                    f[i & 1][j] = f[(i - 1) & 1][j - nums[i - 1]] or f[(i - 1) & 1][j]
+        return f[n & 1][v]
+   
+ # 空间压缩
+class Solution:
+    def canPartition(self, nums: List[int]) -> bool:
+      	# 剪枝
+        if sum(nums) % 2 == 1 or len(nums) == 1:return False
+        n, v = len(nums), int(sum(nums) / 2)
+        
+        f = [False] * (v + 1)
+        f[0] = True
+
+        for i in range(n):
+            for j in range(v, nums[i - 1] - 1, -1):
+                f[j] = f[j - nums[i - 1]] or f[j]
+        return f[v]
+```
+
+##### **en-us**
+
+```
+This problem is essentially let us to find whether there are several numbers in a set which are able to sum to a specific value (in this problem, the value is sum/2).
+
+Actually, this is a 0/1 knapsack problem, for each number, we can pick it or not. Let us assume dp[i][j] means whether the specific sum j can be gotten from the first i numbers. If we can pick such a series of numbers from 0-i whose sum is j, dp[i][j] is true, otherwise it is false.
+
+Base case: f[0][0] is true; (zero number consists of sum 0 is true)
+
+Transition function: For each number, if we don't pick it, f[i][j] = f[i-1][j], which means if the first i-1 elements has made it to j, f[i][j] would also make it to j (we can just ignore nums[i]). If we pick nums[i]. f[i][j] = dp[i-1][j-nums[i]], which represents that j is composed of the current value nums[i] and the remaining composed of other previous numbers. Thus, the transition function is f[i][j] = f[i-1][j] || f[i-1][j-nums[i]]
+```
 
 * * *
 
