@@ -1395,6 +1395,94 @@ public:
 
 * * *
 
+> [!NOTE] **[Codeforces Roman and Numbers](http://codeforces.com/problemset/problem/401/D)**
+> 
+> 题意: 
+> 
+> 将 n(n<=10^18) 的各位数字重新排列（不允许有前导零）
+> 
+> 求：可以构造几个 mod m 等于 0 的数字
+
+> [!TIP] **思路**
+> 
+> 显然定义是已选哪些数，当前模数
+> 
+> 需要对接下来选的数字去重 => 增加 st 数组
+> 
+> 状压dp + **细节 `st` 标记**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: D. Roman and Numbers
+// Contest: Codeforces - Codeforces Round #235 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/401/D
+// Memory Limit: 512 MB
+// Time Limit: 4000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const static int N = 1 << 18, M = 110;
+
+LL n, m;
+LL f[N][M];  // 选取数为i 模数为j的所有方案数和
+
+int main() {
+    cin >> n >> m;
+
+    vector<int> nums;
+    while (n)
+        nums.push_back(n % 10), n /= 10;
+    n = nums.size();
+
+    memset(f, 0, sizeof f);
+    f[0][0] = 1;
+    for (int i = 0; i < 1 << n; ++i)
+        for (int j = 0; j < m; ++j)
+            if (f[i][j]) {
+                // ATTENTION 必须标记在当前这个顺序下哪些值已经被使用过，否则WA
+                static bool st[10];
+                memset(st, 0, sizeof st);
+                for (int k = 0; k < n; ++k)
+
+                    // 当前最后一位是k ==> 这种做法右侧取模涉及除法会比较难做
+                    // 改为：接下来选一个k
+                    if ((i >> k & 1) == 0 && !st[nums[k]]) {
+                        int next = i ^ (1 << k);
+                        if (i || nums[k])
+                            // 非前导0
+                            f[next][(j * 10 + nums[k]) % m] += f[i][j];
+
+                        st[nums[k]] = true;
+                    }
+            }
+
+    cout << f[(1 << n) - 1][0] << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
 ### 线性递推
 
 > [!NOTE] **[AcWing 327. 玉米田](https://www.acwing.com/problem/content/description/329/)**

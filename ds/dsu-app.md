@@ -118,329 +118,6 @@
 
 ## 习题
 
-### 花式应用
-
-> [!NOTE] **[AcWing 1252. 搭配购买](https://www.acwing.com/problem/content/1254/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 并查集结合 01 背包
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include<bits/stdc++.h>
-using namespace std;
-
-const int N = 10010;
-
-int n, m, vol;
-int v[N], w[N];
-int p[N];
-int f[N];
-
-int find(int x) {
-    if (p[x] != x) p[x] = find(p[x]);
-    return p[x];
-}
-
-int main() {
-    cin >> n >> m >> vol;
-    for (int i = 1; i <= n; ++ i ) p[i] = i;
-    for (int i = 1; i <= n; ++ i ) cin >> v[i] >> w[i];
-    while (m -- ) {
-        int a, b;
-        cin >> a >> b;
-        int pa = find(a), pb = find(b);
-        if (pa != pb) {
-            v[pb] += v[pa];
-            w[pb] += w[pa];
-            p[pa] = pb;
-        }
-    }
-    // 01背包
-    for (int i = 1; i <= n; ++ i )
-        if (p[i] == i)  // 选择根的技巧
-            for (int j = vol; j >= v[i]; -- j )
-                f[j] = max(f[j], f[j - v[i]] + w[i]);
-    cout << f[vol] << endl;
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[AcWing 237. 程序自动分析](https://www.acwing.com/problem/content/239/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> **先处理相等条件**的思路
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include<bits/stdc++.h>
-using namespace std;
-
-const int N = 1000010;
-
-struct Query{
-    int x, y, e;
-}query[N];
-
-int n, m;
-int p[N];
-unordered_map<int, int> S;  // 数据太大 在此离散化
-// 因为分析知询问顺序对结果无影响 故先考虑相等元素
-
-int get(int x) {
-    if (S.count(x) == 0) S[x] = ++ n ;
-    return S[x];
-}
-
-int find(int x) {
-    if (p[x] != x) p[x] = find(p[x]);
-    return p[x];
-}
-
-int main() {
-    int t;
-    cin >> t;
-    while (t -- ) {
-        //memset(p, 0, sizeof p);
-        n = 0;
-        S.clear();
-        
-        cin >> m;
-        for (int i = 0; i < m; ++ i ) {
-            int x, y, e;
-            cin >> x >> y >> e;
-            query[i] = {get(x), get(y), e};
-        }
-        
-        for (int i = 1; i <= n; ++ i ) p[i] = i;
-        
-        // 相等条件 此时不可能产生矛盾
-        for (int i = 0; i < m; ++ i )
-            if (query[i].e == 1) {
-                int pa = find(query[i].x), pb = find(query[i].y);
-                p[pa] = pb;
-            }
-        // 不等条件
-        bool has_conflict = false;
-        for (int i = 0; i < m; ++ i )
-            if (query[i].e == 0) {
-                int pa = find(query[i].x), pb = find(query[i].y);
-                if (pa == pb) {
-                    has_conflict = true;
-                    break;
-                    // 无需考虑不相等的情况 因为总有值可以满足
-                }
-            }
-        if (has_conflict) cout << "NO" << endl;
-        else cout << "YES" << endl;
-    }
-}
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[AcWing 239. 奇偶游戏](https://www.acwing.com/problem/content/241/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 数据范围暗示应用离散化
-> 
-> 以及前缀和
-> 
-> S[L] S[R] 奇偶个数  ====>  S[R] S[L-1] 奇偶性是否相同
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include<bits/stdc++.h>
-using namespace std;
-
-const int N = 20010;
-
-int n, m;
-int p[N], d[N];
-unordered_map<int, int> S;
-
-int get(int x) {
-    if (S.count(x) == 0) S[x] = ++ n ;
-    return S[x];
-}
-
-int find(int x) {
-    if (p[x] != x) {
-        int root = find(p[x]);
-        // 0 同类 1 不同类
-        //d[x] += d[p[x]];
-        d[x] ^= d[p[x]];
-        p[x] = root;
-    }
-    return p[x];
-}
-
-int main() {
-    cin >> n >> m;
-    n = 0;
-    for (int i = 0; i < N; ++ i ) p[i] = i;
-    
-    int res = m;
-    for (int i = 1; i <= m; ++ i ) {
-        int a, b;
-        string type;
-        cin >> a >> b >> type;
-        a = get(a - 1), b = get(b);
-        
-        int t = 0;
-        if (type == "odd") t = 1;
-        
-        int pa = find(a), pb = find(b);
-        if (pa == pb) {
-            // 同一个集合内：意味着其相对关系已知
-            //
-            if ((d[a] ^ d[b]) != t) {
-            //if (((d[a] + d[b]) % 2 + 2) % 2 != t) {
-                res = i - 1;
-                break;
-            }
-        } else {
-            p[pa] = pb;
-            d[pa] = d[a] ^ d[b] ^ t;
-        }
-    }
-    cout << res << endl;
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[AcWing 238. 银河英雄传说](https://www.acwing.com/problem/content/240/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 边带权
-> 
-> **在之前的一些题目中可以直接使用 `a = find(a)` 这样覆盖原本的 a ，本题不可行，因为原来的 a, b 仍有需要**
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int N = 30010;
-
-int p[N], d[N], sz[N];
-
-int find(int x) {
-    if (p[x] != x) {
-        int root = find(p[x]);
-        d[x] += d[p[x]];
-        p[x] = root;
-    }
-    return p[x];
-}
-
-int main() {
-    
-    for (int i = 0; i < N; ++ i ) p[i] = i, d[i] = 0, sz[i] = 1;
-    
-    int t;
-    cin >> t;
-    
-    char op[2];
-    int a, b;
-    while (t -- ) {
-        cin >> op >> a >> b;
-        int pa = find(a), pb = find(b);
-        if (op[0] == 'M') {
-            d[pa] = sz[pb];
-            sz[pb] += sz[pa];
-            p[pa] = pb;
-        } else {
-            if (pa != pb) cout << -1 << endl;
-            else cout << max(0, abs(d[a] - d[b]) - 1) << endl;
-        }
-    }
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
 ### 离线并查集
 
 > [!NOTE] **[LeetCode 1697. 检查边长度限制的路径是否存在](https://leetcode-cn.com/problems/checking-existence-of-edge-length-limited-paths/)** [TAG]
@@ -518,7 +195,7 @@ public:
 
 * * *
 
-### 并查集线段染色
+### 联通性质进阶: 线段染色 / 快速找右侧的一个
 
 > [!NOTE] **[LeetCode 1851. 包含每个查询的最小区间](https://leetcode-cn.com/problems/minimum-interval-to-include-each-query/)** [TAG]
 > 
@@ -587,6 +264,37 @@ public:
         return res;
     }
 };
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces Vessels](http://codeforces.com/problemset/problem/371/D)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+
 ```
 
 ##### **Python**

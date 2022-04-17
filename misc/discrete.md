@@ -381,3 +381,75 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces Almost Arithmetical Progression](http://codeforces.com/problemset/problem/255/C)**
+> 
+> 题意: 
+> 
+> 隔位的两个数相等 问最长子序列长度
+
+> [!TIP] **思路**
+> 
+> 离散化 否则MLE
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Almost Arithmetical Progression
+// Contest: Codeforces - Codeforces Round #156 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/255/C
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 4e3 + 10;
+
+int n, a[N];
+// unordered_map<int, int> f[N]; // MLE
+int f[N][N + N];
+
+int idx = 0;
+unordered_map<int, int> h;
+int get(int x) {
+    if (h.count(x))
+        return h[x];
+    return h[x] = ++idx;
+}
+
+int main() {
+    cin >> n;
+    int res = 0;
+    for (int i = 1; i <= n; ++i) {
+        cin >> a[i];
+        a[i] = get(a[i]);
+        for (int j = 1; j < i; ++j) {
+            int d = a[i] - a[j];
+            f[i][d + N] = max(f[i][d + N], f[j][-d + N] + 1);
+            res = max(res, f[i][d + N] + 1);
+        }
+    }
+    res = max(res, min(2, n));
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

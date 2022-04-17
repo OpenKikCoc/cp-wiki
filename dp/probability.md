@@ -488,3 +488,163 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces Bad Luck Island](http://codeforces.com/problemset/problem/540/D)** [TAG]
+> 
+> 题意: 
+> 
+> 在孤岛上有三种人，分别有 $r,s,p$ 个， 每两个人相遇的概率相等，相遇时 $r$ 吃 $s$，$s$ 吃 $p$，$p$ 吃 $r$，分别求最后剩下一种种族的概率。
+
+> [!TIP] **思路**
+> 
+> 显然当其他俩都为 0 个时可以累计当前物种存活的概率。
+> 
+> 重点在于计算递推过程
+> 
+> 重复做
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: D. Bad Luck Island
+// Contest: Codeforces - Codeforces Round #301 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/540/D
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 110;
+
+int r, s, p;
+double f[N][N][N];
+
+int main() {
+    cin >> r >> s >> p;
+
+    double fr = 0, fs = 0, fp = 0;
+    f[r][s][p] = 1.0;
+    for (int i = r; i >= 0; --i)
+        for (int j = s; j >= 0; --j)
+            for (int k = p; k >= 0; --k) {
+                // 总的可能方案
+                double tot = i * j + j * k + i * k;
+                if (i && j)
+                    f[i][j - 1][k] += f[i][j][k] * i * j / tot;
+                if (j && k)
+                    f[i][j][k - 1] += f[i][j][k] * j * k / tot;
+                if (i && k)
+                    f[i - 1][j][k] += f[i][j][k] * i * k / tot;
+                if (i && !j && !k)
+                    fr += f[i][j][k];
+                if (!i && j && !k)
+                    fs += f[i][j][k];
+                if (!i && !j && k)
+                    fp += f[i][j][k];
+            }
+    printf("%.12f %.12f %.12f\n", fr, fs, fp);
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces Bag of mice](http://codeforces.com/problemset/problem/148/D)** [TAG]
+> 
+> 题意: 
+> 
+> 袋子里有 w 只白鼠和 b 只黑鼠 ，A和B轮流从袋子里抓，谁先抓到白色谁就赢。
+> 
+> A每次随机抓一只，B每次随机抓完一只之后会有另一只随机老鼠跑出来。
+> 
+> 如果两个人都没有抓到白色则B赢。A先抓，问A赢的概率。
+
+> [!TIP] **思路**
+> 
+> 分情况讨论
+> 
+> TODO: 明确为什么在转移时不需要关心先后手
+> 
+> TODO: 重复做
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: D. Bag of mice
+// Contest: Codeforces - Codeforces Round #105 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/148/D
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 谁先抓到白色谁赢 或者最后为空龙赢
+// ATTENTION 分先后手
+
+const static int N = 1010;
+
+int w, b;
+double f[N][N];  // f[i][j] 剩下 i 个白，j 个黑时公主赢的概率
+
+int main() {
+    cin >> w >> b;
+
+    // init
+    // 全为白必胜 有一个黑胜率i/(i+1)
+    for (int i = 1; i <= w; ++i)
+        f[i][0] = 1.0, f[i][1] = 1.0 * i / (i + 1);
+
+    for (int i = 1; i <= w; ++i)
+        for (int j = 2; j <= b; ++j) {
+            // 1. 先手白兔
+            f[i][j] = 1.0 * i / (i + j);
+            // 2. 先手黑 后手白
+            f[i][j] += 0;
+            // 3. 先手黑 后手黑 跑一个白
+            f[i][j] += 1.0 * j / (i + j) * (j - 1) / (i + j - 1) * i /
+                       (i + j - 2) * f[i - 1][j - 2];
+            // 4. 先手黑 后手黑 跑一个黑
+            if (j ^ 2)  // j > 2
+                f[i][j] += 1.0 * j / (i + j) * (j - 1) / (i + j - 1) * (j - 2) /
+                           (i + j - 2) * f[i][j - 3];
+        }
+    printf("%.9lf\n", f[w][b]);
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

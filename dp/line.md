@@ -1144,6 +1144,54 @@ class Solution:
 
 * * *
 
+> [!NOTE] **[Codeforces Dima and Hares](http://codeforces.com/problemset/problem/358/D)**
+> 
+> 题意: 
+> 
+> N个物品排成一排,按照一定顺序将所有物品都拿走
+> 
+> - 如果拿走某个物品时相邻两个物品都没有被拿过，那么得到的价值为ai；
+> - 如果相邻的两个物品有一个被拿过（左右无所谓），那么得到的价值为bi；
+> - 如果相邻的两个物品都被拿走了，那么对应价值为ci。
+> 
+> 问能够获得的最高价值为多少。
+
+> [!TIP] **思路**
+> 
+> 有顺序依赖
+> 
+> - $f[i][1]$ 代表先选择 $i$ 后选择 $i-1$ **此时选完了前 $i-1$ 个元素的最大值**
+> - $f[i][0]$ 代表先选择 $i-1$ 后选择 $i$ **此时选完了前 $i-1$ 个元素的最大值**
+> 
+> **初始化 $f[1][1]=0$ (第一个元素只能先选)**
+> **最终返回 $f[n+1][0]$ (最后一个元素的 `后一个` 只能后选)**
+> 
+> **重点在于状态定义与转移 重复做**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
 > [!NOTE] **[LeetCode 1187. 使数组严格递增](https://leetcode-cn.com/problems/make-array-strictly-increasing/)** [TAG]
 > 
 > 题意: TODO
@@ -3898,6 +3946,92 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces Riding in a Lift](http://codeforces.com/problemset/problem/479/E)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 递推 + 前缀和优化
+> 
+> **边界推理**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: E. Riding in a Lift
+// Contest: Codeforces - Codeforces Round #274 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/479/E
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 假定 f[i][j] 为 第k步 在j处 的所有方案数
+// 易知：f[i][j] = sumof f[i-1][l...r] - f[i-1][j]
+// 显然可以前缀和优化
+
+const static int N = 5e3 + 10, MOD = 1e9 + 7;
+
+int n, k, a, b;
+int f[N], s[N];  // 显然每次只依赖上一维 可以压缩
+
+int main() {
+    cin >> n >> a >> b >> k;
+
+    memset(f, 0, sizeof f);
+    // f[0][a] = 1
+    f[a] = 1;
+    for (int i = 1; i <= n; ++i)
+        s[i] = s[i - 1] + f[i];
+
+    if (a > b) {
+        for (int _ = 0; _ < k; ++_) {
+            for (int i = b + 1; i <= n; ++i) {
+                int l = (b + i) / 2 + 1, r = n;
+                f[i] = (s[r] - s[l - 1] - f[i] + MOD) % MOD;
+            }
+            s[b] = 0;
+            for (int i = b + 1; i <= n; ++i)
+                s[i] = (s[i - 1] + f[i]) % MOD;
+        }
+        cout << (s[n] - s[b] + MOD) % MOD << endl;
+    } else {
+        for (int _ = 0; _ < k; ++_) {
+            for (int i = 1; i < b; ++i) {
+                int r = (b + i - 1) / 2, l = 1;
+                f[i] = (s[r] - s[l - 1] - f[i] + MOD) % MOD;
+            }
+            s[0] = 0;
+            for (int i = 1; i < b; ++i)
+                s[i] = (s[i - 1] + f[i]) % MOD;
+        }
+        cout << s[b - 1] << endl;
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 
 ### 复杂递推
 

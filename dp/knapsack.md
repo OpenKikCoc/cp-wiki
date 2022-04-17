@@ -3114,3 +3114,81 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces Red-Green Towers](http://codeforces.com/problemset/problem/478/D)**
+> 
+> 题意: 
+> 
+> 叠放塔：有红、绿两种色块。从第一层开始，第 i 层 i 块。
+> 
+> 要求每一层只能用同一种颜色的块，红绿方块总数有限。
+
+> [!TIP] **思路**
+> 
+> **重点在于转化为背包模型**
+> 
+> 为什么可以直接确定高度能够达到 `(h+1)*h/2<=r+g` 的最大 `h` ？==> 推理TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: D. Red-Green Towers
+// Contest: Codeforces - Codeforces Round #273 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/478/D
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 重点在于：每层积木颜色相同
+// 转化思想：每层的积木视作一个物品，第i个物品体积为i，【只选红色】的方案数
+//   ==> 此时，绿色即为没有选的部分（互补），方案一一对应
+
+const static int N = 2e5 + 10, MOD = 1e9 + 7;
+
+int r, g;
+int f[N];  // 优化掉一维后，f[i] 表示红色用了 i 个的方案数
+
+int main() {
+    cin >> r >> g;
+
+    // (h + 1) * h / 2 <= r + g
+    int h = sqrt(r + g);
+    // 方块可能有剩余（背包有空的位置）
+    while ((h + 1 + 1) * (h + 1) <= 2 * (r + g))
+        h++;
+
+    f[0] = 1;
+    for (int i = 1; i <= h; ++i)
+        // 第 i 个物品，在剩余体积为 j 时，拿或者不拿的方案数
+        // ATTENTION: 在此时我们并不关心绿色是否够用
+        for (int j = r; j >= i; --j)
+            f[j] = (f[j] + f[j - i]) % MOD;
+
+    int res = 0;
+    // 绿色方块不能超过 g ，即  (h + 1) * h / 2 - i <= g
+    for (int i = max(0, (h + 1) * h / 2 - g); i <= r; ++i)
+        res = (res + f[i]) % MOD;
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

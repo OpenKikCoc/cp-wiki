@@ -1539,3 +1539,86 @@ int main() {
 <br>
 
 * * *
+
+### 进制数 思想
+
+> [!NOTE] **[Codeforces Pashmak and Buses](http://codeforces.com/problemset/problem/459/C)** [TAG]
+> 
+> 题意: 
+> 
+> 有 n 个学生用车，有 k 辆车（容量无限），总共 d 天，不希望有任意两个学生 d 天内都是一辆车，问能否合理安排。
+> 
+> $n,d≤1000$ , $k≤10^9$
+> 
+> 错误理解：最终没有两行完全一样
+> 
+> 正确理解：**构造 n 个不同的 d 位 k 进制数 ==> 每一列不完全一样**
+
+> [!TIP] **思路**
+> 
+> 如果 $n>pow(k,d)$ 则无解
+> 
+> 否则依次构造进制数即可
+> 
+> 重在理解分析题意 **应用进制思想**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Pashmak and Buses
+// Contest: Codeforces - Codeforces Round #261 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/459/C
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 1010;
+
+int n, k, d;
+
+int g[N][N];
+
+int main() {
+    cin >> n >> k >> d;
+
+    if (n > pow(k, d)) {
+        cout << -1 << endl;
+        return 0;
+    }
+
+    for (int i = 0; i < n; ++i) {
+        int t = i;
+        for (int j = 0; j < d; ++j) {
+            g[i][j] = t % k + 1;
+            t /= k;
+        }
+    }
+
+    for (int j = 0; j < d; ++j) {
+        for (int i = 0; i < n; ++i)
+            cout << g[i][j] << ' ';
+        cout << endl;
+    }
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

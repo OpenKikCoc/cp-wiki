@@ -1254,6 +1254,160 @@ int main() {
 
 * * *
 
+> [!NOTE] **[Codeforces Zero Tree](http://codeforces.com/problemset/problem/274/B)**
+> 
+> 题意: 
+> 
+> 给出一棵 $n$ 个点带点权的树，每次操作可以对一个联通子图中的点全部加 $1$，或者全部减 $1$，**且每次操作必须包含点 $1$**
+> 
+> 问最少通过多少次操作可以让整棵树每个点的权值变为 $0$。
+
+> [!TIP] **思路**
+> 
+> **对于每个点，只需关注它的加或减的次数最大的那个儿子即可**
+> 
+> **思维 trick 反复做**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Zero Tree
+// Contest: Codeforces - Codeforces Round #168 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/274/B
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const static int N = 1e5 + 10, M = N << 1;
+
+int h[N], e[M], ne[M], idx;
+void init() {
+    memset(h, -1, sizeof h);
+    idx = 0;
+}
+void add(int a, int b) { e[idx] = b, ne[idx] = h[a], h[a] = idx++; }
+
+int n;
+LL w[N], up[N], dn[N];
+// up 变为0加的次数,
+// dn 减变为0的次数
+
+void dfs(int u, int pa) {
+    dn[u] = up[u] = 0;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (j == pa)
+            continue;
+        dfs(j, u);
+        up[u] = max(up[u], up[j]), dn[u] = max(dn[u], dn[j]);
+    }
+    w[u] += up[u] - dn[u];  // 更新u, 因为子树至少要执行这些操作
+    if (w[u] > 0)
+        dn[u] += w[u];
+    else
+        up[u] += -w[u];
+    return;
+}
+
+int main() {
+    init();
+
+    cin >> n;
+    for (int i = 0; i < n - 1; ++i) {
+        int a, b;
+        cin >> a >> b;
+        add(a, b), add(b, a);
+    }
+    for (int i = 1; i <= n; ++i)
+        cin >> w[i];
+
+    dfs(1, -1);
+
+    cout << up[1] + dn[1] << endl;
+
+    return 0;
+}
+```
+
+##### **C++ WA**
+
+问题在于，可能同时修改【不在同一路径】下的非链的子树
+
+下面的写法可能会导致多计算大量的操作
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const static int N = 1e5 + 10, M = N << 1;
+
+int h[N], e[M], ne[M], idx;
+void init() {
+    memset(h, -1, sizeof h);
+    idx = 0;
+}
+void add(int a, int b) { e[idx] = b, ne[idx] = h[a], h[a] = idx++; }
+
+int n;
+LL w[N], res;
+
+LL dfs(int u, int pa) {
+    LL c = 0;  // 记录所有子节点对当前值以及更上层的节点的影响
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (j == pa)
+            continue;
+        LL t = dfs(j, u);
+        c += t;
+        w[u] += t;
+    }
+    res += abs(w[u]);
+    return c - w[u];
+}
+
+int main() {
+    init();
+
+    cin >> n;
+    for (int i = 0; i < n - 1; ++i) {
+        int a, b;
+        cin >> a >> b;
+        add(a, b), add(b, a);
+    }
+    for (int i = 1; i <= n; ++i)
+        cin >> w[i];
+
+    res = 0;
+    dfs(1, -1);
+    
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
 ### 换根
 
 - [POJ 3585 Accumulation Degree](http://poj.org/problem?id=3585)
@@ -1676,6 +1830,114 @@ public:
         return ans;
     }
 };
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces Choosing Capital for Treeland](http://codeforces.com/problemset/problem/219/D)**
+> 
+> 题意: 
+> 
+> 单向边建立双向图，权 1/0 ，找到到各个点的距离总和最小的距离
+
+> [!TIP] **思路**
+> 
+> 经典换根 略
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: D. Choosing Capital for Treeland
+// Contest: Codeforces - Codeforces Round #135 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/219/D
+// Memory Limit: 256 MB
+// Time Limit: 3000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 2e5 + 10, M = N << 1;
+
+int h[N], e[M], w[M], ne[M], idx;
+void init() {
+    memset(h, -1, sizeof h);
+    idx = 0;
+}
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx++;
+}
+
+int n;
+int fd[N], fu[N];
+
+void dfs_d(int u, int fa) {
+    fd[u] = 0;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (j == fa)
+            continue;
+        dfs_d(j, u);
+        fd[u] += fd[j] + w[i];
+    }
+}
+
+void dfs_u(int u, int fa) {
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (j == fa)
+            continue;
+        fu[j] = fu[u] + (w[i] != 1) + (fd[u] - fd[j] - w[i]);
+        dfs_u(j, u);
+    }
+}
+
+int main() {
+    init();
+
+    cin >> n;
+    for (int i = 0; i < n - 1; ++i) {
+        int s, t;
+        cin >> s >> t;
+        add(s, t, 0), add(t, s, 1);
+    }
+
+    dfs_d(1, -1);
+    fu[1] = 0;
+    dfs_u(1, -1);
+
+    int res = 1e9;
+    vector<int> xs;
+    for (int i = 1; i <= n; ++i) {
+        // cout << " i = " << i << " fd[i] = " << fd[i] << " fu[i] = " << fu[i]
+        // << endl;
+        int c = fd[i] + fu[i];
+        if (c < res)
+            res = c, xs = {i};
+        else if (c == res)
+            xs.push_back(i);
+    }
+    cout << res << endl;
+    for (auto x : xs)
+        cout << x << ' ';
+    cout << endl;
+
+    return 0;
+}
 ```
 
 ##### **Python**

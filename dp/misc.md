@@ -347,6 +347,121 @@ public:
 
 * * *
 
+> [!NOTE] **[Codeforces Good Sequences](http://codeforces.com/problemset/problem/264/B)**
+> 
+> 题意: 
+> 
+> 如果一个序列 $x1,x2,...,xk$ 能够满足一下三个条件，那就是一个“好序列”：
+> 
+> 1. 该序列是严格上升的，即 $x[i] < x[i+1]$（1<=i<=k-1)
+> 2. 任意两个相邻的元素是非互质的，即 $gcd(x[i],x[i+1]) > 1$ (1<=i<=k-1)
+> 3. 所有的数字都是“好整数”
+> 
+> 求长度最长的“好序列”
+
+> [!TIP] **思路**
+> 
+> 暴力显然有 $O(n^2*logn)$ (其中 log 为 gcd 复杂度) 的解决方案
+> 
+> 考虑数据范围较大，**无需枚举之前选哪个数，只需要关心之前的包含哪个因子**
+> 
+> ATTENTION: **需要先找到最值，再用最值更新所有包含的因子的 $f$ 值**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Good Sequences
+// Contest: Codeforces - Codeforces Round #162 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/264/B
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 1e5 + 10;
+
+int primes[N], cnt;
+bool st[N];
+void init() {
+    memset(st, 0, sizeof st);
+    cnt = 0;
+    for (int i = 2; i < N; ++i) {
+        if (!st[i])
+            primes[cnt++] = i;
+        for (int j = 0; primes[j] <= (N - 1) / i; ++j) {
+            st[primes[j] * i] = true;
+            if (i % primes[j] == 0)
+                break;
+        }
+    }
+}
+
+int n;
+// 状态定义: 以 primes[x]=i 结尾的最大dp值
+// ATTENTION: 先找最大 再每次更新
+int f[N];
+
+int main() {
+    // case 21 6w+数据 TLE
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    init();
+    memset(f, 0, sizeof f);
+
+    cin >> n;
+
+    for (int i = 0, x; i < n; ++i) {
+        cin >> x;
+
+        int maxv = 0;
+        for (int j = 0, y = x; j < cnt && y >= primes[j]; ++j)
+            if (y % primes[j] == 0) {
+                // 找到可以接的最大的
+                maxv = max(maxv, f[primes[j]]);
+                // 也要除 避免超时
+                while (y % primes[j] == 0)
+                    y /= primes[j];
+            }
+
+        for (int j = 0; j < cnt && x >= primes[j]; ++j)
+            if (x % primes[j] == 0) {
+                f[primes[j]] = maxv + 1;
+                while (x % primes[j] == 0)
+                    x /= primes[j];
+            }
+        if (x > 1)
+            f[x] = maxv + 1;
+    }
+    int res = 1;  // 输入 1,1 的 case , 显然最少长度为 1
+    for (int i = 0; i < cnt; ++i)
+        res = max(res, f[primes[i]]);
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
 ### 转化模型
 
 > [!NOTE] **[Codeforces A. Flipping Game](https://codeforces.com/problemset/problem/327/A)**

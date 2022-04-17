@@ -1792,3 +1792,118 @@ public:
 <br>
 
 * * *
+
+### 双指针区间维护
+
+> [!NOTE] **[Codeforces R2D2 and Droid Army](http://codeforces.com/problemset/problem/514/D)**
+> 
+> 题意: 
+> 
+> 一共有N个人，每个人有M个属性值，当一个人的所有属性值都小于等于0的时候，这个人就算被销毁了。
+> 
+> 我们每次操作可以选一种属性值进行攻击，使得所有人的这个属性的值都-1.
+> 
+> 我们最多可以进行K次操作，
+> 
+> 问我们最多可以干掉多少个连续的人。
+> 
+> 问这种时候的具体操作（每一种属性用了多少次操作）。
+
+> [!TIP] **思路**
+> 
+> 多维双指针 维护区间最值
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: D. R2D2 and Droid Army
+// Contest: Codeforces - Codeforces Round #291 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/514/D
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const static int N = 1e5 + 10, M = 6;
+
+int n, m;
+LL k;
+
+LL c[N][M];
+
+deque<LL> cost[M];  // 本质单调队列
+void add(int x) {
+    for (int i = 1; i <= m; ++i) {
+        int t = c[x][i];
+        while (cost[i].size() && cost[i].back() < t)
+            cost[i].pop_back();
+        cost[i].push_back(t);
+    }
+}
+void sub(int x) {
+    for (int i = 1; i <= m; ++i) {
+        int t = c[x][i];
+        if (cost[i].front() == t)
+            cost[i].pop_front();
+    }
+}
+LL sum() {
+    LL ret = 0;
+    for (int i = 1; i <= m; ++i)
+        if (cost[i].size())
+            ret += cost[i].front();
+    return ret;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> n >> m >> k;
+    for (int i = 1; i <= n; ++i)
+        for (int j = 1; j <= m; ++j)
+            cin >> c[i][j];
+
+    int res = 0;
+    int t[M];
+    memset(t, 0, sizeof t);
+    for (int i = 0; i < M; ++i)
+        cost[i].clear();
+    for (int l = 1, r = 1; r <= n; ++r) {	// ATTENTION <= n WA1
+        add(r);
+        while (l <= r && sum() > k)
+            sub(l++);
+        if (r - l + 1 > res) {
+            res = r - l + 1;
+            for (int i = 1; i <= m; ++i)
+                t[i] = cost[i].front();
+        }
+    }
+
+    for (int i = 1; i <= m; ++i)
+        cout << t[i] << ' ';
+    cout << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

@@ -707,6 +707,101 @@ public:
 
 * * *
 
+> [!NOTE] **[Codeforces Common Divisors](http://codeforces.com/problemset/problem/182/D)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 最小循环节 简单推导
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: D. Common Divisors
+// Contest: Codeforces - Codeforces Round #117 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/182/D
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 1e5 + 10;
+
+char s1[N], s2[N];
+int ne1[N], ne2[N];
+
+void get_next(char s[], int ne[], int n) {
+    ne[0] = ne[1] = 0;
+    for (int i = 2, j = 0; i <= n; ++i) {
+        while (j && s[i] != s[j + 1])
+            j = ne[j];
+        if (s[i] == s[j + 1])
+            j++;
+        ne[i] = j;
+    }
+}
+
+int gcd(int a, int b) {
+    if (!b)
+        return a;
+    return gcd(b, a % b);
+}
+
+int main() {
+    cin >> s1 + 1 >> s2 + 1;
+
+    int n1 = strlen(s1 + 1), n2 = strlen(s2 + 1);
+
+    get_next(s1, ne1, n1), get_next(s2, ne2, n2);
+
+    int d1 = n1 - ne1[n1], d2 = n2 - ne2[n2];
+    // ATTENTION 需要对 [ababa] 这样对数据做修正
+    if (n1 % d1)
+        d1 = n1;
+    if (n2 % d2)
+        d2 = n2;
+
+    // int d = d1 / __gcd(d1, d2) * d2;
+    int d = d1 / gcd(d1, d2) * d2;
+
+    for (int i = 1; i <= d; ++i)
+        if (s1[i] != s2[i]) {
+            cout << 0 << endl;
+            return 0;
+        }
+
+    int res = 0, w = d; // ATTENTION 不能直接用 d += d
+    while (w <= n1 && w <= n2) {
+        if (n1 % w == 0 && n2 % w == 0)
+            res++;
+        w += d;
+    }
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
 ### 构造
 
 > [!NOTE] **[LeetCode 214. 最短回文串](https://leetcode-cn.com/problems/shortest-palindrome/)**
@@ -781,6 +876,169 @@ class Solution:
                 j += 1
             ne[i] = j
         return s[:ne[-1] - 1:-1] + s
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 奇怪用法
+
+> [!NOTE] **[Codeforces MUH and Cube Walls](http://codeforces.com/problemset/problem/471/D)**
+> 
+> 题意: 
+> 
+> kmp 在数值域上的应用
+> 
+> 给两堵墙，问 a 墙中与 b 墙顶部形状相同的区间有多少个。
+
+> [!TIP] **思路**
+> 
+> 显然顶部形状与差相关，所以本质就是找有多少个相同的等差段
+> 
+> 一开始写了个 hash WA 25
+> 
+> 实际上，这是个子串匹配问题，显然可以 kmp 搞起
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: D. MUH and Cube Walls
+// Contest: Codeforces - Codeforces Round #269 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/471/D
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using ULL = unsigned long long;
+const static int N = 2e5 + 10, P = 99991;
+
+int n, w;
+int a[N], b[N];
+
+vector<int> get_next() {
+    vector<int> f(w);
+    for (int i = 2, j = 0; i < w; ++i) {
+        while (j && b[i] != b[j + 1])
+            j = f[j];
+        if (b[i] == b[j + 1])
+            j++;
+        f[i] = j;
+    }
+    return f;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> n >> w;
+    if (w == 1) {
+        // 特判，否则kmp得到答案是n-1
+        cout << n << endl;
+        return 0;
+    }
+
+    // 第一位显然不用考虑 所以直接下标从0开始相当于前面填充
+    for (int i = 0; i < n; ++i)
+        cin >> a[i];
+    for (int i = 0; i < w; ++i)
+        cin >> b[i];
+
+    for (int i = n - 1; i; --i)
+        a[i] = a[i] - a[i - 1];
+    for (int i = n - 1; i; --i)
+        b[i] = b[i] - b[i - 1];
+
+    auto f = get_next();
+
+    int res = 0;
+    for (int i = 1, j = 0; i < n; ++i) {
+        while (j && a[i] != b[j + 1])
+            j = f[j];
+        if (a[i] == b[j + 1])
+            j++;
+        if (j == w - 1) {
+            // cout << "i = " << i << endl;
+            res++;
+            j = f[j];
+        }
+    }
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **C++ hash WA**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ULL = unsigned long long;
+const static int N = 2e5 + 10, P = 99991;
+
+int n, w;
+int a[N], b[N];
+
+ULL h[N], p[N];
+void init() {
+    p[0] = 1;
+    for (int i = 1; i < N; ++i)
+        p[i] = p[i - 1] * P;
+}
+ULL get(int l, int r) { return h[r] - h[l - 1] * p[r - l + 1]; }
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> n >> w;
+    for (int i = 1; i <= n; ++i)
+        cin >> a[i];
+    for (int i = 1; i <= w; ++i)
+        cin >> b[i];
+
+    for (int i = n; i >= 1; --i)
+        a[i] = a[i] - a[i - 1];
+    for (int i = n; i >= 1; --i)
+        b[i] = b[i] - b[i - 1];
+
+    init();
+    h[0] = 0;
+    for (int i = 1; i <= n; ++i)
+        h[i] = h[i - 1] * P + a[i];
+
+    ULL x = 0;
+    for (int i = 2; i <= w; ++i)
+        x = x * P + b[i];
+
+    int res = 0;
+    for (int i = w; i <= n; ++i)
+        if (get(i - w + 2, i) == x)
+            res++;
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
 ```
 
 <!-- tabs:end -->

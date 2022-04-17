@@ -769,3 +769,120 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces Watto and Mechanism](http://codeforces.com/problemset/problem/514/C)**
+> 
+> 题意: 
+> 
+> 即有字符串集合，判断输入字符串能否 `恰好只修改一个字符` 成为集合中出现过的字符串
+> 
+> **卡自然哈希 卡ULL 卡131/9991等**
+
+> [!TIP] **思路**
+> 
+> 字符串 hash 进阶经典
+> 
+> **TODO: 多模哈希**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Watto and Mechanism
+// Contest: Codeforces - Codeforces Round #291 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/514/C
+// Memory Limit: 256 MB
+// Time Limit: 3000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// using ULL = unsigned long long;
+using ULL = long long;
+using PII = pair<int, int>;
+// P = 131 WA on test-27, luogu题解区也有很多卡在27的代码
+// P = 99991 WA
+const static int N = 3e5 + 10, P = 257;
+// 取模同样不能用 ULL 自然取模，手动设置1e9+7
+const static int MOD = 1e9 + 7;
+
+ULL h[N], p[N];
+
+void init() {
+    p[0] = 1;
+    for (int i = 1; i < N; ++i)
+        // p[i] = p[i - 1] * P;
+        p[i] = p[i - 1] * P % MOD;
+}
+
+ULL get_hash(string& s) {
+    int len = s.size();
+    ULL x = 0;
+    for (int j = 0; j < len; ++j)
+        // x = x * P + s[j];
+        x = (x * P % MOD + s[j]) % MOD;
+    // cout << " s = " << s << " x = " << x << endl;
+    return x;
+}
+
+int n, m;
+
+unordered_set<ULL> S;
+string s;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    init();
+
+    cin >> n >> m;
+    for (int i = 0; i < n; ++i) {
+        cin >> s;
+        S.insert(get_hash(s));
+    }
+
+    for (int i = 0; i < m; ++i) {
+        cin >> s;
+        // 必须只算一次后续单次修改，否则TLE
+        ULL x = get_hash(s);
+        bool flag = false;
+        int len = s.size();
+        for (int j = 0; j < len && !flag; ++j) {
+            char t = s[j];
+            ULL y = (x - t * p[len - j - 1] % MOD + MOD) % MOD;
+            for (char c = 'a'; c <= 'c' && !flag; ++c)
+                if (c != t) {
+                    if (S.count((y + c * p[len - j - 1] % MOD) % MOD))
+                        flag = true;
+                }
+        }
+
+        cout << (flag ? "YES" : "NO") << endl;
+    }
+
+    return 0;
+}
+```
+
+##### **C++ 多模哈希 TODO**
+
+```cpp
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

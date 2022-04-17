@@ -1684,3 +1684,92 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces Ice Cave](http://codeforces.com/problemset/problem/540/C)**
+>
+> 题意: 
+>
+> 你在一个 $n \times m$ 的网格中，有些格子是完整的冰块，有些是破碎的冰块。
+>
+> -   如果你走到完整的冰块上，下一秒它会变成碎冰；
+> -   如果你在碎冰上，你会掉下去。你不能在原地停留。
+>
+> 现在你在 $(r_1,c_1)$ 上，保证该位置是一块碎冰。你要从 $(r_2,c_2)$ 掉下去，问是否可行。
+> 
+> **可以理解为任意碎冰都会直接挂掉，除非在目标位置（可以进下一层）**
+
+> [!TIP] **思路**
+>
+> 非常细节 **题意理解 碎冰不能走**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Ice Cave
+// Contest: Codeforces - Codeforces Round #301 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/540/C
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 510;
+
+int n, m;
+int g[N][N];
+int sx, sy, tx, ty;
+int dx[4] = {-1, 0, 0, 1}, dy[4] = {0, 1, -1, 0};
+
+bool dfs(int x, int y) {
+    if (x == tx && y == ty && g[x][y] == 1)
+        return true;
+    if (g[x][y])
+        return false;
+    g[x][y] = 1;
+    for (int i = 0; i < 4; ++i) {
+        int nx = x + dx[i], ny = y + dy[i];
+        if (nx < 1 || nx > n || ny < 1 || ny > m)
+            continue;
+        if (dfs(nx, ny))
+            return true;
+    }
+    return false;
+}
+
+int main() {
+    cin >> n >> m;
+
+    for (int i = 1; i <= n; ++i) {
+        string s;
+        cin >> s;
+        for (int j = 1; j <= m; ++j)
+            if (s[j - 1] == '.')
+                g[i][j] = 0;
+            else
+                g[i][j] = 1;  // 标记断裂
+    }
+    cin >> sx >> sy >> tx >> ty;
+    g[sx][sy] = 0;  // ATTENTION 强行标记起始位置必然可走
+    cout << (dfs(sx, sy) ? "YES" : "NO") << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

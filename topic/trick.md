@@ -5230,6 +5230,89 @@ int main() {
 
 * * *
 
+> [!NOTE] **[Codeforces Cows and Sequence](http://codeforces.com/problemset/problem/283/A)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **根据题意简化对 sum 的维护**
+> 
+> 非常 trick 的思维   **反复做**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: A. Cows and Sequence
+// Contest: Codeforces - Codeforces Round #174 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/283/A
+// Memory Limit: 256 MB
+// Time Limit: 1500 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const static int N = 2e5 + 10;
+
+int n;
+LL num[N], add[N], tot, sum;
+
+int main() {
+    // tot = 1 已经包含一个数字0
+    tot = 1, sum = 0;
+    memset(add, 0, sizeof add);
+
+    cin >> n;
+    for (int i = 1; i <= n; ++i) {
+        int t;
+        cin >> t;
+        if (t == 1) {
+            LL a, x;
+            cin >> a >> x;
+
+            add[a] += x;
+            sum += a * x;
+        } else if (t == 2) {
+            LL k;
+            cin >> k;
+
+            tot++;
+            num[tot] = k;
+            sum += k;
+        } else if (t == 3) {
+            // 重点在右边界发生变化时维护
+            sum -= (num[tot] + add[tot]);
+            add[tot - 1] += add[tot];  // ATTENTION
+            add[tot] = num[tot] = 0;
+            tot--;
+        }
+        // cout << "i = " << i << " tot = " << tot << " sum = " << sum << endl;
+        cout << setiosflags(ios::fixed) << setprecision(6) << (double)sum / tot
+             << endl;
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
 ### 动态统计计数题
 
 > [!NOTE] **[LeetCode 1224. 最大相等频率](https://leetcode-cn.com/problems/maximum-equal-frequency/)** [TAG]

@@ -1265,6 +1265,111 @@ int main() {
 
 * * *
 
+> [!NOTE] **[Codeforces Password](http://codeforces.com/problemset/problem/126/B)**
+> 
+> 题意: 
+> 
+> 前缀和 细节很多
+
+> [!TIP] **思路**
+> 
+> -   正序防超时
+> 
+> -   LL 防溢出
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Password
+// Contest: Codeforces - Codeforces Beta Round #93 (Div. 1 Only)
+// URL: https://codeforces.com/problemset/problem/126/B
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const static int N = 1e6 + 10;
+
+int n;
+string s;
+
+vector<int> z_func() {
+    vector<int> z(n);
+    for (int i = 1, l = 0, r = 0; i < n; ++i) {
+        if (i <= r && z[i - l] < r - i + 1)
+            z[i] = z[i - l];
+        else {
+            z[i] = max(0, r - i + 1);
+            while (i + z[i] < n && s[z[i]] == s[i + z[i]])
+                z[i]++;
+        }
+        if (i + z[i] - 1 > r)
+            l = i, r = i + z[i] - 1;
+    }
+    return z;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> s;
+    n = s.size();
+    auto z = z_func();
+
+    static LL sum[N];  // ATTENTION: LL 防止溢出
+    memset(sum, 0, sizeof sum);
+    for (int i = 0; i < n; ++i)
+        sum[z[i]]++;  // [0, z[i]] 全部+1
+    // 求原数组
+    for (int i = n; i >= 0; --i)
+        sum[i] += sum[i + 1];
+    // 求后缀和
+    for (int i = n; i >= 0; --i)
+        sum[i] += sum[i + 1];
+
+    string t;
+    // 正序防超时
+    for (int i = 0; i < n; ++i)
+        if (i + z[i] == n) {
+            if (sum[z[i]] > 1) {
+                // cout << i << " str = " << s.substr(i) << " sz = " <<
+                // sum[z[i]]
+                // << endl;
+                t = s.substr(i);
+                break;
+            }
+        }
+    if (t.empty())
+        cout << "Just a legend" << endl;
+    else
+        cout << t << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
 ### 差分
 
 > [!NOTE] **[LeetCode 1674. 使数组互补的最少操作次数](https://leetcode-cn.com/problems/minimum-moves-to-make-array-complementary/)** [TAG]
@@ -1642,6 +1747,83 @@ public:
         return k;
     }
 };
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 综合应用
+
+> [!NOTE] **[Codeforces Greg and Array](http://codeforces.com/problemset/problem/295/A)**
+> 
+> 题意: 
+> 
+> 应用的是【操作区间】
+
+> [!TIP] **思路**
+> 
+> 前缀和与差分很好的综合
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: A. Greg and Array
+// Contest: Codeforces - Codeforces Round #179 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/295/A
+// Memory Limit: 256 MB
+// Time Limit: 1500 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const static int N = 1e5 + 10;
+
+int n, m, k;
+LL a[N], d[N], dop[N];
+struct op {
+    int l, r, v;
+} ops[N];
+
+int main() {
+    cin >> n >> m >> k;
+
+    // 原数组差分
+    for (int i = 1; i <= n; ++i) cin >> a[i], d[i] = a[i] - a[i - 1];
+
+    // 记录操作
+    for (int i = 1; i <= m; ++i) cin >> ops[i].l >> ops[i].r >> ops[i].v;
+    for (int i = 1, l, r; i <= k; ++i) {
+        cin >> l >> r;
+        dop[l]++, dop[r + 1]--;
+    }
+    for (int i = 1; i <= m; ++i) {
+        dop[i] += dop[i - 1];
+        auto [l, r, v] = ops[i];
+        d[l] += (LL)v * dop[i], d[r + 1] -= (LL)v * dop[i];
+    }
+
+    for (int i = 1; i <= n; ++i) {
+        d[i] += d[i - 1];
+        cout << d[i] << ' ';
+    }
+    cout << endl;
+    return 0;
+}
 ```
 
 ##### **Python**

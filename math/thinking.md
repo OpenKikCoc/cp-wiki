@@ -2154,3 +2154,149 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces Pipeline](http://codeforces.com/problemset/problem/287/B)**
+> 
+> 题意: 
+> 
+> 不超过 k 的自然数 x 每个用一个，产生 `x-1` 的效果，最终要从 1 到 n
+> 
+> 求能否达成，能的话最少多少个数
+
+> [!TIP] **思路**
+> 
+> 显然贪心每次取最大，最后取个补足的数。连续贪心的个数二分计算即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Pipeline
+// Contest: Codeforces - Codeforces Round #176 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/287/B
+// Memory Limit: 256 MB
+// Time Limit: 400 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+LL n, k;
+
+int main() {
+    cin >> n >> k;
+    n--, k--;
+
+    if (n == 0)
+        cout << 0 << endl;
+    else if (n > (k + 1) * k / 2)
+        cout << -1 << endl;
+    else {
+        LL l = 0, r = k;
+        while (l < r) {
+            LL m = l + r >> 1;
+
+            LL s = (k + (k - m + 1)) * m / 2;
+            if (s >= n)
+                r = m;
+            else
+                l = m + 1;
+        }
+        cout << l << endl;
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces Count Good Substrings](http://codeforces.com/problemset/problem/451/D)**
+> 
+> 题意: 
+> 
+> 一个字符串是“好的”，当且仅当合并其中的连续区间后，它是一个回文串。比如 `aabba` 是好的，因为在合并后它变成了 `aba`
+> 
+> 给你一个字符串，现在要你分别求出长度为奇数和偶数的“好的”子串数量。（提示：不是本质不同的子串，不允许空串）
+
+> [!TIP] **思路**
+> 
+> 因为这些字符串中的字符只有 a, b 所以首位相同的字串都可以满足
+> 
+> 这样就分别统计奇数和偶数位置的字符的个数，然后相互组合就可以
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: D. Count Good Substrings
+// Contest: Codeforces - Codeforces Round #258 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/451/D
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+// 因为这些字符串中的字符只有 a, b 所以首位相同的字串都可以满足
+// 这样就分别统计奇数和偶数位置的字符的个数，然后相互组合就可以
+
+int main() {
+    string s;
+    cin >> s;
+
+    int n = s.size();
+    LL x = 0, y = 0;
+    for (LL i = 0, oa = 0, ob = 0, ea = 0, eb = 0; i < n; ++i) {
+        x++;  // single char
+        if (i & 1) {
+            if (s[i] == 'a')
+                x += oa, y += ea, oa++;
+            else
+                x += ob, y += eb, ob++;
+        } else {
+            if (s[i] == 'a')
+                x += ea, y += oa, ea++;
+            else
+                x += eb, y += ob, eb++;
+        }
+    }
+
+    cout << y << ' ' << x << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

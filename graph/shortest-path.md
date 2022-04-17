@@ -3611,6 +3611,90 @@ int main() {
 
 * * *
 
+> [!NOTE] **[Codeforces Greg and Graph](http://codeforces.com/problemset/problem/295/B)**
+> 
+> 题意: 
+> 
+> 逆序还原，每次加一个点
+
+> [!TIP] **思路**
+> 
+> **深刻理解 floyd 本质**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Greg and Graph
+// Contest: Codeforces - Codeforces Round #179 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/295/B
+// Memory Limit: 256 MB
+// Time Limit: 3000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const static int N = 510;
+const static LL INF = 1e18;
+
+int n;
+LL g[N][N];
+int vs[N];
+
+int main() {
+    cin >> n;
+    for (int i = 1; i <= n; ++i)
+        for (int j = 1; j <= n; ++j)
+            cin >> g[i][j];
+
+    for (int i = n; i >= 1; --i)
+        cin >> vs[i];
+
+    vector<LL> res;
+    for (int i = 1; i <= n; ++i) {
+        // ATTENTION 这里更新矩阵范围必须到 n
+        // 深刻理解 floyd
+        for (int j = 1; j <= n; ++j)
+            for (int k = 1; k <= n; ++k) {
+                int a = vs[j], b = vs[k], c = vs[i];
+                if (g[a][b] > g[a][c] + g[c][b])
+                    g[a][b] = g[a][c] + g[c][b];
+            }
+
+        LL c = 0;
+        for (int j = 1; j <= i; ++j)
+            for (int k = 1; k <= i; ++k) {
+                int a = vs[j], b = vs[k];
+                c += g[a][b];
+            }
+        res.push_back(c);
+    }
+    for (int i = n - 1; i >= 0; --i)
+        cout << res[i] << ' ';
+    cout << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
 
 ### 拆点最短路 -> TODO 放到graph子章节
 

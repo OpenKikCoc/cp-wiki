@@ -3139,6 +3139,80 @@ class Solution:
 
 * * *
 
+> [!NOTE] **[Codeforces Greenhouse Effect](http://codeforces.com/problemset/problem/269/B)** [TAG]
+> 
+> 题意: 
+> 
+> 给到每一株植物的品种以及其原位置的序列，要我们求出需要对植物进行多少次移位，使得序列的 $LIS$ 长度为 n，即使序列满足非严格单调递增
+
+> [!TIP] **思路**
+> 
+> 一开始想的枚举分界 dp .......
+> 
+> 要能想到 LIS
+> 
+> **数轴可无限分解，所以只要找 LIS ，其他的全部移除即可**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Greenhouse Effect
+// Contest: Codeforces - Codeforces Round #165 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/269/B
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int n, m;
+struct P {
+    int s;
+    double x;
+    inline bool operator<(const P o) const {
+        if (s != o.s)
+            return s < o.s;
+        return x < o.x;
+    }
+};
+
+int main() {
+    cin >> n >> m;
+
+    vector<P> f;
+    for (int i = 0; i < n; ++i) {
+        P t;
+        cin >> t.s >> t.x;
+        if (f.empty() || f.back() < t)
+            f.push_back(t);
+        else
+            *lower_bound(f.begin(), f.end(), t) = t;
+    }
+
+    cout << n - f.size() << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
 ### 类 LIS 思想
 
 > [!NOTE] **[LeetCode 368. 最大整除子集](https://leetcode-cn.com/problems/largest-divisible-subset/)**
@@ -3326,6 +3400,69 @@ class Solution:
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces Bubble Sort Graph](http://codeforces.com/problemset/problem/340/D)**
+> 
+> 题意: 
+> 
+> 冒泡排序时会连边，求最终最大独立集的大小
+
+> [!TIP] **思路**
+> 
+> **分析可得只有递增的数（非严格）才能构成独立子集，最大独立子集即最长不下降子序列**
+> 
+> 如果选择了 $a[i]$ 就不能再选择它左边比它大的数字，或者在 $a[i]$ 右边比它小的数字了 (因为肯定有连边) 
+> 
+> 可选的必然是它【左边比它小的数字】以及在它【右边比它大的数字】 (肯定和它们没有连边)
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: D. Bubble Sort Graph
+// Contest: Codeforces - Codeforces Round #198 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/340/D
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 题意：冒泡排序交换时会连一条边，求最终的最大独立集
+// 猜测是 LIS 的长度 ==> 他们之间不会彼此连边
+
+int main() {
+    int n;
+    cin >> n;
+    vector<int> f;
+    for (int i = 0, t; i < n; ++i) {
+        cin >> t;
+        if (f.empty() || f.back() < t)
+            f.push_back(t);
+        else
+            *lower_bound(f.begin(), f.end(), t) = t;
+    }
+    cout << f.size() << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 
 ### LIS 与 LCS
 
@@ -3641,6 +3778,101 @@ class Solution:
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces Gargari and Permutations](http://codeforces.com/problemset/problem/463/D)** [TAG]
+> 
+> 题意: 
+> 
+> 有 k 个长度为 n 的排列，求这些排列的 LCS 的长度
+
+> [!TIP] **思路**
+> 
+> **转化为图论 DAG 问题的思想**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: D. Gargari and Permutations
+// Contest: Codeforces - Codeforces Round #264 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/463/D
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 把每个数出现位置记下来
+// 若在所有排列中，i 都在 j 的左边，那么就可以进行 i 到 j 的转移
+// 对所有满足条件的 (i,j) 连一条有向边，易发现该图是个
+// DAG，因此只需跑一条最长路即可
+
+const static int N = 1010;
+
+int n, k;
+
+int s[N][N], pos[N][N];
+
+int f[N];
+vector<vector<int>> g;
+
+int dfs(int u) {
+    if (f[u] != -1)
+        return f[u];
+    f[u] = 1;
+    for (auto v : g[u])
+        f[u] = max(f[u], dfs(v) + 1);
+    return f[u];
+}
+
+int main() {
+    cin >> n >> k;
+
+    for (int i = 1; i <= k; ++i)
+        for (int j = 1; j <= n; ++j)
+            cin >> s[i][j], pos[i][s[i][j]] = j;
+
+    g.resize(n + 1);
+    for (int i = 1; i <= n; ++i)
+        for (int j = 1; j <= n; ++j)
+            if (i != j) {
+                // 从 i 到 j 是否可以建边
+                bool flag = true;
+                for (int x = 1; x <= k; ++x)
+                    if (pos[x][i] >= pos[x][j]) {
+                        flag = false;
+                        break;
+                    }
+                if (flag)
+                    g[i].push_back(j);
+            }
+
+    int res = 0;
+    memset(f, -1, sizeof f);
+    for (int i = 1; i <= n; ++i)
+        res = max(res, dfs(i));
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 
 ### 状态机模型
 

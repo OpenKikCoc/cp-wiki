@@ -628,3 +628,361 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces DZY Loves Sequences](https://codeforces.com/problemset/problem/446/A)**
+> 
+> 题意: 
+> 
+> 最多修改一个数 求最大的连续上升子段长度
+
+> [!TIP] **思路**
+> 
+> 注意题目要求的是【连续子段】而不是【子序列】，会好做很多
+> 
+> TODO: 思考【子序列】的进阶解法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: A. DZY Loves Sequences
+// Contest: Codeforces - Codeforces Round #FF (Div. 1)
+// URL: https://codeforces.com/problemset/problem/446/A
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 1e5 + 10, INF = 0x3f3f3f3f;
+
+int n, a[N];
+int l[N], r[N];
+
+int main() {
+    cin >> n;
+    for (int i = 1; i <= n; ++i)
+        cin >> a[i];
+
+    for (int i = 1; i <= n; ++i)
+        if (a[i] > a[i - 1])
+            l[i] = l[i - 1] + 1;
+        else
+            l[i] = 1;
+    for (int i = n; i >= 1; --i)
+        if (a[i] < a[i + 1])
+            r[i] = r[i + 1] + 1;
+        else
+            r[i] = 1;
+
+    int res = 0;
+    a[0] = INF, a[n + 1] = -INF;
+    for (int i = 1; i <= n; ++i) {
+        int t = 0;
+        if (a[i + 1] - a[i - 1] > 1)
+            t = l[i - 1] + r[i + 1];
+        else
+            t = max(l[i - 1], r[i + 1]);
+        res = max(res, t + 1);
+    }
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces Pair of Numbers](http://codeforces.com/problemset/problem/359/D)** [TAG] 经典进阶
+> 
+> 题意: 
+> 
+> 有一个长度为 N 的正整数数列 $a_1 , a_2 , \cdots , a_n$ 
+> 
+> 现在他想找到这个数列中最长的一个区间，满足区间中有一个数 $x$ 可以整除区间中任意数。
+
+> [!TIP] **思路**
+> 
+> 简单推理，这个数必然是最小数且是连续数字的 $gcd$
+> 
+> 有一个较为显然的思路是 $rmq$ 维护区间 $min / gcd$
+> 
+> 实际上，**可以直接前后缀分解，维护当前数字作为该数的左右延伸距离**
+> 
+> 实现时，**直接跳到 `l[l[i]-1]` 和 `r[r[i]+1]` 的 trick 技巧**
+> 
+> 另外，**注意 `l r` 保存下标而非长度**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: D. Pair of Numbers
+// Contest: Codeforces - Codeforces Round #209 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/359/D
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 3e5 + 10;
+
+int n, a[N];
+int l[N], r[N];  // 注意 l r 保存下标而非长度
+
+int gcd(int a, int b) {
+    if (!b)
+        return a;
+    return gcd(b, a % b);
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> n;
+    for (int i = 1; i <= n; ++i)
+        cin >> a[i];
+
+    for (int i = 1; i <= n; ++i) {
+        l[i] = i;  // init
+        // ATTENTION
+        while (a[l[i] - 1] % a[i] == 0 && l[i] > 1)
+            l[i] = l[l[i] - 1];
+    }
+    for (int i = n; i >= 1; --i) {
+        r[i] = i;
+        while (a[r[i] + 1] % a[i] == 0 && r[i] < n)
+            r[i] = r[r[i] + 1];
+    }
+
+    int len = -1;
+    vector<int> xs;
+    for (int i = 1; i <= n; ++i)
+        if (r[i] - l[i] > len) {
+            len = r[i] - l[i];
+            xs = {l[i]};
+        } else if (r[i] - l[i] == len && xs.back() != l[i])
+            // ATTENTION 这里需要特判 xs.back() != l[i]
+            // (一段相同的数, 其 li ri 都一样)
+            xs.push_back(l[i]);
+    cout << xs.size() << ' ' << len << endl;
+    for (auto x : xs)
+        cout << x << ' ';
+    cout << endl;
+
+    return 0;
+}
+```
+
+##### **C++ RMQ**
+
+```cpp
+// Problem: D. Pair of Numbers
+// Contest: Codeforces - Codeforces Round #209 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/359/D
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using PII = pair<int, int>;
+const static int N = 3e5 + 10, M = 20;
+
+int n, a[N];
+int f1[N][M], f2[N][M];
+
+int gcd(int a, int b) {
+    if (!b)
+        return a;
+    return gcd(b, a % b);
+}
+
+void init() {
+    memset(f1, 0, sizeof f1);
+    memset(f2, 0x3f, sizeof f2);
+    for (int j = 0; j < M; ++j)
+        for (int i = 1; i + (1 << j) - 1 <= n; ++i)
+            if (!j)
+                f1[i][j] = f2[i][j] = a[i];
+            else {
+                f1[i][j] = min(f1[i][j - 1], f1[i + (1 << j - 1)][j - 1]);
+                f2[i][j] = gcd(f2[i][j - 1], f2[i + (1 << j - 1)][j - 1]);
+            }
+}
+
+PII query(int l, int r) {
+    int len = r - l + 1;
+    int k = log(len) / log(2);
+    return {min(f1[l][k], f1[r - (1 << k) + 1][k]),
+            gcd(f2[l][k], f2[r - (1 << k) + 1][k])};
+}
+
+vector<int> check(int m) {
+    vector<int> ret;
+    for (int i = m; i <= n; ++i) {
+        auto [k, v] = query(i - m + 1, i);
+        if (k == v)
+            ret.push_back(i - m + 1);
+    }
+    return ret;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> n;
+    for (int i = 1; i <= n; ++i)
+        cin >> a[i];
+
+    init();
+
+    int l = 1, r = n + 1;
+    while (l < r) {
+        int m = l + r >> 1;
+        auto xs = check(m);
+        if (xs.size() > 0)
+            l = m + 1;
+        else
+            r = m;
+    }
+    auto xs = check(l - 1);
+    cout << xs.size() << ' ' << l - 2 << endl;
+    for (auto x : xs)
+        cout << x << ' ';
+    cout << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces Pashmak and Parmida's problem](http://codeforces.com/problemset/problem/459/D)**
+> 
+> 题意: 
+> 
+> 给定公式 求满足左右侧指定关系的总数
+
+> [!TIP] **思路**
+> 
+> 分析 简单前后缀分解 + BIT
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: D. Pashmak and Parmida's problem
+// Contest: Codeforces - Codeforces Round #261 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/459/D
+// Memory Limit: 256 MB
+// Time Limit: 3000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const static int N = 1e6 + 10;
+
+int n, a[N];
+LL l[N], r[N];
+
+LL tr[N];
+void init() { memset(tr, 0, sizeof tr); }
+int lowbit(int x) { return x & -x; }
+void add(int x, LL c) {
+    for (int i = x; i < N; i += lowbit(i))
+        tr[i] += c;
+}
+LL sum(int x) {
+    LL ret = 0;
+    for (int i = x; i; i -= lowbit(i))
+        ret += tr[i];
+    return ret;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> n;
+    for (int i = 1; i <= n; ++i)
+        cin >> a[i];
+
+    {
+        unordered_map<int, LL> hash;
+        for (int i = 1; i <= n; ++i) {
+            hash[a[i]]++;
+            l[i] = hash[a[i]];
+        }
+    }
+    {
+        unordered_map<int, int> hash;
+        for (int i = n; i >= 1; --i) {
+            hash[a[i]]++;
+            r[i] = hash[a[i]];
+        }
+    }
+
+    init();
+    // 求 l[i] > r[j] 的个数和
+    LL res = 0;
+    for (int j = 1; j <= n; ++j) {
+        res += sum(N - 1) - sum(r[j]);
+        add(l[j], 1);
+    }
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

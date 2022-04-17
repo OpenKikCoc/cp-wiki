@@ -2489,3 +2489,169 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces XOR on Segment](http://codeforces.com/problemset/problem/242/E)**
+> 
+> 题意: 
+> 
+> 给定一长度为 N 的序列，有两种操作：
+> 
+> - 求区间 [L,R] 的和
+> 
+> - 将区间 [L,R] 中的每个元素与 x 异或
+
+> [!TIP] **思路**
+> 
+> 比较显然的，先按 32 bit 位拆分，维护线段树
+> 
+> **非常标准的线段树应用(包含 lazy 操作)** + **二进制拆位**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: E. XOR on Segment
+// Contest: Codeforces - Codeforces Round #149 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/242/E
+// Memory Limit: 256 MB
+// Time Limit: 4000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const static int N = 1e5 + 10, M = 21;  // 1e6 只需要20个位即可
+
+int n, m;
+int a[N];
+
+struct Node {
+    int l, r;
+    vector<int> s;
+    int st;  // st -> lazy
+} tr[N << 2];
+
+void pushup(int u) {
+    // st must be zero for u
+    int ls = u << 1, rs = u << 1 | 1;
+    for (int i = 0; i < M; ++i)
+        tr[u].s[i] = tr[ls].s[i] + tr[rs].s[i];
+}
+
+void eval(Node& t, int x) {
+    int len = t.r - t.l + 1;
+    for (int i = 0; i < M; ++i)
+        if (x >> i & 1) {
+            t.st ^= (1 << i);
+            // ATTENTION 还要更新s ===> 深刻理解线段树
+            // 【在eval时需要更新 lazy 以及本层原始数据】
+            t.s[i] = len - t.s[i];
+        }
+}
+
+void pushdown(int u) {
+    eval(tr[u << 1], tr[u].st);
+    eval(tr[u << 1 | 1], tr[u].st);
+    tr[u].st = 0;
+}
+
+void build(int u, int l, int r) {
+    if (l == r) {
+        tr[u] = {l, r};
+        tr[u].s = vector<int>(M);
+        for (int i = 0; i < M; ++i)
+            if (a[l] >> i & 1)
+                tr[u].s[i] = 1;
+        tr[u].st = 0;
+    } else {
+        tr[u] = {l, r};
+        tr[u].s = vector<int>(M);
+        int mid = l + r >> 1;
+        build(u << 1, l, mid), build(u << 1 | 1, mid + 1, r);
+        pushup(u);
+    }
+}
+
+void modify(int u, int l, int r, int x) {
+    if (tr[u].l >= l && tr[u].r <= r) {
+        eval(tr[u], x);
+    } else {
+        pushdown(u);
+        int mid = tr[u].l + tr[u].r >> 1;
+        if (l <= mid)
+            modify(u << 1, l, r, x);
+        if (r > mid)
+            modify(u << 1 | 1, l, r, x);
+        pushup(u);
+    }
+}
+
+vector<int> query(int u, int l, int r) {
+    if (tr[u].l >= l && tr[u].r <= r) {
+        return tr[u].s;
+    } else {
+        pushdown(u);
+        int mid = tr[u].l + tr[u].r >> 1;
+        vector<int> s(M);
+        if (l <= mid) {
+            auto t = query(u << 1, l, r);
+            for (int i = 0; i < M; ++i)
+                s[i] += t[i];
+        }
+        if (r > mid) {
+            auto t = query(u << 1 | 1, l, r);
+            for (int i = 0; i < M; ++i)
+                s[i] += t[i];
+        }
+        return s;
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> n;
+    for (int i = 1; i <= n; ++i)
+        cin >> a[i];
+
+    build(1, 1, n);
+
+    // return 0;
+
+    cin >> m;
+    while (m--) {
+        int t, l, r, x;
+        cin >> t >> l >> r;
+        if (t == 1) {
+            auto s = query(1, l, r);
+            LL res = 0;
+            for (int i = 0; i < M; ++i)
+                res += (1 << i) * (LL)s[i];
+            cout << res << endl;
+        } else {
+            cin >> x;
+            modify(1, l, r, x);
+        }
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

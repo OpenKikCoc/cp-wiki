@@ -416,6 +416,122 @@ public:
 
 * * *
 
+> [!NOTE] **[Codeforces Hometask](http://codeforces.com/problemset/problem/214/B)**
+> 
+> 题意: 
+> 
+> 比上题条件更严格些
+
+> [!TIP] **思路**
+> 
+> 类似 **[LeetCode 1363. 形成三的最大倍数](https://leetcode-cn.com/problems/largest-multiple-of-three/)**
+> 
+> 分情况讨论
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Hometask
+// Contest: Codeforces - Codeforces Round #131 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/214/B
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 10;
+
+int n, sum = 0;
+int cnt[N], has[N];
+
+int main() {
+    cin >> n;
+    for (int i = 0, x; i < n; ++i)
+        cin >> x, cnt[x]++, sum += x;
+
+    if (cnt[0] == 0) {
+        cout << -1 << endl;
+        return 0;
+    }
+
+    if (sum % 3 == 1) {
+        if (cnt[1])
+            sum -= 1, cnt[1]--;
+        else if (cnt[4])
+            sum -= 4, cnt[4]--;
+        else if (cnt[7])
+            sum -= 7, cnt[7]--;
+        else if (cnt[2] >= 2)
+            sum -= 4, cnt[2] -= 2;
+        else if (cnt[2] && cnt[5])
+            sum -= 7, cnt[2]--, cnt[5]--;
+        else if (cnt[5] >= 2)
+            sum -= 10, cnt[5] -= 2;
+        else if (cnt[5] && cnt[8])
+            sum -= 13, cnt[5]--, cnt[8]--;
+        else if (cnt[8] >= 2)
+            sum -= 16, cnt[8] -= 2;
+        else {
+            cout << 0 << endl;  // ATTENTION
+            return 0;
+        }
+    }
+    if (sum % 3 == 2) {
+        if (cnt[2])
+            sum -= 2, cnt[2]--;
+        else if (cnt[5])
+            sum -= 5, cnt[5]--;
+        else if (cnt[8])
+            sum -= 8, cnt[8]--;
+        else if (cnt[1] >= 2)
+            sum -= 2, cnt[1] -= 2;
+        else if (cnt[1] && cnt[4])
+            sum -= 5, cnt[1]--, cnt[4]--;
+        else if (cnt[3] && cnt[5])
+            sum -= 8, cnt[3]--, cnt[5]--;
+        else if (cnt[4] >= 2)
+            sum -= 8, cnt[4] -= 2;
+        else if (cnt[7] >= 2)
+            sum -= 14, cnt[7] -= 2;
+        else {
+            cout << 0 << endl;
+            return 0;
+        }
+    }
+
+    string res;
+    for (int i = 0; i < N; ++i)
+        for (int j = 0; j < cnt[i]; ++j)
+            res.push_back('0' + i);
+
+    while (res.size() > 1 && res.back() == '0')
+        res.pop_back();
+    reverse(res.begin(), res.end());
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
 > [!NOTE] **[LeetCode 1402. 做菜顺序](https://leetcode-cn.com/problems/reducing-dishes/)**
 > 
 > 题意: 
@@ -1067,6 +1183,74 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces Mafia](http://codeforces.com/problemset/problem/348/A)**
+> 
+> 题意: 
+> 
+> 第 $i$ 人至少参与游戏 $a[i]$ 次，每次游戏必有一个不参与的裁判
+> 
+> 求最少举行多少场游戏
+
+> [!TIP] **思路**
+> 
+> 某人当裁判相当于只有它减少，易知类似互补的思想
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: A. Mafia
+// Contest: Codeforces - Codeforces Round #202 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/348/A
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const static int N = 1e5 + 10;
+
+int n;
+LL a[N];
+
+int main() {
+    cin >> n;
+    LL s = 0, mx = 0;
+    for (int i = 1; i <= n; ++i)
+        cin >> a[i], s += a[i], mx = max(mx, a[i]);
+
+    LL l = mx, r = s;
+    while (l < r) {
+        LL m = l + r >> 1;
+        if (m * n - s < m)
+            l = m + 1;
+        else
+            r = m;
+    }
+    cout << l << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 
 > [!NOTE] **[AcWing 913. 排队打水](https://www.acwing.com/problem/content/description/915/)**
 > 
@@ -5371,6 +5555,80 @@ int main() {
         if (k * (x[i] + 1) <= i)
             ++k;
     cout << k << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces Devu and his Brother](http://codeforces.com/problemset/problem/439/D)** [TAG]
+> 
+> 题意: 
+> 
+> 给予两个数组 $a$ 和 $b$ ，每次操作可以使其中的任意元素加 $1$ 或减 $1$ 
+> 
+> 求使得 $a$ 中的最小值大于等于 $b$ 中的最大值的最小操作次数。
+
+> [!TIP] **思路**
+> 
+> 起初猜测最终结果必然可以是 $a$ 或 $b$ 中出现过的数字，直接双指针维护（前缀和预处理）
+> 
+> 然后 WA...
+> 
+> 实际上，可以分别对 $a$ 升序 $b$ 降序排序，然后一一对比累计差值即可
+> 
+> **画图辅助理解**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: D. Devu and his Brother
+// Contest: Codeforces - Codeforces Round #251 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/439/D
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const static int N = 1e5 + 10;
+
+int n, m;
+LL a[N], b[N];
+
+int main() {
+    cin >> n >> m;
+    for (int i = 0; i < n; ++i)
+        cin >> a[i];
+    for (int i = 0; i < m; ++i)
+        cin >> b[i];
+    sort(a, a + n), sort(b, b + m, greater<int>());
+
+    LL res = 0;
+    for (int i = 0; i < n && i < m; ++i)
+        if (a[i] >= b[i])
+            break;
+        else
+            res += b[i] - a[i];
+
+    cout << res << endl;
 
     return 0;
 }
