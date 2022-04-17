@@ -44,7 +44,7 @@
 > 1. $f[i， j],  f[i， j - v[i]]$ 这两个中的 $j$ 这一维都是小于等于 $j$ 的（都是在 $j$ 的一侧），可以进一步进行空间优化：压缩成一维
 >
 > 2. 注意枚举背包容量 $j$ 必须从 $m$ 开始，从大到小遍历
-> 		1) 
+> 	
 > 	$f[i， j]$ 依赖 $f[i - 1, j - v[i]] 和  f[i - 1, j]$， 如果从小到大遍历，那么 $f[i - 1, j - v[i]]$ 已经被 $f[i, j - v[i]]$ 更新了。简单俩说，就是一维情况下正序更新状态 $f[j]$ 需要用到前面一行计算的状态已经被当前行[更新污染]了，逆序就不会存在这样的问题。
 
 <details>
@@ -144,20 +144,30 @@ if __name__ == '__main__':
 
 ##### **en-us**
 
-1. State define:
+1.  State define:
+
 	Let us assume $f[i][j]$ means the max value which picks from the first i numbers and the sum of volume $<= j$; 
-2. Transition function:
+
+2.  Transition function:
+
 	For each number, we can pick it or not.
 	1) If we don't pick it: $f[i][j] = f[i-1][j]$, which means if the first $i-1$ element has made it to $j$, $f[i][j]$ would als make it to $j$, and we can just ignore $nums[i]$
 	2) If we pick nums[i]: $f[i][j] = f[i-1][j-nums[i]]$, which represents that $j$ is composed of the current value $nums[i]$ and the remaining composed of other previous numbers. 
-3. Base case: 
+
+3.  Base case: 
+
 	$f[0][0] = 0$ ; (zero number consists of volumen $0$ is $0$, which reprents it's validaing）
+
 -----------------------------------------------------------------------------------------------------
+
 It seems that we cannot optimize it in time. But we can optimize in space.
-1. Optimize to $O(2 * n)$
+
+1.  Optimize to $O(2 * n)$
+
 	You can see that f[i][j] only depends on previous row, so we can optimize the space by only using two rows instead of the matrix. Let's say $arr1$ and $arr2$. Every time we finish updating $arr2$, $arr1$ have no value, you can copy $arr2$ to $arr1$ as the previous row of the next new row.
 
-2. Optimize to $O(n)$
+2.  Optimize to $O(n)$
+   
 	You can also see that, the column indices of $f[i - 1][j - nums[i]]$ and $f[i - 1][j]$ are $<= j$. 
 	
 	The conclusion you can get is: the elements of previous row whose column index is > j will not affect the update of $f[i][j]$ since we will not touch them.
@@ -1751,11 +1761,13 @@ This problem is essentially let us to select several numbers in a set which are 
 Actually, this is a 0/1 knapsack problem. 
 
 1. State define:
+   
    Let us assume $f[i][j]$ means whether the specific sum $j$ can be gotten from the first $i$ numbers. 
 
    If we can pick such a series of numbers from $0-i$ whose sum is $j$, $fi][j]$ is true, otherwise it is false.
 
 2. Transition function:
+   
    For each number, we can pick it or not.
 
    1) If we don't pick it: $f[i][j] = f[i-1][j]$, which means if the first $i-1$ element has made it to $j$, $f[i][j]$ would als make it to $j$, and we can just ignore $nums[i]$
@@ -1764,6 +1776,7 @@ Actually, this is a 0/1 knapsack problem.
    Thus, the transition function is $f[i][j] = f[i-1][j] || f[i-1][j-nums[i]]$
 
 3. Base case: 
+   
    $f[0][0] = True$ ; (zero number consists of sum 0 is true)
 
 * * *
