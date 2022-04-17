@@ -24,25 +24,28 @@
 > **朴素写法**
 >
 > 1. 状态表示：$f[i, j]$ 表示的是放 $i$ 个物品，总体积不超过 $j$ 的价值；属性：$max$
+>
 > 3. 状态转移：(曲线救国==> 第 $i$ 个物品先去掉，看前 $i-1$ 个物品的最大值怎么求）
 > 	 以第 $i$ 个物品"选"还是"不选"作为区分来进行转移。
+> 	 
+> 	 1）选： $f[i, j] = f[i - 1, j - v[i]] + w[i]$
+> 	 
+> 	 2）不选： $f[i, j] = f[i - 1, j]$
 >
 > **滚动数组优化**
 >
-> $f[i]$ 在计算的时候只用到了 $f[i - 1]$ 的值，所以可以用滚动数组来做；
-> ==> 滚动数组就是把第二维的常数 $n$ 降到 2：第 $i$ 项和 $i - 1$ 项都和 $1$ 做位与运算（也相当于模2 （% 2））
+> $f[i]$ 在计算的时候只用到了 $f[i - 1]$ 的值，所以可以用滚动数组进行优化；
+> ==> 滚动数组可以将第二维的 $n$ 降到 $2$ ，做法：第 $i$ 项和 $i - 1$ 项都和 $1$ 做位与运算（也相当于模 $2$）
 >
-> 如果$f[i]$ 在计算的时候只用到了 $f[i - 1]$ 和  $f[i - 2]$ 的值，那也可以用滚动数组来优化，这个时候就不是直接和1做与运算，
->
-> 而是每一项模3（% 3）。其实就是做一个映射。
+> 如果$f[i]$ 在计算的时候只用到了 $f[i - 1]$ 和 $f[i - 2]$ 的值，那也可以用滚动数组来优化，这个时候就不是直接和1做与运算，而是每一项模 $3$（本质上是做一个映射）
 >
 > **空间压缩优化**
 >
-> 1. $f[i， j],  f[i， j - v[i]]$ 这两个中的 $j$ 这一维都是小于等于 $j$ 的，在一侧（而不是在两侧），所以可以用压缩成一维来做
+> 1. $f[i， j],  f[i， j - v[i]]$ 这两个中的 $j$ 这一维都是小于等于 $j$ 的（都是在 $j$ 的一侧），可以进一步进行空间优化：压缩成一维
 >
-> 2. 直接删掉 $i$ 维度
+> 2. 注意枚举背包容量 $j$ 必须从 $m$ 开始，从大到小遍历
 > 		1) 
-> 	$j - v[i] < j$ 已经第 $i$ 层计算过了，循环顺序变成从大到小枚举，就可以解决。那 $f[j-v[i]]$ 存的就是 $i-1$ 层的值。
+> 	$f[i， j]$ 依赖 $f[i - 1, j - v[i]] 和  f[i - 1, j]$， 如果从小到大遍历，那么 $f[i - 1, j - v[i]]$ 已经被 $f[i, j - v[i]]$ 更新了。简单俩说，就是一维情况下正序更新状态 $f[j]$ 需要用到前面一行计算的状态已经被当前行[更新污染]了，逆序就不会存在这样的问题。
 
 <details>
 <summary>详细代码</summary>
@@ -141,27 +144,26 @@ if __name__ == '__main__':
 
 ##### **en-us**
 
-```
 1. State define:
-		Let us assume f[i][j] means the max value which picks from the first i numbers and the sum of volume <= j; 
+	Let us assume $f[i][j]$ means the max value which picks from the first i numbers and the sum of volume $<= j$; 
 2. Transition function:
-		For each number, we can pick it or not.
-		1) If we don't pick it: f[i][j] = f[i-1][j], which means if the first i-1 element has made it to j, f[i][j] would als make it to j, and we can just ignore nums[i]
-		2) If we pick nums[i]: f[i][j] = f[i-1][j-nums[i]], which represents that j is composed of the current value nums[i] and the remaining composed of other previous numbers. 
+	For each number, we can pick it or not.
+	1) If we don't pick it: $f[i][j] = f[i-1][j]$, which means if the first $i-1$ element has made it to $j$, $f[i][j]$ would als make it to $j$, and we can just ignore $nums[i]$
+	2) If we pick nums[i]: $f[i][j] = f[i-1][j-nums[i]]$, which represents that $j$ is composed of the current value $nums[i]$ and the remaining composed of other previous numbers. 
 3. Base case: 
-		f[0][0] = 0 ; (zero number consists of volumen 0 is 0, which reprents it's validaing）
-	 
+	$f[0][0] = 0$ ; (zero number consists of volumen $0$ is $0$, which reprents it's validaing）
 -----------------------------------------------------------------------------------------------------
-
 It seems that we cannot optimize it in time. But we can optimize in space.
-1. Optimize to O(2**n)
-		You can see that f[i][j] only depends on previous row, so we can optimize the space by only using two rows instead of the matrix. Let's say array1 and array2. Every time we finish updating array2, array1 have no value, you can copy array2 to array1 as the previous row of the next new row.
+1. Optimize to $O(2 * n)$
+	You can see that f[i][j] only depends on previous row, so we can optimize the space by only using two rows instead of the matrix. Let's say $arr1$ and $arr2$. Every time we finish updating $arr2$, $arr1$ have no value, you can copy $arr2$ to $arr1$ as the previous row of the next new row.
 
-2. Optimize to O(n)
-		You can also see that, the column indices of f[i - 1][j - nums[i] and f[i - 1][j] are <= j. The conclusion you can get is: the elements of previous row whose column index is > j will not affect the update of f[i][j] since we will not touch them.
-		Thus, if you merge array1 and array2 to a single array, if you update array backwards(从后面开始更新), all dependencies are not touched!
-		However if you update array forwards(从前面开始更新), f[j - nums[i - 1]] is updated already, you cannot use it.
-```
+2. Optimize to $O(n)$
+	You can also see that, the column indices of $f[i - 1][j - nums[i]]$ and $f[i - 1][j]$ are $<= j$. 
+	
+	The conclusion you can get is: the elements of previous row whose column index is > j will not affect the update of $f[i][j]$ since we will not touch them.
+	
+	Thus, if you merge $arr1$ and $arr2$ to a single array, if you update array backwards(从后面开始更新), all dependencies are not touched!
+	However if you update array forwards(从前面开始更新), $f[j - nums[i - 1]]$ is updated already, you cannot use it.
 
 <!-- tabs:end -->
 </details>
@@ -1742,17 +1744,27 @@ class Solution:
         return f[v]
 ```
 
-##### **en-us**
+##### en-us
 
-```
-This problem is essentially let us to find whether there are several numbers in a set which are able to sum to a specific value (in this problem, the value is sum/2).
+This problem is essentially let us to select several numbers in a set which are able to sum to a specific value(in this problem, the value is $sum/2$).
 
-Actually, this is a 0/1 knapsack problem, for each number, we can pick it or not. Let us assume dp[i][j] means whether the specific sum j can be gotten from the first i numbers. If we can pick such a series of numbers from 0-i whose sum is j, dp[i][j] is true, otherwise it is false.
+Actually, this is a 0/1 knapsack problem. 
 
-Base case: f[0][0] is true; (zero number consists of sum 0 is true)
+1. State define:
+   Let us assume $f[i][j]$ means whether the specific sum $j$ can be gotten from the first $i$ numbers. 
 
-Transition function: For each number, if we don't pick it, f[i][j] = f[i-1][j], which means if the first i-1 elements has made it to j, f[i][j] would also make it to j (we can just ignore nums[i]). If we pick nums[i]. f[i][j] = dp[i-1][j-nums[i]], which represents that j is composed of the current value nums[i] and the remaining composed of other previous numbers. Thus, the transition function is f[i][j] = f[i-1][j] || f[i-1][j-nums[i]]
-```
+   If we can pick such a series of numbers from $0-i$ whose sum is $j$, $fi][j]$ is true, otherwise it is false.
+
+2. Transition function:
+   For each number, we can pick it or not.
+
+   1) If we don't pick it: $f[i][j] = f[i-1][j]$, which means if the first $i-1$ element has made it to $j$, $f[i][j]$ would als make it to $j$, and we can just ignore $nums[i]$
+   2) If we pick nums[i]: $f[i][j] = f[i-1][j-nums[i]]$, which represents that $j$ is composed of the current value $nums[i]$ and the remaining composed of other previous numbers. 
+
+   Thus, the transition function is $f[i][j] = f[i-1][j] || f[i-1][j-nums[i]]$
+
+3. Base case: 
+   $f[0][0] = True$ ; (zero number consists of sum 0 is true)
 
 * * *
 
@@ -3097,84 +3109,6 @@ int main() {
     }
     reverse(ss.begin(), ss.end());
     cout << ss << endl;
-
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[Codeforces Red-Green Towers](http://codeforces.com/problemset/problem/478/D)**
-> 
-> 题意: 
-> 
-> 叠放塔：有红、绿两种色块。从第一层开始，第 i 层 i 块。
-> 
-> 要求每一层只能用同一种颜色的块，红绿方块总数有限。
-
-> [!TIP] **思路**
-> 
-> **重点在于转化为背包模型**
-> 
-> 为什么可以直接确定高度能够达到 `(h+1)*h/2<=r+g` 的最大 `h` ？==> 推理TODO
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-// Problem: D. Red-Green Towers
-// Contest: Codeforces - Codeforces Round #273 (Div. 2)
-// URL: https://codeforces.com/problemset/problem/478/D
-// Memory Limit: 256 MB
-// Time Limit: 2000 ms
-
-#include <bits/stdc++.h>
-using namespace std;
-
-// 重点在于：每层积木颜色相同
-// 转化思想：每层的积木视作一个物品，第i个物品体积为i，【只选红色】的方案数
-//   ==> 此时，绿色即为没有选的部分（互补），方案一一对应
-
-const static int N = 2e5 + 10, MOD = 1e9 + 7;
-
-int r, g;
-int f[N];  // 优化掉一维后，f[i] 表示红色用了 i 个的方案数
-
-int main() {
-    cin >> r >> g;
-
-    // (h + 1) * h / 2 <= r + g
-    int h = sqrt(r + g);
-    // 方块可能有剩余（背包有空的位置）
-    while ((h + 1 + 1) * (h + 1) <= 2 * (r + g))
-        h++;
-
-    f[0] = 1;
-    for (int i = 1; i <= h; ++i)
-        // 第 i 个物品，在剩余体积为 j 时，拿或者不拿的方案数
-        // ATTENTION: 在此时我们并不关心绿色是否够用
-        for (int j = r; j >= i; --j)
-            f[j] = (f[j] + f[j - i]) % MOD;
-
-    int res = 0;
-    // 绿色方块不能超过 g ，即  (h + 1) * h / 2 - i <= g
-    for (int i = max(0, (h + 1) * h / 2 - g); i <= r; ++i)
-        res = (res + f[i]) % MOD;
-    cout << res << endl;
 
     return 0;
 }
