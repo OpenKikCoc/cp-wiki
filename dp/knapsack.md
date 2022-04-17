@@ -167,7 +167,7 @@ It seems that we cannot optimize it in time. But we can optimize in space.
 	You can see that f[i][j] only depends on previous row, so we can optimize the space by only using two rows instead of the matrix. Let's say $arr1$ and $arr2$. Every time we finish updating $arr2$, $arr1$ have no value, you can copy $arr2$ to $arr1$ as the previous row of the next new row.
 
 2.  Optimize to $O(n)$
-   
+  
 	You can also see that, the column indices of $f[i - 1][j - nums[i]]$ and $f[i - 1][j]$ are $<= j$. 
 	
 	The conclusion you can get is: the elements of previous row whose column index is > j will not affect the update of $f[i][j]$ since we will not touch them.
@@ -216,9 +216,41 @@ int main() {
 }
 ```
 
-##### **Python-朴素优化**
+##### **Python-朴素dp**
 
 ```python
+if __name__ == '__main__':
+    N = 1010
+    f = [[0] * N for _ in range(N)]
+    v = [0] * N
+    w = [0] * N
+    
+    n, m = map(int, input().split())
+    for i in range(1, n + 1):
+        a, b = map(int, input().split())
+        v[i], w[i] = a, b
+        
+    for i in range(1, n + 1):
+        for j in range(m + 1):
+            k = 0 
+            while k * v[i] <= j:
+                f[i][j] = max(f[i][j], f[i - 1][j - k * v[i]] + k * w[i])
+                k += 1
+    print(f[n][m])
+```
+
+##### **Python-优化**
+
+```python
+"""
+列举一下更新状态的内部关系：
+f[i, j] = max(f[i-1,j], f[i-1][j-v]+w, f[i-1][j-2*v]+2*w, ...,f[i-1][j-k*v]+k*w+...)
+f[i, j-v] = max(        f[i-1,j-v],    f[i-1][j-2*v]+w, ...,  f[i-1][j-k*v]+(k-1)*w+...)
+由上两式子可得出:
+f[i, j] = max(f[i-1,j], f[i][j-v]+w)
+所以可以省掉k那层循环，对代码进行等价变化
+"""
+
 if __name__ == '__main__':
     N = 1010
     f = [[0] * N for _ in range(N)]
@@ -232,7 +264,7 @@ if __name__ == '__main__':
         w[i] = b
 
     for i in range(1, n + 1):
-        for j in range(1, m + 1):
+        for j in range(m + 1):
             f[i][j] = f[i - 1][j]
             if j >= v[i]:
                 f[i][j] = max(f[i - 1][j], f[i][j - v[i]] + w[i])
@@ -242,6 +274,11 @@ if __name__ == '__main__':
 ##### **Python-空间压缩**
 
 ```python
+"""
+f[i, j] = max(f[i-1,j], f[i][j-v]+w), 
+当优化掉i维时，为了保证状态转移的正确，j是从小到大遍历计算的
+如果像0/1从大到小遍历j，计算f[i, j]中的f[i-1,j]，f[i-1,j]已经被第i行的值更新了，无法再用。
+"""
 if __name__ == '__main__':
     N = 1010
     f = [0] * N
@@ -1761,13 +1798,13 @@ This problem is essentially let us to select several numbers in a set which are 
 Actually, this is a 0/1 knapsack problem. 
 
 1. State define:
-   
+  
    Let us assume $f[i][j]$ means whether the specific sum $j$ can be gotten from the first $i$ numbers. 
 
    If we can pick such a series of numbers from $0-i$ whose sum is $j$, $fi][j]$ is true, otherwise it is false.
 
 2. Transition function:
-   
+  
    For each number, we can pick it or not.
 
    1) If we don't pick it: $f[i][j] = f[i-1][j]$, which means if the first $i-1$ element has made it to $j$, $f[i][j]$ would als make it to $j$, and we can just ignore $nums[i]$
@@ -1776,7 +1813,7 @@ Actually, this is a 0/1 knapsack problem.
    Thus, the transition function is $f[i][j] = f[i-1][j] || f[i-1][j-nums[i]]$
 
 3. Base case: 
-   
+  
    $f[0][0] = True$ ; (zero number consists of sum 0 is true)
 
 * * *
