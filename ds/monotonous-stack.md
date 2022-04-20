@@ -1073,6 +1073,94 @@ public:
 
 * * *
 
+> [!NOTE] **[Codeforces Psychos in a Line](http://codeforces.com/problemset/problem/319/B)** [TAG]
+> 
+> 题意: 
+> 
+> 有 $n$ 个点，每个回合里，当 $a_i>a_{i+1}$ ，则 $a_{i+1}$ 被视为死亡。
+> 
+> 同一个回合内，某个点可能即被其他点杀死，也杀死其他点。
+
+> [!TIP] **思路**
+> 
+> 推理较显然，每次操作时当下已有的递减区间是不断变长的
+> 
+> 也即：某个位置被消灭时，其次数至少在前面一个子区间之后
+> 
+> 考虑单调栈维护子区间
+> 
+> 细节 **非常好的题目 重复做TODO**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Psychos in a Line
+// Contest: Codeforces - Codeforces Round #189 (Div. 1)
+// URL: http://codeforces.com/problemset/problem/319/B
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 1e5 + 10;
+
+int n;
+int a[N], f[N];
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> n;
+    for (int i = 0; i < n; ++i)
+        cin >> a[i];
+
+    // 维护一个单调递减栈
+    stack<int> st;
+    memset(f, 0, sizeof f);
+    for (int i = 0; i < n; ++i) {
+        int t = 0;
+        while (st.size() && a[st.top()] <= a[i]) {
+            // f[i] 表示被杀死的回合
+            // 此时 i 一定在 st.top() 之后被杀死
+            t = max(t, f[st.top()]);
+            st.pop();
+        }
+        // ATTENTION 非空栈说明可以接上前面的，作为下一次杀死的
+        if (st.size())
+            f[i] = t + 1;
+        st.push(i);
+    }
+
+    int res = 0;
+    for (int i = 0; i < n; ++i)
+        res = max(res, f[i]);
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
 ### 删数类问题
 
 > [!NOTE] **[Luogu 删数问题](https://www.luogu.com.cn/problem/P1106)**

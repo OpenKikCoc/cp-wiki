@@ -1175,7 +1175,42 @@ class Solution:
 ##### **C++**
 
 ```cpp
+// Problem: D. Dima and Hares
+// Contest: Codeforces - Codeforces Round #208 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/358/D
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
 
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 3010;
+
+int n;
+int a[N], b[N], c[N];
+int f[N][2];
+// 1代表先选择i 后选择i-1
+// 0代表先选择i-1 后选择i
+
+int main() {
+    cin >> n;
+    for (int i = 1; i <= n; ++i)
+        cin >> a[i];
+    for (int i = 1; i <= n; ++i)
+        cin >> b[i];
+    for (int i = 1; i <= n; ++i)
+        cin >> c[i];
+
+    memset(f, -0x3f, sizeof f);
+    f[1][1] = 0;  // 第一个显然只能先选
+    // ATTENTION 需要多计算一个
+    for (int i = 2; i <= n + 1; ++i) {
+        f[i][1] = max(f[i - 1][1] + b[i - 1], f[i - 1][0] + c[i - 1]);
+        f[i][0] = max(f[i - 1][1] + a[i - 1], f[i - 1][0] + b[i - 1]);
+    }
+    cout << f[n + 1][0] << endl;
+    return 0;
+}
 ```
 
 ##### **Python**
