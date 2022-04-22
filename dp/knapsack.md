@@ -152,7 +152,7 @@ if __name__ == '__main__':
 
 	For each number, we can pick it or not.
 	1) If we don't pick it: $f[i][j] = f[i-1][j]$, which means if the first $i-1$ element has made it to $j$, $f[i][j]$ would als make it to $j$, and we can just ignore $nums[i]$
-	2) If we pick nums[i]: $f[i][j] = f[i-1][j-nums[i]]$, which represents that $j$ is composed of the current value $nums[i]$ and the remaining composed of other previous numbers. 
+	2) If we pick nums[i]: $f[i][j] = f[i-1][j-v[i]]$, which represents that $j$ is composed of the current value $nums[i]$ and the remaining composed of other previous numbers. 
 
 3.  Base case: 
 
@@ -168,12 +168,12 @@ It seems that we cannot optimize it in time. But we can optimize in space.
 
 2.  Optimize to $O(n)$
   
-	You can also see that, the column indices of $f[i - 1][j - nums[i]]$ and $f[i - 1][j]$ are $<= j$. 
+	You can also see that, the column indices of $f[i - 1][j - v[i]]$ and $f[i - 1][j]$ are $<= j$. 
 	
 	The conclusion you can get is: the elements of previous row whose column index is > j will not affect the update of $f[i][j]$ since we will not touch them.
 	
 	Thus, if you merge $arr1$ and $arr2$ to a single array, if you update array backwards(从后面开始更新), all dependencies are not touched!
-	However if you update array forwards(从前面开始更新), $f[j - nums[i - 1]]$ is updated already, you cannot use it.
+	However if you update array forwards(从前面开始更新), $f[j - v[i]]$ is updated already to $i-th$, and what you need is $(i-1)-th$ value. So you cannot use it.
 
 <!-- tabs:end -->
 </details>
@@ -297,6 +297,41 @@ if __name__ == '__main__':
     print(f[m])
 ```
 
+##### **en-us**
+
+**Unbounded Knapsack (Repetition of items allowed)**
+
+1. State define:
+
+   Let us assume $f[i][j]$ means the max value which picks from the first i numbers and the sum of volume $<= j$; 
+
+2. Transition function:
+
+   For each number, we can pick it one, two and more times or not. $k$  is defined the time we pick $nums[i]$
+
+   ```python
+   k = 0
+   while k * v[i] <= j: 
+     		f[i, j] = max(f[i,j], f[i - 1, j - k * v[i]] + k * w[i])
+   ```
+
+3. Base case: 
+
+   $f[0][0] = 0$ ; (zero number consists of volumen $0$ is $0$, which reprents it's validaing）
+
+-----------------------------------------------------------------------------------------------------
+
+It seems that we cannot optimize it in time. But we can optimize in space.
+
+**Optimize to $O(n)$**
+
+You can also see that, the column indices of $f[i][j - v[i]]$ and $f[i - 1][j]$ are $<= j$. 
+
+The conclusion you can get is: the elements of previous row whose column index is > j will not affect the update of $f[i][j]$ since we will not touch them.
+
+Thus, if you merge $arr1$ and $arr2$ to a single array, if you update array forwards(从前面开始更新), all dependencies are not touched!
+However if you update array backwards(从后面开始更新), $f[j - v[i]]$ is still is  $(i-1)-th$ and what you need is $i-th$ value. So you cannot use it.
+
 <!-- tabs:end -->
 </details>
 
@@ -310,12 +345,11 @@ if __name__ == '__main__':
 >
 > **思路**
 >
-> 完全背包问题可以用多重背包问题来优化，其实时间复杂度会变慢。
 > 为什么多重背包问题就需要用单调队列来进行优化，但是完全背包问题就不需要呢？
-> 核心原因在于：多重背包问题求的是滑动窗口内的最大值，那滑动窗口的最大值必须要用单调队列来进行优化
->
-> 1. 状态表示 $f[i,j]$: 所有只从前 $i$ 个物品中选，并且总体积不超过 $j$ 的选法；属性：$max$
-> 2. 状态转移：按照第 $i$ 个物品选几个，把所有分发分成若干类。
+> 核心原因在于：多重背包问题求的是滑动窗口内的最大值，而滑动窗口的最大值的实现是通过单调队列来进行优化
+> 
+>1. 状态表示 $f[i,j]$: 所有只从前  $i$  个物品中选，并且总体积不超过  $j$  的选法；属性：$max$
+> 2. 状态转移：按照第  $i$  个物品选几个，把所有分发分成若干类。
 > 	 $f[i,j] = max(f[i - 1， j - k * v[i]] + w[i] * k); k = 0, 1, 2..., s[i]$
 
 <details>
@@ -366,12 +400,10 @@ if __name__=='__main__':
         v[i], w[i], s[i] = map(int, input().split())
     for i in range(1, n + 1):
         for j in range(m + 1):
-            for j in range(s[i] + 1):
+            for k in range(s[i] + 1):
                 if j >= k * v[i]:
-                     # 这里已经包含了不选第i个物品的选法了。
                      f[i][j] = max(f[i][j],f[i - 1][j - k * v[i]] + k * w[i]) 
     print(f[n][m])
-		#本题数据范围比较小，所以可以不用优化就可以ac
 ```
 
 <!-- tabs:end -->
@@ -393,7 +425,7 @@ if __name__=='__main__':
 >
 > 如果 $s = 200$， 用 $1，2，4，8，16，32，64，73$ 就可以凑出 $0-200$ 
 >
-> ===> 就是把 200 个物品 $i$ 分成8组， 每组物品都只能选一次，可以凑出来 200 个物品。转化为 $0/1$ 背包问题。
+> ===> 就是把 200 个物品 $i$ 分成 8 组， 每组物品都只能选一次，可以凑出来 200 个物品。转化为 $0/1$ 背包问题。
 >
 > （这里不能要 128，因为从 1加到 128等于 255，我们没有那么多物品）
 > 对于一般数来抽象出规律，再用代码实现。
@@ -479,13 +511,13 @@ int main() {
 ##### **Python**
 
 ```python
-if __name__ == '__main__':
-    N = 12010
-    M = 2010
-    v = [0] * N
-    w = [0] * N
-    f = [0] * M
+N = 12010
+M = 2010
+v = [0] * N
+w = [0] * N
+f = [0] * M
 
+if __name__ == '__main__':
     n, m = map(int, input().split())
     cnt = 0
     for i in range(1, n + 1):
@@ -516,6 +548,99 @@ if __name__ == '__main__':
 * * *
 
 ### 单调队列优化
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```C++
+#include <cstring>
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+const int N = 20010;
+
+int n, m;
+int f[N], g[N], q[N];
+
+int main() {
+    cin >> n >> m;
+    for (int i = 0; i < n; i ++ ) {
+        int v, w, s;
+        cin >> v >> w >> s;
+        // 实际上并不需要二维的dp数组
+        // 可以重复利用dp数组来保存上一轮的信息
+        memcpy(g, f, sizeof f);
+        // 取模范围 0~v 【共 v 个单调队列，每个队列队首维护取模为 j 的最大值下标（递减队列）】
+        for (int j = 0; j < v; j ++ ) {
+            int hh = 0, tt = -1;
+            // 下面for循环 单调队列 本质求最大
+            for (int k = j; k <= m; k += v) {
+                // 维护队列元素个数 不能继续入队 弹出队头
+                // （去除当前 k 下的不合法最值）
+                // 本题 队列元素个数为 s+1, 0~s 个物品
+                if (hh <= tt && q[hh] < k - s * v) hh ++ ;
+                // 维护单调性，尾值 <= 当前元素
+                while (hh <= tt && g[q[tt]] - (q[tt] - j) / v * w <= g[k] - (k - j) / v * w) tt -- ;
+                // 【每次入队元素对应的值是 f[i-1][j+kv]-kw，这里公式的 k 对应代码中的 (x-j)/v】
+                // 1.
+                q[ ++ tt] = k;
+                f[k] = g[q[hh]] + (k - q[hh]) / v * w;
+                // 2. 如果入队写最后需要取max
+                // if(head <= tail) f[k] = max(f[k], pre[q[head]] + (k-q[head])/v*w);
+                // q[++tail] = k;
+            }
+        }
+    }
+
+    cout << f[m] << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+# 优化：
+# 完全背包问题：可以优化成所有前缀的最大值
+# 多重背包问题：求滑动窗口内的最大值.
+N = 20010
+f = [[0] * N for i in range(N)]
+v = [0] * N
+w = [0] * N
+s = [0] * N
+q = [0] * N
+
+if __name__ == "__main__":
+    n, m = map(int, input().split())
+    for i in range(1, n + 1):
+        a, b, c = map(int, input().split())
+        v[i] = a
+        w[i] = b
+        s[i] = c
+        
+    for i in range(1, n + 1):
+        for j in range(v[i]):
+            hh = 0
+            tt = -1
+            for k in range((m - j) // v[i] + 1):
+                while hh <= tt and k - q[hh] > s[i]:
+                    hh += 1
+                while hh <= tt and f[i - 1][j + q[tt] * v[i]] - q[tt] * w[i] < f[i - 1][j + k * v[i]] - k * w[i]:
+                    tt -= 1
+
+                tt += 1
+                q[tt] = k
+
+                f[i][j + k * v[i]] = f[i - 1][j + q[hh] * v[i]] - q[hh] * w[i] + k * w[i]
+
+    print(f[n][m])
+```
 
 见 [单调队列/单调栈优化](dp/opt/monotonous-queue-stack.md)。
 

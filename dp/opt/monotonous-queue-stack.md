@@ -136,6 +136,43 @@ int main() {
 ##### **Python**
 
 ```python
+# 状态表示：f[i,j] 所有只能从前i个物品，体积为j的选法的集合
+# 优化：完全背包问题：可以优化成所有前缀的最大值；多重背包问题：求滑动窗口内的最大值
+
+if __name__ == "__main__":
+    n, m = map(int, input().split())
+    N = n + 1
+    M = m + 1
+
+    v = [0] * N
+    w = [0] * N
+    s = [0] * N
+
+    for i in range(1, N):
+        a, b, c = map(int, input().split())
+        v[i] = a
+        w[i] = b
+        s[i] = c
+
+    f = [[0] * M for i in range(N)]
+    q = [0] * 20010
+
+    for i in range(1, N):
+        for j in range(v[i]):
+            hh = 0
+            tt = -1
+            for k in range((m - j) // v[i] + 1):
+                while hh <= tt and k - q[hh] > s[i]:
+                    hh += 1
+                while hh <= tt and f[i - 1][j + q[tt] * v[i]] - q[tt] * w[i] < f[i - 1][j + k * v[i]] - k * w[i]:
+                    tt -= 1
+
+                tt += 1
+                q[tt] = k
+
+                f[i][j + k * v[i]] = f[i - 1][j + q[hh] * v[i]] - q[hh] * w[i] + k * w[i]
+
+    print(f[n][m])
 ```
 
 <!-- tabs:end -->
