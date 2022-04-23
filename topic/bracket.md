@@ -259,3 +259,103 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces Treasure](http://codeforces.com/problemset/problem/494/A)**
+> 
+> 题意: 
+
+> [!TIP] **思路**
+> 
+> 重点在贪心推导
+> 
+> 代码可以更优雅些 TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: A. Treasure
+// Contest: Codeforces - Codeforces Round #282 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/494/A
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    string s;
+    cin >> s;
+
+    vector<int> xs;
+    int l = 0;
+    for (auto c : s)
+        if (c == ')' || c == '#') {
+            if (l)
+                l--;
+            else {
+                cout << -1 << endl;
+                return 0;
+            }
+            if (c == '#')
+                xs.push_back(1);
+        } else if (c == '(')
+            l++;
+
+    if (l) {
+        if (xs.empty()) {
+            cout << -1 << endl;
+            return 0;
+        } else {
+            xs.back() += l;
+        }
+    }
+
+    l = 0;
+    int p = 0;
+    string t;
+    for (auto c : s)
+        if (c == ')') {
+            if (l)
+                l--;
+            else {
+                cout << -1 << endl;
+                return 0;
+            }
+        } else if (c == '#') {
+            int cnt = xs[p++];
+            while (cnt && l)
+                l--, cnt--;
+            if (cnt) {
+                cout << -1 << endl;
+                return 0;
+            }
+        } else
+            l++;
+    if (l) {
+        cout << -1 << endl;
+        return 0;
+    }
+
+    for (auto x : xs)
+        cout << x << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

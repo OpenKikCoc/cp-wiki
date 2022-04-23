@@ -1722,6 +1722,102 @@ int main() {
 
 * * *
 
+> [!NOTE] **[Codeforces Renting Bikes](http://codeforces.com/problemset/problem/363/D)**
+> 
+> 题意: 
+> 
+> 每个人有一定钱 $b_i$ ，自行车有一定价格 $p_i$ ，另有公共资金 a
+>  
+> 求最多可以多少人买车，以及个人出钱最少为多少
+
+> [!TIP] **思路**
+> 
+> 较显然的有二分性质，故先二分可以买车的个数
+> 
+> 个人出钱最少时，显然优先个人出钱不足公共补，再看公共的留下多少抵扣个人出的部分
+> 
+> 注意二分时如果 $mid > m$ 直接 `return INF`
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: D. Renting Bikes
+// Contest: Codeforces - Codeforces Round #211 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/363/D
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const static int N = 1e5 + 10;
+
+int n, m, a;
+LL b[N], p[N], t[N];
+
+LL check(int mid) {
+    if (mid > m)
+        return 2e9;
+    for (int i = 0; i < mid; ++i)
+        t[i] = b[n - 1 - i];
+    reverse(t, t + mid);
+    LL x = 0;
+    for (int i = 0; i < mid; ++i)
+        if (t[i] < p[i])
+            x += p[i] - t[i];
+    return x;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> n >> m >> a;
+    for (int i = 0; i < n; ++i)
+        cin >> b[i];
+    sort(b, b + n);
+    for (int i = 0; i < m; ++i)
+        cin >> p[i];
+    sort(p, p + m);
+
+    int l = 0, r = n + 1;
+    while (l < r) {
+        int mid = l + r >> 1;
+        if (check(mid) <= a)
+            l = mid + 1;
+        else
+            r = mid;
+    }
+    LL x = check(l - 1);
+    LL left = a - x, res = 0;
+    for (int i = 0; i < l - 1; ++i)
+        res += min(t[i], p[i]); // 个人出的所有累计
+    // cout << " res = " << res << " left = " << left << endl;
+
+    cout << l - 1 << ' ' << max(0ll, res - left) << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 ### 二分套二分
 
