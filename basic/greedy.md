@@ -5646,3 +5646,87 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2234. 花园的最大总美丽值](https://leetcode-cn.com/problems/maximum-total-beauty-of-the-gardens/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 较显然的需要先枚举
+> 
+> **重点在于枚举哪一个维度**，加个双指针优化即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // flowers[i] <= 1e5, 可以枚举
+    using LL = long long;
+    
+    long long maximumBeauty(vector<int>& flowers, long long newFlowers, int target, int full, int partial) {
+        LL base = 0;
+        vector<LL> fs;
+        for (auto x : flowers)
+            if (x >= target)
+                base += full;
+            else
+                fs.push_back(x);
+        fs.push_back(0);   // 0-th is 0
+        sort(fs.begin(), fs.end());
+        
+        int n = fs.size() - 1;
+        vector<LL> s(n + 1);
+        for (int i = 1; i <= n; ++ i )
+            s[i] = s[i - 1] + fs[i];
+        
+        // ATTENTION
+        // 此时有两种枚举思路：
+        // 1. 枚举【某个数值】以下的全部抹相同，剩下的尽可能选一些达到target的
+        //      问题：因为full与partial大小关系，处理起来极为复杂
+        // 2. 枚举【某个个数】的达到target，【其他的尽可能大，但都不超过target】==> 正确思路
+        LL res = base;
+        for (int i = 0, j = 0; i <= n; ++ i ) {
+            LL cost = (LL)target * (n - i) - (s[n] - s[i]);
+            if (cost > newFlowers)
+                continue;
+            LL left = newFlowers - cost;
+            // 找到其他尽可能大的值
+            while (j <= i && left >= (LL)fs[j] * j - s[j])
+                j ++ ;
+            
+            LL c = 0;
+            {
+                // cout << " i = " << i << " cost = " << cost << " left = " << left << endl;
+                int t = j - 1;
+                if (t <= 0) // 需要做除数，不能为0
+                    c = 0;
+                else
+                    c = min(LL(target - 1), (left + s[t]) / t);
+            }
+            // cout << " full number = " << n - i << " partial number = " << c << " val = " << (n - i) * full + c * partial << endl;
+            
+            res = max(res, base + (LL)(n - i) * full + c * partial);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

@@ -2,6 +2,14 @@
 
 > [!WARNING] **一般指 dfs**
 
+> [!NOTE] **【回溯】特别注意**
+> 
+> 回溯时需特别注意 **恢复现场** 的相关实现
+> 
+> 如下面 [LeetCode LCP 58. 积木拼接](https://leetcode-cn.com/problems/De4qBB/) 一题中使用全局变量执行修改与回溯
+> 
+> 但全局变量本身会在下一层递归中被再次修改，这样在上层递归中执行【恢复现场】时必然有问题。
+
 ### 构造
 
 > [!NOTE] **[LeetCode 22. 括号生成](https://leetcode-cn.com/problems/generate-parentheses/)**
@@ -3134,6 +3142,198 @@ class Solution:
                     dfs(i, j, 0)
         
         return self.res
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode LCP 58. 积木拼接](https://leetcode-cn.com/problems/De4qBB/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 非常好的回溯
+> 
+> 比赛的时候一个细节出错的地方：
+> 
+> **问题在于：把 $shape$ 作为全局变量来执行 $draw$ 操作。在回溯时 $shape$ 已经被下一层递归修改，【而非本层构造的内容】，所以恢复现场必错**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+
+```
+
+##### **C++ WA**
+
+```cpp
+// WA 29 代码
+class Solution {
+public:
+    // 底部和顶部   侧面
+    // 1 * 5 * 8 * (4 * 3 * 2 * 8 * 8 * 8) = 40 * 24 * 512 = 500000 50w
+    const static int N = 11;
+    
+    vector<vector<string>> g;
+    bool has[N][N][N];
+    
+    int n, m;
+    bool st[6];
+    
+    void mirror(vector<string> & state) {
+        for (int i = 0; i < m; ++ i )
+            for (int j = 0, k = m - 1; j < k; ++ j , -- k )
+                swap(state[i][j], state[i][k]);
+    }
+    void rotate(vector<string> & state) {
+        for (int i = 0; i < m; ++ i )
+            for (int j = 0; j < i; ++ j )
+                swap(state[i][j], state[j][i]);
+        mirror(state);
+    }
+    
+    bool xs[N][N];
+    vector<string> shape;
+    void fixshape(int i, int change) {
+        this->shape = g[i];
+        // flip
+        if (change / 4)
+            mirror(shape);
+        for (int i = 0; i < change % 4; ++ i )
+            rotate(shape);
+    }
+    
+    bool candraw(int u) {
+        if (u == 0) {
+            for (int i = 0; i < m; ++ i )
+                for (int j = 0; j < m; ++ j )
+                    if (shape[i][j] == '1' && has[i][j][0])
+                        return false;
+        } else if (u == 1) {
+            for (int i = 0; i < m; ++ i )
+                for (int j = 0; j < m; ++ j )
+                    if (shape[i][j] == '1' && has[i][0][j])
+                        return false;
+        } else if (u == 2) {
+            for (int i = 0; i < m; ++ i )
+                for (int j = 0; j < m; ++ j )
+                    if (shape[i][j] == '1' && has[0][i][j])
+                        return false;
+        } else if (u == 3) {
+            for (int i = 0; i < m; ++ i )
+                for (int j = 0; j < m; ++ j )
+                    if (shape[i][j] == '1' && has[i][m - 1][j])
+                        return false;
+        } else if (u == 4) {
+            for (int i = 0; i < m; ++ i )
+                for (int j = 0; j < m; ++ j )
+                    if (shape[i][j] == '1' && has[m - 1][i][j])
+                        return false;
+        } else if (u == 5) {
+            for (int i = 0; i < m; ++ i )
+                for (int j = 0; j < m; ++ j )
+                    if (shape[i][j] == '1' && has[i][j][m - 1])
+                        return false;
+        }
+        return true;
+    }
+    void draw(int u, bool flag) {
+        if (u == 0) {
+            for (int i = 0; i < m; ++ i )
+                for (int j = 0; j < m; ++ j )
+                    if (shape[i][j] == '1')
+                        has[i][j][0] = flag;
+        } else if (u == 1) {
+            for (int i = 0; i < m; ++ i )
+                for (int j = 0; j < m; ++ j )
+                    if (shape[i][j] == '1')
+                         has[i][0][j] = flag;
+        } else if (u == 2) {
+            for (int i = 0; i < m; ++ i )
+                for (int j = 0; j < m; ++ j )
+                    if (shape[i][j] == '1')
+                        has[0][i][j] = flag;
+        } else if (u == 3) {
+            for (int i = 0; i < m; ++ i )
+                for (int j = 0; j < m; ++ j )
+                    if (shape[i][j] == '1')
+                        has[i][m - 1][j] = flag;
+        } else if (u == 4) {
+            for (int i = 0; i < m; ++ i )
+                for (int j = 0; j < m; ++ j )
+                    if (shape[i][j] == '1')
+                        has[m - 1][i][j] = flag;
+        } else if (u == 5) {
+            for (int i = 0; i < m; ++ i )
+                for (int j = 0; j < m; ++ j )
+                    if (shape[i][j] == '1')
+                        has[i][j][m - 1] = flag;
+        }
+    }
+    
+    // [d, l, b, r, f, u]
+    bool dfs(int u) {
+        if (u == 6)
+            return true;
+        for (int i = 0; i < n; ++ i )
+            if (!st[i]) {
+                st[i] = true;
+                for (int j = 0; j < 8; ++ j ) {
+                    fixshape(i, j);
+                    if (candraw(u)) {
+                        draw(u, true);
+                        if (dfs(u + 1))
+                            return true;
+                        draw(u, false); // WA: 此时的 shape 已经不是本层递归中构造的，故恢复现场必错
+                    }
+                }
+                st[i] = false;
+            }
+        return false;
+    }
+    
+    void printShape() {
+        for (auto s : shape)
+            cout << s << endl;
+        cout << endl;
+    }
+    
+    bool composeCube(vector<vector<string>>& shapes) {
+        this->g = shapes;
+        m = g[0].size();
+        
+        // precheck
+        {
+            int tot = 0;
+            for (auto & shape : g)
+                for (auto & s : shape)
+                    for (auto c : s)
+                        if (c == '1')
+                            tot ++ ;
+            if (tot != m * m * m - (m - 2) * (m - 2) * (m - 2))
+                return false;
+        }
+        n = g.size();
+        
+        memset(st, 0, sizeof st);
+        return dfs(0);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
 ```
 
 <!-- tabs:end -->

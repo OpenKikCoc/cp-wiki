@@ -1221,6 +1221,97 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode LCP 56. 信物传送](https://leetcode-cn.com/problems/6UEx57/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 建图然后 01 bfs 即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 10000 * 4;
+    using PII = pair<int, int>;
+    const static int N = 1e4 + 10, M = N << 2;
+    
+    int h[N], e[M], w[M], ne[M], idx = 0;
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+    }
+    void add(int a, int b, int c) {
+        e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    int n, m;
+    int dx[4] = {-1, 0, 1, 0}, dy[4] = {0, 1, 0, -1};
+    int vis[N];
+    
+    int conveyorBelt(vector<string>& g, vector<int>& start, vector<int>& end) {
+        init();
+        this->n = g.size(), m = g[0].size();
+        unordered_map<char, int> hash;
+        hash['^'] = 0, hash['v'] = 2, hash['<'] = 3, hash['>'] = 1;
+        
+        for (int i = 0; i < n; ++ i )
+            for (int j = 0; j < m; ++ j ) {
+                int a = i * m + j;
+                char c = g[i][j];
+                for (int k = 0; k < 4; ++ k ) {
+                    int ni = i + dx[k], nj = j + dy[k], b = ni * m + nj;
+                    if (ni < 0 || ni >= n || nj < 0 || nj >= m)
+                        continue;
+                    // cout << " from " << "["<< a / m << "," << a % m << "] to " <<  "["<< b / m << "," << b % m << "] = " << (hash[c] != k) << endl;
+                    add(a, b, hash[c] != k);
+                }
+            }
+        
+        int st = start[0] * m + start[1], ed = end[0] * m + end[1];
+        deque<PII> q;
+        memset(vis, 0, sizeof vis);
+        q.push_back({st, 0});
+        
+        while (!q.empty()) {
+            auto [u, d] = q.front(); q.pop_front();
+            if (vis[u])
+                continue;
+            vis[u] = true;
+            if (u == ed)
+                return d;
+            for (int i = h[u]; ~i; i = ne[i]) {
+                int j = e[i], c = w[i];
+                if (c == 0)
+                    q.push_front({j, d});
+                else
+                    q.push_back({j, d + 1});
+            }
+        }
+        return -1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### USACO Training 杂项
 
 > [!NOTE] **[AcWing 1355. 母亲的牛奶](https://www.acwing.com/problem/content/1357/)**
