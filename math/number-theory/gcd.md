@@ -1058,6 +1058,90 @@ public:
 
 * * *
 
+> [!NOTE] **[Codeforces Petya and Divisors](http://codeforces.com/problemset/problem/111/B)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 简单应用 + trick
+> 
+> > 思维转化并用 last 记录
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Petya and Divisors
+// Contest: Codeforces - Codeforces Beta Round #85 (Div. 1 Only)
+// URL: https://codeforces.com/problemset/problem/111/B
+// Memory Limit: 256 MB
+// Time Limit: 5000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+#define x first
+#define y second
+
+using PII = pair<int, int>;
+const static int N = 1e5 + 10;
+
+int n;
+PII a[N];
+int last[N];
+
+bool check(int v, int i, int d) {
+    if (d) {
+        return last[v] < i - d;
+    }
+    return true;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    memset(last, 0, sizeof last);
+
+    cin >> n;
+    for (int i = 1; i <= n; ++i)
+        cin >> a[i].x >> a[i].y;
+
+    for (int i = 1; i <= n; ++i) {
+        int t = a[i].x, d = a[i].y, res = 0;
+        for (int j = 1; j <= t / j; ++j)
+            if (t % j == 0) {
+                res += check(j, i, d);
+                if (t / j != j)
+                    res += check(t / j, i, d);
+                last[j] = last[t / j] = i;
+            }
+        cout << res << endl;
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
 ### 欧几里得
 
 > [!NOTE] **[AcWing 877. 扩展欧几里得算法](https://www.acwing.com/problem/content/879/)**

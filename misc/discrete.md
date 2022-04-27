@@ -453,3 +453,113 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces King's Path](http://codeforces.com/problemset/problem/242/C)**
+> 
+> 题意: 
+> 
+> 大坐标系下的 bfs 最短路
+
+> [!TIP] **思路**
+> 
+> 数值大而数据范围不大，离散化即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. King's Path
+// Contest: Codeforces - Codeforces Round #149 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/242/C
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+using PII = pair<int, int>;
+
+int dx[8] = {-1, -1, -1, 0, 1, 1, 1, 0}, dy[8] = {-1, 0, 1, 1, 1, 0, -1, -1};
+
+int sx, sy, tx, ty;
+int m;
+unordered_map<int, int> r2idx;
+vector<vector<PII>> segs;
+unordered_map<LL, int> dis;
+
+LL encode(LL x, LL y) { return (x << 32) | y; }
+
+bool check(int x, int y) {
+    if (r2idx.find(x) == r2idx.end())
+        return false;
+    auto& seg = segs[r2idx[x]];
+    for (auto& [l, r] : seg)
+        if (y >= l && y <= r)
+            return true;
+    return false;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> sx >> sy >> tx >> ty;
+
+    cin >> m;
+    while (m--) {
+        int r, a, b;
+        cin >> r >> a >> b;
+        if (r2idx.find(r) != r2idx.end())
+            segs[r2idx[r]].push_back({a, b});
+        else {
+            r2idx[r] = segs.size();
+            segs.push_back({{a, b}});
+        }
+    }
+    for (auto& seg : segs)
+        sort(seg.begin(), seg.end());
+
+    if (check(sx, sy)) {
+        queue<PII> q;
+        q.push({sx, sy});
+        dis[encode(sx, sy)] = 0;
+        while (!q.empty()) {
+            auto& [x, y] = q.front();
+            q.pop();
+            int d = dis[encode(x, y)];
+            if (x == tx && y == ty) {
+                cout << d << endl;
+                return 0;
+            }
+            for (int i = 0; i < 8; ++i) {
+                int nx = x + dx[i], ny = y + dy[i];
+                if (check(nx, ny) && dis.find(encode(nx, ny)) == dis.end()) {
+                    dis[encode(nx, ny)] = d + 1;
+                    q.push({nx, ny});
+                }
+            }
+        }
+    }
+
+    cout << -1 << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

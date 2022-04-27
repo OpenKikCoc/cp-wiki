@@ -986,3 +986,103 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces Mike and Feet](http://codeforces.com/problemset/problem/547/B)**
+> 
+> 题意: 
+> 
+> $n$ 个值代表 $n$ 个熊的高度
+> 
+> 对于 $size$ 为 $x$ 的 $group$，$strength$ 值为这个 $group$ 中熊的最小的高度值
+
+> [!TIP] **思路**
+> 
+> 经典前后缀分解
+> 
+> - $f$ 标记长度小于等于某个值的其最大 $strength$
+> 
+> - 最后逆序更新一遍即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Mike and Feet
+// Contest: Codeforces - Codeforces Round #305 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/547/B
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 2e5 + 10;
+
+int n;
+int a[N];
+int l[N], r[N], f[N];
+
+int main() {
+    cin >> n;
+    for (int i = 1; i <= n; ++i)
+        cin >> a[i];
+
+    stack<int> st;
+    {
+        for (int i = n; i >= 1; --i) {
+            while (st.size() && a[i] < a[st.top()]) {
+                l[st.top()] = i;
+                st.pop();
+            }
+            st.push(i);
+        }
+        while (st.size()) {
+            l[st.top()] = 0;
+            st.pop();
+        }
+    }
+    {
+        for (int i = 1; i <= n; ++i) {
+            while (st.size() && a[i] < a[st.top()]) {
+                r[st.top()] = i;
+                st.pop();
+            }
+            st.push(i);
+        }
+        while (st.size()) {
+            r[st.top()] = n + 1;
+            st.pop();
+        }
+    }
+
+    memset(f, 0, sizeof f);
+    for (int i = 1; i <= n; ++i) {
+        int d = r[i] - l[i] - 1;
+        f[d] = max(f[d], a[i]);
+    }
+    for (int i = n; i >= 1; --i)
+        f[i] = max(f[i], f[i + 1]);
+
+    for (int i = 1; i <= n; ++i)
+        cout << f[i] << ' ';
+    cout << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

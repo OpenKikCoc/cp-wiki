@@ -345,6 +345,7 @@
   * [15-puzzle](misc/15-puzzle.md)
   * [Kahan 求和](misc/kahan-summation.md)
 * [专题](topic/README.md)
+  * [暴力优化](topic/bf-improve.md)
   * [RMQ](topic/rmq.md)
   * [括号序列](topic/bracket.md)
   * [建模](topic/modeling.md)

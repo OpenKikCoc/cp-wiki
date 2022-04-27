@@ -488,3 +488,134 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces Little Elephant and Interval](http://codeforces.com/problemset/problem/204/A)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 区间求值变为区间减
+> 
+> 分情况讨论 细节较多
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: A. Little Elephant and Interval
+// Contest: Codeforces - Codeforces Round #129 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/204/A
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const static int N = 19;
+
+LL l, r;
+
+LL c[N], p[N];
+
+void init() {
+    p[0] = 1;
+    for (int i = 1; i < N; ++i)
+        p[i] = p[i - 1] * 10;
+
+    c[1] = 10, c[2] = 9;
+    for (int i = 3; i < N; ++i)
+        c[i] = p[i - 2] * 9;
+}
+
+LL f(LL x) {
+    if (x == 0)
+        return 1;  // f[1] = 10
+    string s = to_string(x);
+    int n = s.size();
+
+    LL ret = 0;
+    for (int i = 1; i < n; ++i)
+        ret += c[i];
+
+    if (n > 2) {
+        for (int i = 1; i < s[0] - '0'; ++i)
+            ret += p[n - 2];
+        LL t = stoll(s.substr(1, n - 2));
+        if (s[0] > s[n - 1])
+            ret += t;
+        else
+            ret += t + 1;
+    } else if (n == 2) {
+        if (s[0] > s[n - 1])
+            ret += s[0] - '0' - 1;
+        else
+            ret += s[0] - '0';
+    } else
+        ret += s[0] - '0' + 1;
+    return ret;
+}
+
+int main() {
+    init();
+
+    cin >> l >> r;
+
+    cout << f(r) - f(l - 1) << endl;
+
+    return 0;
+}
+```
+
+##### **C++ 更简单**
+
+```cpp
+// Problem: A. Little Elephant and Interval
+// Contest: Codeforces - Codeforces Round #129 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/204/A
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+LL l, r;
+
+LL f(LL x) {
+    if (x < 10)
+        return x;
+    string s = to_string(x);
+    // 可以想到对于一个大的范围，中间的数中，每十个数中会有一个满足要求。
+    // 故中间直接计算，再加 9 表示首位的数值可能性
+    LL base = (x / 10 + 9);
+    // 首>尾 减一
+    return base - (s[0] > s.back());
+}
+
+int main() {
+    cin >> l >> r;
+
+    cout << f(r) - f(l - 1) << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

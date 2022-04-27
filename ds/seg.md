@@ -2655,3 +2655,119 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces Interesting Array](http://codeforces.com/problemset/problem/482/B)** [TAG]
+> 
+> 题意: 
+> 
+> 构建一个序列 $a$ ，满足 $m$ 条限制：
+> 
+> 限制形如 $l, r, q$ : $a[l] \ \&\  a[l+1] \ \& \ ... \ \&\  a[r-1] \ \&\  a[r]=q$ 
+> 
+> (此处 '&' 为位运算的 `and` 操作)
+
+> [!TIP] **思路**
+> 
+> 此类显然 `二进制拆位`
+> 
+> 线段树做法略，本题有 `差分+前缀和` 解法:
+> 
+> - 差分统计哪一段如果合法需要置 $1$
+> 
+> - 由差分数组得原数组，原数组非 $0$ 则说明该位需要置 $1$
+> 
+> - 再对原数组计算前缀和，则可得给定区间需要有多少个 $1$
+> 
+> 最终根据该区间的 $1$ 的个数来复判是否合法即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Interesting Array
+// Contest: Codeforces - Codeforces Round #275 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/482/B
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 1e5 + 10, M = 32;
+
+int n, m;
+int l[N], r[N], q[N];
+int d[N][M], s[N][M];
+
+int main() {
+    cin >> n >> m;
+
+    for (int i = 0; i < m; ++i) {
+        cin >> l[i] >> r[i] >> q[i];
+        for (int j = 0; j < M; ++j)
+            if (q[i] >> j & 1)
+                d[l[i]][j]++, d[r[i] + 1][j]--;
+    }
+    // 得到原数组
+    for (int i = 0; i < N; ++i)
+        for (int j = 0; j < M; ++j)
+            d[i][j] += d[i - 1][j];
+
+    // 统计非零的即需要置一的
+    for (int i = 0; i < N; ++i)
+        for (int j = 0; j < M; ++j)
+            s[i][j] = (d[i][j] != 0);
+    // 统计有多少需要置一
+    for (int i = 0; i < N; ++i)
+        for (int j = 0; j < M; ++j)
+            s[i][j] += s[i - 1][j];
+
+    for (int i = 0; i < m; ++i)
+        for (int j = 0; j < M; ++j) {
+            int cnt = s[r[i]][j] - s[l[i] - 1][j];
+            bool flag = true;
+            if (q[i] >> j & 1) {
+                // 非全 1 故无法 & 得到 1
+                if (cnt != r[i] - l[i] + 1)
+                    flag = false;
+            } else {
+                // 全 1 故无法 & 得到 0
+                if (cnt == r[i] - l[i] + 1)
+                    flag = false;
+            }
+            if (!flag) {
+                cout << "NO" << endl;
+                return 0;
+            }
+        }
+
+    cout << "YES" << endl;
+    for (int i = 1; i <= n; ++i) {
+        int x = 0;
+        for (int j = 0; j < M; ++j)
+            if (s[i][j] - s[i - 1][j])
+                x += 1 << j;
+        cout << x << ' ';
+    }
+    cout << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
