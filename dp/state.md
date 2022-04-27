@@ -2858,6 +2858,117 @@ public:
 
 * * *
 
+> [!NOTE] **[Codeforces Little Pony and Harmony Chest](http://codeforces.com/problemset/problem/453/B)**
+> 
+> 题意: 
+> 
+> 求满足题意要求的和谐序列 $b$
+
+> [!TIP] **思路**
+> 
+> 转化：$b$ 中任意元素无公共质因子 （而非每个数都是质数）
+> 
+> 这题较 trick 的点在于，枚举状态本身表示因子的使用与否，而非具体的数值
+> 
+> **非常好的状态定义与转移练习**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Little Pony and Harmony Chest
+// Contest: Codeforces - Codeforces Round #259 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/453/B
+// Memory Limit: 256 MB
+// Time Limit: 4000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 转化：b中每个数之间都没有公共质因子（而非每个数都是质数）
+// ps 30 的数据范围说明所有数字不会超过59 否则必然不如放1
+// 也因此最多只有16个质因子 最大为53
+
+const static int N = 110, M = 16;
+
+int primes[M], cnt = 0;
+bool st[M << 2];
+int table[M << 2];  // ATTENTION 能整除i的质数组成的集合
+void init() {
+    cnt = 0;
+    memset(st, 0, sizeof st);
+    int top = 53;
+    for (int i = 2; i <= top; ++i) {
+        if (!st[i])
+            primes[cnt++] = i;
+        for (int j = 0; primes[j] <= top / i; ++j) {
+            st[primes[j] * i] = true;
+            if (i % primes[j] == 0)
+                break;
+        }
+    }
+    // cnt = 16
+    // 预处理table 以在转移时o1判断
+    for (int i = 1; i < M << 2; ++i)
+        for (int j = 0; j < cnt; ++j)
+            if (i % primes[j] == 0)
+                table[i] += (1 << j);
+}
+
+int n, a[N];
+int f[N][1 << M], pre[N][1 << M];
+
+void output(int x, int y) {
+    if (!x)
+        return;
+    output(x - 1, y ^ table[pre[x][y]]);
+    cout << pre[x][y] << ' ';
+}
+
+int main() {
+    init();
+
+    cin >> n;
+    for (int i = 1; i <= n; ++i)
+        cin >> a[i];
+
+    memset(pre, 0, sizeof pre);
+    memset(f, 0x3f, sizeof f);
+    for (int i = 0; i < 1 << M; ++i)
+        f[0][i] = 0;	// ATTENTION 这样写方便最后output直接用(1<<M)-1
+    for (int i = 1; i <= n; ++i)
+        for (int j = 0; j < 1 << M; ++j)
+            for (int k = 1; k <= 58; ++k) {
+                if ((table[k] | j) != j)
+                    continue;
+                int t = abs(k - a[i]) + f[i - 1][j ^ table[k]];
+                if (t < f[i][j])
+                    f[i][j] = t, pre[i][j] = k;
+            }
+    output(n, (1 << M) - 1);
+    cout << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
 ### 三进制状压
 
 **TODO: 多进制统一整理代码风格 fix**

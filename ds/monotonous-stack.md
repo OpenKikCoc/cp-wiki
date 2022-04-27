@@ -991,6 +991,90 @@ class Solution:
 
 * * *
 
+> [!NOTE] **[Codeforces Maximum Submatrix 2](http://codeforces.com/problemset/problem/375/B)**
+> 
+> 题意: 
+> 
+> 最大矩形 + 行可排序
+
+> [!TIP] **思路**
+> 
+> 最大矩形变体，非常有意思
+> 
+> 按列考虑，对行进行排序
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Maximum Submatrix 2
+// Contest: Codeforces - Codeforces Round #221 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/375/B
+// Memory Limit: 512 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 本题题意重点在于【可以重新排列行】
+
+const static int N = 5e3 + 10;
+
+int n, m;
+char g[N][N];
+int suf[N][N];
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> n >> m;
+
+    for (int i = 1; i <= n; ++i)
+        for (int j = 1; j <= m; ++j)
+            cin >> g[i][j];
+
+    for (int i = 1; i <= n; ++i)
+        for (int j = m; j >= 1; --j)
+            if (g[i][j] == '1')
+                suf[i][j] = suf[i][j + 1] + 1;
+            else
+                suf[i][j] = 0;
+
+    int res = 0;
+    // 按列考虑，对行进行排序
+    for (int j = 1; j <= m; ++j) {
+        static int t[N];
+        for (int i = 1; i <= n; ++i)
+            t[i] = suf[i][j];
+        sort(t + 1, t + n + 1);
+        for (int i = 1; i <= n; ++i)
+            res = max(res, t[i] * (n - i + 1));
+    }
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
 > [!NOTE] **[LeetCode 1944. 队列中可以看到的人数](https://leetcode-cn.com/problems/number-of-visible-people-in-a-queue/)**
 > 
 > 题意: TODO

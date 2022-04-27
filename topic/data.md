@@ -660,3 +660,183 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces Matrix](http://codeforces.com/problemset/problem/364/A)** [TAG]
+> 
+> 题意: 
+> 
+> 有一个十进制字符串 $s$ 。
+> 
+> 现定义 $b_{i,j}=s_i*s_j$ ，请找出在矩阵 $b$ 中有几个顶点在格点上的矩形所有元素之和等于 $a$
+
+> [!TIP] **思路**
+> 
+> 错了非常多遍，甚至想错了优化方向
+> 
+> 实际上最终求解的时候不需要关注 map 保存的值，只需要 for-loop 一遍即可
+> 
+> 以及 【题意抽象与转化 数值计算细节】
+> 
+> **重复做**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: A. Matrix
+// Contest: Codeforces - Codeforces Round #213 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/364/A
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 可以推出矩形的和即为 [长和]*[宽和]
+// 故先 cnt 统计所有可能的长和宽
+
+using LL = long long;
+using PLL = pair<LL, LL>;
+const static int N = 4e3 + 10, M = 4e4 + 10;  // ATTENTION M 9*abs(s)
+
+LL s[N];
+unordered_map<LL, LL> cnt;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    LL tar;
+    string str;
+    cin >> tar >> str;
+
+    int n = str.size();
+    for (int i = 1; i <= n; ++i) {
+        s[i] = s[i - 1] + (str[i - 1] - '0');
+        // 统计所有 sum(j, i)
+        for (int j = 1; j <= i; ++j) {
+            LL d = s[i] - s[j - 1];
+            cnt[d]++;
+        }
+    }
+
+    LL res = 0;
+    if (tar == 0) {
+        for (int i = 0; i < M; ++i)
+            res += cnt[0] * cnt[i] * 2;
+        res -= cnt[0] * cnt[0];
+        // ATTENTION
+        // sum_of_cnt{0...N-1} = n * (n + 1) / 2
+        // res = cnt[0] * n * (n + 1) - cnt[0] * cnt[0];
+        cout << res << endl;
+    } else {
+        // ATTENTION: for-loop N 而不是 cnt-map
+        for (int i = 1; i < M; ++i) {
+            if (tar / i >= M)
+                continue;
+            if (tar % i == 0)
+                res += cnt[i] * cnt[tar / i];  // no need to *2
+        }
+        cout << res << endl;
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces Little Elephant and Cards](http://codeforces.com/problemset/problem/204/B)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 根据数据范围，有点小技巧
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Little Elephant and Cards
+// Contest: Codeforces - Codeforces Round #129 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/204/B
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using PII = pair<int, int>;
+const static int N = 1e5 + 10, M = 2e5 + 10;
+
+unordered_map<int, int> H;
+int idx = 0;
+int get(int x) {
+    if (H.count(x))
+        return H[x];
+    return H[x] = ++idx;
+}
+
+int n, tar;
+PII a[N];
+int f[M], b[M], s[M];
+
+int main() {
+    cin >> n;
+    tar = (n + 1) / 2;
+
+    for (int i = 0; i < n; ++i) {
+        int l, r;
+        cin >> l >> r;
+        l = get(l), r = get(r);
+        a[i] = {l, r};
+        f[l]++, b[r]++;
+        if (l == r)
+            s[l]++;  // 前后颜色相同，对于本个无法通过翻转获得收益
+    }
+
+    int res = 1e9;
+    for (int i = 1; i <= idx; ++i) {
+        int need = max(tar - (f[i]), 0);
+        if (need <= b[i] - s[i])
+            res = min(res, need);
+    }
+    if (res == 1e9)
+        cout << -1 << endl;
+    else
+        cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

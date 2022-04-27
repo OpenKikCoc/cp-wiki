@@ -359,3 +359,117 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces Sereja and Brackets](http://codeforces.com/problemset/problem/380/C)**
+> 
+> 题意: 
+> 
+> 题意转化：求区间内最长有效括号
+
+> [!TIP] **思路**
+> 
+> 考虑线段树维护两个东西：区间 $[l,r]$ 内不能匹配的左括号数量 $Lsum_k$ 和右括号数量 $Rsum_k$ 。
+> 
+> 合并计算父节点时，显然需要考虑合并时新增的匹配数目: $min(Lsum_l, Rsum_r)$
+> 
+> **重点在于思维敏感度 想到线段树维护**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Sereja and Brackets
+// Contest: Codeforces - Codeforces Round #223 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/380/C
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 1e6 + 10, M = N << 2;
+
+struct Node {
+    int l, r;
+    int l_sum, r_sum;  // 区间内未匹配的左/右括号的数量和
+} tr[M];
+
+int n, m;
+char s[N];
+
+void pushup(Node& u, Node& l, Node& r) {
+    int minus = min(l.l_sum, r.r_sum);  // 整段可以匹配的数量
+    u.l_sum = l.l_sum + r.l_sum - minus;
+    u.r_sum = l.r_sum + r.r_sum - minus;
+}
+
+void pushup(int u) {
+    int l = u << 1, r = u << 1 | 1;
+    pushup(tr[u], tr[l], tr[r]);
+}
+
+void build(int u, int l, int r) {
+    if (l == r) {
+        tr[u] = {l, r};
+        if (s[l] == '(')
+            tr[u].l_sum = 1;
+        else
+            tr[u].r_sum = 1;
+    } else {
+        tr[u] = {l, r, 0, 0};
+        int mid = l + r >> 1;
+        build(u << 1, l, mid), build(u << 1 | 1, mid + 1, r);
+        pushup(u);
+    }
+}
+
+Node query(int u, int l, int r) {
+    if (l <= tr[u].l && r >= tr[u].r)
+        return tr[u];
+    else {
+        int mid = tr[u].l + tr[u].r >> 1;
+        if (r <= mid)
+            return query(u << 1, l, r);
+        if (l > mid)
+            return query(u << 1 | 1, l, r);
+        auto nl = query(u << 1, l, r);
+        auto nr = query(u << 1 | 1, l, r);
+        Node ret;
+        pushup(ret, nl, nr);
+        return ret;
+    }
+}
+
+int main() {
+    cin >> s + 1;
+    n = strlen(s + 1);
+
+    build(1, 1, n);
+
+    cin >> m;
+    while (m--) {
+        int l, r;
+        cin >> l >> r;
+        auto t = query(1, l, r);
+        cout << r - l + 1 - (t.l_sum + t.r_sum) << endl;
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

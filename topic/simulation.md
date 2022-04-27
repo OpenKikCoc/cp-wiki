@@ -4944,6 +4944,115 @@ class Solution:
 
 * * *
 
+> [!NOTE] **[Codeforces Ciel and Robot](http://codeforces.com/problemset/problem/321/A)**
+> 
+> 题意: 
+> 
+> 你现在在一个迷宫的 $(0,0)$ 处，给定一个包含 $\texttt{U,D,L,R}$ 的操作序列 $s$ 
+> 
+> 其中 $\texttt{U}$ 表示向上走一格，$\texttt{D}$ 表示向下走一格，$\texttt{L}$ 表示向左走一格，$\texttt{R}$ 表示向右走一格。
+> 
+> 你将会按照 $s$ 从左往右的操作移动，并且重复若干次。问你是否能够到达 $(a,b)$ 处。
+
+> [!TIP] **思路**
+> 
+> 非常经典的模拟
+> 
+> 1. 最终可能不是一个完整的循环，故枚举走到哪一步
+> 
+> 2. 再判断去除这部分后剩下的能否走 d 个完整循环
+>    
+>    - d >= 0 且横纵坐标相同
+>    
+>    - 再次计算验证可以到达目标点
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: A. Ciel and Robot
+// Contest: Codeforces - Codeforces Round #190 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/321/A
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using PII = pair<int, int>;
+
+int a, b;
+string s;
+
+int main() {
+    cin >> a >> b >> s;
+
+    int n = s.size();
+    vector<PII> xs;
+    {
+        int x = 0, y = 0;
+        xs.push_back({0, 0});  // 可以移动之前判断
+        for (auto c : s) {
+            if (c == 'U')
+                y++;
+            else if (c == 'D')
+                y--;
+            else if (c == 'L')
+                x--;
+            else if (c == 'R')
+                x++;
+            xs.push_back({x, y});
+        }
+    }
+    auto [sx, sy] = xs.back();
+
+    for (int i = 0; i < xs.size(); ++i) {
+        auto [dx, dy] = xs[i];
+        int d1 = 2e9, d2 = 2e9;
+        if (sx)
+            d1 = (a - dx) / sx;
+        if (sy)
+            d2 = (b - dy) / sy;
+
+        if (d1 < 0 || d2 < 0)
+            continue;
+        if (d1 != 2e9 && d2 != 2e9 && d1 != d2)
+            continue;
+
+        int nx = 0, ny = 0;
+        if (d1 != 2e9)
+            nx = d1 * sx;
+        if (d2 != 2e9)
+            ny = d2 * sy;
+
+        if (nx + dx == a && ny + dy == b) {
+            cout << "Yes" << endl;
+            return 0;
+        }
+    }
+    cout << "No" << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
 ### STL 简化模拟
 
 > [!NOTE] **[LeetCode 2122. 还原原数组](https://leetcode-cn.com/problems/recover-the-original-array/)** [TAG]

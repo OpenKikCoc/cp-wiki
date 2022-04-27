@@ -1540,6 +1540,128 @@ int main() {
 
 * * *
 
+> [!NOTE] **[Codeforces Regular Bridge](http://codeforces.com/problemset/problem/550/D)** [TAG]
+> 
+> 题意: 
+> 
+> 给出一个 $k$ ，构造一个无向图，使得每个点的度数为 $k$ ，且存在一个桥
+> 
+> $k \leqslant 100$
+
+> [!TIP] **思路**
+> 
+> 非常非常好的构造
+> 
+> 桥两侧对称，显然可以构造如下形式:
+> 
+> `[2, k-1, 1] --桥-- [1, k-1, 2]`
+> 
+> - 对于其中一侧（如左侧），易知 `k-1` 个点辅助割点保持桥性质，而 `2` 个点辅助 `k-1` 个点保持 `k度` 性质。同时 `2` 相互连边以保持辅助点的 `k度` 性质
+> 
+> - 现在 `k-1` 个点每个点已有 `3` 条边。还需要在除自己之外的 `k-2` 个点里连接 `k-3` 条边【**重点**】
+> 
+> - 原本想的每个点和它下一个点都不连 ==> 因为连续性，这样会造成中间的点与其 `左/右` 两个点都没有相连，最终边数不够
+> 
+> - **应当每隔一个点与其下一个点不相连（每隔一个点删除这个点与下一个点直接相连的边）** ==> **思考**
+> 
+> 核心在于：**对于剩下的 `k-1` 个点要连 `k-3` 条边的处理思路**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: D. Regular Bridge
+// Contest: Codeforces - Codeforces Round #306 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/550/D
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int k;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> k;
+
+    if (k & 1) {
+        cout << "YES" << endl;
+        int subver = k - 1;  // 和割点直接相连的必然有 k-1 个
+        // 如果这样的点存在，额外需要两个来帮助这样的点保持k特性
+        if (subver)
+            subver += 2;
+        int singleVer = subver + 1;
+        int ver = singleVer * 2;
+        int edges = ver * k / 2;
+        cout << ver << ' ' << edges << endl;
+
+        int cnt = 0;
+        cnt++;
+        cout << singleVer << ' ' << singleVer + 1 << endl;
+
+        if (subver) {  // must > 2
+
+            int maxv = ver + 1;
+            cnt += 2;
+            cout << 1 << ' ' << 2 << endl;
+            cout << maxv - 1 << ' ' << maxv - 2 << endl;
+            for (int i = 3; i <= subver; ++i) {
+                cnt += 6;
+                cout << singleVer << ' ' << i << endl;
+                cout << 1 << ' ' << i << endl;
+                cout << 2 << ' ' << i << endl;
+                cout << singleVer + 1 << ' ' << maxv - i << endl;
+                cout << maxv - 1 << ' ' << maxv - i << endl;
+                cout << maxv - 2 << ' ' << maxv - i << endl;
+            }
+            // between subver
+            // 这k-1个点分别已有3条边，只需要再加k-3条即可  (k为奇数)
+            // 假定所有的k-1个点和下一个点都不连 ==>【ATTENTION】
+            // 错就错在这里，并不能每个点都和下一个点不连【较显然】
+            // 应当是每隔一个点，和下一个点不连
+
+            // ATTENTION: 截止此时，k-1个点每个连k-3条边的思路都是正确的
+            // 因为除去自己之外还有 k-2 个点，故必然可以
+            // 接下来是删边方式，显然需要隔一个删一个，而非每个都删它与下一个紧邻的边
+            for (int i = 3; i <= subver; ++i)
+                for (int j = i + 1; j <= subver; ++j) {
+                    if ((i & 1) && j == i + 1)
+                        continue;
+                    cnt += 2;
+                    cout << i << ' ' << j << endl;
+                    cout << maxv - i << ' ' << maxv - j << endl;
+                }
+            // cout << "DEBUG edges = " << edges << " cnt = " << cnt << endl;
+        }
+    } else {
+        cout << "NO" << endl;
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
 ### 进制数 思想
 
 > [!NOTE] **[Codeforces Pashmak and Buses](http://codeforces.com/problemset/problem/459/C)** [TAG]

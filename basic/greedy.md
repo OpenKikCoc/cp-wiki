@@ -1100,6 +1100,112 @@ int main() {
 
 * * *
 
+> [!NOTE] **[Codeforces ]()**
+> 
+> 题意: 
+> 
+> 有 $n$ 个位置，第 $i$ 个位置上有 $a_i$ 个箱子。
+> 
+> 有 $m$ 个人，开始在 $0$ 位置，每一秒钟每个人都可以选择搬走自己位置上的一个箱子或向前走一步。
+> 
+> 问最少需要多少时间才可以将箱子全部搬完。
+> 
+> $n,m\le 10^5,a_i\le 10^9$
+
+> [!TIP] **思路**
+> 
+> 优先搬末尾，重点在于贪心推导
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. GukiZ hates Boxes
+// Contest: Codeforces - Codeforces Round #307 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/551/C
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 一开始题意理解有误，其实题意中的“移除盒子”就是在原地就直接数量减一即可。
+// 而且每个人可以执行移除操作无限次（只要在时间范围内），可无限左右移动
+// ==>
+// 在这个前提下，我们显然可以得到
+
+using LL = long long;
+const static int N = 1e5 + 10;
+
+int n, m;
+int a[N];
+
+// 检查 mid 时间内能否移除所有盒子
+bool check(LL mid) {
+    // 在此前提下，显然可以假定每个人都有 mid 的时间
+    // 【每个人拿尽可能靠右的箱子】==》重要的贪心推导
+
+    vector<int> xs;  // 标记所有有箱子的位置
+    static LL t[N];
+    for (int i = 1; i <= n; ++i) {
+        t[i] = a[i];
+        if (t[i])
+            xs.push_back(i);
+    }
+
+    for (int i = 1; i <= m && !xs.empty(); ++i) {
+        if (mid < xs.back())
+            return false;
+        // 一直到到达末尾，可以用于搬运盒子的次数【重要贪心：找末尾】
+        LL left = mid - xs.back();
+        while (xs.size() && left) {
+            LL move = min(left, t[xs.back()]);
+            left -= move;
+            if (move == t[xs.back()])
+                xs.pop_back();
+            else
+                t[xs.back()] -= move;
+        }
+    }
+    return xs.empty();
+}
+
+int main() {
+    cin >> n >> m;
+    for (int i = 1; i <= n; ++i)
+        cin >> a[i];
+
+    // 显然最小时间有二分性质
+    LL l = 0, r = 1e18;
+    while (l < r) {
+        LL mid = l + r >> 1;
+        if (!check(mid))
+            l = mid + 1;
+        else
+            r = mid;
+    }
+    cout << l << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 排序不等式
 
 > [!NOTE] **[AcWing 1395. 产品处理](https://www.acwing.com/problem/content/1397/)**
