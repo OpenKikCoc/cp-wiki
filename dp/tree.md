@@ -2133,3 +2133,101 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces Appleman and Tree](http://codeforces.com/problemset/problem/461/B)**
+> 
+> 题意: 
+> 
+> 给出一棵以 $0$ 为根的树，除根之外有些点是黑色，有些点是白色。
+> 
+> 求有多少种划分方案数，使得将树划分成若干个连通块并且每个连通块有且仅有一个黑点，对 $10^9+7$ 取模。
+
+> [!TIP] **思路**
+> 
+> 重点在于 **梳理状态定义与转移**
+> 
+> 重复做
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Appleman and Tree
+// Contest: Codeforces - Codeforces Round #263 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/461/B
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const static int N = 1e5 + 10, M = N << 1, MOD = 1e9 + 7;
+
+int h[N], e[M], ne[M], idx;
+void init() {
+    memset(h, -1, sizeof h);
+    idx = 0;
+}
+void add(int a, int b) { e[idx] = b, ne[idx] = h[a], h[a] = idx++; }
+
+int n;
+int color[N];
+LL f[N][2];
+// f[x][1] 表示当前根为x 在只有一个黑点的联通块里的方案数
+// f[x][0] 表示当前根为x 当前在没有黑点的联通块里的方案数
+
+void dfs(int u, int fa) {
+    f[u][color[u]] = 1;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (j == fa)
+            continue;
+        dfs(j, u);
+        // ATTENTION
+        // f[u][1] = f[u][1] * (f[j][0] + f[j][1]) + f[u][0] * f[j][1]
+        // f[u][0] = f[u][0] * (f[j][0] + f[j][1])
+
+        // 计算顺序有依赖，所以先算f[u][1]
+        LL t = (f[j][0] + f[j][1]) % MOD;
+        f[u][1] = (f[u][1] * t % MOD + f[u][0] * f[j][1] % MOD) % MOD;
+        f[u][0] = f[u][0] * t % MOD;
+    }
+}
+
+int main() {
+    init();
+
+    cin >> n;
+    for (int i = 0, j; i < n - 1; ++i) {
+        cin >> j;
+        add(j, i + 1), add(i + 1, j);
+    }
+
+    for (int i = 0; i < n; ++i)
+        cin >> color[i];
+
+    memset(f, 0, sizeof f);
+    dfs(0, -1);
+
+    cout << f[0][1] << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

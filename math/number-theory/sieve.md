@@ -843,3 +843,95 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces Soldier and Number Game](http://codeforces.com/problemset/problem/546/D)**
+> 
+> 题意: 
+> 
+> 求 $n$ 的质因子个数（分解之后的，非求不同质因子）
+
+> [!TIP] **思路**
+> 
+> 线性筛应用 **积性性质**
+> 
+> 设 $f[x]$ 表示 $x$ 的质因子个数，易得 $f[xy]=f[x]+f[y]$
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: D. Soldier and Number Game
+// Contest: Codeforces - Codeforces Round #304 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/546/D
+// Memory Limit: 256 MB
+// Time Limit: 3000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const static int N = 5e6 + 10;
+
+int primes[N], cnt;
+bool st[N];
+LL f[N], s[N];
+
+void init() {
+    cnt = 0;
+    memset(st, 0, sizeof st);
+    memset(f, 0, sizeof f);  // f[i] 表示i的所有可分解质因子个数
+    f[1] = 0;
+    for (int i = 2; i < N; ++i) {
+        if (!st[i])
+            primes[cnt++] = i, f[i] = 1;
+        for (int j = 0; primes[j] <= (N - 1) / i; ++j) {
+            int t = primes[j] * i;
+            st[t] = true;
+            f[t] = f[i] + 1;  // 1 为 primes[j]
+            if (i % primes[j] == 0) {
+                break;
+            }
+        }
+    }
+    memset(s, 0, sizeof s);
+    for (int i = 1; i < N; ++i)
+        s[i] = s[i - 1] + f[i];
+}
+
+int main() {
+    // ios::sync_with_stdio(false);
+    // cin.tie(nullptr);
+    // cout.tie(nullptr);
+
+    init();
+
+    int t;
+    // cin >> t;
+    scanf("%d", &t);
+    while (t--) {
+        int l, r;
+        // cin >> r >> l;
+        scanf("%d %d", &r, &l);
+        // cout << s[r] - s[l] << endl;
+        printf("%d\n", s[r] - s[l]);
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

@@ -738,7 +738,7 @@ public:
 
 > [!TIP] **思路**
 > 
-> 约束和 等比数列求和优化
+> 约数和 等比数列求和优化
 
 <details>
 <summary>详细代码</summary>

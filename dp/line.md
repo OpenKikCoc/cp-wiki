@@ -2125,17 +2125,29 @@ int main() {
 
 > [!NOTE] **[Codeforces Obsessive String](http://codeforces.com/problemset/problem/494/B)**
 > 
-> 题意: 
+> 题意: 【非常晦涩】
 > 
-> 给定字符串 `S` 和字符串 `T` ，求
+> 给定字符串 $S$ 和字符串 $T$ ，求：
 > 
-> - 在 `S` 中选择**若干个（至少一个）**互不相交（**不能有重复**选的位置，但**可以有空选**位置）的**包含 `T` 的 子串**
+> 在 $S$ 中选择**若干个（至少一个）**互不相交（**不能有重复**选的位置，但**可以有空选**位置）的**包含 $T$ 的 子串**
 > 
 > 有多少种不同的选法。
+> 
+> > 其实就是让你求合法的集合数目。合法的集合定义为：
+> > 
+> > 1. 集合中的所有串都是 $s$ 的子串，且互不重叠 
+> > 
+> > 2. 集合中的所有串都含有子串 $t$ 。
 
 > [!TIP] **思路**
 > 
-> TODO
+> 如果 $i$ 是 $T$ 的匹配位置，首先考虑只有一个串, 那么答案就是 $i−m+1$ 。因为 $1$ 到 $i−m+1$ 的所有位置都可以作为一个开始。
+> 
+> 那如果是多个串呢？如果我们设最后一个串从位置 $k$ 开始，那么前面的所有的方案数就是 $\sum_{i=1}^k f[i]$ 
+> 
+> 对于每个位置k求和，就是 $\sum_{k=1}^{i-m} \sum_{j=1}^{k} f[j]$ 。
+> 
+> 随后根据前缀和优化转移即可。**重复做**
 
 <details>
 <summary>详细代码</summary>
@@ -2144,7 +2156,68 @@ int main() {
 ##### **C++**
 
 ```cpp
+// Problem: B. Obsessive String
+// Contest: Codeforces - Codeforces Round #282 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/494/B
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
 
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+using ULL = unsigned long long;
+const static int N = 1e5 + 10, MOD = 1e9 + 7, P = 131;
+
+ULL p[N], h[N];
+void init() {
+    p[0] = 1;
+    for (int i = 1; i < N; ++i)
+        p[i] = p[i - 1] * P;
+}
+ULL get(int l, int r) { return h[r] - h[l - 1] * p[r - l + 1]; }
+
+string s, t;
+int n, m;
+bool st[N];
+
+LL f[N], s1[N], s2[N];
+
+int main() {
+    cin >> s >> t;
+    n = s.size(), m = t.size();
+    s = ' ' + s, t = ' ' + t;
+
+    // string hash
+    init();
+    h[0] = 0;
+    for (int i = 1; i <= n; ++i)
+        h[i] = h[i - 1] * P + s[i];
+
+    {
+        ULL x = 0;
+        for (int i = 1; i <= m; ++i)
+            x = x * P + t[i];
+        // 计算 s 中以 i 结尾的连续串是否等于 t
+        memset(st, 0, sizeof st);
+        for (int i = m; i <= n; ++i)
+            if (get(i - m + 1, i) == x)
+                st[i] = true;
+    }
+
+    // ATTENTION
+    for (int i = 1; i <= n; ++i) {
+        if (st[i])
+            f[i] = (i - m + 1 + s2[i - m]) % MOD;
+        else
+            f[i] = f[i - 1];
+        s1[i] = (s1[i - 1] + f[i]) % MOD;   // 前缀和优化
+        s2[i] = (s2[i - 1] + s1[i]) % MOD;  // 前缀和的前缀和
+    }
+    cout << s1[n] << endl;
+
+    return 0;
+}
 ```
 
 ##### **Python**
