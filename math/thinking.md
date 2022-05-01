@@ -2300,3 +2300,76 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces Andrey and Problem](http://codeforces.com/problemset/problem/442/B)**
+> 
+> 题意: 
+> 
+> Andrey 请教朋友 OI 题，他知道第 $i$ 个朋友解答出问题题的概率 $p_{i}$
+> 
+> 他只想让朋友解答出且仅解答出 1 道题。
+> 
+> 求概率最大。
+
+> [!TIP] **思路**
+> 
+> 贪心 + 数学 1A
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Andrey and Problem
+// Contest: Codeforces - Codeforces Round #253 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/442/B
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using PDD = pair<double, double>;
+const static int N = 110;
+
+int n;
+PDD p[N];
+
+int main() {
+    cin >> n;
+    for (int i = 1; i <= n; ++i) {
+        cin >> p[i].first;
+        p[i].second = 1.0 - p[i].first;
+    }
+    sort(p + 1, p + n + 1);
+
+    double p1 = 0, p2 = 1.0, res = 0;
+    for (int i = n; i >= 1; --i) {
+        auto [px, py] = p[i];
+        double new_p1 = p1 * py + px * p2;
+        double new_p2 = p2 * py;
+        p1 = new_p1, p2 = new_p2;
+        // cout << " i = " << i << " p1 = " << p1 << " p2 = " << p2 << endl;
+        res = max(res, p1);
+    }
+
+    printf("%.12lf\n", res);
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

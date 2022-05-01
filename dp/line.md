@@ -2123,6 +2123,44 @@ int main() {
 
 * * *
 
+> [!NOTE] **[Codeforces Obsessive String](http://codeforces.com/problemset/problem/494/B)**
+> 
+> 题意: 
+> 
+> 给定字符串 `S` 和字符串 `T` ，求
+> 
+> - 在 `S` 中选择**若干个（至少一个）**互不相交（**不能有重复**选的位置，但**可以有空选**位置）的**包含 `T` 的 子串**
+> 
+> 有多少种不同的选法。
+
+> [!TIP] **思路**
+> 
+> TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
 ### 股票问题
 
 > [!NOTE] **[LeetCode 121. 买卖股票的最佳时机](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock/)**
