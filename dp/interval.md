@@ -30,8 +30,24 @@
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> 区间 $dp$ 的常用技巧：一般涉及到环形区间（就是首尾可以合并），可以把整个环复制一遍，变成一条长链。
+>
+> 1. 状态表示：$f[i,j]$ 所有把从 $i$ 堆到 $j$ 堆合并成一堆的方案的最小/最大值
+>
+> 2. 状态转移：根据最后一次合并的不同：最后一次合并第 $k$ 堆：$f[l, r] = f[l,k] + f[k+1, r] + s[l,r]$
+>
+>    合并的过程看成：把两堆石子连一条边。
+>
+> 3. 区间 $dp$ 有两种实现方式：
+>
+>    (1) 迭代式（推荐）
+>
+>    - 最外层循环：循环长度
+>    - 第二层循环：循环左端点
+>    - 算一下右端点，再枚举分界点
+>
+>    (2) 记忆化搜索
 
 <details>
 <summary>详细代码</summary>
@@ -94,7 +110,38 @@ int main() {
 ##### **Python**
 
 ```python
+N = 410
+f = [[float('inf')] * N for _ in range(N)]
+g = [[float('-inf')] * N for _ in range(N)]
+s = [0] * N
+w = [0] * N
 
+if __name__ == '__main__':
+    n = int(input())
+    nums = list(map(int, input().split()))
+    w[1:] = nums * 2
+    
+    for i in range(1, 2 * n + 1): # 用prefix sum的思想快速求一段的数的和
+        s[i] = s[i - 1] + w[i]
+        
+    for length in range(1, n + 1):
+        l = 1
+        while (l + length - 1) <= 2 * n:
+            r = l + length - 1
+            if length == 1:
+                f[l][r] = g[l][r] = 0
+            for k in range(l, r):
+                f[l][r] = min(f[l][r], f[l][k] + f[k + 1][r] + s[r] - s[l - 1])
+                g[l][r] = max(g[l][r], g[l][k] + g[k + 1][r] + s[r] - s[l - 1])
+            l += 1
+                    
+    minv, maxv = float('inf'), float('-inf')
+    for i in range(1, n + 1):
+        minv = min(minv, f[i][i + n - 1])
+        maxv = max(maxv, g[i][i + n - 1])
+        
+    print(minv)
+    print(maxv)
 ```
 
 <!-- tabs:end -->
@@ -109,8 +156,14 @@ int main() {
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
+>
 > 变种 记忆整理
+>
+> 1. 状态表示：$f[i,j]$ 表示将所有 $[L,R]$ 合并在一个矩阵（珠子）的方式
+>
+>    把2 3 5 10 （2 3） （3 5） （5 10） （10 2）===> 用 2 3 5 10 2表示 return f[1, 5]， 先考虑线性状态如何实现，再复制一遍就成环状了。 
+>
+> 2. 状态计算：$f[L,R] = max(f[L,K) + f[K, R] + W[L] * W[R] * W[K])$
 
 <details>
 <summary>详细代码</summary>
@@ -158,7 +211,25 @@ int main() {
 ##### **Python**
 
 ```python
+N = 210 
+w = [0] * N
+f = [[0] * N for _ in range(N)]
 
+if __name__=='__main__':
+    n = int(input())
+    nums = list(map(int, input().split()))
+    w[1:] = 2 * nums
+     
+    for length in range(3, n + 2):  #踩坑1: 这道题长度可以遍历到 n+1
+        for l in range(1, 2 * n - length + 2):
+            r = l + length -1 
+            for k in range(l + 1,r):  # 踩坑2: k 是从 l+1 开始遍历的
+                f[l][r] = max(f[l][r], f[l][k] + f[k][r] + w[l] * w[k] * w[r])
+    
+    res = 0
+    for l in range(1, n + 1):
+        res = max(res, f[l][l + n])
+    print(res)
 ```
 
 <!-- tabs:end -->

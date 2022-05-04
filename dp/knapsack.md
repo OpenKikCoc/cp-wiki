@@ -2551,6 +2551,7 @@ int main() {
 # 分组背包以及背包方案问题的应用
 # 分组背包问题的实质：本身是一个组合数的问题（有些限制的组合数：物品之间有很多种互斥的选法）
 # 逻辑转化：每个公司当成物品组；公司1:3个物品，第一个物品：分配1台（v:1,w1:30)；第二个物品：分配2台（v:2,w2:40)；第三个物品：分配3台（v:2,w3:50)
+
 N = 20
 f = [0] * N
 w = [[0] * N for _ in range(N)]
@@ -2827,9 +2828,6 @@ def dfs1(u):
     while i != -1:  # 1 go thru every sub-tree
         son = ev[i]
         dfs(ev[i])
-        # group knapsack template
-        # 1 travel group == every sub-tree
-        # 2 travel volumn of knapsack
         for j in range(m - v[u], -1, -1):  # 必须要加上根节点,所有为根节点留出空间
             # 3 travel options 枚举当前用到的背包容量
             for k in range(0, j + 1):
@@ -2841,22 +2839,6 @@ def dfs1(u):
     # 当容量小于根节点v[root],则必然放不下，最大值都是0
     for i in range(v[u]):
         f[u][i] = 0
-
-
-def dfs(u):
-    global m  # 递归时 m需要随着变化，所以需要加global关键字
-    for i in range(v[u], m + 1):  # 点u必须选，才能选子节点，所以初始化f[u][v[u]~m] = w[u]
-        f[u][i] = w[u]
-    i = h[u]
-    while i != -1:
-        son = ev[i]
-        dfs(ev[i])
-
-        for j in range(m, v[u] - 1, -1):  # j的范围为v[x]~m, 小于v[x]无法选择以x为子树的物品
-            for k in range(0, j - v[u] + 1):  # 分给子树y的空间不能大于j-v[x],不然都无法选根物品x
-                f[u][j] = max(f[u][j], f[u][j - k] + f[son][k])
-        i = ne[i]  # 踩坑：一定要记得写啊！！！
-
 
 def add_edge(a, b):
     global idx
@@ -2893,8 +2875,26 @@ if __name__ == '__main__':
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> **第一种状态表示：**
+>
+> 1. $g[i,j]$ 表示 $f[i,j]$ 对应的方案数。$(f[i,j]表示的是体积 【恰好】 是j的方案数)$
+>
+> 2. $f[i,j] = max(f[i-1,j],  f[i-1,j-v[i]]+w[i])$
+>
+> 3. 对应的$g[i][j]$: 
+>
+>    $g[i][j]=g[i-1][j]$；
+>
+>    $g[i][j]=g[i-1][j-v[i]$;
+>
+>    如果相等：$g[i-1][j]+g[i-1][j-v[i]$
+>
+> 4. $f[i,j] 和 g[i,j]可以优化成一维。$
+>
+> **第二种状态表示：**
+>
+> f[j]: 表示体积 【不超过】j 时的最大价值；和第一种状态表示的区别在于：初始化的不同。
 
 <details>
 <summary>详细代码</summary>
@@ -2946,20 +2946,9 @@ int main() {
 }
 ```
 
-##### **Python**
+##### **Python-dp1**
 
 ```python
-# 所有的背包问题 都可以转化为 最短路问题。
-# 起点是[0,0] 终点是[n,m] 
-# 求最优解的方案数 等价于 求解 最短路径的条数。
-
-# 第一种状态表示：
-# g[i,j]表示 f[i,j]对应的方案数。(f[i,j]表示的是体积 【恰好】 是j的方案数)
-# f[i,j]: 左边：不选i ,f[i-1,j]; 右边：选i, f[i-1,j-v[i]]+w[i]
-# 对应的g[i][j]: 如果f[i][j]计算的时候 左边大：g[i][j]=g[i-1][j]；
-#               如果右边大，那g[i][j]=g[i-1][j-v[i];
-#               如果相等：g[i-1][j]+g[i-1][j-v[i]
-# g[i,j]可以优化成一维。
 if __name__ == "__main__":
     MOD = int(1e9) + 7
     n, m = map(int, input().split())
@@ -2974,7 +2963,7 @@ if __name__ == "__main__":
         for j in range(m, v - 1, -1):
             if f[j] < f[j - v] + w:
                 f[j] = f[j - v] + w
-                g[j] = g[j - v]
+                g[j] = g[j - v] % MOD
             elif f[j] == f[j - v] + w:
                 g[j] = (g[j] + g[j - v]) % MOD
     # 注意：这里不能直接输出g[m], 因为比如 f[9]的值可能是最佳方案，但f[7]也可能是最佳方案
@@ -2988,9 +2977,11 @@ if __name__ == "__main__":
         if (f[i] == v):
             res = (res + g[i]) % MOD
     print(res)
+```
 
-# 第二种状态表示：
-# f[j]: 表示体积 【不超过】j时的最大价值；和第一种状态表示的区别在于：初始化的不同。
+##### **Python-dp2**
+
+```python
 if __name__ == "__main__":
     MOD = int(1e9) + 7
     n, m = map(int, input().split())
@@ -3010,6 +3001,8 @@ if __name__ == "__main__":
     print(g[m])
 ```
 
+
+
 <!-- tabs:end -->
 </details>
 
@@ -3022,8 +3015,12 @@ if __name__ == "__main__":
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> 求字典序最小的方案
+>
+> 1. 状态定义： $f[i, j]$ 状态定义需要倒序：从第 $i$ 个元素到最后一个元素总容量为 $j$ 的最优解。
+> 2. 状态转移： $f(i,j)=max(f(i+1,j),f(i+1,j−v[i])+w[i])$
+> 3. 可以通过贪心的思路获得字典序最小的答案
 
 <details>
 <summary>详细代码</summary>
@@ -3066,27 +3063,16 @@ int main() {
 ##### **Python**
 
 ```python
-#f[i,j]=max(f[i-1][j],f[i-1][j-v[i]+w[i])   f[n,m]
-#求具体方案 其实：是判断出每个物品是否被选。需要倒推出来每一次的抉择 是第一项 还是第二项
-#dp问题求方案对应的是：最短路问题。（从哪条路径走到f[n][m])
-
-#注意如果不用数组存储状态的话：1）不能用状态压缩 2）去倒推如何走到f[n][m]
-#看到“字典序最小方案” 不要害怕===> 这是因为出题人懒，只想有一个答案。（不是想难为大家）
-
-#本题考点：1）f[i][j]状态定义需要倒序：之前的f(i,j)记录的都是前i个物品总容量为j的最优解，那么我们现在将f(i,j)定义为从第i个元素到最后一个元素总容量为j的最优解。接下来考虑状态转移：
-#f(i,j)=max(f(i+1,j),f(i+1,j−v[i])+w[i])：两种情况，第一种是不选第i个物品，那么最优解等同于从第i+1个物品到最后一个元素总容量为j的最优解；第二种是选了第i个物品，那么最优解等于当前物品的价值w[i]加上从第i+1个物品到最后一个元素总容量为j−v[i]的最优解。
-#2）用数组存储路径，可以压缩空间；3）如果是要求字典序最大，在判断的时候t>f[j]:f[j]=t （需要理解）
-
 N = 1010
 v = [0] * N
 w = [0] * N
 f = [0] * N  #用一个数组来存储状态，可以压缩空间
-p = [[0] * N for _ in range(N)]  #用数组来存储状态
+p = [[0] * N for _ in range(N)]  # 用数组来存储状态
 
 if __name__ == '__main__':
-    n, m = map(int,input().split())
+    n, m = map(int, input().split())
     for i in range(1, n + 1):
-        v[i],w[i] = map(int,input().split())
+        v[i], w[i] = map(int, input().split())
     for i in range(n, 0, -1):
         for j in range(m, v[i] - 1, -1):
             t = f[j - v[i]] + w[i]
@@ -3104,6 +3090,36 @@ if __name__ == '__main__':
 #            val -= v[i]
 #        i += 1
 ```
+
+##### **Python**
+
+```python
+N = 1010
+v = [0] * N
+w = [0] * N 
+f = [[0] * N for _ in range(N)]
+
+if __name__ == '__main__':
+    n, m = map(int, input().split())
+    for i in range(1, n + 1):
+        v[i], w[i] = map(int, input().split())
+    
+    for i in range(n, 0, -1):
+        for j in range(m + 1):
+            f[i][j] = f[i + 1][j]
+            if j >= v[i]:
+                f[i][j] = max(f[i+1][j], f[i+1][j - v[i]] + w[i])
+    
+    j = m
+    for i in range(1, n + 1):
+        if j >= v[i] and f[i][j] == f[i + 1][j -v[i]] + w[i]:
+            print(i, end = ' ')
+            j -= v[i]
+```
+
+
+
+
 
 <!-- tabs:end -->
 </details>
