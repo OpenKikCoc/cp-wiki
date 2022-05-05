@@ -608,6 +608,104 @@ int main() {
 
 * * *
 
+> [!NOTE] **[Codeforces Eternal Victory](http://codeforces.com/problemset/problem/61/D)**
+> 
+> 题意: 
+> 
+> 一颗树，从 $1$ 起始游遍所有节点问最少总距离
+
+> [!TIP] **思路**
+> 
+> 显然让最长的链直走一次即可，其他都是两次
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: D. Eternal Victory
+// Contest: Codeforces - Codeforces Beta Round #57 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/61/D
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const static int N = 1e5 + 10, M = 2e5 + 10;
+
+int h[N], e[M], w[M], ne[M], idx;
+void init() {
+    memset(h, -1, sizeof h);
+    idx = 0;
+}
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx++;
+}
+
+int n;
+LL d1[N], d2[N];  // 本题要求下d2可不要
+
+void dfs(int u, int fa) {
+    d1[u] = d2[u] = 0;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (j == fa)
+            continue;
+        dfs(j, u);
+        LL t = d1[j] + w[i];
+        if (t > d1[u])
+            d2[u] = d1[u], d1[u] = t;
+        else if (t > d2[u])
+            d2[u] = t;
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    init();
+
+    cin >> n;
+
+    LL s = 0;
+    for (int i = 0; i < n - 1; ++i) {
+        int a, b, c;
+        cin >> a >> b >> c;
+        add(a, b, c), add(b, a, c);
+        s += c;
+    }
+
+    dfs(1, -1);
+
+    // FIX: 如果是起点任意，当然可以这样
+    // cout << s * 2ll - res << endl;
+    // ATTENTION: 必须从 1 起始，那么有一个最长链走一次即可
+    cout << s * 2ll - d1[1] << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
 ### 树上DP
 
 - [「CTSC1997」选课](https://www.luogu.com.cn/problem/P2014)
@@ -1952,6 +2050,251 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces Lucky Tree](http://codeforces.com/problemset/problem/109/C)**
+> 
+> 题意: 
+> 
+> 有多少个三元组满足从一点出发到其他两点，路径上必然有幸运边
+
+> [!TIP] **思路**
+> 
+> 经典换根，重点在状态定义与转移
+> 
+> 将路径有幸运边转化为有多少个点可以通过幸运边达到 ==> **分别向下/向上** ==> **换根DP**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Lucky Tree
+// Contest: Codeforces - Codeforces Beta Round #84 (Div. 1 Only)
+// URL: https://codeforces.com/problemset/problem/109/C
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const static int N = 1e5 + 10, M = 2e5 + 10;
+
+int h[N], e[M], w[M], ne[M], idx;
+void init() {
+    memset(h, -1, sizeof h);
+    idx = 0;
+}
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx++;
+}
+
+int n;
+LL fd[N], fu[N], sz[N];
+
+void dfs_d(int u, int fa) {
+    fd[u] = 0, sz[u] = 1;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i], c = w[i];
+        if (j == fa)
+            continue;
+        dfs_d(j, u);
+        sz[u] += sz[j];
+        if (c == 1)
+            fd[u] += sz[j];
+        else
+            fd[u] += fd[j];
+    }
+}
+
+void dfs_u(int u, int fa) {
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i], c = w[i];
+        if (j == fa)
+            continue;
+        if (c == 1)
+            fu[j] += sz[1] - sz[j];  // 较显然
+        else
+            //       继承 + 其他子节点
+            fu[j] += fu[u] + fd[u] - fd[j];
+        dfs_u(j, u);
+    }
+}
+
+int main() {
+    init();
+
+    cin >> n;
+    for (int i = 0; i < n - 1; ++i) {
+        int a, b, c;
+        cin >> a >> b >> c;
+        string s = to_string(c);
+        bool flag = true;
+        for (auto& ch : s)
+            if (ch != '4' && ch != '7') {
+                flag = false;
+                break;
+            }
+        add(a, b, flag), add(b, a, flag);
+    }
+    dfs_d(1, -1);
+    dfs_u(1, -1);
+
+    LL res = 0;
+    for (int i = 1; i <= n; ++i) {
+        LL t = fd[i] + fu[i];
+        res += t * (t - 1);  // 因为顺序不同也是不同，故不需要除2
+    }
+    cout << res << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces Book of Evil](http://codeforces.com/problemset/problem/337/D)**
+> 
+> 题意: 
+> 
+> 有一棵树有 $n$ 个节点，其中有 $m$ 个节点发现了怪物。
+> 
+> 已知树上有一本魔法书，魔法书可以让到其距离小于等于 $d$ 的点出现怪物，求魔法书所在点有几种可能。
+
+> [!TIP] **思路**
+> 
+> 重在细节 **初始化-inf来避免复杂条件判断**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: D. Book of Evil
+// Contest: Codeforces - Codeforces Round #196 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/337/D
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 1e5 + 10, M = 2e5 + 10, INF = 0x3f3f3f3f;
+
+int h[N], e[M], ne[M], idx;
+void init() {
+    memset(h, -1, sizeof h);
+    idx = 0;
+}
+void add(int a, int b) { e[idx] = b, ne[idx] = h[a], h[a] = idx++; }
+
+int n, m, d;
+int a[N];
+bool st[N];
+
+int fd[N], fu[N];
+int pson[N], fd2[N];
+
+void dfs_d(int u, int fa) {
+    if (st[u])
+        fd[u] = fd2[u] = 0;
+    pson[u] = -1;
+
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (j == fa)
+            continue;
+        dfs_d(j, u);
+        int t = fd[j] + 1;
+        if (t + 1 > fd[u]) {
+            pson[u] = j;
+            fd2[u] = fd[u];
+            fd[u] = t;
+        } else if (t + 1 > fd2[u])
+            fd2[u] = t;
+    }
+}
+
+void dfs_u(int u, int fa) {
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (j == fa)
+            continue;
+        if (j == pson[u])
+            fu[j] = max(fu[u], fd2[u]) + 1;
+        else
+            fu[j] = max(fu[u], fd[u]) + 1;
+        dfs_u(j, u);
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> n >> m >> d;
+
+    memset(st, 0, sizeof st);
+    for (int i = 0; i < m; ++i) {
+        int t;
+        cin >> t;
+        st[t] = true;
+    }
+
+    init();
+    for (int i = 0; i < n - 1; ++i) {
+        int a, b;
+        cin >> a >> b;
+        add(a, b), add(b, a);
+    }
+
+    memset(fd, 0xcf, sizeof fd);  // -inf
+    memset(fd2, 0xcf, sizeof fd2);
+    memset(fu, 0xcf, sizeof fu);
+    dfs_d(1, -1);
+    dfs_u(1, -1);
+
+    int res = 0;
+    for (int i = 1; i <= n; ++i) {
+        // cout << " i = " << i << " fd = " << fd[i] << " fu = " << fu << endl;
+        if (max(fd[i], fu[i]) <= d)
+            res++;
+    }
+
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 
 
 ### 进阶：树DP状态设计

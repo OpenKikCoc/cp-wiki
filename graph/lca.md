@@ -1528,3 +1528,182 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces A and B and Lecture Rooms](http://codeforces.com/problemset/problem/519/E)**
+> 
+> 题意: 
+> 
+> 题目的意思就是每次询问点 $x,y$ ，要你求其中离它距离一样的点。
+
+> [!TIP] **思路**
+> 
+> 分情况讨论即可，需要 LCA 优化找点的过程
+> 
+> 具体的：需要找到中间点 (LCA)，并排除两个点所在的子树，随后计算大小 (dfs 统计树大小)
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: E. A and B and Lecture Rooms
+// Contest: Codeforces - Codeforces Round #294 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/519/E
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 1e5 + 10, M = 2e5 + 10;
+
+int h[N], e[M], ne[M], idx;
+void init() {
+    memset(h, -1, sizeof h);
+    idx = 0;
+}
+void add(int a, int b) { e[idx] = b, ne[idx] = h[a], h[a] = idx++; }
+
+int depth[N], fa[N][18];
+int q[N];
+void bfs(int root) {
+    memset(depth, 0x3f, sizeof depth);
+    depth[0] = 0, depth[root] = 1;
+    int hh = 0, tt = -1;
+    q[++tt] = root;
+    while (hh <= tt) {
+        int t = q[hh++];
+        for (int i = h[t]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (depth[j] > depth[t] + 1) {
+                depth[j] = depth[t] + 1;
+                q[++tt] = j;
+
+                fa[j][0] = t;
+                for (int k = 1; k < 18; ++k)
+                    fa[j][k] = fa[fa[j][k - 1]][k - 1];
+            }
+        }
+    }
+}
+int lca(int a, int b) {
+    if (depth[a] < depth[b])
+        swap(a, b);
+    for (int k = 17; k >= 0; --k)
+        if (depth[fa[a][k]] >= depth[b])
+            a = fa[a][k];
+    if (a == b)
+        return a;
+    for (int k = 17; k >= 0; --k)
+        if (fa[a][k] != fa[b][k])
+            a = fa[a][k], b = fa[b][k];
+    return fa[a][0];
+}
+
+int sz[N];
+void dfs(int u, int fa) {
+    sz[u] = 1;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (j == fa)
+            continue;
+        dfs(j, u);
+        sz[u] += sz[j];
+    }
+}
+
+// 由 x 向上爬到 dep 的深度
+int climpup(int x, int dep) {
+    for (int k = 17; k >= 0; --k)
+        if (depth[fa[x][k]] >= dep)
+            x = fa[x][k];
+    return x;
+}
+
+int n, m;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    init();
+
+    cin >> n;
+    for (int i = 0; i < n - 1; ++i) {
+        int a, b;
+        cin >> a >> b;
+        add(a, b), add(b, a);
+    }
+
+    bfs(1);
+    dfs(1, -1);
+
+    cin >> m;
+    while (m--) {
+        int x, y;
+        cin >> x >> y;
+        int pa = lca(x, y);
+        int dis = depth[x] + depth[y] - depth[pa] * 2;
+        // cout << "dis = " << dis << endl;
+        if (dis & 1)
+            cout << 0 << endl;
+        else {
+            // 分情况讨论
+
+            // find more
+            // 1. find the middle node
+            // 2. expand the nodes
+            int dx = depth[x] - depth[pa], dy = depth[y] - depth[pa];
+
+            if (dx == dy) {
+                if (x == y)
+                    cout << n << endl;
+                else {
+                    int res = n;
+                    {
+                        int dep = depth[x] - dis / 2 + 1;
+                        int node = climpup(x, dep);
+                        res -= sz[node];
+                    }
+                    {
+                        int dep = depth[y] - dis / 2 + 1;
+                        int node = climpup(y, dep);
+                        res -= sz[node];
+                    }
+                    cout << res << endl;
+                }
+            } else {
+                // dx != dy
+                if (dx < dy) {
+                    int dep = depth[y] - dis / 2 + 1;
+                    int node = climpup(y, dep);
+                    cout << sz[fa[node][0]] - sz[node] << endl;
+                } else {
+                    // dx > dy
+                    int dep = depth[x] - dis / 2 + 1;
+                    int node = climpup(x, dep);
+                    cout << sz[fa[node][0]] - sz[node] << endl;
+                }
+            }
+        }
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

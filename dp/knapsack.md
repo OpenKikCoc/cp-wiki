@@ -2747,6 +2747,89 @@ public:
 
 * * *
 
+> [!NOTE] **[Codeforces Porcelain](http://codeforces.com/problemset/problem/148/E)**
+> 
+> 题意: 
+> 
+> 现在有很多个柜子，每个柜子里面装着很多物品，公主每次摔东西只能随机的选择一个柜子，拿出最左边或者最右边的一个物品摔碎
+> 
+> 给出公主最多生气的次数 $m$，求生完气之后，公主摔掉物品的价值的最大总和。
+
+> [!TIP] **思路**
+> 
+> 显然对于每一个柜子都要找该柜从 `左/右` 连续取 `j` 个时的最大价值
+> 
+> 最后再统一分组背包即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: E. Porcelain
+// Contest: Codeforces - Codeforces Round #105 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/148/E
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 110, M = 1e4 + 10;
+
+int n, m;
+
+int v[N][M], c[N];
+int g[N][M], f[M];
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> n >> m;
+    for (int i = 1; i <= n; ++i) {
+        cin >> c[i];
+
+        static int s[M];
+        s[0] = 0;
+        for (int j = 1; j <= c[i]; ++j)
+            cin >> v[i][j], s[j] = s[j - 1] + v[i][j];
+
+        for (int j = 0; j <= c[i]; ++j) {
+            int nouse = c[i] - j, minv = 1e9;
+            for (int k = nouse; k <= c[i]; ++k)
+                minv = min(minv, s[k] - s[k - nouse]);
+            g[i][j] = s[c[i]] - minv;
+        }
+    }
+
+    for (int i = 1; i <= n; ++i)
+        for (int j = m; j >= 0; --j)
+            for (int k = 0; k <= c[i]; ++k)
+                if (k <= j)
+                    f[j] = max(f[j], f[j - k] + g[i][k]);
+    cout << f[m] << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 有依赖背包 树
 
 > [!NOTE] **[AcWing 10. 有依赖的背包问题](https://www.acwing.com/problem/content/description/10/)**

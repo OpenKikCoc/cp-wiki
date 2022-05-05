@@ -1479,6 +1479,100 @@ public:
 
 * * *
 
+> [!NOTE] **[Codeforces Enemy is weak](http://codeforces.com/problemset/problem/61/E)**
+> 
+> 题意: 题意同上题，只是找递减三元组
+
+> [!TIP] **思路**
+> 
+> 简单1A bit应用
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: E. Enemy is weak
+// Contest: Codeforces - Codeforces Beta Round #57 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/61/E
+// Memory Limit: 256 MB
+// Time Limit: 5000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const static int N = 1e6 + 10;
+
+LL tr1[N], tr2[N];
+int lowbit(int x) { return x & -x; }
+void add(LL tr[], int x, LL c) {
+    for (int i = x; i < N; i += lowbit(i))
+        tr[i] += c;
+}
+LL sum(LL tr[], int x) {
+    LL ret = 0;
+    for (int i = x; i; i -= lowbit(i))
+        ret += tr[i];
+    return ret;
+}
+
+int n;
+int a[N], b[N];
+unordered_map<int, int> id;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> n;
+    for (int i = 1; i <= n; ++i) {
+        cin >> a[i];
+        b[i] = a[i];
+    }
+    {
+        // 离散化
+        sort(b + 1, b + n + 1);
+        int len = unique(b + 1, b + n + 1) - (b + 1);
+        for (int i = 1; i <= len; ++i)
+            id[b[i]] = i;
+        for (int i = 1; i <= n; ++i)
+            a[i] = id[a[i]];
+    }
+
+    for (int i = 1; i <= n; ++i)
+        add(tr2, a[i], 1);
+
+    LL res = 0;
+    for (int i = 1; i <= n; ++i) {
+        add(tr2, a[i], -1);
+        LL more = sum(tr1, n) - sum(tr1, a[i]);
+        LL less = sum(tr2, a[i] - 1);
+        res += more * less;
+        add(tr1, a[i], 1);
+    }
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 进阶应用
 
 > [!NOTE] **[LeetCode 1505. 最多 K 次交换相邻数位后得到的最小整数](https://leetcode-cn.com/problems/minimum-possible-integer-after-at-most-k-adjacent-swaps-on-digits/)** [TAG] 模版题

@@ -3463,6 +3463,92 @@ int main() {
 
 * * *
 
+> [!NOTE] **[Codeforces Pashmak and Graph](http://codeforces.com/problemset/problem/459/E)**
+> 
+> 题意: 
+> 
+> 有一个 $n$ 个点 $m$ 条边带权有向图，求最长上升路径长度（路径上的边的权值递增）
+
+> [!TIP] **思路**
+> 
+> DP 无后效性：显然每次都要从边权小于当前点的位置转移过来
+> 
+> 按边权将所有边排序，随后枚举边来更新点的 DP 值
+> 
+> 思维：【**注意到要求严格递增，所以必须把相同边权的边一起 dp 掉，又为了防止他们互相影响，开一个 $t$ 数组保存临时的转移结果**】
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: E. Pashmak and Graph
+// Contest: Codeforces - Codeforces Round #261 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/459/E
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 3e5 + 10;
+
+int n, m;
+struct Edge {
+    int a, b, c;
+    bool operator<(const Edge& o) { return c < o.c; }
+} es[N];
+
+int f[N], t[N];
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> n >> m;
+    for (int i = 1; i <= m; ++i)
+        cin >> es[i].a >> es[i].b >> es[i].c;
+
+    sort(es + 1, es + 1 + m);
+
+    memset(f, 0, sizeof f);
+    for (int i = 1; i <= m; ++i) {
+        int j = i;
+        // ATTENTION: 统一处理相同长度的边！深刻理解其含义
+        while (es[j].c == es[i].c)
+            j++;
+        // 拷贝至临时数组
+        for (int k = i; k < j; ++k)
+            t[es[k].a] = f[es[k].a], t[es[k].b] = f[es[k].b];
+        for (int k = i; k < j; ++k)
+            f[es[k].b] = max(f[es[k].b], t[es[k].a] + 1);  // 使用临时数组转移
+        i = j - 1;
+    }
+    int res = 0;
+    for (int i = 1; i <= n; ++i)
+        res = max(res, f[i]);
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 
 ### LIS 与 LCS
 
@@ -3872,7 +3958,6 @@ int main() {
 <br>
 
 * * *
-
 
 ### 状态机模型
 
@@ -4326,6 +4411,115 @@ int main() {
     for (int i = 0; i < m; i++) res = (res + f[n][i]) % mod;
 
     cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces Lucky Common Subsequence](http://codeforces.com/problemset/problem/346/B)**
+> 
+> 题意: 
+> 
+> 求 $s1, s2$ 的最长公共子序列，该序列不能包含串 $virus$
+
+> [!TIP] **思路**
+> 
+> 直观有个想法是先求 $LCS$ 再走【设计密码】那套。但是 $LCS$ 可能不只有一种，实现起来显然有问题。
+> 
+> 考虑：三维 DP + KMP
+> 
+> 当第一个串匹配到 $i$ 位，第二个串匹配到 $j$ 位时，能匹配到第三个串的 $k$ 位
+> 
+> - $f_{i,j,u} = max(f_{i,j,u}, f_{i−1,j−1,k})$​
+> - $f_{i,j,k} = max(f_{i,j,k}, f_{i−1,j,k}, f_{i,j−1,k})$
+> 
+> 重点当然还是 **状态定义与转移的细节**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Lucky Common Subsequence
+// Contest: Codeforces - Codeforces Round #201 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/346/B
+// Memory Limit: 512 MB
+// Time Limit: 3000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using PII = pair<int, int>;
+const static int N = 110;
+
+string a, b, c;
+int na, nb, nc;
+string f[N][N][N];  // ATTENTION
+int ne[N];
+
+void change(string& sa, string sb) {
+    if (sb.size() > sa.size())
+        sa = sb;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> a >> b >> c;
+    na = a.size(), nb = b.size(), nc = c.size();
+    a = ' ' + a, b = ' ' + b, c = ' ' + c;
+
+    {
+        for (int i = 2, j = 0; i <= nc; ++i) {
+            while (j && c[i] != c[j + 1])
+                j = ne[j];
+            if (c[i] == c[j + 1])
+                j++;
+            ne[i] = j;
+        }
+    }
+
+    for (int i = 1; i <= na; ++i)
+        for (int j = 1; j <= nb; ++j)
+            // ATTENTION k = 0, k < nc
+            for (int k = 0; k < nc; ++k) {
+                if (a[i] == b[j]) {
+                    char t = a[i];
+                    int u = k;
+                    while (u && t != c[u + 1])
+                        u = ne[u];
+                    if (t == c[u + 1])
+                        u++;
+                    change(f[i][j][u], f[i - 1][j - 1][k] + t);
+                }
+                // ATTENTION 此处不能放在 else 里，否则WA
+                change(f[i][j][k], f[i - 1][j][k]);
+                change(f[i][j][k], f[i][j - 1][k]);
+            }
+    string res;
+    for (int i = 0; i < nc; ++i)
+        change(res, f[na][nb][i]);
+    if (res.empty())
+        cout << 0 << endl;
+    else
+        cout << res << endl;
 
     return 0;
 }

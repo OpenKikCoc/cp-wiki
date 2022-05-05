@@ -2233,6 +2233,111 @@ int main() {
 
 * * *
 
+> [!NOTE] **[Codeforces Choosing Balls](http://codeforces.com/problemset/problem/264/C)**
+> 
+> 题意: 
+> 
+> 可以选若干个物品，若这次选择的物品与上次选的 $c_i$ 相同那么这个的贡献就是 $a*v_i$ 否则是 $b*v_i$ 。要使得利益最大化。
+
+> [!TIP] **思路**
+> 
+> 较显然的可以直接压掉第一维，$f[i]$ 表示截止当前的所有元素末尾颜色为 $i$ 的最大值
+> 
+> 则转移时只需关注是否与当前考虑的元素的颜色是否相同
+> 
+> - 颜色相同：$f[c[i]] = max(f[c[i]], f[c[i]] + a * v[i])$
+> 
+> - 颜色不同：$f[c[i]] = max(f[c[i]], f[j != c[i]] + b * v[i])$
+> 
+> 颜色相同的情况显然可以 $O(1)$ 转移，考虑如何优化颜色不同的情况
+> 
+> **考虑记录 $f$ 值最大的颜色，此时显然需要区分该值是否是当前颜色本身，故需要记录两个**
+> 
+> **==> 【即记录最大与次大】**
+> 
+> 随后维护最大与次大即可，注意颜色替换的细节
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Choosing Balls
+// Contest: Codeforces - Codeforces Round #162 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/264/C
+// Memory Limit: 256 MB
+// Time Limit: 5000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const static int N = 1e5 + 10;
+
+int n, q;
+LL c[N], v[N];
+LL f[N];  // 显然直接压掉第一维， f[i] 表示截止当前选颜色为i的最优解
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> n >> q;
+    for (int i = 1; i <= n; ++i)
+        cin >> v[i];
+    for (int i = 1; i <= n; ++i)
+        cin >> c[i];
+
+    while (q--) {
+        LL a, b;
+        cin >> a >> b;
+
+        for (int i = 1; i <= n; ++i)
+            f[i] = -1e18;
+        int t1 = 0, t2 = 0;  // 最大值 次大值的颜色
+        for (int i = 1; i <= n; ++i) {
+            LL t = max(b * v[i], f[c[i]] + a * v[i]);
+            if (c[i] != t1)
+                t = max(t, f[t1] + b * v[i]);
+            else
+                t = max(t, f[t2] + b * v[i]);
+            f[c[i]] = max(f[c[i]], t);
+
+            if (t > f[t1]) {
+                if (c[i] != t1)
+                    t2 = t1, t1 = c[i];
+                else
+                    t1 = c[i];  // t2 颜色并不更新
+            } else if (t > f[t2]) {
+                if (c[i] != t1)  // ATTENTION != t1
+                    t2 = c[i];
+            }
+        }
+        LL res = 0;
+        for (int i = 1; i <= n; ++i)
+            res = max(res, f[i]);
+        cout << res << endl;
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 ### 股票问题
 

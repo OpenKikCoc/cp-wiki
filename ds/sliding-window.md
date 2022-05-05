@@ -1,5 +1,7 @@
 ## 习题
 
+## 一般应用
+
 > [!NOTE] **[LeetCode 30. 串联所有单词的子串](https://leetcode-cn.com/problems/substring-with-concatenation-of-all-words/)**
 > 
 > 题意: TODO
@@ -1225,6 +1227,127 @@ public:
         return res;
     }
 };
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 类似单调队列的优化实践
+
+> [!NOTE] **[Codeforces Sereja ans Anagrams](http://codeforces.com/problemset/problem/367/B)**
+> 
+> 题意: 
+> 
+> 每隔 $p$ 在序列 $a$ 中选一个数，需连续选 $m$ 个，问有多少个起始下标可以使得选出的数重排列后可以得到 $b$
+
+> [!TIP] **思路**
+> 
+> 较显然的，区间长度固定，单调队列写一波就好
+> 
+> 刚开始想着离散化反而超时，实际上直接用 map 一把就过
+> 
+> 经验：【**对于这种恰好需要某个数值的情况，del / add 函数实现时可以分别判定 `完全相等/恰好相差1` 来达到目的**】
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Sereja ans Anagrams
+// Contest: Codeforces - Codeforces Round #215 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/367/B
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 2e5 + 10, M = 4e5 + 10;
+
+int n, m, p;
+int a[N], b[N];
+
+// 离散化TLE，考虑直接用 map 记录次数来比较
+unordered_map<int, int> need, has;
+int tot = 0, oth = 0;
+void add(int x) {
+    has[x]++;
+    if (need[x]) {
+        if (has[x] == need[x])
+            tot++;
+        else if (has[x] == need[x] + 1)
+            tot--;
+    }
+}
+void del(int x) {
+    has[x]--;
+    if (need[x]) {
+        if (has[x] == need[x])
+            tot++;
+        else if (has[x] == need[x] - 1)
+            tot--;
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> n >> m >> p;
+
+    for (int i = 1; i <= n; ++i)
+        cin >> a[i];
+    for (int i = 1; i <= m; ++i)
+        cin >> b[i];
+
+    int nums = 0;
+    for (int i = 1; i <= m; ++i) {
+        if (!need[b[i]])
+            nums++;
+        need[b[i]]++;
+    }
+
+    vector<int> res;
+    for (int i = 1; i <= p; ++i) {
+        static int q[N];
+        int hh = 0, tt = -1;
+        tot = 0;
+        has.clear();
+        // [i-(m-1)*p, i]
+        for (int j = i; j <= n; j += p) {
+            add(a[j]);
+            q[++tt] = j;
+            while (hh <= tt && q[hh] < j - p * (m - 1))
+                del(a[q[hh++]]);
+            // cout << " j = " << j << " 边界 " << j - p * (m - 1) << endl;
+            // cout << "hh = " << q[hh] << " tt = " << q[tt] << " tot = " << tot
+            // << endl;
+            if (tot == nums) {
+                res.push_back(q[hh]);
+            }
+        }
+    }
+    sort(res.begin(), res.end());  // WA1
+    cout << res.size() << '\n';
+    for (auto& x : res)
+        cout << x << ' ';
+    cout << '\n';
+
+    return 0;
+}
 ```
 
 ##### **Python**

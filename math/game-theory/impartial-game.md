@@ -709,3 +709,144 @@ public:
 <br>
 
 * * *
+
+### 图上博弈
+
+> [!NOTE] **[Codeforces A Lot of Games](http://codeforces.com/problemset/problem/455/B)**
+> 
+> 题意: 
+> 
+> 给出 $n$ 个非空字符串。在游戏中，两位玩家一起建造一个单词。开始时，单词是一个空字符串。两位玩家轮流操作。
+> 
+> - 一位玩家在他的回合中，必须在单词的后面添加一个字母，使得添加后的单词是 $n$ 个字符串中至少一个的前缀。
+> 
+> - 当一位玩家不能操作时，他就输掉了游戏。
+> 
+> Andrew 和 Alex 决定玩 $k$ 次。**上一局的负者是下一局的先手**。
+> 
+> 他们决定，在最后一局中获胜的人获得整场游戏的胜利。Fedor 想知道，如果他们两个足够聪明，谁会胜利。
+
+> [!TIP] **思路**
+> 
+> 较直观的，显然先建立 Trie 树再计算每个节点的必胜状态 $f[i]$
+> 
+> 有意思的是，**每个角色可以主动选择失败，来保持先手的状态，直到最后一局**
+> 
+> 故还需计算 **当前节点是否能够主动选择必败 $g[i]$**
+> 
+> 注意 $g[i]$ 的计算细节即可，最后分情况讨论
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. A Lot of Games
+// Contest: Codeforces - Codeforces Round #260 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/455/B
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 局面一致，且上一局的负者是下一局的先手，则两者对称
+// ==> 如果k是奇数直接返回先手结果，如果是偶数则反一下即可 ==> WA
+// 实际上，必须考虑【一个人会不会选择主动输，进而一直掌握先手】
+
+const static int N = 1e5 + 10;
+
+int n, k;
+string s;
+
+int son[N][26], cnt[N], idx;
+void insert() {
+    int p = 0, m = s.size();
+    for (int i = 0; i < m; ++i) {
+        int u = s[i] - 'a';
+        if (!son[p][u])
+            son[p][u] = ++idx;
+        p = son[p][u];
+    }
+    cnt[p]++;
+}
+
+int f[N],  // f 表示当前局面先手是否可以必胜
+    g[N];  // g 表示是否可以必败 【思路正确】
+void dfs(int u) {
+    // 必胜还是必败，默认必败（对于无法再追加字符的情况）
+    bool flag1 = false, flag2 = false, has_son = false;
+    for (int i = 0; i < 26; ++i) {
+        int p = son[u][i];
+        if (p) {
+            dfs(p);
+            if (!f[p])
+                flag1 = true;  // 可以让对方必败，则本轮次必胜
+            // ATTENTION 更新细节
+            // IF 【如果子节点没有必败的选择，则当前点可以必败】
+            if (!g[p])
+                flag2 = true;
+            has_son = true;
+        }
+    }
+    if (!has_son)
+        flag2 = true;
+    f[u] = flag1, g[u] = flag2;
+}
+
+string res[2] = {"First", "Second"};
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> n >> k;
+
+    memset(cnt, 0, sizeof cnt);
+    idx = 0;
+    for (int i = 1; i <= n; ++i) {
+        cin >> s;
+        insert();
+    }
+
+    memset(f, 0, sizeof f);
+    dfs(0);
+    // cout << " f0 = " << f[0] << " g0 = " << g[0] << endl;
+
+    if (!f[0])
+        // case 1: 先手必败，则它永远是先手，永远必败
+        cout << res[1] << endl;
+    else {
+        // case 2: 先手必胜，则会交替成为先手
+        // ATTENTION:
+        // Trick: 如果先手可以选择失败(如果可能)从而一直保持先手 最终直接取胜
+        if (g[0])
+            cout << res[0] << endl;
+        else {
+            // case: 必须要连续交换，因为不能主动失败
+            if (k & 1)
+                cout << res[0] << endl;
+            else
+                cout << res[1] << endl;
+        }
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

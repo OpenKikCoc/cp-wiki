@@ -618,6 +618,93 @@ public:
 
 * * *
 
+> [!NOTE] **[Codeforces Sereja and the Arrangement of Numbers](http://codeforces.com/problemset/problem/367/C)**
+> 
+> 题意: 
+> 
+> 给出 $m$ 个不同的数 $q_i$，并且每个数都有个对应的费用 $w_i$ 。
+> 
+> 现在要在 $m$ 个数中选择一些数（每个数可使用任意多次，但是代价只会计算一次），用这些数组成一个长度为 $n$ 的数列，并且满足任意两个不同种类的数，至少有一次相邻。
+> 
+> 问最大费用。
+
+> [!TIP] **思路**
+> 
+> 在一副图中，如果 `全部点的度数是偶数` / `只有2个点是奇数` ，则能一笔画。
+> 
+> - 图的点数 $k$ 为奇数的时候，那么每个点的度数都是偶数点，可以直接一笔画，答案为 $1+i*(i-1)/2$;
+> 
+> - $k$ 为偶数的时候，所有的点是奇数点，我们保留 2 个点是奇数点，将其他的点改为偶数点，就可以一笔画。 $1+i*(i-1)/2+i/2-1$ .
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Sereja and the Arrangement of Numbers
+// Contest: Codeforces - Codeforces Round #215 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/367/C
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const static int N = 1e5 + 10;
+
+int n, m, k;
+int a[N], b[N];
+LL f[N];
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    {
+        for (LL i = 1; i < N; ++i)
+            if (i & 1)
+                f[i] = 1ll + i * (i - 1) / 2;
+            else
+                //                           (i / 2) - 1 是需要加的最少的边
+                f[i] = 1ll + i * (i - 1) / 2 + i / 2 - 1;
+    }
+
+    cin >> n >> m;
+    for (int i = 1; i <= m; ++i)
+        cin >> a[i] >> b[i];
+    sort(b + 1, b + 1 + m, greater<int>());
+
+    k = m;
+    while (f[k] > n)
+        k--;
+
+    LL res = 0;
+    for (int i = 1; i <= k; ++i)
+        res += b[i];
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
 ### 建图
 
 > [!NOTE] **[AcWing 1185. 单词游戏](https://www.acwing.com/problem/content/1187/)**

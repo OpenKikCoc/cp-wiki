@@ -886,3 +886,121 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces Petr#](http://codeforces.com/problemset/problem/113/B)**
+> 
+> 题意: 
+> 
+> 一个字符串，求以 $a$ 开头 $b$ 结尾的本质不同的字符串数。
+
+> [!TIP] **思路**
+> 
+> 显然需要计算字符串 hash 并记录每个 $a$ $b$ 出现的位置
+> 
+> 随后遍历前后缀的位置，再根据 hash 去重即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Petr#
+// Contest: Codeforces - Codeforces Beta Round #86 (Div. 1 Only)
+// URL: https://codeforces.com/problemset/problem/113/B
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using ULL = unsigned long long;
+using LL = long long;
+const static int N = 2e3 + 10, P = 131;
+
+ULL p[N];
+void init() {
+    p[0] = 1;
+    for (int i = 1; i < N; ++i)
+        p[i] = p[i - 1] * P;
+}
+
+string s, a, b;
+int ns, na, nb;
+
+ULL h[N];
+void make_hash() {
+    h[0] = 0;
+    for (int i = 1; i <= ns; ++i)
+        h[i] = h[i - 1] * P + s[i - 1];
+}
+ULL get(int l, int r) { return h[r] - h[l - 1] * p[r - l + 1]; }
+
+ULL get(string& s, int n) {
+    ULL ret = 0;
+    for (int i = 0; i < n; ++i)
+        ret = ret * P + s[i];
+    return ret;
+}
+
+int l[N], r[N];
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    init();  // ATTENTION
+
+    cin >> s >> a >> b;
+    ns = s.size(), na = a.size(), nb = b.size();
+    make_hash();
+
+    ULL ha = get(a, na), hb = get(b, nb);
+
+    memset(l, 0, sizeof l), memset(r, 0, sizeof r);
+    vector<int> l, r; // 分别记录【前缀的开始、后缀的结束】位置
+    for (int i = 1; i <= ns; ++i) {
+        if (i + na - 1 <= ns) {
+            if (get(i, i + na - 1) == ha)
+                l.push_back(i);
+        }
+        if (i - nb + 1 >= 1) {
+            if (get(i - nb + 1, i) == hb)
+                r.push_back(i);
+        }
+    }
+    unordered_set<ULL> S;
+    {
+        int w = max(na, nb);
+        int n1 = l.size(), n2 = r.size();
+        for (int i = 0, j = 0; i < n1; ++i) {
+            while (j < n2 && r[j] < l[i] + w - 1)  // ATTENTION
+                j++;
+            for (int k = j; k < n2; ++k) {
+                // cout << " l = " << l[i] << " r = " << r[k]
+                // << " str = " << s.substr(l[i] - 1, r[k] - l[i] + 1)
+                // << endl;
+                S.insert(get(l[i], r[k]));
+            }
+        }
+    }
+    cout << S.size() << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

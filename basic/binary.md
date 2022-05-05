@@ -1819,6 +1819,106 @@ int main() {
 
 * * *
 
+> [!NOTE] **[Codeforces ]()**
+> 
+> 题意: 
+> 
+> 找到四个位置使得其作为矩形的四个角，且四个位置的最小值最大。求该最值。
+
+> [!TIP] **思路**
+> 
+> 显然有极大化最小值，可以二分来做
+> 
+> **重难点是二分之后的检验思维 标记是否有两列满足条件**
+> 
+> 优化思维 反复思考总结
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: D. Characteristics of Rectangles
+// Contest: Codeforces - Codeforces Round #194 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/333/D
+// Memory Limit: 256 MB
+// Time Limit: 3000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 最小值最大，考虑二分
+// 重点在怎么二分：
+using LL = long long;
+const static int N = 1010;
+
+int n, m;
+LL g[N][N];
+bool st[N][N];
+
+bool check(int mid) {
+    memset(st, 0, sizeof st);
+    for (int i = 1; i <= n; ++i) {
+        // q 记录当前行可用的点 (纵坐标)
+        static int q[N * N];
+        int cnt = 0;
+        for (int j = 1; j <= m; ++j)
+            if (g[i][j] >= mid)
+                q[++cnt] = j;
+
+        // ATTENTION
+        // st 对前后两个纵坐标打标记，说明存在这两列属于同一行
+        for (int j = 1; j <= cnt; ++j)
+            for (int k = 1; k < j; ++k)
+                if (st[q[k]][q[j]])
+                    return true;
+                else
+                    st[q[k]][q[j]] = true;
+    }
+    return false;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> n >> m;
+
+    LL l = 0, r = 1e9;
+    for (int i = 1; i <= n; ++i)
+        for (int j = 1; j <= m; ++j)
+            cin >> g[i][j], r = max(r, g[i][j]);
+
+    r++;
+    while (l < r) {
+        LL m = l + r >> 1;
+        if (check(m))
+            l = m + 1;
+        else
+            r = m;
+    }
+    cout << l - 1 << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 二分套二分
 
 > [!NOTE] **[LeetCode 2040. 两个有序数组的第 K 小乘积](https://leetcode-cn.com/problems/kth-smallest-product-of-two-sorted-arrays/)** [TAG]

@@ -243,6 +243,7 @@
   * [图的存储](graph/save.md)
   * [DFS（图论）](graph/dfs.md)
   * [BFS（图论）](graph/bfs.md)
+  * [欧拉序（DFS序）](graph/dfs-timestamp.md)
   * [树上问题](graph/tree-problems.md)
     * [树的直径](graph/tree-diameter.md)
     * [最近公共祖先](graph/lca.md)

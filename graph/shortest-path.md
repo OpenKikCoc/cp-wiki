@@ -1655,6 +1655,147 @@ public:
 
 * * *
 
+> [!NOTE] **[Codeforces Missile Silos](http://codeforces.com/problemset/problem/144/D)**
+> 
+> 题意: 
+> 
+> 给定一张连通的无向图，求其中有多少秘密基地。
+> 
+> 所谓一个秘密基地，就是距离 $s$ 号点的最短距离恰好等于 $k$ 的位置，**这个位置可以在一个结点上，也可以在一条边的中间**。
+
+> [!TIP] **思路**
+> 
+> ATTENTION **计算推理细节**
+> 
+> 条件写错WA 反复思考判断条件的推理
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: D. Missile Silos
+// Contest: Codeforces - Codeforces Round #103 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/144/D
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+using PLI = pair<LL, int>;
+const static int N = 1e5 + 10, M = 2e5 + 10;
+
+int h[N], e[M], w[M], ne[M], idx;
+void init() {
+    memset(h, -1, sizeof h);
+    idx = 0;
+}
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx++;
+}
+
+int n, m, s, l;
+bool st[N];
+LL dist[N];
+
+void dijkstra() {
+    memset(st, 0, sizeof st);
+    for (int i = 0; i < N; ++i)
+        dist[i] = 1e17;
+
+    priority_queue<PLI, vector<PLI>, greater<PLI>> heap;
+    dist[s] = 0;
+    heap.push({0ll, s});
+    while (!heap.empty()) {
+        auto [d, u] = heap.top();
+        heap.pop();
+        if (st[u])
+            continue;
+        st[u] = true;
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (dist[j] > d + w[i]) {
+                dist[j] = d + w[i];
+                heap.push({dist[j], j});
+            }
+        }
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    init();
+
+    cin >> n >> m >> s;
+    for (int i = 0; i < m; ++i) {
+        int a, b, c;
+        cin >> a >> b >> c;
+        add(a, b, c), add(b, a, c);
+    }
+    cin >> l;
+
+    dijkstra();
+
+    int res = 0;
+    {
+        // 1. 判定点
+        for (int i = 1; i <= n; ++i)
+            if (dist[i] == l)
+                res++;
+    }
+    {
+        // 2. 判定边
+        // ATTENTION 判定规则
+        LL cnt = 0;
+        for (int i = 1; i <= n; ++i)
+            for (int _ = h[i]; ~_; _ = ne[_]) {
+                int j = e[_], c = w[_];
+                LL di = dist[i], dj = dist[j];
+                if (di < l && dj < l && di + dj + c == 2ll * l)
+                    // 中间的点（唯一）
+                    cnt++;
+                else if (di + dj + c > 2ll * l) {
+                    // ATTENTION why?
+                    // NOT: di < l && dj > l, but just concern di
+                    //
+                    // 必须分开算两个 否则判断条件会比较复杂
+                    // i 侧 ATTENTION 不能加上对dj的限制
+                    if (di < l)
+                        cnt++;
+                    // j 侧
+                    if (dj < l)
+                        cnt++;
+                }
+            }
+        res += cnt / 2;
+    }
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
 ### bellmanford
 
 > [!NOTE] **[AcWing 853. 有边数限制的最短路](https://www.acwing.com/problem/content/855/)**

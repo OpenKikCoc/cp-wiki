@@ -217,3 +217,103 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces Prefixes and Suffixes](http://codeforces.com/problemset/problem/432/D)**
+> 
+> 题意: 
+> 
+> 给你一个字符串，“完美子串”既是它的前缀也是它的后缀，求“完美子串”的个数且统计这些子串的在长字符串中出现的次数
+
+> [!TIP] **思路**
+> 
+> 显然 $z-func$ 计算 LCP
+> 
+> 随后累计 $f$ 值，排序输出即可
+> 
+> **注意细节**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: D. Prefixes and Suffixes
+// Contest: Codeforces - Codeforces Round #246 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/432/D
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 显然有 z-func 来计算出所有的公共前后缀
+using LL = long long;
+using PIL = pair<int, LL>;
+const static int N = 1e5 + 10;
+
+string s;
+int n;
+
+vector<int> z_func() {
+    vector<int> z(n);
+    for (int i = 1, l = 0, r = 0; i < n; ++i) {
+        if (i <= r && z[i - l] < r - i + 1)
+            z[i] = z[i - l];
+        else {
+            z[i] = max(0, r - i + 1);
+            while (i + z[i] < n && s[z[i]] == s[i + z[i]])
+                z[i]++;
+        }
+        if (i + z[i] - 1 > r)
+            l = i, r = i + z[i] - 1;
+    }
+    z[0] = n;  // special
+    return z;
+}
+
+LL f[N];
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> s;
+    n = s.size();
+
+    auto z = z_func();
+
+    memset(f, 0, sizeof f);
+    for (int i = 0; i < n; ++i)
+        f[z[i]]++;
+    for (int i = n; i >= 0; --i)
+        f[i] += f[i + 1];
+
+    vector<PIL> res;
+    for (int i = 0; i < n; ++i)
+        if (i + z[i] == n)
+            res.push_back({z[i], f[z[i]]});
+    sort(res.begin(), res.end());
+
+    cout << res.size() << '\n';
+    for (auto& [x, y] : res)
+        cout << x << ' ' << y << '\n';
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

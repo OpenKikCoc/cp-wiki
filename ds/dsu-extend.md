@@ -2591,6 +2591,140 @@ int main() {
 
 * * *
 
+> [!NOTE] **[Codeforces Civilization](http://codeforces.com/problemset/problem/455/C)**
+> 
+> 题意: 
+> 
+> 给你有 $n$ 个点的森林，然后你需要支持两种操作：
+> 
+> - 询问某个点所在的树的直径
+> 
+> - 合并两棵树，同时使合并后的树的直径最小
+
+> [!TIP] **思路**
+> 
+> 并查集结合树直径： **不需要关心中心，只需要关注直径即可**
+> 
+> 以及一些推导易知的结论
+> 
+> $tot = max((l1+1)/2 + (l2+1)/2 + 1, l1, l2)$
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+TLE 121 快读也没用
+
+```cpp
+// Problem: C. Civilization
+// Contest: Codeforces - Codeforces Round #260 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/455/C
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 3e5 + 10, M = N << 1;
+
+int h[N], e[M], ne[M], idx;
+void init() {
+    memset(h, -1, sizeof h);
+    idx = 0;
+}
+void add(int a, int b) { e[idx] = b, ne[idx] = h[a], h[a] = idx++; }
+
+int pa[N];
+int find(int x) {
+    if (x != pa[x])
+        pa[x] = find(pa[x]);
+    return pa[x];
+}
+
+int n, m, q;
+
+bool st[N];
+int id, length[N];
+int d1[N], d2[N];
+
+// 求直径
+void dfs(int u, int fa) {
+    pa[u] = id;
+    d1[u] = d2[u] = 0;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (j == fa)
+            continue;
+        dfs(j, u);
+        int t = d1[j] + 1;
+        if (t > d1[u])
+            d2[u] = d1[u], d1[u] = t;
+        else if (t > d2[u])
+            d2[u] = t;
+    }
+    length[id] = max(length[id], d1[u] + d2[u]);
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    init();
+
+    cin >> n >> m >> q;
+    for (int i = 0; i < m; ++i) {
+        int a, b;
+        cin >> a >> b;
+        add(a, b), add(b, a);
+    }
+
+    memset(st, 0, sizeof st);
+    // for (int i = 1; i <= n; ++i)
+    // pa[i] = i;
+    for (int i = 1; i <= n; ++i)
+        if (!st[i]) {
+            id = i, length[id] = 0;
+            dfs(i, -1);
+        }
+
+    while (q--) {
+        int type, x, y;
+        cin >> type;
+        if (type == 1) {
+            cin >> x;
+            cout << length[find(x)] << '\n';
+        } else {
+            cin >> x >> y;
+            int a = find(x), b = find(y);
+            if (a != b) {
+                pa[a] = b;
+                int l1 = length[a], l2 = length[b];
+                // 向上取整
+                length[b] = max((l1 + 1) / 2 + (l2 + 1) / 2 + 1, max(l1, l2));
+            }
+        }
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 
 ### 并查集的抽象进阶
 

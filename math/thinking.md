@@ -2373,3 +2373,106 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces Vasya and Beautiful Arrays](http://codeforces.com/problemset/problem/354/C)**
+> 
+> 题意: 
+> 
+> 给你一个长度为 $n$ 的正整数数组 $a$, 你可以对于任意一个元素 $a[i]$ 减一个 $\leq k$ 的数，并保证 $a[i] \geq 0$
+> 
+> 输出操作后所有数的最大公约数的最大值
+
+> [!TIP] **思路**
+> 
+> 考虑枚举答案，显然要从全数组最小值开始枚举并逐个递减
+> 
+> 重点在于优化枚举时的计算过程
+> 
+> **考虑在枚举时再次枚举其整数倍 $j$ ，并计算原数组中有多少个数可以转变为 $j$ ，最后判断是否所有的数都可转移即可**
+> 
+> 这时显然可以前缀和优化
+> 
+> TODO: 相关 `区间/前缀和` 优化整理
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Vasya and Beautiful Arrays
+// Contest: Codeforces - Codeforces Round #206 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/354/C
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// [以下为错误思路]
+// 有一个较为显然的思路是先把原数组差分 (因为差分不影响gcd)
+// 再通过k操作将其变为某个质因子的整数倍
+//  => 但是有个不能非负的约束 比较难搞
+
+// [一个暴力的合法解]
+// 找 res=min(a[i]) 随后暴力遍历所有 a[i] 来试除，判断k次内能否成功，否则res--
+
+// [标准答案]
+// 找的最小值 minv 如果其 <= k+1 那么答案就是 m ==> 其它数总是可以调整为m倍数
+// 否则，从最小值依次递减，递减过程中显然需要计算【能够转移到其倍数的数字个数】
+// 那么关注点在于：如何快速计算有多少个数能转移到某个数值？
+// ==> 统计每个值有多少并求前缀和即可
+
+// M maxv + k = 2e6 instead of 1e6
+const static int N = 3e5 + 10, M = 2e6 + 10, INF = 0x3f3f3f3f;
+
+int n, k;
+int a[N], s[M];
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    int minv = INF, maxv = -INF;
+    cin >> n >> k;
+    for (int i = 1; i <= n; ++i)
+        cin >> a[i], minv = min(minv, a[i]), maxv = max(maxv, a[i]);
+
+    if (minv <= k + 1) {
+        cout << minv << endl;
+        return 0;
+    }
+    // s优化计算过程
+    for (int i = 1; i <= n; ++i)
+        s[a[i]]++;
+    for (int i = 1; i <= maxv + k; ++i)
+        s[i] += s[i - 1];
+
+    for (int i = minv; i >= k + 1; --i) {
+        int cnt = 0;
+        for (int j = i; j <= maxv; j += i)
+            cnt += (s[j + k] - s[j - 1]);
+        if (cnt == n) {
+            cout << i << endl;
+            break;
+        }
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

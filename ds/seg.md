@@ -2490,6 +2490,173 @@ int main() {
 
 * * *
 
+> [!NOTE] **[Codeforces The Child and Sequence](http://codeforces.com/problemset/problem/438/D)**
+> 
+> 题意: 
+> 
+> 给出一个长度为 $n$ 的序列 $a$ ，有 $m$ 个操作 ($1 \le n,m \le 10^5;1 \le a[i] \le 10^9$)，分为以下三种：
+> 
+> 1. 输入格式为 $1\ l\ r$，查询序列中区间 $[l,r]$ 的和
+> 
+> 2. 输入格式为 $2\ l\ r\ x$，把序列中区间 $[l,r]$ 的所有数 $\mod\ x$
+> 
+> 3. 输入格式为 $3\ k\ x$，把序列中位置为 $k$ 的数改为 $x$
+> 
+> 输出操作 $1$ 得到的答案。
+
+> [!TIP] **思路**
+> 
+> 较显然的需要线段树（如果没有区间取模倒是可以直接 BIT）
+> 
+> **问题在于区间取模操作较难维护**
+> 
+> 解决方式就是：**暴力执行所有区间取模操作！**
+> 
+> - 若是模数大于被膜数，则不会有任何改变，可以维护最大值跳过
+> 
+> - 若是对数列有影响，那么这个数字一定至少会 / 2 ，肯定比原来的 1 / 2 小，所以一个数最多更改 $log$ 次
+> 
+> 接下来要关注的点就是，如何实现暴力执行？
+> 
+> ==> **modify 中的 if-condition 判断条件改一下即可，同时注意特判**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: D. The Child and Sequence
+// Contest: Codeforces - Codeforces Round #250 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/438/D
+// Memory Limit: 256 MB
+// Time Limit: 4000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 重要推导:
+// 当要取模的区间最大值比模数小时，给这个区间取模相当于没有取模；
+// 否则即使要取模，区间中的每个数都最多只会被操作 O(log(x)) 次。
+// 所以用线段树维护区间最大值，如果要取模就暴力对每个数操作即可。
+
+// 思考mod运算的方式，如果mod一次，若是模数大于被膜数，则不会有任何改变，可以维护最大值跳过，若是对数列有影响，那么这个数字一定至少会/2，肯定比原来的1/2小，所以一个数最多更改log次，这就是为什么可以这样做的原因。
+
+using LL = long long;
+const static int N = 1e5 + 10;
+
+int n, m;
+int a[N];
+
+struct Node {
+    int l, r;
+    LL s, mx;
+} tr[N << 2];
+
+void pushup(int u) {
+    tr[u].s = tr[u << 1].s + tr[u << 1 | 1].s;
+    tr[u].mx = max(tr[u << 1].mx, tr[u << 1 | 1].mx);
+}
+
+void build(int u, int l, int r) {
+    if (l == r)
+        tr[u] = {l, r, a[l], a[l]};
+    else {
+        tr[u] = {l, r};
+        int mid = l + r >> 1;
+        build(u << 1, l, mid), build(u << 1 | 1, mid + 1, r);
+        pushup(u);
+    }
+}
+
+void modify(int u, int l, int r, LL m, LL x) {
+    if (m) {
+        if (tr[u].mx < m)
+            return;
+        if (tr[u].l == tr[u].r)  // ATTENTION 变形使得可以暴力单点修改
+            tr[u].s = tr[u].mx = tr[u].s % m;
+        else {
+            int mid = tr[u].l + tr[u].r >> 1;
+            if (l <= mid)
+                modify(u << 1, l, r, m, x);
+            if (mid < r)
+                modify(u << 1 | 1, l, r, m, x);
+            pushup(u);
+        }
+    } else {
+        if (tr[u].l >= l && tr[u].r <= r)
+            tr[u].s = tr[u].mx = x;
+        else {
+            int mid = tr[u].l + tr[u].r >> 1;
+            if (l <= mid)
+                modify(u << 1, l, r, m, x);
+            if (mid < r)
+                modify(u << 1 | 1, l, r, m, x);
+            pushup(u);
+        }
+    }
+}
+
+LL query(int u, int l, int r) {
+    if (tr[u].l >= l && tr[u].r <= r)
+        return tr[u].s;
+    else {
+        int mid = tr[u].l + tr[u].r >> 1;
+        LL sum = 0;
+        if (l <= mid)
+            sum += query(u << 1, l, r);
+        if (r > mid)
+            sum += query(u << 1 | 1, l, r);
+        return sum;
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> n >> m;
+    for (int i = 1; i <= n; ++i)
+        cin >> a[i];
+
+    build(1, 1, n);
+
+    while (m--) {
+        int type, l, r, x;
+        cin >> type;
+        if (type == 1) {
+            cin >> l >> r;
+            cout << query(1, l, r) << endl;
+        } else if (type == 2) {
+            cin >> l >> r >> x;
+            modify(1, l, r, x, 0);
+        } else {
+            cin >> l >> r;  // k, x
+            modify(1, l, l, 0, r);
+        }
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 二进制拆位线段树
+
 > [!NOTE] **[Codeforces XOR on Segment](http://codeforces.com/problemset/problem/242/E)**
 > 
 > 题意: 

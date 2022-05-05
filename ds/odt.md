@@ -1,10 +1,70 @@
+> [!TIP] **【区间赋值】==> ODT树**
+>
+> <details>
+> <summary>标准模版</summary>
+>
+>
+> ```cpp
+> struct Node_t {
+>     int l, r;
+>     mutable int v;
+>     inline bool operator<(const Node_t & o) const {
+>         return l < o.l;     // 按 l 升序排列
+>     }
+> };
+> set<Node_t> odt;
+> 
+> auto split(int x) {
+>     auto it = odt.lower_bound({x, 0, 0});  // 找到大于等于x的第一个
+>     if (it != odt.end() && it->l == x)
+>         return it;
+>     // 否则x一定被前一段包含，向前移找到该段
+>     it--;
+>     auto [l, r, v] = *it;
+> 
+>     // 其他操作
+>     // ...
+> 
+>     odt.erase(it);
+>     odt.insert({l, x - 1, v});
+>     return odt.insert({x, r, v}).first;  // ATTENTION 返回迭代器
+> }
+> 
+> void merge(set<Node_t>::iterator it) {
+>     if (it == odt.end() || it == odt.begin())
+>         return;
+>     auto lit = prev(it);
+>     auto [ll, lr, lv] = *lit;
+>     auto [rl, rr, rv] = *it;
+>     if (lv == rv) {
+>         odt.erase(lit), odt.erase(it), odt.insert({ll, rr, lv});
+>         // ... 其他操作
+>     }
+> }
+> void assign(int l, int r, int v) {
+>     auto itr = split(r + 1), itl = split(l);  // 顺序不能颠倒
+> 
+>     /* 假定需要其他操作（如有遍历的需要）
+>     for (auto it = itl; it != itr; ++it) {
+>         auto [l, r, _] = *it;
+>         ...
+>     }
+>     */
+> 
+>     // 清除一系列节点
+>     odt.erase(itl, itr);
+>     odt.insert({l, r, v});
+> 
+>     // 维护区间 【视情况而定】
+>     merge(odt.lower_bound({l, 0, 0})), merge(itr);
+> }
+> ```
+>
+> </details>
+
 ## 名称简介
 
 老司机树，ODT(Old Driver Tree)，又名珂朵莉树（Chtholly Tree)。起源自 [CF896C](https://codeforces.com/problemset/problem/896/C)。
-
-## 前置知识
-
-会用 STL 的 set 就行。
 
 ## 核心思想
 
@@ -12,11 +72,13 @@
 
 ## 用处
 
-骗分。只要是有区间赋值操作的数据结构题都可以用来骗分。在数据随机的情况下一般效率较高，但在不保证数据随机的场合下，会被精心构造的特殊数据卡到超时。
+如果要保证复杂度正确，必须保证数据随机。
 
-如果要保证复杂度正确，必须保证数据随机。详见 [Codeforces 上关于珂朵莉树的复杂度的证明](http://codeforces.com/blog/entry/56135?#comment-398940)。
+详见 [Codeforces 上关于珂朵莉树的复杂度的证明](http://codeforces.com/blog/entry/56135?#comment-398940)。
 
-更详细的严格证明见 [珂朵莉树的复杂度分析](https://zhuanlan.zhihu.com/p/102786071)。对于 add，assign 和 sum 操作，用 set 实现的珂朵莉树的复杂度为 $O(n \log \log n)$，而用链表实现的复杂度为 $O(n \log n)$。
+更详细的严格证明见 [珂朵莉树的复杂度分析](https://zhuanlan.zhihu.com/p/102786071)。
+
+对于 add，assign 和 sum 操作，用 set 实现的珂朵莉树的复杂度为 $O(n \log \log n)$，而用链表实现的复杂度为 $O(n \log n)$。
 
 ## 正文
 
@@ -26,12 +88,13 @@
 struct Node_t {
     int l, r;
     mutable int v;
-    Node_t(const int &il, const int &ir, const int &iv) : l(il), r(ir), v(iv) {}
-    inline bool operator<(const Node_t &o) const { return l < o.l; }
+    inline bool operator<(const Node_t & o) const {
+        return l < o.l;     // 按 l 升序排列
+    }
 };
 ```
 
-其中，`int v` 是你自己指定的附加数据。
+其中，`int v` 是自由指定的附加数据。
 
 > [!NOTE] **`mutable` 关键字的含义是什么？**
 > 
@@ -48,13 +111,19 @@ struct Node_t {
 
 ```cpp
 auto split(int x) {
-    if (x > n) return odt.end();
-    auto it = --odt.upper_bound((Node_t){x, 0, 0});
-    if (it->l == x) return it;
-    int l = it->l, r = it->r, v = it->v;
+    auto it = odt.lower_bound({x, 0, 0});  // 找到大于等于x的第一个
+    if (it != odt.end() && it->l == x)
+        return it;
+    // 否则x一定被前一段包含，向前移找到该段
+    it--;
+    auto [l, r, v] = *it;
+
+    // 其他操作
+    // ...
+
     odt.erase(it);
-    odt.insert(Node_t(l, x - 1, v));
-    return odt.insert(Node_t(x, r, v)).first;
+    odt.insert({l, x - 1, v});
+    return odt.insert({x, r, v}).first;  // ATTENTION 返回迭代器
 }
 ```
 
@@ -64,15 +133,41 @@ auto split(int x) {
 ### assign
 
 另外一个重要的操作 `assign` 用于对一段区间进行赋值。
+
 对于 ODT 来说，区间操作只有这个比较特殊，也是保证复杂度的关键。
+
 如果 ODT 里全是长度为 $1$ 的区间，就成了暴力，但是有了 `assign`，可以使 ODT 的大小下降。
+
 参考代码如下：
 
 ```cpp
+void merge(set<Node_t>::iterator it) {
+    if (it == odt.end() || it == odt.begin())
+        return;
+    auto lit = prev(it);
+    auto [ll, lr, lv] = *lit;
+    auto [rl, rr, rv] = *it;
+    if (lv == rv) {
+        odt.erase(lit), odt.erase(it), odt.insert({ll, rr, lv});
+        // ... 其他操作
+    }
+}
 void assign(int l, int r, int v) {
-    auto itr = split(r + 1), itl = split(l);
+    auto itr = split(r + 1), itl = split(l);  // 顺序不能颠倒
+
+    /* 假定需要其他操作（如有遍历的需要）
+    for (auto it = itl; it != itr; ++it) {
+        auto [l, r, _] = *it;
+        ...
+    }
+    */
+
+    // 清除一系列节点
     odt.erase(itl, itr);
-    odt.insert(Node_t(l, r, v));
+    odt.insert({l, r, v});
+
+    // 维护区间 【视情况而定】
+    merge(odt.lower_bound({l, 0, 0})), merge(itr);
 }
 ```
 

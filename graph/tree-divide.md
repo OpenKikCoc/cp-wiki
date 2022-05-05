@@ -191,3 +191,135 @@ int main() {
     virtroot = build(1, n);
 }
 ```
+
+## 习题
+
+### 点分治
+
+#### 递归求重心
+
+> [!NOTE] **[Codeforces Ciel the Commander](http://codeforces.com/problemset/problem/321/C)**
+> 
+> 题意: 
+> 
+> 给出一棵有 $n$ 个点的无根树，要求构造出一种方案，使得树上的每一个结点的权值都满足 $1 \leq v_i \leq 26$ 
+> 
+> 且对于每一对拥有相同权值 $x$ 的点，在它们的简单路径上至少有一个权值大于 $x$ 的点 (字符小于)。
+
+> [!TIP] **思路**
+> 
+> 原先想的是找中心，然后bfs拓展一层一层赋值 ==> WA
+> 
+> 实际上是找重心 **本题重在推导 随后套点分治模版即可**
+> 
+> - 显然最多只有一个点标记 $A$，因为没有比 $A$ 更大的字符了。如果存在两个 $A$ ，没办法在他们中间放更大的
+> 
+> - 考虑在哪放 $A$ 最优：如果我们在点 $x$ 位置放置了 $A$ ，那么对于点 $x$ 的所有子树都不能放 $A$ ，问题变成用 $B$ 到 $Z$ 处理点 $x$ 的每棵子树 ==> 子问题
+> 
+> - 子问题 ==> 树的重心 ==> 拆分整棵树，然后对每棵子树递归求重心即可
+> 
+> - 递归总层数为 $log(n)$ 显然不超过 $26$ 个字符可以表示的范围，故必然有解
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: CF321C Ciel the Commander
+// Contest: Luogu
+// URL: https://www.luogu.com.cn/problem/CF321C
+// Memory Limit: 250 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 原先想的是找中心，然后bfs拓展一层一层赋值 ==> WA
+// 实际上是找重心，
+
+const static int N = 1e5 + 10, M = 2e5 + 10;
+
+int h[N], e[M], ne[M], idx;
+void init() {
+    memset(h, -1, sizeof h);
+    idx = 0;
+}
+void add(int a, int b) { e[idx] = b, ne[idx] = h[a], h[a] = idx++; }
+
+int n;
+int sz[N], son[N], root, tot;	// ATTENTION tot需重置 直接用n就WA
+bool st[N];  // 点分治的全局标记
+
+// 求重心
+void dfs(int u, int fa) {
+    son[u] = 0, sz[u] = 1;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (j == fa || st[j])  // 增加对全局标记的判断
+            continue;
+        dfs(j, u);
+        son[u] = max(son[u], sz[j]);
+        sz[u] += sz[j];
+    }
+    son[u] = max(son[u], tot - sz[u]);
+    if (root == -1 || son[u] < son[root])
+        root = u;
+}
+
+char res[N];
+
+void divide(int u, char c) {
+    res[u] = c;
+    st[u] = true;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (st[j])
+            continue;
+        root = -1, tot = sz[j];
+        dfs(j, -1);           // 找子树重心
+        divide(root, c + 1);  // 标记并递归处理
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    init();
+
+    cin >> n;
+    for (int i = 0; i < n - 1; ++i) {
+        int a, b;
+        cin >> a >> b;
+        add(a, b), add(b, a);
+    }
+
+    memset(st, 0, sizeof st);
+    root = -1, tot = n;  // tot 重要！在dfs过程中会用于计算上面的son
+    dfs(1, -1);
+    divide(root, 'A');
+
+    // logn <= 26 故必然有合法答案
+    for (int i = 1; i <= n; ++i)
+        cout << res[i] << ' ';
+    cout << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
