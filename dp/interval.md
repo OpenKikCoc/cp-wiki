@@ -244,8 +244,18 @@ if __name__=='__main__':
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> 1. 状态定义：$f[i, j]$ 表示中序遍历是 $w[i~j]$ 的所有二叉树的得分的最大值
+>
+> 2. 状态转移：以根节点的位置划分：$i <= k <= j$ 
+>
+>    当根节点在 k 时，最大的得分是： $f[i, k - 1] * f[k + 1, j] + w[k]$ 
+>
+>    $f[i, j]=max(f[i, k - 1] * f[k + 1, j] + w[k])$
+>
+> 3. 计算过程中，记录每个区间的最大值所对应的根节点编号，最后通过 $DFS$ 求出最大加分二叉树的前序遍历
+>
+> 4. 时间复杂度：状态数量是 $n^2$，每个状态计算量是 $n$, 总共是 $O(n^3)$
 
 <details>
 <summary>详细代码</summary>
@@ -304,7 +314,42 @@ int main() {
 ##### **Python**
 
 ```python
+N = 50
+w = [0] * N 
+f = [[0] * N for _ in range(N)]
+g = [[0] * N for _ in range(N)]
 
+def dfs(l, r):
+    if l > r:
+        return
+    root = g[l][r]
+    print(root, end = " ")
+    dfs(l, root - 1)
+    dfs(root + 1, r)
+
+if __name__ == '__main__':
+    n = int(input())
+    w[1:] = list(map(int, input().split()))
+    
+    # 初始化（特例）
+    for i in range(1, n + 1):
+        f[i][i] = w[i]
+        g[i][i] = i 
+        
+    # 长度就可以从2开始枚举
+    for len in range(2, n + 1):
+        for l in range(1, n - len + 2):
+            r = l + len - 1 
+            for k in range(l, r + 1):
+                left = 1 if k == l else f[l][k - 1]
+                right = 1 if k == r else f[k + 1][r]
+                score = left * right + w[k]
+                if f[l][r] < score:
+                    f[l][r] = score
+                    g[l][r] = k
+
+    print(f[1][n])
+    dfs(1, n)
 ```
 
 <!-- tabs:end -->
@@ -319,10 +364,16 @@ int main() {
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
+>
 > 1~n 就覆盖了所有情况 无需重复2n
-> 
+>
 > 高精度
+>
+> 1. 状态表示：f[l, r] 所有将(l,l+1),(l+1,l+2)...(r-1,r),(r,l) 这个多边形划分成若干个三角形的所有的方案；属性：min
+>
+> 2. 状态转移：划分的时候 可以根据其中任何一条边来进行划分。（每条边最后都会属于某个三角形）
+>
+>    f[l, r] = f[l,k] + f[k,r] + w[l] * w[r] * w[k]
 
 <details>
 <summary>详细代码</summary>
@@ -413,7 +464,23 @@ int main() {
 ##### **Python**
 
 ```python
+N = 55 
+M = 35 # 位数是30位，保险开到35
+w = [0] * N
+f = [[float('inf')] * N for _ in range(N)]
 
+if __name__ == '__main__':
+    n = int(input())
+    w[1:] = list(map(int, input().split()))
+    
+    for len in range(1, n + 1): 
+        for l in range(1, n - len +2):
+            r = len + l - 1
+            if len < 3:  # 从长度为 3 开始枚举，长度为 3 才能构成三角形，如果小于3，那f就是0 初始化为0即可（后续状态会由这里转移过来）
+                f[l][r] = 0
+            for k in range(l + 1, r):
+                f[l][r] = min(f[l][r], f[l][k] + f[k][r] + w[l] * w[k] * w[r])
+    print(f[1][n])
 ```
 
 <!-- tabs:end -->
@@ -580,8 +647,36 @@ int main() {
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> **区间dp**
+>
+> 1. 状态表示：$f[i, j, k]$ 表示 $s_1[i ～ i+k-1]$ $（从 i 开始长度为 k 的区间）$与  $s_1[j ～ j+k-1]$ 所有匹配反感的集合；属性：集合是否为空。 ($k$ 表示字符串的长度)
+>
+> 2. 状态转移：将 $f[i, j, k]$ 表示的集合按照 $s_1$ 第一段的长度划分为 $k - 1$ 类，也就是第一段长度可以是：$[1, 2, ..., k - 1]$，令 $s_1$ 第一段的长度为 $u$, 由于可以扰乱位置，所以 $s_1[i ～ i+k-1]$ 和 $s_1[j ～ j+k-1]$ 有两种匹配反感：前前匹配&&后后匹配，或者前后匹配&&后前匹配，故有：
+>
+>    1）$f[i, j, u] and f[i + u, i + u, k - u]$
+>
+>    2）$f[i, j + k - u, u] and f[i + u, j, k - u]$
+>
+> 3. 时间复杂度：状态数：$O(n^3)$, 状态转移计算量是 $O(n)$, 总的：$O(n^4)$
+>
+> **暴力dfs**
+>
+> 递归判断两个字符串是否可以相互转化。
+>
+> 先去枚举s1 第一次分割的情况：左边：$i$ 个节点, 右边：$n - i$ 个节点
+>
+> 1. 如果 $s_1$ 的根节点不翻转
+>
+>    $(s1[:i], s2[:i]) and (s1[i:], s2[i:])$
+>
+> 2. 如果 $s_1$ 的根节点翻转
+>
+>    $(s1[:i], s2[-i:]) and (s1[i:], s2[:-i])$
+>
+> 如果s2可以有s1得到的话，意味着s2的右边i个字符 可以通过 s1的左边的i个字符干扰得到; s2的左边的(n - i)个字符 可以通过s1的右边(n - i)个字符干扰得到。
+
+
 
 <details>
 <summary>详细代码</summary>
@@ -673,47 +768,52 @@ public:
 };
 ```
 
-##### **Python**
+##### **Python-区间dp**
 
 ```python
-# 枚举所有情况，看看s2是不是s1干扰产生的字符串
-# 做法：递归；如何判断呢？先去枚举s1 第一次分割的情况： （左边：i, 右边：n - i)
-# 1. 如果s1的根节点不翻转，并且左子树有i个，右子树有n-i个节点：
-# 如果s2可以有s1得到的话，那s2的右边(n - i)个字符 可以通过 s1的右边(n-i)个字符干扰得到；s2的左边i个字符可以 通过s1的左边i个字符干扰得到，
-# 2. 如果s1的根节点翻转，就是最后一步 需要s1进行翻转：
-# 如果s2可以有s1得到的话，意味着s2的右边i个字符 可以通过 s1的左边的i个字符干扰得到; s2的左边的(n - i)个字符 可以通过s1的右边(n - i)个字符干扰得到。
+class Solution:
+    def isScramble(self, s1: str, s2: str) -> bool:
+        n, m = len(s1), len(s2)
+        if n != m:return False
+        if not n:return True
+        f = [[[False] * (n + 1) for _ in range(n)] for _ in range(n)]
 
+        for i in range(n):
+            for j in range(n):
+                if s1[i] == s2[j]:
+                    f[i][j][1] = True
+
+        for k in range(2, n + 1):
+            for i in range(n + 1 - k):
+                for j in range(n + 1 - k):
+                    for u in range(1, k):
+                        if (f[i][j][u] and f[i + u][j + u][k - u]) or (f[i][j + k -u][u] and f[i + u][j][k - u]):
+                            f[i][j][k] = True
+                            break
+        return f[0][0][n]
+```
+
+##### **Python-dfs**
+
+```python
 import functools
 class Solution:
     @functools.lru_cache(None)
     def isScramble(self, s1: str, s2: str) -> bool:
         if s1 == s2:return True
-        # a1, b1 = s1, s2  # 后续改变了a, b的值，但对原字符串不影响
-        # if sorted(a1) != sorted(b1): # 剪枝：如果s1和s2排序后 不相等 意味着两个字符串 有字符数量不相等，那肯定不能干扰得到。
-        #     return False
         if sorted(s1) != sorted(s2):
             return False
         for i in range(1, len(s1)):
+            # 分割点：s1左==s2左 && s1右==s2右
             if self.isScramble(s1[:i], s2[:i]) and self.isScramble(s1[i:], s2[i:]):
                 return True
+            # 分割点：（翻转）s1左==s2右 && s1右==s2左
             if self.isScramble(s1[:i], s2[-i:]) and self.isScramble(s1[i:], s2[:-i]):
                 return True
         return False
-      
-      
-"""
-状态表示：f[i, j, k]
-1.1 集合：s1[i ~ i + k - 1]与s2[j, j + k - 1]所有匹配方案的集合
-1.2 属性：集合是否非空
-状态计算
-将f[i, j, k]表示的集合按s1第一段的长度划分划分成k - 1类。
-设s1第一段的长度为u。则s1[i ~ i + k - 1]与s2[j, j + k - 1]有两种匹配方案，分别判断即可：
-(1) f[i][j][u] && f[i + u][j + u][k - u]
-(2) f[i][j + k - u][u] && f[i + u][j][k - u]
-时间复杂度分析：状态数 O(n3)，状态转移计算量为 O(n)，所以总时间复杂度为 O(n4)。
-
-"""
 ```
+
+##### 
 
 <!-- tabs:end -->
 </details>
@@ -727,8 +827,16 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> 暴搜方案数太多，考虑用dp
+>
+> 1. 状态表示: $f[i, j]$ 表示所有由 $s_1[1-i]$ 和 $s_2[1-j]$ 交错形成 $s_3[1-i+j]$ 的方案；属性：集合是否非空；$true/false$
+>
+> 2. 状态计算：
+>
+>    如果 $s_3[i+j]$ 匹配 $s_1[i]$ ，则问题就转化成了 $f[i−1, j]$；
+>
+>    如果 $s_3[i+j]$ 匹配 $s_2[j]$，则问题就转化成了 $f[i,j−1]$。两种情况只要有一种为真，则 $f[i, j]$ 就为真
 
 <details>
 <summary>详细代码</summary>
@@ -786,26 +894,25 @@ public:
 ##### **Python**
 
 ```python
-# 暴搜方案数太多，考虑用dp
-# 状态表示f[i][j]: 表示所有由s1[1-i] s2[1-j]交错形成s3[1-i+j]的方案；属性：集合是否非空；true/false
-# 状态计算：如果 s3[i+j] 匹配 s1[i] ，则问题就转化成了 f[i−1][j]；如果 s3[i+j] 匹配 s2[j]，则问题就转化成了 f[i][j−1]。两种情况只要有一种为真，则 f[i][j] 就为真
-
 class Solution:
     def isInterleave(self, s1: str, s2: str, s3: str) -> bool:
         n, m = len(s1), len(s2)
         if len(s3) != (n + m):return False
-        f = [[False] * (m+1) for _ in range(n+1)]
-        s1, s2, s3 = ' ' + s1, ' ' + s2, ' ' + s3 
-        f[0][0] = True  # 初始化
-        for i in range(1, n + 1):  # 初始化
-            if f[i-1][0] and s1[i] == s3[i]:
+        f = [[False] * (m + 1) for _ in range(n + 1)]
+        s1, s2, s3 = ' ' + s1, ' ' + s2, ' ' + s3
+
+        # 初始化
+        f[0][0] = True
+        for i in range(1, n + 1):
+            if f[i - 1][0] and s1[i] == s3[i]:
                 f[i][0] = True
-        for i in range(1, m + 1): # 初始化
-            if f[0][i-1] and s2[i] == s3[i]:
-                f[0][i] = True 
+        for i in range(1, m + 1):
+            if f[0][i - 1] and s2[i] ==s3[i]:
+                f[0][i] = True
+        
         for i in range(1, n + 1):
             for j in range(1, m + 1):
-                f[i][j] = (f[i-1][j] and s1[i] == s3[i+j]) or (f[i][j-1] and s2[j] == s3[i+j])
+                f[i][j] = (s1[i] == s3[i + j] and f[i - 1][j]) or (s2[j] == s3[i + j] and f[i][j - 1])
         return f[n][m]
 ```
 
@@ -821,8 +928,14 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> 1. 状态表示： $f[i, j]$ 表示戳爆从第 $i$ 到第 $j$ 个气球得到的最大金币数。
+>
+> 2. 状态转移： 假设在 $[i,j]$ 范围里最后戳破的一个气球是 $k$ 。注意此时 [i, j] 区间里只有 k 这个气球了，所以它在被扎破的瞬间的代价：$num[i−1] ∗ nums[k] ∗ nums[j+1] $
+>
+>    $f[i,j]=max(f[i, j], f[i, k−1] + num[i−1] ∗ nums[k] ∗ nums[j+1] + f[k+1, j])$
+>
+> 3. 时间复杂度：时间复杂度 $O(n^3)$
 
 <details>
 <summary>详细代码</summary>
@@ -876,45 +989,19 @@ public:
 ##### **Python**
 
 ```python
-"""
-(动态规划) O(n3)
-状态： dp[i][j]dp[i][j]表示戳爆从第 i 到第 j 个气球得到的最大金币数。
-
-状态转移方程： dp[i][j]=max(dp[i][j], dp[i][k−1] + num[i−1] ∗ nums[k] ∗ nums[j+1] + dp[k+1][j])
-其中，k可以理解成[i,j] 范围里最后戳破的一个气球。
-
-时间复杂度O(n3): 三层循环
-
-空间复杂度O(n2): dp[i][j]数组的大小是(n+2)∗(n+2)
-
-"""
 class Solution(object):
     def maxCoins(self, nums):
-        """
-        :type nums: List[int]
-        :rtype: int
-        """
-
+        n = len(nums)
         nums = [1] + nums + [1]
-        # dp[i,j]表示集合中[i+1,j-1]气球打完的最大值方案
-        dp = [[0] * len(nums) for i in range(len(nums))]
+        f = [[0] * (n + 2) for i in range(n + 2)]
 
-        # 因为我们一个区间，有三个指针，所以初始长度最少为3
-        # 我们这个区间的最大范围是len(num)
-        for midRange in range(3, len(nums) + 1):
-            # i是中间区间的左边界
-            i = 0
-            while i + midRange - 1 < len(nums):
-                # j最多到len(nums) - 1
-                j = i + midRange - 1
-
-                # k的移动范围[i+1, j-1]
-                # 这个区间内i*k*j的最大值 max(nums[i]*nums[k]*nums[j])
-                for k in range(i + 1, j):
-                    dp[i][j] = max(dp[i][j], dp[i][k] + nums[i] * nums[k] * nums[j] + dp[k][j])
-                i += 1
-
-        return dp[0][-1]
+        for length in range(1, n + 1):
+          	# l是从下标为1的气球开始的
+            for l in range(1, n - length + 2):
+                r = l + length - 1
+                for k in range(l, r + 1):
+                    f[l][r] = max(f[l][r], f[l][k - 1] + f[k + 1][r] + nums[l - 1] * nums[k] * nums[r + 1])
+        return f[1][n]
 ```
 
 <!-- tabs:end -->
@@ -929,8 +1016,9 @@ class Solution(object):
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> 1. 状态定义: $f[i, j]$ 表示在区间 $[i, j]$ 内所有target以及对应的所有选法。状态表示这些集合所用钱最多情况下的最小值。
+> 2. 状态转移：假设选的数是 $k$ , 那么用钱最多的是：$max(f[i, k - 1], f[k + 1, j]) + k$
 
 <details>
 <summary>详细代码</summary>
@@ -986,7 +1074,18 @@ public:
 ##### **Python**
 
 ```python
+class Solution(object):
+    def getMoneyAmount(self, n):
+        f = [[0] * (n + 2) for _ in range(n + 2)]
 
+        # 我们的最小子问题得是从2开始，因为从猜数范围从1开始的话，那就不用猜了
+        for length in range(2, n + 1):
+            for l in range(1, n + 2 - length):
+                r = l + length - 1
+                f[l][r] = float("inf")
+                for k in range(l, r + 1):
+                    f[l][r] = min(f[l][r], max(f[l][k - 1], f[k + 1][r]) + k)
+        return f[1][n]
 ```
 
 <!-- tabs:end -->
@@ -1001,14 +1100,27 @@ public:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
+>
 > 经典
-> 
+>
 > **TODO 为何博弈不可的证明**
+>
+> 1. 状态定义: $f[i, j]$ 表示剩余数组为 $[i, j]$，并且你是先手，可以获得的分数减去对手分数的最大值。
+>
+> 2. 状态转移：
+>
+>    1）如果你先拿的 $a[i]$, 对手可以要么拿 $a[i +1]$ 要么拿 $a[j]$，他也会选择最有利自己的方式：$f[i +1, j]$, 这个表示对手减去你分数的最大值，但是求的是你的分数减去对手的分数，所以需要取反。
+>
+>    你的得分最大值是：$-f[i + 1, j] + a[i]$
+>
+>    2）如果你先拿的 $a[j]$, 同理：你的得分最大值：$-f[i, j - 1] + a[j]$
+>
+> 3. 区间dp可以用循环写，也可以用记忆化搜索。（循环写法简单些）
 
-<details>
+<details> 
 <summary>详细代码</summary>
 <!-- tabs:start -->
+
 
 ##### **C++**
 
@@ -1035,7 +1147,20 @@ public:
 ##### **Python**
 
 ```python
+class Solution:
+    def PredictTheWinner(self, nums: List[int]) -> bool:
+        n = len(nums)
+        f = [[0] * n for _ in range(n)]
+        
+        for length in range(1, n + 1):
+            for l in range(n + 1 - length):
+                r = l + length - 1
+                if length == 1:
+                    f[l][r] = nums[l]
+                else:
+                    f[l][r] = max(nums[l] - f[l + 1][r], nums[r] - f[l][r - 1])
 
+        return f[0][n - 1] >= 0
 ```
 
 <!-- tabs:end -->
