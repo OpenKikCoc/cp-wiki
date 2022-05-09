@@ -455,6 +455,8 @@ int main() {
 > - 向上延展时，需要考虑跨过了根节点进而影响其他链的情况，所以向上需要分两个子区间单独处理（靠下部分统一加，上面部分通过根节点统一维护所有链即可）
 > 
 > 故需要两个 BIT ，一个维护 DFS 序对应的节点值，另一个维护根节点起始向下指定层的增加量（需要维护每一个链）
+> 
+> **认真思考：对于 BIT 维护 DFS 序的节点差分来说，使用时直接求 $sum$ 即可，不需要考虑区间减**
 
 <details>
 <summary>详细代码</summary>
@@ -463,7 +465,261 @@ int main() {
 ##### **C++**
 
 ```cpp
+// Problem: E. Little Girl and Problem on Trees
+// Contest: Codeforces - Codeforces Round #169 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/276/E
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
 
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 1e5 + 10, M = 2e5 + 10;
+
+int h[N], e[M], ne[M], idx;
+void init() {
+    memset(h, -1, sizeof h);
+    idx = 0;
+}
+void add(int a, int b) { e[idx] = b, ne[idx] = h[a], h[a] = idx++; }
+
+int tr1[N], tr2[N];
+int lowbit(int x) { return x & -x; }
+void add(int tr[], int x, int c) {
+    for (int i = x; i < N; i += lowbit(i))
+        tr[i] += c;
+}
+int sum(int tr[], int x) {
+    int ret = 0;
+    for (int i = x; i; i -= lowbit(i))
+        ret += tr[i];
+    return ret;
+}
+
+int tsl[N], tsr[N], timestamp = 0;
+int dep[N];
+void dfs(int u, int fa) {
+    tsl[u] = ++timestamp;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (j == fa)
+            continue;
+        dep[j] = dep[u] + 1;
+        dfs(j, u);
+    }
+    tsr[u] = timestamp;
+}
+
+int n, q;
+
+void print() {
+    for (int i = 1; i <= n; ++i) {
+        // int a = sum(tr1, tsr[i]) - sum(tr1, tsl[i] - 1),
+        int a = sum(tr1, tsl[i]), b = sum(tr2, dep[i]);
+        cout << " i = " << i << " a = " << a << " b = " << b
+             << " sum = " << a + b << endl;
+    }
+    cout << endl;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    init();
+
+    cin >> n >> q;
+    for (int i = 0; i < n - 1; ++i) {
+        int a, b;
+        cin >> a >> b;
+        add(a, b), add(b, a);
+    }
+
+    // 获取 DFS 序
+    dep[1] = 1;  // 因为tr2需要用到，所以下标以1起始
+    dfs(1, -1);
+
+    // 树上默认全0 故差分也是0
+    memset(tr1, 0, sizeof tr1), memset(tr2, 0, sizeof tr2);
+
+    while (q--) {
+        int type, v, x, d;
+        cin >> type;
+        if (type == 0) {
+            cin >> v >> x >> d;
+            if (v == 1) {
+                add(tr2, 1, x), add(tr2, 1 + d + 1, -x);
+            } else if (dep[v] > d + 1) {
+                add(tr1, tsl[v] - d, x);
+                add(tr1, min(tsl[v] + d + 1, tsr[v] + 1), -x);
+            } else {
+                // ps: 因为本题子树都是单链，所以可以直接获取上部分的位置
+                int dis = d + 1 - dep[v];  // 注意还要加1
+                // ps: 上半部分以根为中心统一加
+                add(tr2, 1, x), add(tr2, 1 + dis + 1, -x);
+                // ps: 下半部分一起加
+                // ATTEINTION
+                int l = max(tsl[v] - d, tsl[v] - (dep[v] - (dis + 1)) + 1);
+                int r = min(tsl[v] + d, tsr[v]);
+                if (l <= r) {
+                    add(tr1, l, x);
+                    add(tr1, r + 1, -x);
+                }
+            }
+            // print();
+        } else {
+            cin >> v;
+            // ATTENTION: 本来维护的就是差分，所以直接
+            // 求 sum(tr1, tsl[v]) 就可以了，不需要考虑区间减
+            int a = sum(tr1, tsl[v]), b = sum(tr2, dep[v]);
+            cout << a + b << endl;
+        }
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces Tree Requests](http://codeforces.com/problemset/problem/570/D)**
+> 
+> 题意: 
+> 
+> 一棵以 $1$ 为根的树，每个节点上都有 $1$ 个字母，有 $m$ 个询问。
+> 
+> 每次询问 $v$ 对应的子树中，深度为 $h$ 的这层节点的字母，能否打乱重排组成回文串。
+> 
+> 根的深度为 $1$，每个点的深度为到根的距离。
+
+> [!TIP] **思路**
+> 
+> 题目要求指定根节点的子树，显然可以通过 DFS 序的构造实现
+> 
+> 显然需要先按层分，层内压入所有节点的 DFS 序及其奇偶性质，利用异或前缀和判断即可
+> 
+> 注意边界细节：`x = get(d, tsl[v]) ^ get(d, tsr[v]);` 
+> 
+> 特别注意左区间写 `tsl[v]` 因为它就是取不到的位置！
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: D. Tree Requests
+// Contest: Codeforces - Codeforces Round #316 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/570/D
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using PII = pair<int, int>;
+const static int N = 5e5 + 10, M = 1e6 + 10;
+
+int h[N], e[M], ne[M], idx;
+void init() {
+    memset(h, -1, sizeof h);
+    idx = 0;
+}
+void add(int a, int b) { e[idx] = b, ne[idx] = h[a], h[a] = idx++; }
+
+int n, m;
+char cs[N];
+
+int tsl[N], tsr[N], tsc[N], dep[N], timestamp = 0;
+vector<PII> depth[N], s[N];
+void dfs(int u, int d) {
+    tsl[u] = ++timestamp, dep[u] = d;
+    int x = 1 << (cs[u] - 'a');
+    depth[d].push_back({tsl[u], x});
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        dfs(j, d + 1);
+    }
+    tsr[u] = timestamp;
+}
+
+int get(int d, int x) {
+    auto& xs = s[d];
+    PII t = {x, 1e9};
+    auto it = lower_bound(xs.begin(), xs.end(), t);
+    it--;
+    return (*it).second;
+}
+
+void print(int i) {
+    cout << " s i = " << i << endl;
+    for (auto [x, y] : s[i])
+        cout << x << " " << y << endl;
+    cout << endl;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    init();
+
+    cin >> n >> m;
+    for (int i = 2; i <= n; ++i) {
+        int p;
+        cin >> p;
+        add(p, i);
+    }
+
+    cin >> (cs + 1);
+    dfs(1, 1);
+
+    for (int i = 1; i < N; ++i) {
+        if (depth[i].empty())
+            break;
+        auto& dep = depth[i];
+        sort(dep.begin(), dep.end());  // 需按id排序
+        s[i].push_back({0, 0});
+        for (auto& [x, y] : dep)
+            s[i].push_back({x, y ^ s[i].back().second});
+        // print(i);
+    }
+
+    while (m--) {
+        int v, h;
+        cin >> v >> h;
+        int d = h;  // ATTENTION 注意题意并非 dep[v]+h-1
+        if (s[d].empty())
+            // cout << "No" << endl;
+            cout << "Yes" << endl;  // ATTENTION WA 15
+        else {
+            // cout << " id = " << tsl[v] << ' ' << tsr[v] << endl;
+            int x = get(d, tsl[v]) ^ get(d, tsr[v]);
+            // 查询某一层的字符状态，bit位为1表示奇数个
+            int cnt = 0;
+            for (int i = 0; i < 26; ++i)
+                if (x >> i & 1)
+                    cnt++;
+            cout << (cnt <= 1 ? "Yes" : "No") << '\n';
+        }
+    }
+
+    return 0;
+}
 ```
 
 ##### **Python**

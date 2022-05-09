@@ -716,8 +716,79 @@ class Solution:
         return dfs(0, S)
 ```
 
+> [!NOTE] **[Codeforces Antimatter](http://codeforces.com/problemset/problem/383/D)**
+> 
+> 题意: 
+> 
+> Luogu 题意有很大问题
+> 
+> 每个数可取正负数，问对于每一个前缀有多少种方式使得其和为 $0$ ，求出方案总和
 
+> [!TIP] **思路**
+> 
+> 记 $f[i][j]$ 代表前 $i$ 个数，前缀和为 $j$ 的方案数
+> 
+> 随后递推即可，需要注意加偏移量（前缀和有负数）
 
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: D. Antimatter
+// Contest: Codeforces - Codeforces Round #225 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/383/D
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 1e3 + 10, OFFSET = 1e4, M = 2e4 + 10, MOD = 1e9 + 7;
+
+int n;
+int a[N];
+int f[N][M];
+
+int main() {
+    cin >> n;
+    for (int i = 1; i <= n; ++i)
+        cin >> a[i];
+
+    memset(f, 0, sizeof f);
+    for (int i = 1; i <= n; ++i) {
+        int t = a[i];
+        f[i][t + OFFSET]++, f[i][-t + OFFSET]++;
+        for (int j = 0; j < M; ++j) {
+            if (j + t < M)
+                f[i][j] = (f[i][j] + f[i - 1][j + t]) % MOD;  // -
+            if (j - t >= 0)
+                f[i][j] = (f[i][j] + f[i - 1][j - t]) % MOD;  // +
+        }
+    }
+    int res = 0;
+    for (int i = 1; i <= n; ++i)
+        res = (res + f[i][OFFSET]) % MOD;
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 
 <!-- tabs:end -->
