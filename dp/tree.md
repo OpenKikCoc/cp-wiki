@@ -80,18 +80,21 @@ int main() {
 
 ```python
 # 树是特殊的图，所以树用邻接表来存储（链式前向星）
-# 状态表示（有两个状态）：f[u][0] 从以u为根的所有子树中选择，并且不能选u的方案数；属性：最大值
-#           f[u][1] 从以u为根的所有子树中选择，且选u的方案数；属性：最大值
-# 状态计算：f[u][0] = max(f[si][0], f[si][1])  （si是u的子树们，每个子树都是独立的）
-#           f[u][1] = max(f[si][0])
 # 求树形dp的时候，是需要从根节点往下求。
 # 这道题对python不友好，用dfs会爆栈，所以需要用下面的语句来限制，可以尝试用BFS来维护一个队列
 
 import sys
-
 limit = 10000
 sys.setrecursionlimit(limit)
 
+N = 6010
+h = [-1] * N
+ev = [0] * N
+ne = [0] * N
+idx = 0
+happy = [0]
+has_father = [False] * N
+f = [[0, 0] for _ in range(N)]  
 
 def add_edge(a, b):
     global idx
@@ -102,8 +105,8 @@ def add_edge(a, b):
 
 
 def dfs(u):
-    f[u][1] = happy[u]  # 如果选择当前节点
-    i = h[u]  # 开始遍历他的子树
+    f[u][1] = happy[u]  # 如果选择当前节点，开始遍历它的子树
+    i = h[u]  
     while i != -1:
         j = ev[i]
         dfs(j)
@@ -111,17 +114,7 @@ def dfs(u):
         f[u][1] += f[j][0]
         i = ne[i]
 
-
 if __name__ == '__main__':
-    N = 6010
-    h = [-1] * N
-    ev = [0] * N
-    ne = [0] * N
-    idx = 0
-    happy = [0]
-    has_father = [False] * N  # 用来确定根结点，dfs需要从根节点往下走
-
-    f = [[0, 0] for i in range(N)]  # 每一个点 都有两个状态表示
     n = int(input())
     for _ in range(n):
         happy.append(int(input()))
@@ -134,7 +127,6 @@ if __name__ == '__main__':
         root += 1
     dfs(root)
     print(max(f[root][0], f[root][1]))
-
 ```
 
 <!-- tabs:end -->

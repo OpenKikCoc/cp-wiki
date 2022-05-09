@@ -1175,8 +1175,11 @@ class Solution:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
+>
 > 经典区间dp
+>
+> 1. 状态表示：打印出 $[i, j]$ 的所有方案的集合；属性：$min$
+> 2. 状态转移：根据长度，枚举所有可能的组合。枚举之前，做一个判断，如果 $s[i] == s[j]$，那就可以利用相同字符可以一起打印的特性进行转移：$f[i, j] = f[i, j - 1]$
 
 <details>
 <summary>详细代码</summary>
@@ -1238,7 +1241,22 @@ public:
 ##### **Python**
 
 ```python
+class Solution:
+    def strangePrinter(self, s: str) -> int:
+        n = len(s)
+        f = [[float('inf')] * (n + 1) for _ in range(n + 1)]
 
+        for i in range(1, n + 1):
+            f[i][i] = 1
+        
+        for length in range(2, n + 1):
+            for l in range(1, n + 2 - length):
+                r = l + length - 1
+                if s[l - 1] == s[r - 1]:
+                    f[l][r] = f[l][r - 1]
+                for k in range(l, r):
+                    f[l][r] = min(f[l][r], f[l][k] + f[k + 1][r])
+        return f[1][n]
 ```
 
 <!-- tabs:end -->
@@ -1333,10 +1351,49 @@ public:
 };
 ```
 
+##### **Python-dp+单调队列**
+
+```python
+```
+
+
+
 ##### **Python**
 
 ```python
-
+class Solution:
+    def countPalindromicSubsequences(self, S: str) -> int:
+        n = len(S)
+        mod = int(1e9 +7)
+        f = [[0] * (n + 1) for _ in range(n + 1)]
+        
+        # base case
+        for i in range(1, n + 1):
+            f[i][i] = 1
+        for length in range(2, n + 1):
+            for i in range(n - length + 1, 0, -1):  # 逆序遍历
+                j = i + length - 1
+                # 两端不能同时参与构成回文子序列
+                if S[i - 1] != S[j - 1]:
+                    f[i][j] = f[i + 1][j] + f[i][j - 1] - f[i + 1][j - 1]
+                else:
+                    f[i][j] = f[i + 1][j - 1] * 2
+                    # check [i + 1, j - 1] 区间里是否存在和S[i - 1]相等的值
+                    l, r = i + 1, j - 1
+                    while l <= r and S[l - 1] != S[i - 1]: l += 1
+                    while l <= r and S[r - 1] != S[i - 1]: r -= 1
+                    # 不存在
+                    if l > r: 
+                        f[i][j] += 2
+                    # 存在一个
+                    elif l == r: 
+                        f[i][j] += 1
+                    # 存在 >= 2
+                    else: 
+                        f[i][j] -= f[l + 1][r - 1]
+                    
+                f[i][j] %= mod
+        return f[1][n]
 ```
 
 <!-- tabs:end -->
@@ -1351,8 +1408,12 @@ public:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> Microsoft题库
+>
+> **Key**：$if$ $s[i] == s[j]$, 那么这两个字符可以在删除 $[i+1, j-1]$ 区间时顺带删掉: $f[i, j] = f[i+1, j-1]$
+>
+> 如果两个字符不相等，那就枚举中间变量 $k$, 以 $k$ 作为分割, $f[i, j] = f[i, k] + f[k + 1, j]$
 
 <details>
 <summary>详细代码</summary>
@@ -1387,7 +1448,25 @@ public:
 ##### **Python**
 
 ```python
+class Solution:
+    def minimumMoves(self, arr: List[int]) -> int:
+        n = len(arr)
+        f = [[float('inf')] * (n + 1) for _ in range(n + 1)]
 
+        for i in range(1, n + 1):
+            f[i][i] = 1
+        
+        for length in range(2, n + 1):
+            for l in range(1, n - length + 2):
+                r = l + length - 1
+                if arr[l - 1] == arr[r - 1]:
+                    if length == 2:
+                        f[l][r] = 1
+                    else:
+                        f[l][r] = min(f[l][r], f[l + 1][r - 1])
+                for k in range(l, r):
+                    f[l][r] = min(f[l][r], f[l][k] + f[k + 1][r])
+        return f[1][n]
 ```
 
 <!-- tabs:end -->
@@ -1465,10 +1544,13 @@ public:
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> $f[l][r]$ 表示左侧使用 l 个右侧使用 r 个的分数 与传统区间 dp 定义略有不同
-> 
+>
+> 1. 状态定义：$f[l][r]$ 表示左侧使用 l 个右侧使用 r 个的分数 与传统区间 dp 定义略有不同
+>
 > 类似状压递推的**状态转移思想** 十分经典
+>
+> 2. 状态转移：除了$base case$外，$f[i, j]$ 由 $f[i - 1, j]$ 或 $f[i, j - 1]$ 转移得到，取两个中得分最大的一个。
+> 3. 出口：满足 $i + j == m$ 的所有组合中的最大值。
 
 <details>
 <summary>详细代码</summary>
@@ -1558,11 +1640,49 @@ public:
 };
 ```
 
-##### **Python**
+##### **Python-区间dp**
 
 ```python
+class Solution:
+    def maximumScore(self, nums: List[int], multi: List[int]) -> int:
+        n, m = len(nums), len(multi) 
+        f = [[float('-inf')] * (m + 1) for _ in range(m + 1)]
+        f[0][0] = 0
+        for i in range(1, m + 1):
+            f[i][0] = f[i - 1][0] + nums[i - 1] * multi[i - 1]
+        for i in range(1, m + 1):
+            f[0][i] = f[0][i - 1] + nums[n - i] * multi[i - 1]
+        
+        for i in range(1, m + 1):
+            for j in range(1, m - i + 1):
+                f[i][j] = max(f[i - 1][j] + nums[i - 1] * multi[i + j - 1], f[i][j - 1] + nums[n - j] * multi[i + j - 1])
 
+        res = float('-inf')
+        for i in range(m + 1):
+            res = max(res, f[i][m - i])
+        return res
 ```
+
+##### **Python-记忆化dfs**
+
+```python
+# 记忆化递归(@cache)，一定要调用cache_clear()清除缓存，否则会超时
+class Solution:
+    def maximumScore(self, nums: List[int], multi: List[int]) -> int:
+        n, m = len(nums), len(multi) 
+
+        @cache
+        def dfs(cur, l, r):
+            if cur == m:
+                return 0
+            return max(multi[cur] * nums[l] + dfs(cur + 1, l + 1, r), multi[cur] * nums[r] + dfs(cur + 1, l, r - 1))
+
+        res = dfs(0, 0, n - 1)
+        dfs.cache_clear()
+        return res
+```
+
+
 
 <!-- tabs:end -->
 </details>
