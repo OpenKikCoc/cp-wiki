@@ -1919,6 +1919,107 @@ int main() {
 
 * * *
 
+> [!NOTE] **[Codeforces Read Time](http://codeforces.com/problemset/problem/343/C)**
+> 
+> 题意: 
+> 
+> 给你 $n$ 个探头，$m$ 个要读的轨道
+> 
+> $n$ 个探头的初始位置是 $h1...hn$（从小到大），$m$ 个轨道的位置为 $p1...pn$ (也是从小到大)
+> 
+> 探头可以左移或右移，这些探头可以一起动，每移动一格的时间为 1，探头读轨道不计时间，如果要读的轨道上就有探头那么就不需要时间，找最小的时间来读完这些轨道。
+
+> [!TIP] **思路**
+> 
+> 较显然的，总耗时有二分性质，可以对总时间二分
+> 
+> **问题在于 check 的计算逻辑**
+> 
+> 每个探头可以左右移动，那么它的移动轨迹如何讨论起来比较复杂
+> 
+> - 推理 知应当由最左侧的探头覆盖尽量靠左侧的轨道
+> 
+> - 枚举探头 并维护可以覆盖的最右侧轨道 双指针推进
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Read Time
+// Contest: Codeforces - Codeforces Round #200 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/343/C
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const static int N = 1e5 + 10;
+
+int n, m;
+LL h[N], p[N];
+
+// ATTENTION 假定覆盖 p[l], p[r], 则最小消耗为该表达式
+inline LL get(int i, int l, int r) {
+    return abs(p[r] - p[l]) + min(abs(p[l] - h[i]), abs(p[r] - h[i]));
+}
+
+bool check(LL mid) {
+    // ATTENTION 显然需要从最左侧的来从左往右去覆盖
+    for (int i = 1, l = 1, r = 1; i <= n; ++i) {
+        LL t = get(i, l, r);
+        while (r <= m && t <= mid)  // 推进可以移动到的目标位置
+            r++, t = get(i, l, r);
+        l = r;  // ATTENTION
+        if (r > m)
+            return true;  // 已经可以覆盖所有轨道
+    }
+    return false;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> n >> m;
+    for (int i = 1; i <= n; ++i)
+        cin >> h[i];
+    for (int i = 1; i <= m; ++i)
+        cin >> p[i];
+
+    LL l = 0, r = 1e11;
+    while (l < r) {
+        LL mid = l + r >> 1;
+        if (check(mid))
+            r = mid;
+        else
+            l = mid + 1;
+    }
+    cout << l << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
 ### 二分套二分
 
 > [!NOTE] **[LeetCode 2040. 两个有序数组的第 K 小乘积](https://leetcode-cn.com/problems/kth-smallest-product-of-two-sorted-arrays/)** [TAG]

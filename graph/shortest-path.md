@@ -2638,6 +2638,133 @@ int main() {
 
 * * *
 
+> [!NOTE] **[Codeforces ]()**
+> 
+> 题意: 
+> 
+> $n$ 个点，$m$ 条带权边的无向图，另外还有 $k$ 条特殊边，每条边连接 $1$ 和 $i$ 。
+> 
+> 问最多可以删除这 $k$ 条边中的多少条，使得每个点到 $1$ 的最短距离不变。
+
+> [!TIP] **思路**
+> 
+> 思路：存图后判断最短路是否唯一。
+> 
+> 判断最短路是否唯一的方法：
+> 
+> - 若特殊边长度大于 $dis[v]$，删除。
+> 
+> - 若特殊边长度等于 $dis[v]$，若到 $v$ 的最短路不止一条，删除，同时最短路数量 $-1$。
+> 
+> - 在求最短路时更新 $v$ 的最短路数量。
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Jzzhu and Cities
+// Contest: Codeforces - Codeforces Round #257 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/449/B
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using PII = pair<int, int>;
+const static int N = 1e5 + 10, M = 8e5 + 10;
+
+int h[N], e[M], w[M], ne[M], idx;
+void init() {
+    memset(h, -1, sizeof h);
+    idx = 0;
+}
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx++;
+}
+
+// cnt 最短路计数
+int dist[N], cnt[N];
+bool st[N];
+void dijkstra(int s) {
+    memset(st, 0, sizeof st);
+    memset(cnt, 0, sizeof cnt);
+    memset(dist, 0x3f, sizeof dist);
+    priority_queue<PII, vector<PII>, greater<PII>> heap;
+    heap.push({0, s});
+    dist[s] = 0;
+    while (heap.size()) {
+        auto [d, u] = heap.top();
+        heap.pop();
+        if (st[u])
+            continue;
+        st[u] = true;
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i], c = w[i];
+            if (dist[j] > d + c) {
+                dist[j] = d + c;
+                cnt[j] = 1;  // ATTENTION
+                heap.push({dist[j], j});
+            } else if (dist[j] == d + c)
+                cnt[j]++;
+        }
+    }
+}
+
+int n, m, k;
+PII es[N];
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    init();
+
+    cin >> n >> m >> k;
+    for (int i = 0; i < m; ++i) {
+        int a, b, c;
+        cin >> a >> b >> c;
+        add(a, b, c), add(b, a, c);
+    }
+    for (int i = 0; i < k; ++i) {
+        cin >> es[i].first >> es[i].second;
+        add(1, es[i].first, es[i].second), add(es[i].first, 1, es[i].second);
+    }
+
+    dijkstra(1);
+
+    int res = 0;
+    for (int i = 0; i < k; ++i) {
+        int b = es[i].first, c = es[i].second;
+        if (dist[b] < c)
+            res++;
+        else if (dist[b] == c && cnt[b] > 1)  // ATTENTION
+            res++, cnt[b]--;
+    }
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
 ### spfa
 
 > [!NOTE] **[AcWing 851. spfa求最短路](https://www.acwing.com/problem/content/853/)**

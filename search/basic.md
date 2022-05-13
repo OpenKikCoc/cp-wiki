@@ -3343,6 +3343,134 @@ public:
 
 * * *
 
+> [!NOTE] **[Codeforces Inna and Dima](http://codeforces.com/problemset/problem/374/C)**
+> 
+> 题意: 
+> 
+> 可以按照 $DIMA$ 的顺序循环走，问最多能走几次，或者无限次
+
+> [!TIP] **思路**
+> 
+> DFS 推理不需要关注 4 的长度
+> 
+> 有点 trick 的 dfs
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Inna and Dima
+// Contest: Codeforces - Codeforces Round #220 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/374/C
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 1e3 + 10, M = 1e6 + 10;
+
+int h[M], e[M << 1], ne[M << 1], idx;  // 这里直接写成了 N M 导致TLE 排错很久
+void init() {
+    memset(h, -1, sizeof h);
+    idx = 0;
+}
+void add(int a, int b) { e[idx] = b, ne[idx] = h[a], h[a] = idx++; }
+
+int n, m;
+char g[N][N];
+int dx[4] = {-1, 0, 0, 1}, dy[4] = {0, -1, 1, 0};
+
+bool st[M], flag;
+int dis[M];
+void dfs(int x) {
+    if (dis[x])
+        return;
+    st[x] = true;  // 回溯
+    dis[x] = 1;
+    for (int i = h[x]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (st[j]) {
+            // 走到了本轮次可以走到的点，则可以无限循环
+            flag = true;
+            break;  // st[x] = false; break;
+        }
+        dfs(j);
+        if (flag)
+            break;  // ...
+        dis[x] = max(dis[x], dis[j] + 1);
+    }
+    st[x] = false;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    init();
+
+    cin >> n >> m;
+    for (int i = 0; i < n; ++i)
+        cin >> g[i];
+
+    unordered_map<char, int> hash;
+    hash['D'] = 0, hash['I'] = 1, hash['M'] = 2, hash['A'] = 3;
+
+    for (int i = 0; i < n; ++i)
+        for (int j = 0; j < m; ++j)
+            for (int k = 0; k < 4; ++k) {
+                int ni = i + dx[k], nj = j + dy[k];
+                if (ni < 0 || ni >= n || nj < 0 || nj >= m)
+                    continue;
+                if ((hash[g[i][j]] + 1) % 4 == hash[g[ni][nj]]) {
+                    int a = i * m + j, b = ni * m + nj;
+                    add(a, b);
+                }
+            }
+
+    int res = 0;
+    memset(st, 0, sizeof st);
+    flag = false;
+    for (int i = 0; i < n; ++i)
+        for (int j = 0; j < m; ++j)
+            if (g[i][j] == 'D') {
+                dfs(i * m + j);
+                if (flag) {  // 可以走无限多次
+                    cout << "Poor Inna!" << endl;
+                    return 0;
+                }
+                if (dis[i * m + j] > res)
+                    res = max(res, dis[i * m + j]);
+            }
+
+    res /= 4;
+    if (res)
+        cout << res << endl;
+    else
+        cout << "Poor Dima!" << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
 ### dfs 分组
 
 > [!NOTE] **[AcWing 1118. 分成互质组](https://www.acwing.com/problem/content/1120/)**

@@ -1167,6 +1167,173 @@ int main() {
 
 * * *
 
+> [!NOTE] **[Codeforces Array and Operations](http://codeforces.com/problemset/problem/498/C)**
+> 
+> 题意: 
+> 
+> 你有一个长度为 $n$ 的数组 $a$ 和 $m$ 对数 $(i_1,j_1),(i_2,j_2)...,(i_m,j_m)$.
+> 
+> 对于每对数都满足 $i_k+j_k$ 是一个奇数，且每个数都在 $1$ 到 $n$ 之间。
+> 
+> 你每次操作可需要挑一对数（给定的 $m$ 对里面）$i_k,j_k$，然后使 $a[i_k]=\frac{a[i_k]}{v},a[j_k]=\frac{a[j_k]}{v}$，$v$ 是一个不等于 $1$ 的正整数,且 $v$ 是 $a[i]$ 和 $a[j]$ 的公约数
+
+> [!TIP] **思路**
+> 
+> **题意有奇偶数之间的关系，则考虑其内部连边**
+> 
+> 除此之外，考虑奇数位的点与源点连边，偶数位的点与汇点连边
+> 
+> 奇数点的每个质因数与源建边，边权为这个质因数的个数；偶数点同理，与汇建边，然后跑最大流。
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Array and Operations
+// Contest: Codeforces - Codeforces Round #284 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/498/C
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using PII = pair<int, int>;
+const int N = 1e4 + 10, M = N << 2, INF = 0x3f3f3f3f;
+
+int n, m, S, T;
+int h[N], e[M], f[M], ne[M], idx;
+int q[N], d[N], cur[N];
+void init() {
+    memset(h, -1, sizeof h);
+    idx = 0;
+}
+void add(int a, int b, int c) {
+    e[idx] = b, f[idx] = c, ne[idx] = h[a], h[a] = idx++;
+    e[idx] = a, f[idx] = 0, ne[idx] = h[b], h[b] = idx++;
+}
+
+bool bfs() {
+    memset(d, -1, sizeof d);
+    int hh = 0, tt = -1;
+    q[++tt] = S, d[S] = 0, cur[S] = h[S];
+    while (hh <= tt) {
+        int t = q[hh++];
+        for (int i = h[t]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (d[j] == -1 && f[i]) {
+                d[j] = d[t] + 1;
+                cur[j] = h[j];
+                if (j == T)
+                    return true;
+                q[++tt] = j;
+            }
+        }
+    }
+    return false;
+}
+
+int find(int u, int limit) {
+    if (u == T)
+        return limit;
+    int flow = 0;
+    for (int i = cur[u]; ~i && flow < limit; i = ne[i]) {
+        cur[u] = i;
+        int j = e[i];
+        if (d[j] == d[u] + 1 && f[i]) {
+            int t = find(j, min(f[i], limit - flow));
+            if (!t)
+                d[t] = -1;
+            f[i] -= t, f[i ^ 1] += t, flow += t;
+        }
+    }
+    return flow;
+}
+
+int dinic() {
+    int r = 0, flow;
+    while (bfs())
+        while (flow = find(S, INF))
+            r += flow;
+    return r;
+}
+
+int a[N];
+vector<PII> num[N];  // PII分别记录约数与对应的约数次数
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    init();
+    cin >> n >> m;
+    S = n * 100 + 1, T = n * 100 + 2;
+    for (int i = 1; i <= n; ++i) {  // 不能从0开始
+        cin >> a[i];
+        {
+            // ATTENTION start from 2
+            for (int j = 2; j <= a[i] / j; ++j)
+                if (a[i] % j == 0) {
+                    int c = 0;
+                    while (a[i] % j == 0) {
+                        a[i] /= j, c++;
+                    }
+                    num[i].push_back({j, c});
+                }
+            if (a[i] > 1)
+                num[i].push_back({a[i], 1});
+        }
+
+        if (i & 1) {
+            // this 奇数
+            for (int j = 0; j < num[i].size(); ++j)
+                add(i * 100 + j, T, num[i][j].second);
+        } else {
+            for (int j = 0; j < num[i].size(); ++j)
+                add(S, i * 100 + j, num[i][j].second);
+        }
+    }
+
+    for (int i = 0; i < m; ++i) {
+        int u, v;
+        cin >> u >> v;
+        if (u & 1)
+            swap(u, v);  // 保证前面是偶数 后面是计数
+        // cout << " u = " << u << " v = " << v << endl;
+        int n1 = num[u].size(), n2 = num[v].size();
+        for (int j = 0; j < n1; ++j)
+            for (int k = 0; k < n2; ++k) {
+                auto& [v1, c1] = num[u][j];
+                auto& [v2, c2] = num[v][k];
+                if (v1 != v2)
+                    continue;
+                add(u * 100 + j, v * 100 + k, min(c1, c2));
+            }
+    }
+    cout << dinic() << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
 ### 二分匹配
 
 > [!NOTE] **[AcWing 2175. 飞行员配对方案问题](https://www.acwing.com/problem/content/2177/)**

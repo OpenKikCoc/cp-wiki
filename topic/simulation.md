@@ -5052,6 +5052,99 @@ int main() {
 
 * * *
 
+> [!NOTE] **[Codeforces No to Palindromes!](http://codeforces.com/problemset/problem/464/A)**
+> 
+> 题意: 
+> 
+> 给你一个长度为N的串，其中只包含前 p 个英文字母，保证输入的是一个子序列中没有长度为 2 或者是长度大于 2 的回文串。
+> 
+> 让你找到一个比原字符串字典序大的第一个也满足: 子序列中没有长度为2或者是长度大于 2 的回文串的解。如果不存在，输出NO。
+
+> [!TIP] **思路**
+> 
+> 为了让下一次循环可以修改这一位，可以把这一位后面的所有位都置为最大值（即 `'a'+p-1` 这样下一次就可以通过进位直接处理不符合要求的字符
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: A. No to Palindromes!
+// Contest: Codeforces - Codeforces Round #265 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/464/A
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 为了字典序最小显然要从后往前修改
+// 修改之后，只需要关注之前的连续两个位置就可以（因为原串就是合法的）
+
+int n, p;
+string str;
+
+int main() {
+    cin >> n >> p;
+    cin >> str;
+    str = ' ' + str;
+
+    bool flag = false;
+    for (;;) {
+        int j = n;
+        str[j]++;
+        // 处理进位
+        while (j > 1 && str[j] >= 'a' + p)
+            str[j] -= p, str[--j]++;
+        if (j == 1 && str[j] >= 'a' + p)
+            break;  // flag = false;
+
+        // 从前往后检查
+        bool fail = false;
+        for (int i = j; i <= n; ++i) {
+            if (i > 2 && str[i] == str[i - 2]) {
+                fail = true;
+                break;
+            }
+            if (i > 1 && str[i] == str[i - 1]) {
+                fail = true;
+                break;
+            }
+        }
+        if (fail)
+            // why? 这样方便下次直接从更前面修改
+            for (int i = j + 1; i <= n; ++i)
+                str[i] = 'a' + p - 1;
+        else {
+            flag = true;
+            break;
+        }
+    }
+
+    if (flag)
+        cout << str.substr(1) << endl;
+    else
+        cout << "NO" << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 
 ### STL 简化模拟
 

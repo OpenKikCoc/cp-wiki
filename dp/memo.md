@@ -722,3 +722,82 @@ class Solution:
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces Cow Program](http://codeforces.com/problemset/problem/283/B)**
+> 
+> 题意: 
+> 
+> 给出 $n$ 个数
+> 
+> - 奇数次操作 $x,y$ 都加上 $a[x]$
+> 
+> - 偶数次操作 $y$ 加上 $a[x]$ , $x$ 减去 $a[x]$
+> 
+> 走出了范围就结束。问结束时的 $y$ 值，如果无法结束，那么输出-1
+
+
+> [!TIP] **思路**
+> 
+> 重点在于如何处理无限递归的情况
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Cow Program
+// Contest: Codeforces - Codeforces Round #174 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/283/B
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const static int N = 2e5 + 10;
+
+int n, a[N];
+LL f[2][N];
+
+bool u[2][N], v[2][N];
+
+LL dfs(int x, int sel) {
+    if (x < 1 || x > n)
+        return 0;
+    if (u[sel][x])
+        return v[sel][x] ? f[sel][x] : -1;
+    u[sel][x] = 1;	// 避免无限递归
+    LL t = dfs(x + (sel ? -a[x] : a[x]), sel ^ 1);
+    v[sel][x] = 1;
+    return f[sel][x] = (~t ? t + a[x] : t);
+}
+
+int main() {
+    cin >> n;
+    for (int i = 2; i <= n; ++i)
+        cin >> a[i];
+
+    for (int i = 1; i < n; ++i) {
+        a[1] = i;
+        cout << (~dfs(a[1] + 1, 1) ? f[1][a[1] + 1] + a[1] : -1) << endl;
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

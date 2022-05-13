@@ -519,3 +519,67 @@ int main() {
 <br>
 
 * * *
+
+### 概率
+
+> [!NOTE] **[Codeforces Archer](http://codeforces.com/problemset/problem/312/B)**
+> 
+> 题意: 
+> 
+> 已知每局第一个人射中的概率是 $p$ ，第二个人射中的概率是 $q$ 。
+> 
+> 谁先射中谁赢，求第一个人赢的概率。
+
+> [!TIP] **思路**
+> 
+> $p = a / b, q = c / d$
+> 
+> $ans=p+(1−p)(1−q)p+[(1−p)(1−q)]^2p+[(1−p)(1−q)]^3p+...$
+> 
+> 设 $x=(1-p)*(1-q)$ 则上式等于 $ans=p(1+x+x^2+x^3+...)$
+> 
+> 后者等比数列求和，转化为 $ans=p((1-x^n)/(1-x))$
+> 
+> 因为 $x$ 趋近于 $0$，$ans=p/(1-x)$
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Archer
+// Contest: Codeforces - Codeforces Round #185 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/312/B
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    double a, b, c, d;
+    cin >> a >> b >> c >> d;
+
+    double p = a / b, q = c / d;
+    double x = (1.0 - p) * (1.0 - q);
+
+    printf("%.12lf\n", p / (1 - x));
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

@@ -1744,3 +1744,98 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces Fox and Minimal path](http://codeforces.com/problemset/problem/388/B)**
+> 
+> 题意: 
+> 
+> 要求构造一个含有 $N(1\le N\le 1000)$ 个节点的简单无向图，使得从 $1$ 号节点到 $2$ 号节点恰有 $K$ 条最短路径（$1\le K\le 10^9$）。
+> 
+> 输出你构造图的邻接矩阵表示。
+
+> [!TIP] **思路**
+> 
+> 直观想法是分层，单个层内的节点数为对 k 因数分解的数值 ==> 据称因子较大会被卡
+> 
+> **转而对 k 二进制分解**
+> 
+> https://www.luogu.com.cn/blog/yjb/fox-and-minimal-path-ti-xie
+> 
+> **反复做**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Fox and Minimal path
+// Contest: Codeforces - Codeforces Round #228 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/388/B
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 1e3 + 10;
+
+int k;
+int a[N], b[N], c[N];
+int t = 2, h = 30;
+bool g[N][N];
+
+int main() {
+    cin >> k;
+    if (k == 1) {
+        printf("2\nNY\nYN");
+        return 0;
+    }
+    for (; !((1 << h) & k); h--)
+        ;  //求图的层数
+    for (int i = 1; i <= h; i++)
+        a[i] = ++t;  //按优先从上到下，其次从右到左的顺序对每个点编号
+    for (int i = 1; i <= h; i++)
+        b[i] = ++t;
+    for (int i = 1; i <= h; i++)
+        c[i] = ++t;
+    g[a[1]][1] = g[1][a[1]] = true;  //对1,2点连别
+    g[b[1]][1] = g[1][b[1]] = true;
+    if (k & 1)
+        g[c[1]][1] = g[1][c[1]] = true;
+    g[a[h]][2] = g[2][a[h]] = true;
+    g[b[h]][2] = g[2][b[h]] = true;
+    g[c[h]][2] = g[2][c[h]] = true;
+    for (int i = 1; i < h; i++) {
+        g[a[i]][a[i + 1]] = g[b[i]][b[i + 1]] = g[c[i]][c[i + 1]] =
+            true;  //每一列从上到下连边
+        g[a[i + 1]][a[i]] = g[b[i + 1]][b[i]] = g[c[i + 1]][c[i]] = true;
+        g[a[i]][b[i + 1]] = g[b[i]][a[i + 1]] = true;  //右边两列交叉连别
+        g[b[i + 1]][a[i]] = g[a[i + 1]][b[i]] = true;
+        if (k & (1 << i))
+            g[c[i + 1]][a[i]] = g[a[i]][c[i + 1]] = g[c[i + 1]][b[i]] =
+                g[b[i]][c[i + 1]] = true;  //上文中的合并
+    }
+    cout << t << endl;
+    for (int i = 1; i <= t; i++) {
+        for (int j = 1; j <= t; j++)
+            printf("%c", g[i][j] ? 'Y' : 'N');
+        putchar('\n');
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

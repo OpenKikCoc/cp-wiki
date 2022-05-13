@@ -1086,3 +1086,86 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces Vasya and Robot](http://codeforces.com/problemset/problem/354/A)**
+> 
+> 题意: 
+> 
+> 一个序列 $a$ ，每次可以从左边或右边取走一个，从左边取消耗 $l \times a_i$ ，从右边取消耗 $r \times a_i$ 。
+> 
+> 连续取走左边的额外消耗 $ql$ ，连续取走右边的额外消耗 $qr$ 能量。最小化取走所有物品的价值。
+
+> [!TIP] **思路**
+> 
+> 最终必然某个位置左侧全是左手取的，右侧全是右手取的。
+> 
+> 枚举中间断点 $x$ ，使用前缀后缀和维护代价。
+> 
+> 经典前后缀分解应用 要想的到
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: A. Vasya and Robot
+// Contest: Codeforces - Codeforces Round #206 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/354/A
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 1e5 + 10;
+
+int n, w[N];
+int l, r, ql, qr;
+
+int ls[N], rs[N];
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> n >> l >> r >> ql >> qr;
+    for (int i = 1; i <= n; ++i)
+        cin >> w[i];
+
+    ls[0] = 0, rs[n + 1] = 0;
+    for (int i = 1; i <= n; ++i)
+        ls[i] = ls[i - 1] + w[i];
+    for (int i = n; i >= 1; --i)
+        rs[i] = rs[i + 1] + w[i];
+
+    int res = 1e9;
+    // 枚举结束时左手取截止到的位置
+    for (int i = 0; i <= n; ++i) {
+        int left = i, right = n - i;
+        int t = ls[i] * l + rs[i + 1] * r;
+        // 取最优时必然是左右间隔拿，如果不能间隔拿则需要连续取的代价
+        if (right >= left + 2 || left >= right + 2)
+            t += (left > right ? ql : qr) * (abs(right - left) - 1);
+        res = min(res, t);
+    }
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

@@ -5099,6 +5099,91 @@ int main() {
 
 * * *
 
+> [!NOTE] **[Codeforces Increase Sequence](http://codeforces.com/problemset/problem/466/D)**
+> 
+> 题意: 
+> 
+> 给定一个序列，可以对若干对区间 $[l,r]$ 中的数 $+1$，且保证任意两个区间的左右端点不重合（即 $l_1!=l_2$ 且 $r_1!=r_2$）。
+> 
+> 最终要求序列中所有元素值都等于 $h$，请输出总方案数对 $1e9+7$ 取模后的结果。
+
+> [!TIP] **思路**
+> 
+> 较显然的，可以先处理为需要增加区间的差分数组
+> 
+> 如果差分的绝对值大于 1 显然不合法，直接 return 
+> 
+> 接下来分情况处理：1 / 0 / -1 ==> **思维**
+> 
+> **重复做**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: D. Increase Sequence
+// Contest: Codeforces - Codeforces Round #266 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/466/D
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const static int N = 1e5 + 10, MOD = 1e9 + 7;
+
+int n, h;
+int a[N], d[N];
+
+int main() {
+    cin >> n >> h;
+
+    for (int i = 1; i <= n; ++i) {
+        cin >> a[i];
+        a[i] = h - a[i];
+    }
+    // [1, n + 1]
+    for (int i = 1; i <= n + 1; ++i) {
+        d[i] = a[i] - a[i - 1];
+        if (abs(d[i]) > 1) {
+            // 一个端点不能出现超过一次
+            cout << "0" << endl;
+            return 0;
+        }
+    }
+
+    LL res = 1, cnt = 0;
+    // ATTENTION 思维
+    for (int i = 1; i <= n + 1; ++i) {
+        if (d[i] == 1)  // 需要新开一个区间
+            cnt++;
+        else if (d[i] == 0)  // 可以不动，或结束再新开
+            res = res * (cnt + 1) % MOD;
+        else if (d[i] == -1)  // 需要结束一个区间
+            res = res * cnt % MOD, cnt--;
+    }
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 ### 根据题意简化思维
 

@@ -1762,6 +1762,150 @@ public:
 
 * * *
 
+> [!NOTE] **[Codeforces Fools and Roads](http://codeforces.com/problemset/problem/191/C)**
+> 
+> 题意: 
+> 
+> 有一颗 $n$ 个节点的树，$k$ 次旅行，问每一条边被走过的次数。
+
+> [!TIP] **思路**
+> 
+> 经典边差分
+> 
+> **非常经典的 trick 思路**
+> 
+> - 题目要求按边顺序输出，故需要存边
+> 
+> - **直接用边中深度较大的一个点作为结果输出，因为深度较大的点即可认为是将边向下移动到的点【思考 细节】**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Fools and Roads
+// Contest: Codeforces - Codeforces Round #121 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/191/C
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using PII = pair<int, int>;
+const static int N = 1e5 + 10, M = 2e5 + 10, K = 18;
+
+int h[N], e[M], ne[M], idx;
+void init() {
+    memset(h, -1, sizeof h);
+    idx = 0;
+}
+void add(int a, int b) { e[idx] = b, ne[idx] = h[a], h[a] = idx++; }
+
+int depth[N], fa[N][K], q[N];
+void bfs(int root) {
+    memset(depth, 0x3f, sizeof depth);
+    depth[0] = 0, depth[root] = 1;
+    int hh = 0, tt = -1;
+    q[++tt] = root;
+    while (hh <= tt) {
+        int t = q[hh++];
+        for (int i = h[t]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (depth[j] > depth[t] + 1) {
+                depth[j] = depth[t] + 1;
+                q[++tt] = j;
+
+                fa[j][0] = t;
+                for (int k = 1; k < K; ++k)
+                    fa[j][k] = fa[fa[j][k - 1]][k - 1];
+            }
+        }
+    }
+}
+int lca(int a, int b) {
+    if (depth[a] < depth[b])
+        swap(a, b);
+    for (int k = K - 1; k >= 0; --k)
+        if (depth[fa[a][k]] >= depth[b])
+            a = fa[a][k];
+    if (a == b)
+        return a;
+    for (int k = K - 1; k >= 0; --k)
+        if (fa[a][k] != fa[b][k])
+            a = fa[a][k], b = fa[b][k];
+    return fa[a][0];
+}
+
+int n, k;
+int c[N];
+
+void dfs(int u, int fa) {
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (j == fa)
+            continue;
+        dfs(j, u);
+        c[u] += c[j];
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    init();
+
+    cin >> n;
+    vector<PII> es;
+    for (int i = 0; i < n - 1; ++i) {
+        int a, b;
+        cin >> a >> b;
+        add(a, b), add(b, a);
+        es.push_back({a, b});  // 需要按顺序输出边的次数
+    }
+
+    bfs(1);
+
+    cin >> k;
+    for (int i = 0; i < k; ++i) {
+        int a, b;
+        cin >> a >> b;
+        c[a]++, c[b]++, c[lca(a, b)] -= 2;
+    }
+
+    dfs(1, -1);
+
+    for (auto& [a, b] : es)
+        // TRICK: 要按边的输入顺序 则【把两个顶点中深度较大的那个点输出】
+        // ATTENTION: 非常值得思考学习的思路
+        if (depth[a] > depth[b])
+            cout << c[a] << ' ';
+        else
+            cout << c[b] << ' ';
+    cout << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
 ### 综合应用
 
 > [!NOTE] **[Codeforces Greg and Array](http://codeforces.com/problemset/problem/295/A)**

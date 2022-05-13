@@ -508,3 +508,134 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[Codeforces Kalila and Dimna in the Logging Industry](http://codeforces.com/problemset/problem/319/C)**
+> 
+> 题意: 
+> 
+> - 给定 $n$ 棵树，高度为 $a_1$ 到 $a_n$ ，权值为 $b_1$ 到 $b_n$，当一颗树的 $a$ 为 $0$ 时就说它被砍倒了
+> 
+> - 有一个电锯，每一次砍伐树会让一棵树的高度 $-1$
+> 
+> - 砍伐的费用为当前砍倒的编号的最大的树的 $b$【**不必前面连续的都被砍倒**】，第一次砍伐不需要费用
+> 
+> - 保证 $a_i<a_{i+1},b_i>b_{i+1},a_1=1,b_n=0$，求砍倒所有树的最小费用。
+> 
+> - 数据范围：$1\leqslant n\leqslant 10^5$。
+
+
+> [!TIP] **思路**
+> 
+> 很显然，我们第一次砍的一定是第一棵树，且砍倒最后一棵树以后就不需要任何费用了，这样题意就转化为如何花费最小的费用砍倒第 $n$ 棵树。
+> 
+> 有一个很显然的贪心思想，我们砍树一定从前往后砍（**中间可以跳过一些树**），因为我们砍这棵树一定无法更新砍树的费用。
+> 
+> 设 $f_i$ 为砍倒第 $i$ 棵树的费用，那么可以列出转移方程 $f_i=\min_{j=1}^{i-1}\{f_j+b_j\cdot a_i\}$。
+> 
+> 原始 $O(n^2)$ 必然需要优化。
+> 
+> 考虑斜率优化：设 $j,k$ 两个 $i$ 的决策点满足 $k<j<i$，且 $j$ 比 $k$ 更优，那么有：
+> 
+> $$
+> f_j+b_j\cdot a_i\leqslant f_k+b_k\cdot a_i
+> $$
+> 
+> 变一下形式：
+> 
+> $$
+> f_j+b_j\cdot a_i\leqslant f_k+b_k\cdot a_i
+> $$
+> $$
+> \Rightarrow f_j-f_k\leqslant a_i\cdot(b_k-b_j)
+> $$
+> $$
+> \Rightarrow \frac{f_j-f_k}{b_k-b_j}\leqslant a_i
+> $$
+> $$
+> \Rightarrow -\frac{f_j-f_k}{b_j-b_k}\leqslant a_i
+> $$
+> $$
+> \Rightarrow\frac{f_j-f_k}{b_j-b_k}\geqslant -a_i
+> $$
+> 
+> 化成斜率式之后，由于 $a$ 是递增的，因此用单调队列维护一个上凸壳就好了
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: C. Kalila and Dimna in the Logging Industry
+// Contest: Codeforces - Codeforces Round #189 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/319/C
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const static int N = 1e5 + 10;
+const static LL INF = 1e18;
+
+int n;
+// ai up, bi down
+// a1=1, bn=0
+LL a[N], b[N];
+LL f[N];
+int q[N], hh, tt;
+
+inline LL x(int p) { return b[p]; }
+inline LL y(int p) { return f[p]; }
+inline double slope(int a, int b) {
+    if (x(a) == x(b))
+        return y(a) > y(b) ? INF : -INF;
+    return 1.0 * (y(a) - y(b)) / (x(a) - x(b));
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> n;
+    for (int i = 1; i <= n; ++i)
+        cin >> a[i];
+    for (int i = 1; i <= n; ++i)
+        cin >> b[i];
+
+    for (int i = 1; i <= n; ++i)
+        f[i] = INF;
+
+    hh = 0, tt = -1;
+    q[++tt] = 0;
+    f[1] = b[1];
+    for (int i = 1; i <= n; ++i) {
+        while (hh < tt && slope(q[hh + 1], q[hh]) >= -a[i])
+            hh++;
+        // f[i] = min(f[j] + bj*ai) ==> 1 <= j <= i-1
+        f[i] = f[q[hh]] + b[q[hh]] * a[i];
+        while (hh < tt && slope(q[tt - 1], i) >= slope(q[tt], q[tt - 1]))
+            tt--;
+        q[++tt] = i;
+    }
+    cout << f[n] << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

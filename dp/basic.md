@@ -900,6 +900,104 @@ if __name__ == '__main__':
 
 * * *
 
+> [!NOTE] **[Codeforces Working out](http://codeforces.com/problemset/problem/429/B)**
+> 
+> 题意: 
+> 
+> 一个 $n$ 行 $m$ 列的矩阵。 $g[i][j]$ 代表在第 $i$ 行第 $j$ 列的价值。 
+> 
+> - 一人从 $[1, 1]$ 到 $[n, m]$ ，每次可以向右或者向下走
+> 
+> - 一人从 $[n, 1]$ 到 $[1, m]$ ，每次可以向右或者向上走
+> 
+> 二人必须在某一行，某一列相遇，相遇处无价值，求最终最大总价值多少
+
+> [!TIP] **思路**
+> 
+> 类似方格取数，但是中间有个相遇无价值的位置，会比较难办
+> 
+> 实际上，可以枚举相遇位置，则必然有两种穿越该位置的方式
+> 
+> **则分别统计 `起点 / 终点` 到该相遇位置 `上下左右` 的最大总价值，累加即可**
+> 
+> **ATTENTION 实际上类似于前后缀分解 或者说类似于中间点的思想**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Working out
+// Contest: Codeforces - Codeforces Round #245 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/429/B
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 1e3 + 10;
+
+int n, m;
+int g[N][N];
+int f1[N][N], f2[N][N], f3[N][N], f4[N][N];
+
+int main() {
+    cin >> n >> m;
+    for (int i = 1; i <= n; ++i)
+        for (int j = 1; j <= m; ++j)
+            cin >> g[i][j];
+
+    // [1, 1] 出发
+    for (int i = 1; i <= n; ++i)
+        for (int j = 1; j <= m; ++j)
+            f1[i][j] = max(f1[i - 1][j], f1[i][j - 1]) + g[i][j];
+
+    // [1, m] 结束
+    for (int i = 1; i <= n; ++i)
+        for (int j = m; j >= 1; --j)
+            f2[i][j] = max(f2[i - 1][j], f2[i][j + 1]) + g[i][j];
+
+    // [n, 1] 出发
+    for (int i = n; i >= 1; --i)
+        for (int j = 1; j <= m; ++j)
+            f3[i][j] = max(f3[i + 1][j], f3[i][j - 1]) + g[i][j];
+
+    // [n, n] 结束
+    for (int i = n; i >= 1; --i)
+        for (int j = m; j >= 1; --j)
+            f4[i][j] = max(f4[i + 1][j], f4[i][j + 1]) + g[i][j];
+
+    int res = 0;
+    for (int i = 2; i < n; ++i)
+        for (int j = 2; j < m; ++j) {
+            res = max(
+                res, f1[i][j - 1] + f4[i][j + 1] + f2[i - 1][j] + f3[i + 1][j]);
+            res = max(
+                res, f1[i - 1][j] + f4[i + 1][j] + f2[i][j + 1] + f3[i][j - 1]);
+        }
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
 > [!NOTE] **[LeetCode 174. 地下城游戏](https://leetcode-cn.com/problems/dungeon-game/)**
 > 
 > 题意: TODO
