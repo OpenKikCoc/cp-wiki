@@ -38,7 +38,7 @@ p1.first++;
 
 ```cpp
 if (p2 >= p3) {
-    cout << **do something here" << endl;
+    cout << "do something here" << endl;
 }
 ```
 

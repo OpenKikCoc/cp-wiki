@@ -840,3 +840,93 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2242. 节点序列的最大得分](https://leetcode.cn/problems/maximum-score-of-a-node-sequence/)**
+> 
+> 题意: 
+> 
+> 一个无向图，沿着边连续选择4个点，求最大权值和
+
+> [!TIP] **思路**
+> 
+> 刚开始想着建图 DFS 限定递归层数为 4 ==> TLE
+> 
+> 其实显然可以枚举一个必选的边，随后看该边上的两个点相连的所有点可以选哪些即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 5e4 + 10;
+    
+    int n;
+    vector<int> sc;
+    int mx[N][3];
+    
+    int maximumScore(vector<int>& scores, vector<vector<int>>& edges) {
+        this->sc = scores, this->n = sc.size();
+        memset(mx, -1, sizeof mx);  // ATTENTION 必须 因为 0 节点有意义
+        for (auto & e : edges) {
+            int a = e[0], b = e[1];
+            {
+                int x = sc[b];
+                if (mx[a][0] == -1 || x >= sc[mx[a][0]])
+                    mx[a][2] = mx[a][1], mx[a][1] = mx[a][0], mx[a][0] = b;
+                else if (mx[a][1] == -1 || x >= sc[mx[a][1]])
+                    mx[a][2] = mx[a][1], mx[a][1] = b;
+                else if (mx[a][2] == -1 || x > sc[mx[a][2]])
+                    mx[a][2] = b;
+            }
+            
+            {
+                int x = sc[a];
+                if (mx[b][0] == -1 || x >= sc[mx[b][0]])
+                    mx[b][2] = mx[b][1], mx[b][1] = mx[b][0], mx[b][0] = a;
+                else if (mx[b][1] == -1 || x >= sc[mx[b][1]])
+                    mx[b][2] = mx[b][1], mx[b][1] = a;
+                else if (mx[b][2] == -1 || x > sc[mx[b][2]])
+                    mx[b][2] = a;
+            }
+            
+        }
+        
+        int res = -1;
+        for (auto & e : edges) {
+            int a = e[0], b = e[1];
+            vector<int> as, bs;
+            for (int i = 0; i < 3; ++ i ) {
+                if (mx[a][i] != -1 && mx[a][i] != b)
+                    as.push_back(mx[a][i]);
+                if (mx[b][i] != -1 && mx[b][i] != a)
+                    bs.push_back(mx[b][i]);
+            }
+            int t = sc[a] + sc[b];
+            for (auto & x : as)
+                for (auto & y : bs)
+                    if (x != y) {
+                        // cout << x << " " << y << endl;
+                        res = max(res, t + sc[x] + sc[y]);
+                    }
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

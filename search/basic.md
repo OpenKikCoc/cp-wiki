@@ -3170,7 +3170,153 @@ class Solution:
 ##### **C++**
 
 ```cpp
+class Solution {
+public:
+    // 底部和顶部   侧面
+    // 1 * 5 * 8 * (4 * 3 * 2 * 8 * 8 * 8) = 40 * 24 * 512 = 500000 50w
+    const static int N = 11;
+    void mirror(vector<string> & state) {
+        for (int i = 0; i < m; ++ i )
+            for (int j = 0, k = m - 1; j < k; ++ j , -- k )
+                swap(state[i][j], state[i][k]);
+    }
+    void rotate(vector<string> & state) {
+        for (int i = 0; i < m; ++ i )
+            for (int j = 0; j < i; ++ j )
+                swap(state[i][j], state[j][i]);
+        mirror(state);
+    }
 
+    vector<vector<string>> g;
+    int n, m;
+    bool st[6];
+    bool has[N][N][N];
+    vector<string> hash[N][N];
+    vector<string> generateShape(int i, int change) {
+        auto shape = g[i];
+        // flip
+        if (change / 4)
+            mirror(shape);
+        for (int i = 0; i < change % 4; ++ i )
+            rotate(shape);
+        return hash[i][change] = shape;
+    }
+    bool candraw(int u, vector<string> & shape) {
+        if (u == 0) {
+            for (int i = 0; i < m; ++ i )
+                for (int j = 0; j < m; ++ j )
+                    if (shape[i][j] == '1' && has[i][j][0])
+                        return false;
+        } else if (u == 1) {
+            for (int i = 0; i < m; ++ i )
+                for (int j = 0; j < m; ++ j )
+                    if (shape[i][j] == '1' && has[i][0][j])
+                        return false;
+        } else if (u == 2) {
+            for (int i = 0; i < m; ++ i )
+                for (int j = 0; j < m; ++ j )
+                    if (shape[i][j] == '1' && has[0][i][j])
+                        return false;
+        } else if (u == 3) {
+            for (int i = 0; i < m; ++ i )
+                for (int j = 0; j < m; ++ j )
+                    if (shape[i][j] == '1' && has[i][m - 1][j])
+                        return false;
+        } else if (u == 4) {
+            for (int i = 0; i < m; ++ i )
+                for (int j = 0; j < m; ++ j )
+                    if (shape[i][j] == '1' && has[m - 1][i][j])
+                        return false;
+        } else if (u == 5) {
+            for (int i = 0; i < m; ++ i )
+                for (int j = 0; j < m; ++ j )
+                    if (shape[i][j] == '1' && has[i][j][m - 1])
+                        return false;
+        }
+        return true;
+    }
+    void draw(int u, vector<string> & shape, bool flag) {
+        if (u == 0) {
+            for (int i = 0; i < m; ++ i )
+                for (int j = 0; j < m; ++ j )
+                    if (shape[i][j] == '1')
+                        has[i][j][0] = flag;
+        } else if (u == 1) {
+            for (int i = 0; i < m; ++ i )
+                for (int j = 0; j < m; ++ j )
+                    if (shape[i][j] == '1')
+                         has[i][0][j] = flag;
+        } else if (u == 2) {
+            for (int i = 0; i < m; ++ i )
+                for (int j = 0; j < m; ++ j )
+                    if (shape[i][j] == '1')
+                        has[0][i][j] = flag;
+        } else if (u == 3) {
+            for (int i = 0; i < m; ++ i )
+                for (int j = 0; j < m; ++ j )
+                    if (shape[i][j] == '1')
+                        has[i][m - 1][j] = flag;
+        } else if (u == 4) {
+            for (int i = 0; i < m; ++ i )
+                for (int j = 0; j < m; ++ j )
+                    if (shape[i][j] == '1')
+                        has[m - 1][i][j] = flag;
+        } else if (u == 5) {
+            for (int i = 0; i < m; ++ i )
+                for (int j = 0; j < m; ++ j )
+                    if (shape[i][j] == '1')
+                        has[i][j][m - 1] = flag;
+        }
+    }
+
+    // [d, l, b, r, f, u]
+    bool dfs(int u) {
+        if (u == 6)
+            return true;
+        for (int i = 0; i < n; ++ i )
+            if (!st[i]) {
+                st[i] = true;
+                for (int j = 0; j < 8; ++ j ) {
+                    auto & shape = hash[i][j];
+                    if (candraw(u, shape)) {
+                        draw(u, shape, true);
+                        if (dfs(u + 1))
+                            return true;
+                        draw(u, shape, false);
+                    }
+                }
+                st[i] = false;
+            }
+        return false;
+    }
+    
+    bool composeCube(vector<vector<string>>& shapes) {
+        this->g = shapes;
+        n = g.size();
+        m = g[0].size();
+        
+        // precheck
+        {
+            int tot = 0;
+            for (auto & shape : g)
+                for (auto s : shape)
+                    for (auto c : s)
+                        if (c == '1')
+                            tot ++ ;
+            if (tot != m * m * m - (m - 2) * (m - 2) * (m - 2))
+                return false;
+        }
+        
+        memset(has, 0, sizeof has);
+        memset(st, 0, sizeof st);
+
+        for (int i = 0; i < n; ++ i )
+            for (int j = 0; j < 8; ++ j )
+                hash[i][j] = generateShape(i, j);
+
+        return dfs(0);
+    }
+};
 ```
 
 ##### **C++ WA**

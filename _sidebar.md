@@ -341,7 +341,6 @@
   * [字符串递归处理](misc/string-dfs.md)
   * [表达式求值](misc/expression.md)
   * [在一台机器上规划任务](misc/job-order.md)
-  * [主元素问题](misc/main-element.md)
   * [Garsia-Wachs 算法](misc/garsia-wachs.md)
   * [15-puzzle](misc/15-puzzle.md)
   * [Kahan 求和](misc/kahan-summation.md)

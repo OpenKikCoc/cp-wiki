@@ -2339,6 +2339,112 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 招商银行-04. 商店促销活动](https://leetcode.cn/contest/cmbchina-2022spring/problems/OK3hsO/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> - 推理知 b 需要排序，故做一个下标映射
+> 
+> - **根据是否打三折，分两种情况分别 DP 的思维**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 1e5 + 10;
+    const static LL INF = 1e18;
+
+    LL f[N][4][3];
+
+    template<class T>
+    bool freshmin(T& a, const T& b) { return a > b ? a = b, 1 : 0;}
+
+    int goShopping(vector<int>& a, vector<int>& b) {
+        int n = a.size();
+        
+        // 映射坐标 因为显然要按b排序下
+        vector<int> p(n);
+        for (int i = 0; i < n; ++i)
+            p[i] = i;
+        sort(p.begin(), p.end(), [&](int i, int j) { return b[i] > b[j]; });
+        
+        LL res = INF;
+        
+        // 1. 钦定 a 取不了 3 个，最后统计 res 的时候不能到 3
+        {
+            // 扩大 避免精度损失
+            for (int i = 0; i < n; ++i)
+                a[i] = a[i] * 10, b[i] = b[i] * 10;
+
+            for (int i = 0; i <= n; ++i)
+                for (int s = 0; s <= 3; ++s)        // 0，1，2代表 a 前面买过0，1，2件，3是代表打折
+                    for (int t = 0; t <= 2; ++t)    // 0，1，2代表 b 前面选多少个
+                        f[i][s][t] = INF;
+            f[0][0][0] = 0;
+            for (int i = 0; i < n; ++i)
+                for (int s = 0; s <= 3; ++s)
+                    for (int t = 0; t <= 2; ++t) {
+                        if (f[i][s][t] == INF)
+                            continue;
+                        // a 里买
+                        freshmin(f[i + 1][min(s + 1, 3)][t], f[i][s][t] + a[p[i]]);
+                        // b 里买
+                        freshmin(f[i + 1][s][(t + 1) % 3], f[i][s][t] + (t == 2 ? 0 : b[p[i]]));
+                    }
+        }
+        for (int s = 0; s < 3; ++s)
+            for (int t = 0; t <= 2; ++t)
+                freshmin(res, f[n][s][t]);
+
+        // 2. 钦定 a 必须取 3 个，最后统计时必须为 3
+        {
+            // ATTENTION a 打七折
+            for (int i = 0; i < n; ++i)
+                a[i] = a[i] / 10 * 7, b[i] = b[i] / 10 * 10;
+            for (int i = 0; i <= n; ++i)
+                for (int s = 0; s <= 3; ++s)
+                    for (int t = 0; t <= 2; ++t)
+                        f[i][s][t] = INF;
+            f[0][0][0] = 0;
+            for (int i = 0; i < n; ++i)
+                for (int s = 0; s <= 3; ++s)
+                    for (int t = 0; t <= 2; ++t) {
+                        if (f[i][s][t] == INF)
+                            continue;
+                        freshmin(f[i + 1][min(s + 1, 3)][t], f[i][s][t] + a[p[i]]);
+                        freshmin(f[i + 1][s][(t + 1) % 3],
+                                 f[i][s][t] + (t == 2 ? 0 : b[p[i]]));
+                    }
+        }
+        for (int t = 0; t <= 2; ++t)
+            freshmin(res, f[n][3][t]);
+
+        return res /= 10;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 股票问题
 
 > [!NOTE] **[LeetCode 121. 买卖股票的最佳时机](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock/)**

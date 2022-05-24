@@ -403,7 +403,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode [2163. 删除元素后和的最小差值](https://leetcode-cn.com/problems/minimum-difference-in-sums-after-removal-of-elements/)** [TAG]
+> [!NOTE] **[LeetCode 2163. 删除元素后和的最小差值](https://leetcode-cn.com/problems/minimum-difference-in-sums-after-removal-of-elements/)** [TAG]
 > 
 > 题意: TODO
 

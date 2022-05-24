@@ -1819,7 +1819,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[Codeforces ]()**
+> [!NOTE] **[Codeforces D. Characteristics of Rectangles](https://codeforces.com/problemset/problem/333/D)**
 > 
 > 题意: 
 > 

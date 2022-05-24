@@ -1100,7 +1100,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[Codeforces ]()**
+> [!NOTE] **[Codeforces GukiZ hates Boxes](https://codeforces.com/problemset/problem/551/C)**
 > 
 > 题意: 
 > 
