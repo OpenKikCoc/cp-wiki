@@ -15,6 +15,10 @@
 
 我们可以通过 DFS，在返回上一层时更新当前结点的最优解。
 
+- 树是特殊的图，所以树用邻接表来存储（链式前向星）
+
+- 求树形dp的时候，是需要从根节点向下递归求解。
+
 <details>
 <summary>详细代码</summary>
 <!-- tabs:start -->
@@ -79,8 +83,6 @@ int main() {
 ##### **Python**
 
 ```python
-# 树是特殊的图，所以树用邻接表来存储（链式前向星）
-# 求树形dp的时候，是需要从根节点往下求。
 # 这道题对python不友好，用dfs会爆栈，所以需要用下面的语句来限制，可以尝试用BFS来维护一个队列
 
 import sys
@@ -359,10 +361,10 @@ TODO@binacs
 ### 基础
 
 - [HDU 2196 Computer](http://acm.hdu.edu.cn/showproblem.php?pid=2196)
-
 - [POJ 1463 Strategic game](http://poj.org/problem?id=1463)
-
 - [\[POI2014\]FAR-FarmCraft](https://www.luogu.com.cn/problem/P3574)
+
+
 
 
 > [!NOTE] **[AcWing 1072. 树的最长路径](https://www.acwing.com/problem/content/description/1074/)**
@@ -370,8 +372,13 @@ TODO@binacs
 > 题意: TODO
 
 > [!TIP] **思路**
-> 
-> 
+>
+> 每条边都有权值，也就是本题。
+>
+> **树形dp**：想办法把所有的路径枚举一遍，在其中找到边权最大的路径即可。
+>
+> 1. 状态表示：以 $u$ 为根节点的所有路径的集合；属性：最长路径，也就是以 $u$ 为根节点，求最大子节点路径和第二大子节点路径的最大和。
+> 2. 状态转移：枚举 $u$ 的子节点 $j$, 返回最长路径。求得以 $u$ 为根节点的第一长子路径 $d1$, 和第二长子路径$d2$, $res = max(d1 + d2)$. 递归返回只返回第一长路径
 
 <details>
 <summary>详细代码</summary>
@@ -438,18 +445,6 @@ int main() {
 ##### **Python**
 
 ```python
-# 也被称为 一般情况下的 树的直径；
-# （还有一种树的直径是：没有边权的 树的直径：1. 任取一点作为起点，找到距离改点最远的一个点u （DFS，BFS） 2. 再找到距离u最远的距离v.那么u和v之间的路径就是一条直径（DFS，BFS））
-# 证明：图论的证明：第一步中找到的u一定是某一条直径的一个端点。反证法：如果A的找到的u不是某条直径的端点的话，找到另外一条直径，分情况讨论：1 该直径和Au相交；2. 该直径和Au不相交
-# 扩展后的做法：就是每条边都有自己的边权，不再都是1；那就需要用树形dp的方法：想办法把所有的路径枚举一遍，在其中找到边权最大的路径即可。
-# 任意选一个点为根节点，然后把所有直径进行分类：在每条直径上 找到高度最高的点，把这条直径的值放到这个高度最高的点上。
-# 以每个点把所有直径进行分类，每个点代表的类是：所有路径最高的点 就是这个点的所有路径（每条路径上都有一个唯一的最高点）
-# 问题转移为：当固定完一个点后，如何求挂到这个点上的长度的最大值呢？
-# 首先 先求出这个点上 所有子节点往下走的最大长度，1）挂在这个点下的最大值 2）经过这个点然后找到最长 和 第二长的 长度 相加 就是经过这个点的最大值
-
-# 状态表示：（集合）：
-# 状态转移：
-
 N = 10010
 M = 2 * N
 h = [-1] * N
@@ -458,19 +453,18 @@ ev = [0] * M
 w = [0] * M
 idx = 0
 
-
-def dfs(u, father):  # father表示当前点的father节点，避免子树往上走（子树方向只能向下走）
-    global ans
-    dist = 0  # 表示 从当前点往下走的最大长度
+def dfs(u, father): #father表示当前点的father节点，避免子树往上（只能向下走，避免上下死循环） 
+    global res
+    dist = 0  # 表示从当前点往下走的最大长度
     d1, d2 = 0, 0  # 如果是负数，就是不存在，那就是0
 
     i = h[u]  # 开始遍历当前点的所有子节点
     while i != -1:
         j = ev[i]
-        if j == father:
-            i = ne[i]  # 踩坑：不要忘了 把i往后移动！
-            continue  # 不能从子节点 走到 father节点上去
-        d = dfs(j, u) + w[i]  # 返回值 就是j点 往下走的最大长度
+        if j == father: # 不能从子节点走到 father节点上去
+            i = ne[i]  # 踩坑：不要忘了把i往后移动去找下一个子节点
+            continue  
+        d = dfs(j, u) + w[i]  # 递归的返回值是j点往下走的最大长度
         dist = max(dist, d)
 
         if d >= d1:
@@ -479,9 +473,8 @@ def dfs(u, father):  # father表示当前点的father节点，避免子树往上
         elif d > d2:
             d2 = d
         i = ne[i]
-    ans = max(ans, d1 + d2)
+    res = max(res, d1 + d2)
     return dist
-
 
 def add_edge(a, b, c):
     global idx
@@ -491,16 +484,15 @@ def add_edge(a, b, c):
     h[a] = idx
     idx += 1
 
-
 if __name__ == '__main__':
     n = int(input())
     for _ in range(n - 1):
         a, b, c = map(int, input().split())
         add_edge(a, b, c)
         add_edge(b, a, c)
-    ans = 0
-    dfs(1, -1)  # 任取一个点作为起点（其实就是作为根节点），根节点没有father节点，所以传入-1即可
-    print(ans)
+    res = 0
+    dfs(1, -1)  # 任取一个点作为作为根节点，作为根节点时，是没有father节点，所以传入-1即可
+    print(res)
 ```
 
 <!-- tabs:end -->
@@ -1609,7 +1601,90 @@ int main() {
 ##### **Python**
 
 ```python
+"""
+求每个点到其他点的最长距离是多少，再在这些最长距离里选一个最小值。
+怎么求每个点到其他点的最长距离：
+1. 从当前节点往下走：上一题的 dist
+2. 从当前节点往上走：其实就是求一个点的父节点不走该节点的最长路径。一个子节点j的向上最长路径就是，它的父节点u的最长向上路径和最长向下路径取最大值，
+  如果向下最长路径经过了j, 就改成次长的向下路径。
+3. d1[u]: 节点u向下走的最长路径的长度
+  d2[u]: 节点u向下走的次长路径的长度
+  p1[u]: 节点u向下走的最长路径是从哪个节点走过来的
+  p2[u]: 节点u向下走的次长路径是从哪个节点走过来的
+  up[u]：节点u向上走的最长路径的长度
+"""
+    
+N = 10010
+M = 2 * N
+h, ev, w, ne = [-1] * M, [0] * M, [0] * M, [0] * M
+d1, d2 = [0] * N, [0] * N
+up, p = [0] * N, [0] * N
 
+idx = 0
+
+
+def add_edge(a, b, c):
+    global idx
+    ev[idx] = b
+    w[idx] = c
+    ne[idx] = h[a]
+    h[a] = idx
+    idx += 1
+
+
+def dfs_down(u, father):
+    d1[u], d2[u] = float('-inf'), float('-inf')
+    i = h[u]
+    while i != -1:
+        j = ev[i]
+        k = w[i]
+        i = ne[i]
+        if j == father:
+            continue
+        d = dfs_down(j, u) + k
+        if d >= d1[u]:
+            d2[u], d1[u], p[u] = d1[u], d, j
+        elif d >= d2[u]:
+            d2[u] = d
+
+    if d1[u] == float('-inf'):
+        d1[u], d2[u] = 0, 0
+    return d1[u]
+
+
+def dfs_up(u, father):
+    i = h[u]
+    while i != -1:
+        j = ev[i]
+        k = w[i]
+        i = ne[i]
+        if j == father:
+            continue
+        if p[u] == j:
+            up[j] = max(up[u], d2[u]) + k
+        else:
+            up[j] = max(up[u], d1[u]) + k
+        dfs_up(j, u)
+
+
+if __name__ == '__main__':
+    n = int(input())
+    for i in range(n - 1):
+        a, b, c = map(int, input().split())
+        add_edge(a, b, c)
+        add_edge(b, a, c)
+
+    # 从任意一点开始找向下走的最长路径
+    dfs_down(1, -1)
+    
+    # 从任意一点开始找向上走的最长路径
+    dfs_up(1, -1)
+
+    res = float('inf')
+    for i in range(1, n + 1):
+        res = min(res, max(up[i], d1[i]))
+
+    print(res)
 ```
 
 <!-- tabs:end -->
@@ -1925,6 +2000,46 @@ public:
 ##### **Python**
 
 ```python
+class Solution:
+    def findMinHeightTrees(self, n: int, edges: List[List[int]]) -> List[int]:
+        g = collections.defaultdict(list)
+        d1, d2, p, up = [0] * n, [0] * n, [0] * n, [0] * n
+
+        for e in edges:
+            g[e[0]].append(e[1])
+            g[e[1]].append(e[0])
+            
+        def dfs_down(u, fa):
+            for v in g[u]:
+                if v != fa:
+                    dfs_down(v, u)
+                    d = d1[v] + 1
+                    if d >= d1[u]:
+                        d2[u], d1[u], p[u] = d1[u], d, v
+                    elif d > d2[u]:
+                        d2[u] = d
+
+        def dfs_up(u, fa):
+            for v in g[u]:
+                if v != fa:
+                    if p[u] == v:
+                        up[v] = max(up[u], d2[u]) + 1
+                    else:
+                        up[v] = max(up[u], d1[u]) + 1
+                    dfs_up(v, u)
+        
+        dfs_down(0, -1)
+        dfs_up(0, -1)
+
+        mind = n + 1
+        for i in range(n):
+            mind = min(mind, max(up[i], d1[i]))
+        res = []
+        for i in range(n):
+            maxv = max(up[i], d1[i])
+            if maxv == mind:
+                res.append(i)
+        return res
 
 ```
 
