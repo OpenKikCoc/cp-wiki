@@ -558,7 +558,7 @@ if __name__ == '__main__':
 
 ##### **C++**
 
-```C++
+```cpp
 #include <cstring>
 #include <iostream>
 #include <algorithm>
@@ -648,6 +648,11 @@ if __name__ == "__main__":
     print(f[n][m])
 
 ```
+
+<!-- tabs:end -->
+</details>
+
+* * *
 
 见 [单调队列/单调栈优化](dp/opt/monotonous-queue-stack.md)。
 
@@ -856,8 +861,9 @@ if __name__ == '__main__':
 >
 > 2. 状态转移：枚举第 $i$ 组物品 选不选，选哪个？ ==> (1) 不选 (2) 选第 $i$ 组的第 1 个物品,...,第 $k$ 个物品...这个转移的过程很像一根热狗，就叫 “热狗划分法”
 > 	
-> 		1）第 $i$ 组物品不选：$f[i - 1,j]$
-> 	2）第 $i$ 组物品选第 $k$ 个物品： $f[i - 1,j - v[k]] + w[i,k]$ 
+>    1）第 $i$ 组物品不选：$f[i - 1,j]$
+> 	
+>    2）第 $i$ 组物品选第 $k$ 个物品： $f[i - 1,j - v[k]] + w[i,k]$ 
 
 <details>
 <summary>详细代码</summary>
@@ -1909,6 +1915,12 @@ Actually, this is a 0/1 knapsack problem.
   
    $f[0][0] = True$ ; (zero number consists of sum 0 is true)
 
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
 * * *
 
 > [!NOTE] **[LeetCode 1449. 数位成本和为目标值的最大数字](https://leetcode-cn.com/problems/form-largest-integer-with-digits-that-add-up-to-target/)**
@@ -2309,7 +2321,6 @@ int main() {
 }
 ```
 
-
 ##### **C++ 倍缩优化**
 
 倍缩可过【首先除10必定可行，再判断能否再除10（即所有w[i]是否全是100的倍数）】：
@@ -2587,7 +2598,7 @@ if __name__ == '__main__':
     pri(n, m)
 
     # 推荐用while循环来打印方案，如果需要正序输出，就用一个数组保存，最后再输出
-    i = n;
+    i = n
     v = m
     res = []
     while i >= 1:
@@ -2965,7 +2976,7 @@ if __name__ == '__main__':
 >
 > 2. $f[i,j] = max(f[i-1,j],  f[i-1,j-v[i]]+w[i])$
 >
-> 3. 对应的$g[i][j]$: 
+> 3. 对应的 $g[i][j]$ : 
 >
 >    $g[i][j]=g[i-1][j]$；
 >
@@ -3084,8 +3095,6 @@ if __name__ == "__main__":
     print(g[m])
 ```
 
-
-
 <!-- tabs:end -->
 </details>
 
@@ -3143,7 +3152,7 @@ int main() {
 }
 ```
 
-##### **Python**
+##### **Python 1**
 
 ```python
 N = 1010
@@ -3174,7 +3183,7 @@ if __name__ == '__main__':
 #        i += 1
 ```
 
-##### **Python**
+##### **Python 2**
 
 ```python
 N = 1010
@@ -3199,10 +3208,6 @@ if __name__ == '__main__':
             print(i, end = ' ')
             j -= v[i]
 ```
-
-
-
-
 
 <!-- tabs:end -->
 </details>

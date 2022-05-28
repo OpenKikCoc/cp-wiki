@@ -2019,6 +2019,139 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 2258. 逃离火灾](https://leetcode.cn/problems/escape-the-spreading-fire/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 1A
+> 
+> 较显然的：二分答案
+> 
+> 注意预处理距离，然后再判断。而非在判断内执行多源BFS
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using PII = pair<int, int>;
+    using LL = long long;
+    const static int N = 2e4 + 10, INF = 1e9;
+    
+    int n, m;
+    vector<vector<int>> g;
+    vector<vector<LL>> d, t;
+    
+    int dx[4] = {-1, 0, 0, 1}, dy[4] = {0, -1, 1, 0};
+    PII q[N];
+    
+    LL mid;
+    vector<vector<bool>> st;
+    
+    bool dfs(int x, int y) {
+        st[x][y] = true;
+        if (x == n - 1 && y == m - 1)
+            return t[x][y] + mid <= d[x][y];
+        if (t[x][y] + mid >= d[x][y])
+            return false;
+        for (int i = 0; i < 4; ++ i ) {
+            int nx = x + dx[i], ny = y + dy[i];
+            if (nx < 0 || nx >= n || ny < 0 || ny >= m)
+                continue;
+            if (g[nx][ny] != 0 || st[nx][ny])
+                continue;
+            if (dfs(nx, ny))
+                return true;
+        }
+        return false;
+    }
+    
+    // 能否可以到达目标点
+    // ==> 有一条 t + mid <= d 的路径
+    bool check() {
+        st = vector<vector<bool>>(n, vector<bool>(m));
+        return dfs(0, 0);
+        // return true;
+    }
+    
+    int maximumMinutes(vector<vector<int>>& grid) {
+        this->g = grid, this->n = g.size(), this->m = g[0].size();
+        
+        {
+            this->d = vector<vector<LL>>(n, vector<LL>(m, (LL)2e9));
+            int hh = 0, tt = -1;
+            for (int i = 0; i < n; ++ i )
+                for (int j = 0; j < m; ++ j )
+                    if (grid[i][j] == 1)
+                        q[ ++ tt] = {i, j}, d[i][j] = 0;
+            
+            while (hh <= tt) {
+                auto [x, y] = q[hh ++ ];
+                for (int i = 0; i < 4; ++ i ) {
+                    int nx = x + dx[i], ny = y + dy[i];
+                    if (nx < 0 || nx >= n || ny < 0 || ny >= m)
+                        continue;
+                    if (g[nx][ny] != 0)
+                        continue;
+                    if (d[nx][ny] > d[x][y] + 1) {
+                        d[nx][ny] = d[x][y] + 1;
+                        q[ ++ tt] = {nx, ny};
+                    }
+                }
+            }
+        }
+        {
+            this->t = vector<vector<LL>>(n, vector<LL>(m, (LL)2e9));
+            int hh = 0, tt = -1;
+            q[ ++ tt] = {0, 0}, t[0][0] = 0;
+            while (hh <= tt) {
+                auto [x, y] = q[hh ++ ];
+                for (int i = 0; i < 4; ++ i ) {
+                    int nx = x + dx[i], ny = y + dy[i];
+                    if (nx < 0 || nx >= n || ny < 0 || ny >= m)
+                        continue;
+                    if (g[nx][ny] != 0)
+                        continue;
+                    if (t[nx][ny] > t[x][y] + 1) {
+                        t[nx][ny] = t[x][y] + 1;
+                        q[ ++ tt] = {nx, ny};
+                    }
+                }
+            }
+        }
+        
+        
+        LL l = 0, r = INF + 1;
+        while (l < r) {
+            mid = l + (r - l) / 2;
+            if (check())
+                l = mid + 1;
+            else
+                r = mid;
+        }
+        return l - 1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 ### 二分套二分
 

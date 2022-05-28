@@ -1244,6 +1244,83 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 6080. 使数组按非递减顺序排列](https://leetcode.cn/problems/steps-to-make-array-non-decreasing/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **非常经典的单调栈应用 以及理清楚维护的细节**
+> 
+> 单调栈 + **c数组维护**
+> 
+> 思想 **重复做**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 找到右侧第一个大于等于当前数的位置，中间的都需要消除  ==> 单调递减栈
+    //      此时显然需要统计中间的最大消耗               ==> c 数组
+    //      重点在于 if (stk.size()) c[i] = t + 1, res = max(res, c[i]);
+    //      ==> 理由: 递减栈存储元素及其被删除的时间c 已更新当前的c（临时变量t）
+    //          当栈为空：说明前面没有比当前元素大的，c即为0
+    int totalSteps_2(vector<int>& nums) {
+        int n = nums.size(), res = 0;
+        vector<int> stk, c(n);
+        for (int i = 0; i < n; ++ i ) {
+            int t = 0;
+            while (stk.size() && nums[stk.back()] <= nums[i]) {
+                t = max(t, c[stk.back()]);
+                stk.pop_back();
+            }
+            // ATTENTION 只有栈不为空 当前位置才需要最终被当前的栈顶所消耗 也即才需要统计当前元素被干掉的时间
+            // 否则当前元素可以留下，不需要统计cost
+            if (stk.size()) {
+                c[i] = t + 1;
+                res = max(res, c[i]);
+            }
+            stk.push_back(i);
+        }
+        return res;
+    }
+    
+    // 为每个元素找到吃掉它的那个元素 ==> 逆序维护单调递减(可以相等)栈
+    //  ATTENTION: 则在 while 循环弹出过程中，弹出的元素都应是整个过程中被当前元素吃掉的
+    //      则：当前元素的 cost = max(当前已有的cost+1, 被弹出元素本身的cost) 【重要】
+    int totalSteps(vector<int>& nums) {
+        int n = nums.size(), res = 0;
+        vector<int> stk, c(n);
+        for (int i = n - 1; i >= 0; -- i ) {
+            while (stk.size() && nums[stk.back()] < nums[i]) {
+                res = max(res, c[i] = max(c[i] + 1, c[stk.back()]));
+                stk.pop_back();
+            }
+            stk.push_back(i);
+        }
+        
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 ### 删数类问题
 

@@ -1,4 +1,6 @@
-
+> [!NOTE] **离散化后坐标映射时应使用 lower_bound**
+> 
+> 经验来看，直接用 lower_bound 比建立 unordered_map 再查找更快
 ## 简介
 
 离散化本质上可以看成是一种 [哈希](string/hash.md)，其保证数据在哈希以后仍然保持原来的全/偏序关系。
