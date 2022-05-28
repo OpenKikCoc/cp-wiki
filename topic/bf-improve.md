@@ -80,3 +80,142 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2257. 统计网格图中没有被保卫的格子数](https://leetcode.cn/problems/count-unguarded-cells-in-the-grid/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 复杂度可以接受直接把坐标存下来再二分，复杂度 $O(nmlog)$
+> 
+> 实际上，我们可以直接用 bit 位表示某个位置的 `上下左右` 是否有守卫，进而把时间复杂度优化到 $O(nm)$
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 二分**
+
+```cpp
+class Solution {
+public:
+    // m * n <= 1e5
+    using PII = pair<int, int>;
+    
+    vector<vector<bool>> st;
+    
+    int countUnguarded(int m, int n, vector<vector<int>>& guards, vector<vector<int>>& walls) {
+        this->st = vector<vector<bool>>(m, vector<bool>(n));
+        vector<vector<PII>> r(m), c(n);
+        for (int i = 0; i < m; ++ i )
+            r[i].push_back({-1, 0}), r[i].push_back({n, 0});
+        for (int i = 0; i < n; ++ i )
+            c[i].push_back({-1, 0}), c[i].push_back({m, 0});
+        for (auto & g : guards) {
+            int x = g[0], y = g[1];
+            st[x][y] = true;
+            r[x].push_back({y, 1});
+            c[y].push_back({x, 1});
+        }
+        for (auto & w : walls) {
+            int x= w[0], y = w[1];
+            st[x][y] = true;
+            r[x].push_back({y, -1});
+            c[y].push_back({x, -1});
+        }
+        for (int i = 0; i < m; ++ i )
+            sort(r[i].begin(), r[i].end());
+        for (int i = 0; i < n; ++ i )
+            sort(c[i].begin(), c[i].end());
+        
+        int res = 0;
+        for (int i = 0; i < m; ++ i )
+            for (int j = 0; j < n; ++ j ) {
+                if (st[i][j])
+                    continue;
+                // cout << " I = " << i << " j = " << j << endl;
+                
+                {
+                    auto it = lower_bound(r[i].begin(), r[i].end(), PII{j, 0});
+                    if ((*it).second == 1) {
+                        continue;
+                    }
+                    it -- ;
+                    if ((*it).second == 1) {
+                        continue;
+                    }
+                }
+                {
+                    auto it = lower_bound(c[j].begin(), c[j].end(), PII{i, 0});
+                    if ((*it).second == 1) {
+                        continue;
+                    }
+                    it -- ;
+                    if ((*it).second == 1) {
+                        continue;
+                    }
+                }
+                res ++ ;
+            }
+        return res;
+    }
+};
+```
+
+##### **C++ 优化**
+
+```cpp
+class Solution {
+public:
+    // m * n <= 1e5
+    using PII = pair<int, int>;
+    
+    vector<vector<int>> st;
+    
+    // 入参把 n m swap 了
+    int countUnguarded(int n, int m, vector<vector<int>>& guards, vector<vector<int>>& walls) {
+        st = vector<vector<int>>(n, vector<int>(m));
+        for (auto & g : guards)
+            st[g[0]][g[1]] = 15;
+        for (auto & w : walls)
+            st[w[0]][w[1]] = 16;    // 只要后四bit位全0即可
+        
+        for (int i = 0; i < n; ++ i )
+            for (int j = 0; j < m; ++ j )
+                if (st[i][j] < 16) {
+                    if (i)
+                        st[i][j] |= st[i - 1][j] & 1;
+                    if (j)
+                        st[i][j] |= st[i][j - 1] & 2;
+                }
+        for (int i = n - 1; i >= 0; -- i )
+            for (int j = m - 1; j >= 0; -- j )
+                if (st[i][j] < 16) {
+                    if (i < n - 1)
+                        st[i][j] |= st[i + 1][j] & 4;
+                    if (j < m - 1)
+                        st[i][j] |= st[i][j + 1] & 8;
+                }
+        
+        int res = 0;
+        for (int i = 0; i < n; ++ i )
+            for (int j = 0; j < m; ++ j )
+                res += !st[i][j];
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

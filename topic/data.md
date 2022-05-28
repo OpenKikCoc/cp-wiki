@@ -930,3 +930,109 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 6043. 统计包含每个点的矩形数目](https://leetcode.cn/problems/count-number-of-rectangles-containing-each-point/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经验:
+> 
+> - 离散化映射时直接 lower_bound 比建立个 unordered_map 更快
+> 
+> - **深刻理解此类处理思路，加快速度**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 110;
+
+    vector<int> v[N];  // 按列统计（横向）
+
+    vector<int> countRectangles(vector<vector<int>>& rectangles, vector<vector<int>>& points) {
+        for (auto & r : rectangles)
+            v[r[1]].push_back(r[0]);
+        for (int i = 1; i < N; ++ i )
+            sort(v[i].begin(), v[i].end());
+        
+        vector<int> res;
+        for (auto & p : points) {
+            int t = 0;
+            for (int i = p[1]; i < N; ++ i )
+                t += v[i].end() - lower_bound(v[i].begin(), v[i].end(), p[0]);
+            res.push_back(t);
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 直观离散化并前缀和 差点TLE**
+
+```cpp
+class Solution {
+public:
+    // using LL = long long;
+    // 本质对每个点求 在其右上方的矩阵右上顶点的数量
+    const static int N = 1e5 + 10, M = 110;
+    
+    // int s[N][M];
+    
+    vector<int> countRectangles(vector<vector<int>>& rectangles, vector<vector<int>>& points) {
+        int n = 0, m = 0;
+        vector<int> ids;
+        {
+            // 离散化
+            ids.push_back(0);
+            for (auto & r : rectangles)
+                ids.push_back(r[0]), m = max(m, r[1]);
+            for (auto & p : points)
+                ids.push_back(p[0]), m = max(m, p[1]);
+            sort(ids.begin(), ids.end());
+            ids.erase(unique(ids.begin(), ids.end()), ids.end());
+            
+            // 转换映射
+            for (auto & r : rectangles)
+                r[0] = lower_bound(ids.begin(), ids.end(), r[0]) - ids.begin();
+            for (auto & p : points)
+                p[0] = lower_bound(ids.begin(), ids.end(), p[0]) - ids.begin();
+        }
+        n = ids.size();
+        vector<vector<int>> s(n + 1, vector<int>(m + 1));
+        {
+            for (auto & r : rectangles)
+                s[r[0]][r[1]] ++ ;
+            for (int i = 1; i < n + 1; ++ i )
+                for (int j = 1; j < m + 1; ++ j )
+                    s[i][j] += s[i - 1][j] + s[i][j - 1] - s[i - 1][j - 1];
+        }
+        
+        vector<int> res;
+        for (auto & p : points) {
+            int t = s[n][m] - s[p[0] - 1][m] - s[n][p[1] - 1] + s[p[0] - 1][p[1] - 1];
+            res.push_back(t);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
