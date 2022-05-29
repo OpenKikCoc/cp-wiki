@@ -434,3 +434,184 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[2246. 相邻字符不同的最长路径](https://leetcode.cn/problems/longest-path-with-different-adjacent-characters/)**
+>
+> 题意: TODO
+
+> [!TIP] **思路**
+>
+> 显然相同字符不能连边，最终会形成森林
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```c++
+class Solution {
+public:
+    const static int N = 1e5 + 10, M = N << 1;
+    
+    int h[N], e[M], ne[M], idx;
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+    }
+    void add(int a, int b) {
+        e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    int n, d;
+    bool st[N];
+    int d1[N], d2[N];
+    
+    void dfs(int u, int fa) {
+        st[u] = true;
+        d1[u] = d2[u] = 1;
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (j == fa)
+                continue;
+            dfs(j, u);
+            if (d1[j] + 1 >= d1[u])
+                d2[u] = d1[u], d1[u] = d1[j] + 1;
+            else if (d1[j] + 1 > d2[u])
+                d2[u] = d1[j] + 1;
+        }
+        // cout << "... u = " << u << " " << d1[u] << " " << d2[u] << endl;
+        d = max(d, d1[u] + d2[u] - 1);
+    }
+    
+    int longestPath(vector<int>& parent, string s) {
+        init();
+        
+        n = parent.size();
+        for (int i = 1; i < n; ++ i ) {
+            int a = parent[i], b = i;
+            if (s[a] != s[b])
+                add(a, b), add(b, a);
+        }
+        
+        int res = 0;
+        memset(st, 0, sizeof st);
+        for (int i = 0; i < n; ++ i )
+            if (!st[i]) {
+                d = 0;
+                dfs(i, -1);
+                res = max(res, d);
+                // cout << " i = " << i << " d = " << d << endl;
+            }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+class Solution:
+    def longestPath(self, parent: List[int], s: str) -> int:
+        g = defaultdict(list)
+        for i, u in enumerate(parent):
+            g[u].append(i)
+
+        @lru_cache(None)        
+        def dfs(u):
+            d, res = [0, 0], 0
+            for j in g[u]:
+                if s[j] != s[u]:
+                    cur = dfs(j)
+                    res = max(res, cur[1])
+                    if d[0] <= cur[0]:
+                        d[0], d[1] = cur[0], d[0]
+                    elif d[1] < cur[0]:
+                        d[1] = cur[0]
+            return [d[0] + 1, max(res, d[0] + d[1] + 1)]
+        
+        ans = 0
+        for i in range(len(parent)):
+            ans = max(ans, max(dfs(i)))
+        return ans
+```
+
+##### **Python-2**
+
+```python
+class Solution:
+    def longestPath(self, parent: List[int], s: str) -> int:
+        def dfs(u):             
+            nonlocal ans
+            d1 = d2 = 1         # 最大、次大路径长度的节点个数
+            for v in graph[u]:   
+                d = dfs(v) + 1
+                if s[v] == s[u]:    
+                    continue 
+                if d >= d1:          # 更新最大值、次大值
+                    d1, d2 = d, d1
+                elif d > d2:
+                    d2 = d 
+            
+            ans = max(ans, d1 + d2 - 1)  
+            return d1          # 返回值: 节点u到后代节点的最长路径上边的节点个数
+        
+        n = len(parent)                 # 节点数目
+        graph = [[] for _ in range(n)]  
+        for v in range(1, n):           # 遍历节点（跳过根结点）
+            graph[parent[v]].append(v)
+        
+        ans = 0
+        dfs(0)
+        return ans   
+```
+
+##### **Python-3**
+
+```python
+class Solution:
+    def longestPath(self, parent: List[int], s: str) -> int:
+        N = 100010; M = N << 1
+        h, ev, ne, idx = [-1] * N, [0] * M, [0] * M, 0
+
+        def add_edge(a, b):
+            nonlocal idx
+            ev[idx] = b; ne[idx] = h[a]; h[a] = idx; idx += 1
+
+        def dfs(u, fa):
+            nonlocal res
+            d1 = d2 = 1      
+            i = h[u]
+            while i != -1:
+                j = ev[i]
+                i = ne[i]
+                if j == fa:
+                    continue
+                d = dfs(j, u) + 1
+                if s[j] == s[u]:
+                    continue
+                if d >= d1:          # 更新最大值、次大值
+                    d1, d2 = d, d1
+                elif d > d2:
+                    d2 = d 
+            res = max(res, d1 + d2 - 1)
+            return d1
+
+        n = len(parent)
+        a, b = 0, 0
+        for i in range(1, n):
+            a, b = parent[i], i
+            add_edge(a, b)
+            add_edge(b, a)
+
+        res = 0
+        dfs(0, -1)
+        return res
+```
+
+
+
+<!-- tabs:end -->
+</details>
+
+<br>
