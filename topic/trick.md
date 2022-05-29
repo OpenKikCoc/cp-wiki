@@ -5397,6 +5397,62 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 2262. 字符串的总引力](https://leetcode.cn/problems/total-appeal-of-a-string/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思路错了，其实不需要关心子串
+> 
+> 题意有每个字符贡献都是一，那么拆解计算单个字符的贡献即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    
+    long long appealSum(string s) {
+        int n = s.size();
+        vector<vector<int>> v(26);
+        for (int i = 0; i < 26; ++ i )
+            v[i].push_back(-1);
+        for (int i = 0; i < n; ++ i )
+            v[s[i] - 'a'].push_back(i);
+        for (int i = 0; i < 26; ++ i )
+            v[i].push_back(n);
+        
+        LL res = 0;
+        // 重点在于把每个字符的贡献拆卡统计
+        // ATTENTION: 不管哪个字符 其贡献相等都是1
+        for (int i = 0; i < 26; ++ i )
+            for (int j = 1; j < v[i].size(); ++ j ) {
+                LL L = v[i][j] - v[i][j - 1], R = n - v[i][j];
+                res += L * R;
+            }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 ### 动态统计计数题
 
