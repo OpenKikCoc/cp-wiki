@@ -1206,6 +1206,164 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 2271. 毯子覆盖的最多白色砖块数](https://leetcode.cn/problems/maximum-white-tiles-covered-by-a-carpet/)** [TAG]
+> 
+> 题意: 
+> 
+> 题意刚看有点类似 [最佳牛围栏] ，本质用一个固定长度的板，检查最多能包含多少砖。
+> 
+> 问题在于数据范围较大，可能需要离散化（实际并不）
+
+> [!TIP] **思路**
+> 
+> 显然必然要排序处理
+> 
+> 随后即是重要的 **贪心推导**
+> 
+> > 由于覆盖多段区间时：
+> > 
+> > 如果毛毯左边落在区间中间右移一格的毛毯：左侧也会损失一格，不会使结果变得更好；
+> > 
+> > 而左移要么增加一格：要么不变，不会使得结果变得更差
+> 
+> 所以每次都将毛毯放在区间 `左侧开头 / 右侧开头`
+> 
+> PS: **右侧开头维护起来代码更好写**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 二分**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    using PII = pair<int, int>;
+    
+    vector<PII> ts;
+    
+    int maximumWhiteTiles(vector<vector<int>>& tiles, int carpetLen) {
+        sort(tiles.begin(), tiles.end());
+        for (auto & t : tiles) {
+            int l = t[0], r = t[1];
+            if (ts.empty() || ts.back().second < l - 1)
+                ts.push_back({l, r});
+            else
+                ts.back().second = r;
+        }
+        int n = ts.size();
+        vector<LL> s(n + 1);
+        for (int i = 1; i <= n; ++ i )
+            s[i] = s[i - 1] + (LL)(ts[i - 1].second - ts[i - 1].first + 1);
+        
+        LL res = 0;
+        for (int i = 1; i <= n; ++ i ) {
+            auto [l, r] = ts[i - 1];
+            // cout << "=== l = " << l << " r = " << r << endl;
+            int t = 0;
+            {
+                int L = i, R = n;
+                while (L < R) {
+                    int m = L + R >> 1;
+                    if (ts[m - 1].first < l + carpetLen)
+                        L = m + 1;
+                    else
+                        R = m;
+                }
+                // ... .first >= l + len 的第一个
+                if (L - 1 >= 1) {
+                    int id = L - 1;
+                    LL t = s[id - 1] + (min(s[id] - s[id - 1], (LL)(l + carpetLen) - ts[id - 1].first)) - s[i - 1];
+                    // cout << " [1] i = " << i << " id = " << id << " t = " << t << endl;
+                    res = max(res, t);
+                }
+            }
+            {
+                int L = 1, R = i;
+                while (L < R) {
+                    int m = L + R >> 1;
+                    if (ts[m - 1].second <= r - carpetLen)
+                        L = m + 1;
+                    else
+                        R = m;
+                }
+                // ... .second > r - carpetLen 的第一个, 意即当前段必然包含了一部分
+                int id = L;
+                // cout << " L = " << L << endl;
+                LL t = s[i] - s[id] + min(s[id] - s[id - 1], (LL)ts[id - 1].second - (r - carpetLen));
+                // cout << " [2] i = " << i << " id = " << id << " t = " << t << endl;
+                res = max(res, t);
+            }
+        }
+        return res;
+    }
+};
+```
+##### **C++ 左侧放置 双指针**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    
+    // 贪心结论：毯子左端点一定和某组瓷砖的左端点一致
+    int maximumWhiteTiles(vector<vector<int>>& tiles, int carpetLen) {
+        sort(tiles.begin(), tiles.end());
+        LL res = 0, t = 0;
+        for (int i = 0, j = 0; i < tiles.size(); ++ i ) {
+            while (j < tiles.size() && tiles[j][1] + 1 <= tiles[i][0] + carpetLen)
+                t += tiles[j][1] - tiles[j][0] + 1, j ++ ;
+            // while 结束后 j 处的瓷砖无法完全覆盖
+            if (j < tiles.size())
+                // 注意计算思路：最后一段不完整的可以直接这么算
+                res = max(res, t + max(0, tiles[i][0] + carpetLen - tiles[j][0]));
+            else
+                res = max(res, t);
+            t -= tiles[i][1] - tiles[i][0] + 1;
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 右侧放置 双指针**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    
+    // 另一实现：每次放在右端点
+    int maximumWhiteTiles(vector<vector<int>>& tiles, int carpetLen) {
+        sort(tiles.begin(), tiles.end());
+        LL res = 0, t = 0;
+        for (int i = 0, j = 0; j < tiles.size(); ++ j ) {
+            t += tiles[j][1] - tiles[j][0] + 1;
+            while (i < j && tiles[i][1] <= tiles[j][1] - carpetLen)
+                t -= tiles[i][1] - tiles[i][0] + 1, i ++ ;
+            // ATTENTION: 在此条件下 应当是 t - x, 注意 x 的计算逻辑
+            res = max(res, t - max(0, tiles[j][1] - carpetLen - tiles[i][0] + 1));
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 排序不等式
 
 > [!NOTE] **[AcWing 1395. 产品处理](https://www.acwing.com/problem/content/1397/)**

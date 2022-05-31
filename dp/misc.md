@@ -587,6 +587,96 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 2272. 最大波动的子字符串](https://leetcode.cn/problems/substring-with-largest-variance/)** [TAG]
+> 
+> 题意: 
+> 
+> 求其所有子串中：出现 `次数最多` 与 `次数最少` 的 `两种字符` 的最大 `次数差值`。
+
+> [!TIP] **思路**
+> 
+> 数据范围显然不能枚举区间，考虑枚举两类 `最多/最少` 的字符
+> 
+> 则在遍历整个串的过程中，遇到字符分别 `+1/-1` ，所求即转化为 `最大子序和` 。
+> 
+> **问题在于如何维护 `必然包含两个字符` 的最大子序和 (diff_with_b)**
+> 
+> **重复做**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 显然无法枚举区间，考虑枚举两个元素
+    int largestVariance(string s) {
+        int res = 0;
+        for (char c1 = 'a'; c1 <= 'z'; ++ c1 )      // 较大的
+            for (char c2 = 'a'; c2 <= 'z'; ++ c2 )  // 较小的
+                if (c1 != c2) {
+                    // diff 表示 c1-c2 差值; diff_with_b 表示包含了b的次数差值，初始化-inf
+                    int diff = 0, diff_with_b = -1e8, t = 0;
+                    for (auto c : s) {
+                        if (c == c1)
+                            diff ++ , diff_with_b ++ ;
+                        else if (c == c2)
+                            // ATTENTION: 若 diff < 0 则重置为 0
+                            diff_with_b = -- diff , diff = max(diff, 0);
+                        t = max(t, diff_with_b);
+                    }
+                    res = max(res, t);
+                }
+        return res;
+    }
+};
+```
+
+##### **C++ 另一**
+
+```cpp
+class Solution {
+public:
+    // 显然无法枚举区间，考虑枚举两个元素
+    int largestVariance(string s) {
+        int res = 0;
+        for (char c1 = 'a'; c1 <= 'z'; ++ c1 )      // 较大的
+            for (char c2 = 'a'; c2 <= 'z'; ++ c2 )  // 较小的
+                if (c1 != c2) {
+                    // diff 表示 c1-c2 差值; diff_with_b 表示包含了b的次数差值，初始化-inf
+                    int diff = 0, diff_with_b = -1e8, t = 0;
+                    for (auto c : s) {
+                        if (c == c1)
+                            // 思考：diff_with_b 如何保证必然包含 b [更新逻辑 不能取max(0, xxx)]
+                            diff = max(0, diff) + 1, diff_with_b = diff_with_b + 1;
+                        else if (c == c2)
+                            // ATTENTION: 转移; diff 重置
+                            diff = diff - 1, diff_with_b = diff, diff = max(diff, 0);
+                        t = max(t, diff_with_b);
+                    }
+                    res = max(res, t);
+                }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[Codeforces C. George and Job](https://codeforces.com/problemset/problem/467/C)**
 > 
 > 题意: TODO

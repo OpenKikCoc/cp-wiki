@@ -381,3 +381,108 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2276. 统计区间中的整数数目](https://leetcode.cn/problems/count-integers-in-intervals/)**
+> 
+> 题意: 
+> 
+> 每次区间赋值 1 ，多次求总共多少个 1
+
+> [!TIP] **思路**
+> 
+> 显然珂朵莉树，注意初始化即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class CountIntervals {
+public:
+    const static int INF = 2e9;
+    
+    int tot;
+    struct Node_t {
+        int l, r;
+        mutable int v;
+        inline bool operator<(const Node_t & o) const {
+            return l < o.l;
+        }
+    };
+    set<Node_t> odt;
+    auto split(int x) {
+        auto it = odt.lower_bound({x, 0, 0});
+        if (it != odt.end() && it->l == x)
+            return it;
+        it -- ;
+        auto [l, r, v] = *it;
+        // ...
+        odt.erase(it);
+        odt.insert({l, x - 1, v});
+        return odt.insert({x, r, v}).first;
+    }
+    void merge(set<Node_t>::iterator it) {
+        if (it == odt.end() || it == odt.begin())
+            return;
+        auto lit = prev(it);
+        auto [ll, lr, lv] = *lit;
+        auto [rl, rr, rv] = *it;
+        if (lv == rv) {
+            odt.erase(lit), odt.erase(it), odt.insert({ll, rr, lv});
+            // ...
+        }
+    }
+    void assign(int l, int r, int v) {
+        auto itr = split(r + 1), itl = split(l);
+        
+        // ... start
+        for (auto it = itl; it != itr; ++ it ) {
+            auto [tl, tr, tv] = *it;
+            if (tv)
+                tot -= tr - tl + 1;
+        }
+        tot += r - l + 1;
+        // ... end
+        
+        odt.erase(itl, itr);
+        odt.insert({l, r, v});
+        merge(odt.lower_bound({l, 0, 0})), merge(itr);
+    }
+    
+    CountIntervals() {
+        tot = 0;
+        odt.clear();
+        odt.insert({-INF, INF, 0});
+    }
+    
+    void add(int left, int right) {
+        assign(left, right, 1);
+    }
+    
+    int count() {
+        return tot;
+    }
+};
+
+/**
+ * Your CountIntervals object will be instantiated and called as such:
+ * CountIntervals* obj = new CountIntervals();
+ * obj->add(left,right);
+ * int param_2 = obj->count();
+ */
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
