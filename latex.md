@@ -93,3 +93,30 @@ Comparison of TeX Editors on Wikipedia <http://en.wikipedia.org/wiki/Comparison_
 TeX Live <http://www.tug.org/texlive/>“An easy way to get up and running with the TeX document production system”。Available for Unix and Windows (links to MacTeX for MacOSX users). Includes the TeXworks editor.
 
 Workbook Source Files <http://edin.ac/17EQPM1> Download the .tex file and other files needed to compile this workbook.
+
+### Mermaid
+
+```mermaid
+flowchart LR
+  title[Example]
+	nodeA((nodeA))
+	nodeB((nodeB))
+	nodeC((nodeC))
+	nodeD((nodeD))
+	nodeE((nodeE))
+	nodeF((nodeF))
+	nodeG((nodeG))
+	nodeH((nodeH))
+	nodeI((nodeI))
+	nodeA -- edge1 --> nodeB
+	nodeB -- edge2 --> nodeC
+	nodeC -- edge3 --> nodeD
+	nodeD -- edge4 --> nodeE
+	nodeE -- edge5 --> nodeB
+	nodeB -- edge6 --> nodeF
+	nodeC -- edge7 --> nodeF
+	nodeF -- edge8 --> nodeG
+	nodeG -- edge9 --> nodeH
+	nodeF -- edge10 --> nodeH
+	nodeG -- edge11 --> nodeI
+```
