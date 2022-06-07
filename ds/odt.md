@@ -193,6 +193,139 @@ void performance(int l, int r) {
 - [「Luogu 2787」理理思维](https://www.luogu.com.cn/problem/P2787)
 - [「Luogu 4979」矿洞：坍塌](https://www.luogu.com.cn/problem/P4979)
 
+> [!NOTE] **[LeetCode 715. Range 模块](https://leetcode-cn.com/problems/range-module/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 复杂模拟 使用哨兵数值
+> 
+> ODT TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+typedef pair<int, int> PII;
+const int INF = 2e9;
+
+#define x first
+#define y second
+
+class RangeModule {
+public:
+    set<PII> S;
+
+    RangeModule() {
+        S.insert({-INF, -INF});
+        S.insert({INF, INF});
+    }
+
+    void addRange(int left, int right) {
+        auto i = S.lower_bound({left, -INF});
+        i -- ;
+        if (i->y < left) i ++ ;
+        if (i->x > right) {
+            S.insert({left, right});
+        } else {
+            // 已有区间的左侧在当前区间的范围内
+            // j 找到所有将要被合并的区间
+            auto j = i;
+            while (j->x <= right) j ++ ;
+            j -- ;
+            // 合并后的新区间
+            PII t(min(i->x, left), max(j->y, right));
+            while (i != j) {
+                // 写法
+                auto k = i;
+                k ++ ;
+                S.erase(i);
+                i = k;
+            }
+            S.erase(i);
+            S.insert(t);
+        }
+    }
+
+    bool queryRange(int left, int right) {
+        auto i = S.upper_bound({left, INF});
+        i -- ;
+        return i->y >= right;
+    }
+
+    vector<PII> get(PII a, PII b) {
+        vector<PII> res;
+        if (a.x < b.x) {
+            if (a.y > b.y) {
+                res.push_back({a.x, b.x});
+                res.push_back({b.y, a.y});
+            } else {
+                res.push_back({a.x, b.x});
+            }
+        } else {
+            if (a.y > b.y) res.push_back({b.y, a.y});
+        }
+        return res;
+    }
+
+    void removeRange(int left, int right) {
+        auto i = S.lower_bound({left, -INF});
+        i -- ;
+        if (i->y < left) i ++ ;
+        if (i->x <= right) {
+            // 已有区间和待删除区间有交集
+            auto j = i;
+            while (j->x <= right) j ++ ;
+            j -- ;
+
+            // 切割区间
+            auto a = get(*i, {left, right});
+            auto b = get(*j, {left, right});
+            while (i != j) {
+                auto k = i;
+                k ++ ;
+                S.erase(i);
+                i = k;
+            }
+            S.erase(i);
+            for (auto t: a) S.insert(t);
+            for (auto t: b) S.insert(t);
+        }
+    }
+};
+
+/**
+ * Your RangeModule object will be instantiated and called as such:
+ * RangeModule* obj = new RangeModule();
+ * obj->addRange(left,right);
+ * bool param_2 = obj->queryRange(left,right);
+ * obj->removeRange(left,right);
+ */
+```
+
+##### **C++ ODT**
+
+```cpp
+
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[LeetCode 2213. 由单个字符重复的最长子字符串](https://leetcode-cn.com/problems/longest-substring-of-one-repeating-character/)** [TAG]
 > 
 > 题意: TODO

@@ -457,7 +457,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode [2141. 同时运行 N 台电脑的最长时间](https://leetcode-cn.com/problems/maximum-running-time-of-n-computers/)** [TAG]
+> [!NOTE] **[LeetCode 2141. 同时运行 N 台电脑的最长时间](https://leetcode-cn.com/problems/maximum-running-time-of-n-computers/)** [TAG]
 > 
 > 题意: TODO
 

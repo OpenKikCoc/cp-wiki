@@ -118,6 +118,126 @@
 
 ## 习题
 
+### 一般联通性质
+
+> [!NOTE] **[LeetCode 1562. 查找大小为 M 的最新分组](https://leetcode-cn.com/problems/find-latest-group-of-size-m/)**
+> 
+> 题意: 
+> 
+> 长度为 n 起始全 0 的串，每次会有一位变成 1（因此共n次操作），求满足存在一个连续长为 m 的最后一个操作的次数。
+
+> [!TIP] **思路**
+> 
+> - 自己做法：考虑维护 起点->连续1个数
+> 
+>   这个做法其实和题解区 O(n) 解法的思路有一点点像：
+> 
+>   题解区考虑记录 每一个长度区间 => 有多少个
+> 
+> - 并查集
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int findLatestStep(vector<int>& arr, int m) {
+        int n = arr.size(), step = 0, res = -1;
+        // 如果直接记录个数 显然 o(n^2)会超时
+        // 维护int 起始位置 连续个数
+        map<int, int> mp;
+        map<int, int> vis;
+        for (auto v : arr) {
+            ++step;
+            auto t = mp.lower_bound(v);
+            int start = v, cnt = 1;
+            if (!mp.empty() && t != mp.begin()) {
+                auto [ts, tcnt] = *t;
+                auto s = --t;
+                ++t;
+                auto [ss, scnt] = *s;
+                if (scnt) {
+                    if (ss + scnt == v) {
+                        mp.erase(s);
+                        --vis[scnt];
+                        start = ss, cnt = scnt + 1;
+                    }
+                }
+            }
+            if (!mp.empty() && t != mp.end()) {
+                auto [ts, tcnt] = *t;
+                if (tcnt) {
+                    if (start + cnt == ts) {
+                        mp.erase(t);
+                        --vis[tcnt];
+                        cnt += tcnt;
+                    }
+                }
+            }
+            ++vis[cnt];
+            if (vis[m]) res = step;
+            mp[start] = cnt;
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 并查集**
+
+```cpp
+class Solution {
+public:
+    static const int maxn = 100005;
+    int par[maxn], sz[maxn], b[maxn];
+    int find(int x) { return x == par[x] ? x : par[x] = find(par[x]); }
+    int cnt[maxn];
+    void merge(int x, int y) {
+        int a = find(x), b = find(y);
+        if (a != b) {
+            cnt[sz[a]]--;
+            cnt[sz[b]]--;
+            par[a] = b;
+            sz[b] += sz[a];
+            cnt[sz[b]]++;
+        }
+    }
+
+    int findLatestStep(vector<int>& a, int m) {
+        int n = a.size();
+        for (int i = 1; i <= n; ++i) par[i] = i, sz[i] = 1;
+        int ret = 0, tp = 1;
+        for (int i : a) {
+            b[i] = 1;
+            cnt[1]++;
+            if (b[i - 1]) { merge(i, i - 1); }
+            if (b[i + 1]) { merge(i, i + 1); }
+            if (cnt[m]) ret = tp;
+            ++tp;
+        }
+        if (!ret) return -1;
+        return ret;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 离线并查集
 
 > [!NOTE] **[LeetCode 1697. 检查边长度限制的路径是否存在](https://leetcode-cn.com/problems/checking-existence-of-edge-length-limited-paths/)** [TAG]

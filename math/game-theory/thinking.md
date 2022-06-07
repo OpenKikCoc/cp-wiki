@@ -247,3 +247,69 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2029. 石子游戏 IX](https://leetcode-cn.com/problems/stone-game-ix/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 一开始在想 区间DP
+> 
+> 其实是情况较复杂的分情况讨论
+> 
+> > 这题的题意设计很有意思 1 和 2 先后选取恰好对应 mod 3 的各类情况
+> 
+> 既是博弈论题，也是分情况讨论题
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    bool stoneGameIX(vector<int>& stones) {
+        int s[3] = {0, 0, 0};
+        for (int i : stones)
+            s[i % 3] ++ ;
+        
+        // s[0] 仅用作换手
+        
+        // 当 s[0] 为偶数，显然消除换手，只考虑 s[1] s[2] 即可
+        // 如果 s[1] s[2] 任一为 0，则 alice 必败
+        // ==> 分情况讨论
+        //      s[1] = 0: alice 只能取 2 后面 bob 跟着取 2
+        //                      后面 [取光] 或 [alice 三的倍数] 必败
+        //      s[2] = 0: alice 只能取 1 后面 bob 跟着取 1
+        //                      同理
+        // 否则必胜
+        if (s[0] % 2 == 0)
+            return s[1] != 0 && s[2] != 0;
+        
+        // s[0] % 2 == 1 必然有一次换手
+        // ==> 分情况讨论
+        //      s[1] = s[2]: 则相当于 bob 先手选 s[1] s[2]
+        //                   alice 为了跟上 bob 必须跟着取 最终取到最后石子(三的倍数) 必败
+        //      abs(s[1] - s[2]) <= 2:  不管 alice 先取哪个 bob 都可以换手
+        //                              最终石子取完 必败
+        //      abs(s[1] - s[2]) > 2:   alice 取较多的 最终 bob 会到达三的倍数的情况 必胜
+        return abs(s[1] - s[2]) > 2;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
