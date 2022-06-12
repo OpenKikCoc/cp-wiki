@@ -4919,6 +4919,90 @@ class Solution:
 
 * * *
 
+> [!NOTE] **[LeetCode 2266. 统计打字方案数](https://leetcode.cn/problems/count-number-of-texts/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 较简单，但做的速度不够快
+> 
+> 显然可以分段递推
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 1e5 + 10, MOD = 1e9 + 7;
+    
+    int c[10] = {0, 0, 3, 3, 3, 3, 3, 4, 3, 4};
+    
+    LL f3[N], f4[N];
+    
+    void init() {
+        {
+            memset(f3, 0, sizeof f3);
+            f3[0] = 1;
+            for (int i = 1; i < N; ++ i )
+                for (int j = 1; j <= 3; ++ j )
+                    if (i - j >= 0)
+                        f3[i] = (f3[i] + f3[i - j]) % MOD;
+        }
+        {
+            memset(f4, 0, sizeof f4);
+            f4[0] = 1;
+            for (int i = 1; i < N; ++ i )
+                for (int j = 1; j <= 4; ++ j )
+                    if (i - j >= 0)
+                        f4[i] = (f4[i] + f4[i - j]) % MOD;
+        }
+    }
+    
+    LL get(int w, int d) {
+        if (d == 3)
+            return f3[w];
+        return f4[w];
+    }
+    
+    int countTexts(string s) {
+        init();
+        int n = s.size();
+        LL res = 1;
+        for (int i = 0; i < n; ++ i ) {
+            int j = i;
+            while (j < n && s[j] == s[i])
+                j ++ ;
+            int w = j - i;
+            {
+                LL t = get(w, c[s[i] - '0']);
+                res = (res * t) % MOD;
+            }
+            i = j - 1;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### trick
 
 > [!NOTE] **[LeetCode 576. 出界的路径数](https://leetcode-cn.com/problems/out-of-boundary-paths/)**

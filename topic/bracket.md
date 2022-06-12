@@ -260,6 +260,147 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2267. 检查是否有合法括号字符串路径](https://leetcode.cn/problems/check-if-there-is-a-valid-parentheses-string-path/)**
+> 
+> 题意: 
+> 
+> 类似摘花生的走法，要求括号序列合法
+
+> [!TIP] **思路**
+> 
+> 理清思路，显然不需要维护区间，只需要关注是否合法
+> 
+> 需要有一个维度是左括号比右括号多多少个
+> 
+> **另有空间压缩 bit 优化版本**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 110, K = 210, INF = 1e9;
+    vector<vector<char>> g;
+    int n, m;
+    
+    bool f[N][N][K];    // 到 [i, j] 的位置，此时左括号比右括号多 k 的可能
+    
+    bool hasValidPath(vector<vector<char>>& grid) {
+        this->g = grid, this->n = g.size(), this->m = g[0].size();
+        if ((n + m - 1) & 1)
+            return false;
+        memset(f, 0, sizeof f);
+        f[0][1][0] = f[1][0][0] = true;
+        
+        for (int i = 1; i <= n; ++ i )
+            for (int j = 1; j <= m; ++ j ) {
+                int t = (g[i - 1][j - 1] == '(' ? 1 : -1);
+                for (int k = 0; k <= n + m; ++ k )
+                    if (k - t >= 0 && k - t <= n + m) {
+                        f[i][j][k] |= f[i - 1][j][k - t];
+                        f[i][j][k] |= f[i][j - 1][k - t];
+                    }
+            }
+        
+        return f[n][m][0];
+    }
+};
+```
+
+
+##### **C++ bit 优化**
+
+```cpp
+class Solution {
+public:
+    const static int N = 110, K = 210, INF = 1e9;
+    vector<vector<char>> g;
+    int n, m;
+    
+    // 可以再空间压缩
+    // 二进制比特位代表 左括号比右括号多的可能性
+    __uint128_t f[N][N];
+    
+    bool hasValidPath(vector<vector<char>>& grid) {
+        this->g = grid, this->n = g.size(), this->m = g[0].size();
+        if ((n + m - 1) & 1)
+            return false;
+        memset(f, 0, sizeof f);
+        
+        f[0][1] = f[1][0] = 1;
+        
+        for (int i = 1; i <= n; ++ i )
+            for (int j = 1; j <= m; ++ j ) {
+                f[i][j] = f[i][j - 1] | f[i - 1][j];
+                // 如果是左括号，所有可能性true的统一加一，即左移
+                if (g[i - 1][j - 1] == '(')
+                    f[i][j] <<= 1;
+                else
+                    f[i][j] >>= 1;
+            }
+        
+        // 取最后一位 即差为0
+        return f[n][m] & 1;
+    }
+};
+```
+
+
+##### **C++ bit + 空间压缩**
+
+```cpp
+class Solution {
+public:
+    const static int N = 110, K = 210, INF = 1e9;
+    vector<vector<char>> g;
+    int n, m;
+    
+    // 空间压缩
+    // 二进制比特位代表 左括号比右括号多的可能性
+    __uint128_t f[N];
+    
+    bool hasValidPath(vector<vector<char>>& grid) {
+        this->g = grid, this->n = g.size(), this->m = g[0].size();
+        if ((n + m - 1) & 1)
+            return false;
+        memset(f, 0, sizeof f);
+        
+        // f[0][1]
+        f[1] = 1;
+        
+        for (int i = 1; i <= n; ++ i )
+            for (int j = 1; j <= m; ++ j ) {
+                f[j] |= f[j - 1];
+                // 如果是左括号，所有可能性true的统一加一，即左移
+                if (g[i - 1][j - 1] == '(')
+                    f[j] <<= 1;
+                else
+                    f[j] >>= 1;
+            }
+        
+        // 取最后一位 即差为0
+        return f[m] & 1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[Codeforces Treasure](http://codeforces.com/problemset/problem/494/A)**
 > 
 > 题意: 
