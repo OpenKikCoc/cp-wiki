@@ -460,6 +460,163 @@ public:
 
 * * *
 
+### 对顶栈
+
+
+### 链表
+
+> [!NOTE] **[LeetCode 2296. 设计一个文本编辑器](https://leetcode.cn/problems/design-a-text-editor/)]()** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> - 可以链表模拟，重点在于 STL 的一些返回值及操作。详见 STL 部分
+> 
+> - 标准做法 **对顶栈**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ STL**
+
+```cpp
+class TextEditor {
+public:
+    list<char> L;
+    list<char>::iterator p;
+    
+    TextEditor() {
+        p = L.begin();
+    }
+    
+    string print() {
+        string t;
+        for (auto c : L)
+            t.push_back(c);
+        return t;
+    }
+    
+    void addText(string text) {
+        for (auto c : text)
+            L.insert(p, c); // ATTENTION STL insert 后的变化
+    }
+    
+    int deleteText(int k) {
+        int c = 0;
+        for (; k && p != L.begin(); -- k )
+            p = L.erase(prev(p)), c ++ ;    // ATTENTION erase 的返回值
+        return c;
+    }
+    
+    string getText() {
+        string t;
+        auto it = p;
+        for (int k = 10; k && it != L.begin(); -- k ) {
+            it = prev(it);
+            t.push_back(*it);
+        }
+        reverse(t.begin(), t.end());
+        return t;
+    }
+    
+    string cursorLeft(int k) {
+        for (; k && p != L.begin(); -- k )
+            p = prev(p);
+        return getText();
+    }
+    
+    string cursorRight(int k) {
+        for (; k && p != L.end(); -- k )
+            p = next(p);
+        return getText();
+    }
+};
+
+/**
+ * Your TextEditor object will be instantiated and called as such:
+ * TextEditor* obj = new TextEditor();
+ * obj->addText(text);
+ * int param_2 = obj->deleteText(k);
+ * string param_3 = obj->cursorLeft(k);
+ * string param_4 = obj->cursorRight(k);
+ */
+```
+
+##### **C++ 对顶栈**
+
+```cpp
+class TextEditor {
+public:
+    vector<char> l, r;
+    
+    TextEditor() {
+        l.clear(), r.clear();
+    }
+    
+    void addText(string text) {
+        for (auto c : text)
+            l.push_back(c);
+    }
+    
+    int deleteText(int k) {
+        int c = 0;
+        while (l.size() && k)
+            l.pop_back(), k -- , c ++ ;
+        return c;
+    }
+    
+    string getText() {
+        string t;
+        int n = l.size();
+        for (int i = max(0, n - 10); i < n; ++ i )
+            t.push_back(l[i]);
+        return t;
+    }
+    
+    string cursorLeft(int k) {
+        while (l.size() && k) {
+            char c = l.back();
+            r.push_back(c), l.pop_back();
+            k -- ;
+        }
+        return getText();
+    }
+    
+    string cursorRight(int k) {
+        while (r.size() && k) {
+            char c = r.back();
+            l.push_back(c), r.pop_back();
+            k -- ;
+        }
+        return getText();
+    }
+};
+
+/**
+ * Your TextEditor object will be instantiated and called as such:
+ * TextEditor* obj = new TextEditor();
+ * obj->addText(text);
+ * int param_2 = obj->deleteText(k);
+ * string param_3 = obj->cursorLeft(k);
+ * string param_4 = obj->cursorRight(k);
+ */
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 栈维护
 
 > [!NOTE] **[LeetCode 636. 函数的独占时间](https://leetcode-cn.com/problems/exclusive-time-of-functions/)**
