@@ -971,3 +971,75 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2306. 公司命名](https://leetcode.cn/problems/naming-a-company/)**
+> 
+> 题意: 
+> 
+> 已知字符串集（互不相同），求交换任意两字符串第一个字符后得到的全是新串的不同命名个数（命名本身即为新串的组合）
+
+> [!TIP] **思路**
+> 
+> 显然按首字母分类，产生新串的两字符串应在不同类中
+> 
+> 进一步考虑去重，显然两个类中完全不相交的部分之间才能产生有效命名
+> 
+> - 根据本题要求，需要满足完全不想交（可能下道题换个题意？）
+> 
+> - 因为原字符串集唯一，分类操作后必然有【每个命名都互不相同】（思考），所以不需要对新的字符串进行 $set$ 去重
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 按照开头字母分类，则每一类与其他类之间互换可以得到新名字（容斥：需排除后缀相同的部分）
+    
+    using LL = long long;
+    const static int N = 5e4 + 10;
+    
+    int tot = 0;
+    unordered_map<string, int> hash;
+    int get(string s) {
+        if (hash.count(s))
+            return hash[s];
+        return hash[s] = tot ++ ;
+    }
+    
+    bitset<N> has[26];
+    
+    long long distinctNames(vector<string>& ideas) {
+        for (auto & s : ideas) {
+            int m = s.size();
+            int idx = s[0] - 'a';
+            has[idx][get(s.substr(1))] = 1;
+        }
+        
+        LL res = 0;
+        for (int i = 0; i < 26; ++ i )
+            for (int j = i + 1; j < 26; ++ j ) {
+                auto t = has[i] & has[j];
+                int ca = has[i].count(), cb = has[j].count(), cc = t.count();
+                res += (LL)(ca - cc) * (cb - cc) * 2;
+            }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

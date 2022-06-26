@@ -581,6 +581,64 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2305. 公平分发饼干](https://leetcode.cn/problems/fair-distribution-of-cookies/)**
+> 
+> 题意: 
+> 
+> 把所有饼干分组发放，求最大值最小是多少
+
+> [!TIP] **思路**
+> 
+> 显然枚举当前处理第 $i$ 个人，当前分发组数状态为 $j$ 时的值
+> 
+> 枚举子集递推维护即可 + 滚动数组
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 9;
+    
+    int f[2][1 << N], c[1 << N];
+    
+    int distributeCookies(vector<int>& cs, int k) {
+        memset(c, 0, sizeof c);
+        int n = cs.size();
+        for (int i = 0; i < 1 << n; ++ i )
+            for (int j = 0; j < n; ++ j )
+                if (i >> j & 1)
+                    c[i] += cs[j];
+            
+        memset(f, 0x3f, sizeof f);
+        f[0][0] = 0;
+        for (int i = 1; i <= k; ++ i )
+            for (int j = 0; j < 1 << n; ++ j )
+                for (int k = j; k; k = (k - 1) & j)
+                    f[i & 1][j] = min(f[i & 1][j], max(f[(i - 1) & 1][j ^ k], c[k]));
+        
+        return f[k & 1][(1 << n) - 1];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 递推计算
 
 > [!NOTE] **[AcWing 291. 蒙德里安的梦想](https://www.acwing.com/problem/content/293/)**
