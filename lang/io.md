@@ -205,3 +205,97 @@ struct IO {
 4. 手动 `fflush()`
 5. 缓冲区满自动刷新
 6. `cout` 输出 `endl`
+
+## 一些 STL 输入用法
+
+> [!NOTE] **[LeetCode 顺丰鄂州枢纽运转中心环线检测](https://leetcode.cn/contest/sf-tech/problems/EUpcmh/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> - 使用 `stringstream + getline` 实现 `split`
+> 
+> - 使用 `sscanf` 实现格式化输入
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 110;
+    
+    int h[N], e[N], ne[N], idx;
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+    }
+    void add(int a, int b) {
+        e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    int q[N * N], dist[N], cnt[N];
+    bool st[N];
+    unordered_set<int> S;
+    
+    bool spfa() {
+        memset(dist, 0, sizeof dist);
+        memset(cnt, 0, sizeof cnt);
+        memset(st, 0, sizeof st);
+        
+        int hh = 0, tt = -1, n = S.size();
+        for (auto x : S)
+            q[ ++ tt] = x, st[x] = true;
+        
+        while (hh <= tt) {
+            int t = q[hh ++ ];
+            st[t] = false;
+            
+            for (int i = h[t]; ~i; i = ne[i]) {
+                int j = e[i];
+                if (dist[j] < dist[t] + 1) {
+                    dist[j] = dist[t] + 1;
+                    cnt[j] = cnt[t] + 1;
+                    if (cnt[j] >= n)
+                        return true;
+                    if (!st[j])
+                        q[ ++ tt ] = j, st[j] = true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    bool hasCycle(string graph) {
+        init();
+        
+        stringstream in(graph);
+        string s;
+        while (getline(in, s, ',')) {
+            int a, b;
+            sscanf(s.c_str(), "%d->%d", &a, &b);
+            add(a, b);
+            S.insert(a), S.insert(b);
+        }
+        
+        return spfa();
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
