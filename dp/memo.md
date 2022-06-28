@@ -801,3 +801,69 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2312. 卖木头块](https://leetcode.cn/problems/selling-pieces-of-wood/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思考细节：注意 `t = g[x][y]` 不能改为 `t = f[x][y]` 否则 TLE
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 210;
+    
+    int n, m;
+    vector<vector<int>> ps;
+    LL f[N][N], g[N][N];
+    
+    LL dfs(int x, int y) {
+        if (f[x][y] != -1)
+            return f[x][y];
+        // 此处不能直接使用 f[x][y]
+        LL t = g[x][y];
+        
+        for (int i = 1; i <= x / 2; ++ i )
+            t = max(t, dfs(i, y) + dfs(x - i, y));
+        for (int i = 1; i <= y / 2; ++ i )
+            t = max(t, dfs(x, i) + dfs(x, y - i));
+        
+        return f[x][y] = t;
+    }
+    
+    long long sellingWood(int n, int m, vector<vector<int>>& prices) {
+        this->n = n, this->m = m, this->ps = prices;
+        // 优化，以避免在 dfs 内部枚举
+        for (auto & p : ps)
+            g[p[0]][p[1]] = max(g[p[0]][p[1]], (LL)p[2]);
+        for (int i = 1; i < N; ++ i )
+            for (int j = 1; j < N; ++ j )
+                g[i][j] = max(g[i][j], max(g[i][j - 1], g[i - 1][j]));
+        
+        memset(f, -1, sizeof f);
+        return dfs(n, m);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

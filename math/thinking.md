@@ -2476,3 +2476,79 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2310. 个位数字为 K 的整数之和](https://leetcode.cn/problems/sum-of-numbers-with-units-digit-k/)**
+> 
+> 题意: 
+> 
+> 所有个位为 $k$ 的数，每个可以多选，求最少选多少个可以达到目标和
+
+> [!TIP] **思路**
+> 
+> - 有较显然的思路是完全背包
+> 
+> - 数学做法：考虑每个数都以 $k$ 结尾，则枚举选择的数的个数 $n$ ，必然有 $num - n * k$ 可以整除 $10$
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 数学**
+
+```cpp
+class Solution {
+public:
+    int minimumNumbers(int num, int k) {
+        if (num == 0)
+            return 0;
+        for (int i = 1; i <= num; ++ i ) {
+            int t = num - k * i;
+            if (t >= 0 && t % 10 == 0)
+                return i;
+        }
+        return -1;
+    }
+};
+```
+
+##### **C++ 完全背包**
+
+```cpp
+class Solution {
+public:
+    const static int N = 3010, INF = 0x3f3f3f3f;
+    
+    int f[N];
+    
+    int minimumNumbers(int num, int k) {
+        vector<int> t;
+        for (int i = 0; i < 400; ++ i ) {
+            int x = i * 10 + k;
+            if (x > 0 && x <= 3000)
+                t.push_back(x);
+        }
+        
+        int m = t.size();
+        memset(f, 0x3f, sizeof f);
+        f[0] = 0;
+        for (int i = 1; i <= m; ++ i )
+            for (int j = t[i - 1]; j < N; ++ j )
+                f[j] = min(f[j], f[j - t[i - 1]] + 1);
+        
+        return (f[num] > INF / 2 ? -1 : f[num]);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

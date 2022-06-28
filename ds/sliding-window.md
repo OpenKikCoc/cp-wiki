@@ -1242,6 +1242,87 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2311. 小于等于 K 的最长二进制子序列](https://leetcode.cn/problems/longest-binary-subsequence-less-than-or-equal-to-k/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 贪心**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    
+    int longestSubsequence(string s, int k) {
+        int n = s.size(), res = 0;
+        // 先选所有 0 
+        for (auto c : s)
+            if (c == '0')
+                res ++ ;
+        
+        LL sum = 0;
+        for (int i = n - 1; i >= 0 && (n - 1 - i) < 30; -- i ) {
+            if (s[i] == '1')
+                sum += 1 << (n - 1 - i), res ++ ;
+            if (sum > k)
+                return res - 1;
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 滑动窗口**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+
+    int longestSubsequence(string s, int k) {
+        int n = s.size();
+        
+        vector<int> l(n + 2);
+        for (int i = 1; i <= n; ++ i )
+            l[i] = l[i - 1] + (s[i - 1] == '0');
+        
+        int res = 0;
+        LL sum = 0;
+        for (int i = 0, j = 0; j < n; ++ j ) {
+            sum = (sum << 1) + (s[j] - '0');
+            while (i <= j && sum > (LL)k) {
+                if (s[i] - '0')
+                    sum -= 1 << (j - i);
+                i ++ ;
+            }
+            res = max(res, j - i + 1 + l[i]);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 类似单调队列的优化实践
 
 > [!NOTE] **[Codeforces Sereja ans Anagrams](http://codeforces.com/problemset/problem/367/B)**
