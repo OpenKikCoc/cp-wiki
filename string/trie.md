@@ -1517,7 +1517,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode TODO. 加密解密字符串](https://leetcode-cn.com/problems/encrypt-and-decrypt-strings/)**
+> [!NOTE] **[LeetCode 2227. 加密解密字符串](https://leetcode-cn.com/problems/encrypt-and-decrypt-strings/)**
 > 
 > 题意: TODO
 

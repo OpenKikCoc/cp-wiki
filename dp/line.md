@@ -4389,6 +4389,133 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 2318. 不同骰子序列的数目](https://leetcode.cn/problems/number-of-distinct-roll-sequences/) [TAG]**
+> 
+> 题意: 
+> 
+> 数字可选 `[1, 6]` 其中相邻的必须互质，相同的至少间隔 2
+
+> [!TIP] **思路**
+> 
+> 一开始想的就是 $f[i][j] = f[i][j] + f[i-1][k] - f[i-2][j]$ 实际上这样得到的会比实际答案少
+> 
+> 换思路：推导易知当前状态与倒数第二个状态相关，故可以三维定义解题【类似炮兵阵地】，2A
+> 
+> 回到起始的思路，考虑 [推导](https://leetcode.cn/problems/number-of-distinct-roll-sequences/solution/by-endlesscheng-tgkn/) 可以通过补回操作得到正确答案 => 【重点在于题意基础下的等价变换】
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 三维DP**
+
+```cpp
+class Solution {
+public:
+    const static int N = 1e4 + 10, M = 7, MOD = 1e9 + 7;
+    
+    bool st[M][M];
+    void init() {
+        memset(st, false, sizeof st);
+        for (int i = 1; i < M; ++ i )
+            for (int j = 1; j < M; ++ j )
+                if (i != j && __gcd(i, j) == 1)
+                    st[i][j] = true;
+    }
+    
+    int f[N][M][M];
+    
+    int distinctSequences(int n) {
+        init();
+        
+        // ATTENTION
+        if (n == 1)
+            return 6;
+        
+        memset(f, 0, sizeof f);
+        
+        for (int j = 1; j < M; ++ j )
+            f[1][j][0] = 1;
+        for (int j = 1; j < M; ++ j )
+            for (int k = 1; k < M; ++ k )
+                if (st[j][k])
+                    f[2][j][k] += f[1][k][0];
+        
+        for (int i = 3; i <= n; ++ i )
+            for (int j = 1; j < M; ++ j )
+                for (int k = 1; k < M; ++ k )
+                    if (st[j][k]) {
+                        for (int z = 1; z < M; ++ z )
+                            if (st[k][z] && z != j)
+                                f[i][j][k] = (f[i][j][k] + f[i - 1][k][z]) % MOD;
+                    }
+        
+        int res = 0;
+        for (int j = 1; j < M; ++ j )
+            for (int k = 1; k < M; ++ k )
+            res = (res + f[n][j][k]) % MOD;
+        return res;
+    }
+};
+```
+
+##### **C++ 推导变换 二维**
+
+```cpp
+class Solution {
+public:
+    const static int N = 1e4 + 10, M = 7, MOD = 1e9 + 7;
+    
+    bool st[M][M];
+    void init() {
+        memset(st, false, sizeof st);
+        for (int i = 1; i < M; ++ i )
+            for (int j = 1; j < M; ++ j )
+                if (i != j && __gcd(i, j) == 1)
+                    st[i][j] = true;
+    }
+    
+    int f[N][M];
+    
+    int distinctSequences(int n) {
+        init();
+        
+        memset(f, 0, sizeof f);
+        
+        for (int j = 1; j < M; ++ j )
+            f[1][j] = 1;
+        
+        for (int i = 2; i <= n; ++ i )
+            for (int j = 1; j < M; ++ j ) {
+                for (int k = 1; k < M; ++ k )
+                    if (st[j][k])
+                        // 1. 一开始就想到了这样的转移方程，直接这样写比答案数值大
+                        f[i][j] = (f[i][j] + (f[i - 1][k] - f[i - 2][j] + MOD) % MOD) % MOD;
+                // 2. ATTENTION 实际上，对于 i > 3 的情况需要补回一个 f[i-2][j]
+                if (i > 3)
+                    f[i][j] = (f[i][j] + f[i - 2][j]) % MOD;
+            }
+        
+        int res = 0;
+        for (int j = 1; j < M; ++ j )
+            res = (res + f[n][j]) % MOD;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 ### 复杂递推
 

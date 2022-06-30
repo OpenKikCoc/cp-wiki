@@ -154,7 +154,7 @@ def z_function(s):
 
 ## 习题
 
-> [!NOTE] **[LeetCode TODO. 构造字符串的总得分和](https://leetcode-cn.com/problems/sum-of-scores-of-built-strings/)**
+> [!NOTE] **[LeetCode 2223. 构造字符串的总得分和](https://leetcode-cn.com/problems/sum-of-scores-of-built-strings/)**
 > 
 > 题意: TODO
 
