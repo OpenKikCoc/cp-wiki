@@ -260,6 +260,57 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 1963. 使字符串平衡的最小交换次数](https://leetcode-cn.com/problems/minimum-number-of-swaps-to-make-the-string-balanced/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 有点思维 其实分析知 `(stk + 1) / 2` （向上取整）即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int n;
+    int minSwaps(string s) {
+        this->n = s.size();
+        int stk = 0, cnt = 0;
+        for (auto c : s) {
+            if (c == '[')
+                stk ++ ;
+            else {
+                if (stk > 0)
+                    stk -- ;
+                else {
+                    cnt ++ ;
+                }
+            }
+        }
+        // return cnt
+        return (stk + 1) / 2;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[LeetCode 2267. 检查是否有合法括号字符串路径](https://leetcode.cn/problems/check-if-there-is-a-valid-parentheses-string-path/)**
 > 
 > 题意: 

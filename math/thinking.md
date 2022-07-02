@@ -1644,57 +1644,6 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1963. 使字符串平衡的最小交换次数](https://leetcode-cn.com/problems/minimum-number-of-swaps-to-make-the-string-balanced/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 有点思维 其实分析知 `(stk + 1) / 2` （向上取整）即可
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-class Solution {
-public:
-    int n;
-    int minSwaps(string s) {
-        this->n = s.size();
-        int stk = 0, cnt = 0;
-        for (auto c : s) {
-            if (c == '[')
-                stk ++ ;
-            else {
-                if (stk > 0)
-                    stk -- ;
-                else {
-                    cnt ++ ;
-                }
-            }
-        }
-        
-        return (stk + 1) / 2;
-    }
-};
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
 > [!NOTE] **[LeetCode 1969. 数组元素的最小非零乘积](https://leetcode-cn.com/problems/minimum-non-zero-product-of-the-array-elements/)**
 > 
 > 题意: TODO
@@ -2236,7 +2185,7 @@ int main() {
 
 > [!TIP] **思路**
 > 
-> 因为这些字符串中的字符只有 a, b 所以首位相同的字串都可以满足
+> 因为这些字符串中的字符只有 a, b 所以首尾相同的子串都可以满足
 > 
 > 这样就分别统计奇数和偶数位置的字符的个数，然后相互组合就可以
 
@@ -2258,7 +2207,7 @@ using namespace std;
 
 using LL = long long;
 
-// 因为这些字符串中的字符只有 a, b 所以首位相同的字串都可以满足
+// 因为这些字符串中的字符只有 a, b 所以首尾相同的子串都可以满足
 // 这样就分别统计奇数和偶数位置的字符的个数，然后相互组合就可以
 
 int main() {

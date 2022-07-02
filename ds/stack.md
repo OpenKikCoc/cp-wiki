@@ -465,7 +465,7 @@ public:
 
 ### 链表
 
-> [!NOTE] **[LeetCode 2296. 设计一个文本编辑器](https://leetcode.cn/problems/design-a-text-editor/)]()** [TAG]
+> [!NOTE] **[LeetCode 2296. 设计一个文本编辑器](https://leetcode.cn/problems/design-a-text-editor/)** [TAG]
 > 
 > 题意: TODO
 
