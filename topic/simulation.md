@@ -6045,6 +6045,73 @@ class Solution:
 
 * * *
 
+> [!NOTE] **[LeetCode 6111. 螺旋矩阵 IV](https://leetcode.cn/problems/spiral-matrix-iv/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 加了个链表
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    vector<vector<int>> g;
+    vector<vector<int>> spiralMatrix(int m, int n, ListNode* head) {
+        this->g = vector<vector<int>>(m, vector<int>(n, -1));
+        int u = 0, d = m - 1, l = 0, r = n - 1;
+        for (;;) {
+            for (int i = l; i <= r && head; ++ i )
+                g[u][i] = head->val, head = head->next;
+            if (head == nullptr || ++ u > d)
+                break;
+            for (int i = u; i <= d && head; ++ i )
+                g[i][r] = head->val, head = head->next;
+            if (head == nullptr || -- r < l)
+                break;
+            for (int i = r; i >= l && head; -- i )
+                g[d][i] = head->val, head = head->next;
+            if (head == nullptr || -- d < u)
+                break;
+            for (int i = d; i >= u && head; -- i )
+                g[i][l] = head->val, head = head->next;
+            if (head == nullptr || ++ l > r)
+                break;
+        }
+        return g;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[LeetCode 1914. 循环轮转矩阵](https://leetcode-cn.com/problems/cyclically-rotating-a-grid/)**
 > 
 > 题意: TODO

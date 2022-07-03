@@ -219,7 +219,70 @@ class Solution:
         return res
 ```
 
+<!-- tabs:end -->
+</details>
 
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 6110. 网格图中递增路径的数目](https://leetcode.cn/problems/number-of-increasing-paths-in-a-grid/)**
+> 
+> 题意: 
+> 
+> 求方案数
+
+> [!TIP] **思路**
+> 
+> 只需把 $max$ 改为 $sum$ 即可（思考）
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int MOD = 1e9 + 7;
+    
+    vector<vector<int>> g;
+    int n, m;
+    vector<vector<LL>> f;
+    
+    int dx[4] = {-1, 0, 0, 1}, dy[4] = {0, -1, 1, 0};
+    LL dp(int x, int y) {
+        if (f[x][y] != -1)
+            return f[x][y];
+        f[x][y] = 1;
+        for (int i = 0; i < 4; ++ i ) {
+            int nx = x + dx[i], ny = y + dy[i];
+            if (nx < 0 || nx >= n || ny < 0 || ny >= m || g[nx][ny] >= g[x][y])
+                continue;
+            f[x][y] = (f[x][y] + dp(nx, ny)) % MOD;
+        }
+        return f[x][y] % MOD;
+    }
+    
+    int countPaths(vector<vector<int>>& grid) {
+        this->g = grid, this->n = g.size(), this->m = g[0].size();
+        this->f = vector<vector<LL>>(n, vector<LL>(m, -1));
+        LL res = 0;
+        for (int i = 0; i < n; ++ i )
+            for (int j = 0; j < m; ++ j )
+                res = (res + dp(i, j)) % MOD;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
 
 <!-- tabs:end -->
 </details>
