@@ -1,5 +1,225 @@
 ## 习题
 
+> [!NOTE] **[LeetCode ]()**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然可以固定根并处理每个子树的异或值
+> 
+> 1e3 数据量接受枚举三部分的根，考虑计算三个部分的数值
+> 
+> 唯一的点在于处理 `其中一部分是另一部分的子树` 的情况
+> 
+> - LCA
+> 
+> - **DFS 序**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ DFS序**
+
+```cpp
+class Solution {
+public:
+    const static int N = 1010, M = 2010;
+    
+    int h[N], e[M], ne[M], idx;
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+    }
+    void add(int a, int b) {
+        e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    int n;
+    vector<int> vals;
+    int x[N], fa[N], tsl[N], tsr[N], timestamp;
+    void dfs(int u, int pa) {
+        fa[u] = pa, tsl[u] = ++ timestamp;
+        x[u] = vals[u];
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (j == pa)
+                continue;
+            dfs(j, u);
+            x[u] ^= x[j];
+        }
+        tsr[u] = timestamp;
+    }
+    
+    pair<int, int> get(int a, int b) {
+        if (fa[a] == b)
+            return {b, a};
+        return {a, b};
+    }
+    
+    bool is_subtree(int a, int b) {
+        return tsl[a] >= tsl[b] && tsr[a] <= tsr[b];
+    }
+    
+    int minimumScore(vector<int>& nums, vector<vector<int>>& edges) {
+        this->vals = nums, this->n = vals.size();
+        init();
+        for (auto & e : edges)
+            add(e[0], e[1]), add(e[1], e[0]);
+        
+        memset(fa, 0, sizeof fa);
+        memset(x, 0, sizeof x);
+        this->timestamp = 0;
+        dfs(0, -1);
+        
+        int res = INT_MAX;
+        for (auto & e1 : edges)
+            for (auto & e2 : edges) {
+                auto [u1, v1] = get(e1[0], e1[1]);
+                auto [u2, v2] = get(e2[0], e2[1]);
+                if (u1 == u2 && v1 == v2)
+                    continue;
+                int a = x[v1], b = x[v2], c = 0;
+                
+                if (is_subtree(v1, v2) || is_subtree(v2, v1)) {
+                    if (is_subtree(v2, v1))
+                        c = x[0] ^ a, a ^= b;
+                    else
+                        c = x[0] ^ b, b ^= a;
+                } else {
+                    c = x[0] ^ a ^ b;
+                }
+                
+                res = min(res, max({a, b, c}) - min({a, b, c}));
+            }
+        
+        return res;
+    }
+};
+```
+
+##### **C++ LCA**
+
+```cpp
+class Solution {
+public:
+    const static int N = 1010, M = 2010;
+    
+    int h[N], e[M], ne[M], idx;
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+    }
+    void add(int a, int b) {
+        e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    int n;
+    vector<int> vals;
+    int x[N];
+    void dfs(int u, int pa) {
+        x[u] = vals[u - 1];
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (j == pa)
+                continue;
+            dfs(j, u);
+            x[u] ^= x[j];
+        }
+    }
+    int depth[N], fa[N][11], q[N];
+    void bfs(int root) {
+        memset(depth, 0x3f, sizeof depth);
+        depth[0] = 0, depth[root] = 1;
+        int hh = 0, tt = -1;
+        q[ ++ tt] = root;
+        while (hh <= tt) {
+            int t = q[hh ++ ];
+            for (int i = h[t]; ~i; i = ne[i]) {
+                int j = e[i];
+                if (depth[j] > depth[t] + 1) {
+                    depth[j] = depth[t] + 1;
+                    q[ ++ tt] = j;
+                    
+                    fa[j][0] = t;
+                    for (int k = 1; k <= 10; ++ k )
+                        fa[j][k] = fa[fa[j][k - 1]][k - 1];
+                }
+            }
+        }
+    }
+    int lca(int a, int b) {
+        if (depth[a] < depth[b])
+            swap(a, b);
+        for (int k = 10; k >= 0; -- k )
+            if (depth[fa[a][k]] >= depth[b])
+                a = fa[a][k];
+        if (a == b)
+            return a;
+        for (int k = 10; k >= 0; -- k )
+            if (fa[a][k] != fa[b][k])
+                a = fa[a][k], b = fa[b][k];
+        return fa[a][0];
+    }
+    
+    pair<int, int> get(int a, int b) {
+        if (fa[a][0] == b)
+            return {b, a};
+        return {a, b};
+    }
+    
+    int minimumScore(vector<int>& nums, vector<vector<int>>& edges) {
+        this->vals = nums, this->n = vals.size();
+        init();
+        for (auto & e : edges)
+            add(e[0] + 1, e[1] + 1), add(e[1] + 1, e[0] + 1);
+        memset(fa, 0, sizeof fa);
+        memset(x, 0, sizeof x);
+        
+        // 0->1 映射 方便LCA的fa数组哨兵节点
+        dfs(1, 0);
+        bfs(1);
+        
+        int res = INT_MAX;
+        for (auto & e1 : edges)
+            for (auto & e2 : edges) {
+                auto [u1, v1] = get(e1[0] + 1, e1[1] + 1);
+                auto [u2, v2] = get(e2[0] + 1, e2[1] + 1);
+                if (u1 == u2 && v1 == v2)
+                    continue;
+                int a = x[v1], b = x[v2], c = 0;
+                int t = lca(v1, v2);
+                if (t == v1 || t == v2) {
+                    if (t == v1)
+                        c = x[1] ^ a, a ^= b;
+                    else
+                        c = x[1] ^ b, b ^= a;
+                } else {
+                    c = x[1] ^ a ^ b;
+                }
+                
+                // cout << " v1 = " << v1-1 << " a = " << a << " v2 = " << v2-1 << " b = " << b << " c = " << c << endl;
+                res = min(res, max({a, b, c}) - min({a, b, c}));
+            }
+        
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 > [!NOTE] **[Codeforces Propagating tree](http://codeforces.com/problemset/problem/383/C)**
 > 

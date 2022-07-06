@@ -463,6 +463,57 @@ int main() {
 
 ### 转化模型
 
+> [!NOTE] **[LeetCode 2321. 拼接数组的最大分数](https://leetcode.cn/problems/maximum-score-of-spliced-array/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思考必然是其中一个数组的一个连续子段发生变化
+> 
+> 两数组做差来获取变化的量，随后求 `最大子序和` 即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int get(vector<int> & n1, vector<int> & n2) {
+        int n = n1.size();
+        vector<int> t(n);
+        int sum = 0, diff = 0, pre = 0;
+        for (int i = 0; i < n; ++ i ) {
+            t[i] = n2[i] - n1[i];
+            sum += n1[i];
+            pre = max(0, pre) + t[i];
+            diff = max(diff, pre);
+        }
+        return sum + diff;
+    }
+    
+    int maximumsSplicedArray(vector<int>& nums1, vector<int>& nums2) {
+        return max(get(nums1, nums2), get(nums2, nums1));
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[Codeforces A. Flipping Game](https://codeforces.com/problemset/problem/327/A)**
 > 
 > 题意: TODO
