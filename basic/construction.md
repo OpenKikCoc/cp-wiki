@@ -510,6 +510,7 @@ public:
         vector<LL> res;
         for (auto x : queries)
             // ATTENTION: base * 9, not base * 10
+            // 因为这里 x 代表第几个，因为首位不可能为 0 ，个数显然无法超过 base * (10 - 1)
             if (x <= upper) {
                 LL v = base + x - 1;
                 string s = to_string(v);

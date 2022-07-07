@@ -2638,7 +2638,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[Codeforces ]()**
+> [!NOTE] **[Codeforces Jzzhu and Cities](https://codeforces.com/problemset/problem/449/B)**
 > 
 > 题意: 
 > 
@@ -3966,7 +3966,7 @@ int main() {
 
 ### 拆点最短路 -> TODO 放到graph子章节
 
-> [!NOTE] **[LeetCode 1928. 规定时间内到达终点的最小花费](https://leetcode-cn.com/problems/minimum-cost-to-reach-destination-in-time/)**
+> [!NOTE] **[LeetCode 1928. 规定时间内到达终点的最小花费](https://leetcode-cn.com/problems/minimum-cost-to-reach-destination-in-time/)** [TAG]
 > 
 > [biweekly 56](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-07-10_Biweekly-56)
 > 
@@ -3974,13 +3974,15 @@ int main() {
 
 > [!TIP] **思路**
 > 
-> 无向连通图（有无自环无所谓），二维最短路问题
+> - 经典问题：无向连通图（有无自环无所谓），二维最短路问题
 > 
-> ===> 拆点，每个点在每个时间下的状态单独作为一个点
+>   ===> 拆点，每个点在每个时间下的状态单独作为一个点
 > 
-> 对于本题共计 1e6 个点，直接拆点跑最短路即可
+>   对于本题共计 1e6 个点，直接拆点跑最短路即可
 > 
-> **对于二维费用的最短路进行拆点再跑最短路**
+>   **对于二维费用的最短路进行拆点再跑最短路**
+> 
+> - 也可以 dp 拆状态然后递推
 
 <details>
 <summary>详细代码</summary>
@@ -4051,134 +4053,6 @@ public:
 ```
 
 ##### **C++ 拆点dp 学习**
-
-```cpp
-class Solution {
-    const int INF = 0x3f3f3f3f;
-
-public:
-    int minCost(int T, vector<vector<int>>& edges, vector<int> a) {
-        int n = a.size();
-        std::vector<std::vector<std::pair<int, int>>> E(n);
-        for (int i = 0; i < (int)edges.size(); ++i) {
-            int u = edges[i][0], v = edges[i][1], w = edges[i][2];
-            E[u].emplace_back(v, w);
-            E[v].emplace_back(u, w);
-        }
-        std::vector<std::vector<int>> f(T + 1, std::vector<int>(n, INF));
-        f[0][0] = a[0];
-        int ans = INF;
-        for (int i = 1; i <= T; ++i) {
-            for (int u = 0; u < n; ++u) {
-                for (auto [v, w] : E[u]) {
-                    if (i >= w) {
-                        f[i][u] = std::min(f[i][u], f[i - w][v] + a[u]);
-                    }
-                }
-            }
-            ans = std::min(ans, f[i][n - 1]);
-        }
-        return ans == INF ? -1 : ans;
-    }
-};
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[LeetCode 1928. 规定时间内到达终点的最小花费](https://leetcode-cn.com/problems/minimum-cost-to-reach-destination-in-time/)** [TAG]
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> - 经典问题：无向连通图（有无自环无所谓），二维最短路问题
-> 
->   ===> 拆点，每个点在每个时间下的状态单独作为一个点
-> 
->   对于本题共计 1e6 个点，直接拆点跑最短路即可
-> 
-> - 也可以 dp 拆状态然后递推
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-class Solution {
-public:
-    using PII = pair<int, int>;
-    const static int N = 1010, M = N << 1;
-    const int INF = 0x3f3f3f3f;
-    
-    vector<int> c;
-    int n, mt;
-    int h[N], e[M], w[M], ne[M], idx;
-    bool st[N][N];
-    int d[N][N];
-    
-    void init() {
-        memset(h, -1, sizeof h);
-        memset(st, 0, sizeof st);//
-        memset(d, 0x3f, sizeof d);
-        idx = 0;
-    }
-    void add(int a, int b, int c) {
-        e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
-    }
-    
-    int minCost(int maxTime, vector<vector<int>>& edges, vector<int>& passingFees) {
-        init();
-        
-        this->c = passingFees;
-        this->n = c.size();
-        this->mt = maxTime;
-        for (auto & eg : edges) {
-            int a = eg[0], b = eg[1], c = eg[2];
-            add(a, b, c), add(b, a, c);
-        }
-        
-        d[0][0] = c[0];
-        queue<PII> q;
-        q.push({0, 0});
-        
-        while (q.size()) {
-            auto [x, y] = q.front(); q.pop();
-            st[x][y] = false;
-            
-            for (int i = h[x]; ~i; i = ne[i]) {
-                int nx = e[i], ny = y + w[i];
-                if (ny > mt)
-                    continue;
-                if (d[nx][ny] > d[x][y] + c[nx]) {
-                    d[nx][ny] = d[x][y] + c[nx];
-                    if (!st[nx][ny])
-                        st[nx][ny] = true, q.push({nx, ny});
-                }
-            }
-        }
-        
-        int res = INF;
-        for (int i = 0; i <= mt; ++ i )
-            res = min(res, d[n - 1][i]);
-        return res == INF ? -1 : res;
-    }
-};
-```
-
-##### **C++ dp 递推**
 
 ```cpp
 class Solution {

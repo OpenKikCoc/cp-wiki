@@ -1,3 +1,37 @@
+> [!NOTE] **支持删边的链式前向星**
+>
+> ```c++
+> // TODO: 严格的数据验证
+> const static int N = 1e5 + 10, M = N << 1;
+> 
+> int h[N], e[M], w[M], ne[M], idx;
+> int from[N], pre[N];
+> void init() {
+>     memset(h, -1, sizeof h);
+>     memset(pre, -1, sizeof h);
+>     idx = 0;
+> }
+> void add(int a, int b, int c) {
+>     if (~h[a]) // h[a] != -1
+>         pre[h[a]] = idx;
+>     from[idx] = a;
+>     e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+> }
+> void del(int id) {
+>     if (~pre[id])
+>         ne[pre[id]] = ne[id];
+>     else
+>         h[from[id]] = ne[id];
+>     if (~ne[id])
+>         pre[ne[id]] = pre[id];
+> }
+> void visit(int u) {
+>     for (int i = h[u]; ~i; i = ne[i]) {
+>         int j = e[i];
+>         visit(j);
+>     }
+> }
+> ```
 
 ## 约定
 
@@ -53,7 +87,7 @@ int main() {
     return 0;
 }
 ```
-    
+
 ```python
     # Python Version
     class Edge:
@@ -143,7 +177,7 @@ int main() {
     return 0;
 }
 ```
-    
+
 ```python
     # Python Version
     vis = [False] * (n + 1)
@@ -229,7 +263,7 @@ int main() {
     return 0;
 }
 ```
-    
+
 ```python
     # Python Version
     vis = [False] * (n + 1)

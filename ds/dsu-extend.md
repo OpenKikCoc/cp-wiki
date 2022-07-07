@@ -11,6 +11,107 @@
 > 
 > 并查集不支持集合的分离，但是并查集在经过修改后可以支持集合中单个元素的删除操作（详见 UVA11987 Almost Union-Find）。使用动态开点线段树还可以实现可持久化并查集。
 
+> [!TIP] **并查集删除操作**
+>
+> 本质是让要删除的节点的 `fa` 指向一个预期范围之外的位置，问题在于该点可能代表一个集合
+>
+> 动态的维护比较复杂，其实可以直接初始化等量的虚拟节点，所有的集合的代表都是虚拟节点，这样就可以无忧转换了
+> 
+> 看下面这题：
+
+> [!NOTE] **[UVA-11987 Almost Union-Find](https://vjudge.net/problem/UVA-11987)**
+> 
+> 题意: TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 1e5 + 10, M = N << 1;
+
+int pa[M], sum[M], sz[M];
+void init() {
+    for (int i = 1; i < N; ++i)
+        // 所有原节点的父节点都设置为虚拟节点
+        pa[i] = i + N;
+    for (int i = N + 1; i < N + N; ++i)
+        // 初始化虚拟节点
+        pa[i] = i, sz[i] = 1, sum[i] = i - N;
+}
+int find(int x) {
+    if (pa[x] != x)
+        pa[x] = find(pa[x]);
+    return pa[x];
+}
+void merge(int a, int b) {
+    int fa = find(a), fb = find(b);
+    if (fa != fb) {
+        if (sz[fa] <= sz[fb]) {
+            sz[fb] += sz[fa], sum[fb] += sum[fa];
+            pa[fa] = fb;
+        } else {
+            sz[fa] += sz[fb], sum[fa] += sum[fb];
+            pa[fb] = fa;
+        }
+    }
+}
+// 节点 a 移动到 b 所在的集合
+void split(int a, int b) {
+    int fa = find(a), fb = find(b);
+    if (fa == fb)
+        return;
+    sz[fa]--, sum[fa] -= a;
+    sz[fb]++, sum[fb] += a;
+    // ATTENTION: a instead of fa
+    pa[a] = fb;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    int n, m;
+    while (cin >n >m) {
+        init();
+        while (m--) {
+            int tp, x, y;
+            cin >tp >x;
+            if (tp == 1) {
+                cin >y;
+                merge(x, y);
+            } else if (tp == 2) {
+                cin >y;
+                split(x, y);
+            } else {
+                int fa = find(x);
+                cout << sz[fa] << ' ' << sum[fa] << endl;
+            }
+        }
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ## 初始化
 
 
