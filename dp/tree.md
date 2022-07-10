@@ -1386,7 +1386,9 @@ int main() {
 
 > [!NOTE] **[Codeforces D. Valid Sets](https://codeforces.com/problemset/problem/486/D)**
 > 
-> 题意: TODO
+> 题意: 
+> 
+> 给出一棵树，树上有点权，求这棵树的满足最大点权与最小点权之差小于 d 的连通子图的个数。
 
 > [!TIP] **思路**
 > 
@@ -1415,7 +1417,7 @@ using namespace std;
 //     定义一个点 u 比一个点 v 好，
 //     (为确保唯一)
 //     当且仅当 a[u] > a[v] 或者 a[u]=a[v] 且 u < v
-// f[u] 为子树 u 中 u 为最好节点且节点查不超过 d 的所有方案
+// f[u] 为子树 u 中 u 为最好节点且节点差不超过 d 的所有方案
 
 using LL = long long;
 const int N = 2010, M = 4010, MOD = 1e9 + 7;

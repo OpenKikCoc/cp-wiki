@@ -2501,3 +2501,77 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 6112. 装满杯子需要的最短总时长](https://leetcode.cn/problems/minimum-amount-of-time-to-fill-cups/)**
+> 
+> 题意: 
+> 
+> 三个数值，每次可以任取两个不同的同时减一，或只取任一个减一
+> 
+> 求减为零至少需要多少次操作
+
+> [!TIP] **思路**
+> 
+> - 如果最大的比其他俩都大，显然即为最大的数值
+> 
+> - **否则，为三者和除二向下取整 ==> 【推导】**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 标准**
+
+```cpp
+class Solution {
+public:
+    int fillCups(vector<int>& amount) {
+        int a = amount[0], b = amount[1], c = amount[2];
+        int maxv = max({a, b, c}), minv = min({a, b, c}), midv = a + b + c - maxv - minv;
+        if (maxv >= midv + minv)
+            return maxv;
+        // 剩下的一定可以配对，直到只留一个 ==> Why
+        // 思考
+        return (maxv + midv + minv + 1) / 2;    // sum_of_amount / 2 向上取整
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+// 试图优先消耗剩下的较多的
+// 随后均匀消耗
+class Solution {
+public:
+    int fillCups(vector<int>& amount) {
+        int a = amount[0], b = amount[1], c = amount[2];
+        int maxv = max({a, b, c}), minv = min({a, b, c}), midv = a + b + c - maxv - minv;
+        int diff = midv - minv, res = diff;
+        maxv -= diff, midv -= diff;
+        if (maxv >= minv + midv) {
+            res += maxv;
+        } else {
+            int cost = maxv / 2;
+            midv -= cost, minv -= maxv - cost;
+            // cout << " maxv = " << maxv <<"  midv = " << midv << " minv = " << minv << endl;
+            res += maxv;
+            res += midv;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

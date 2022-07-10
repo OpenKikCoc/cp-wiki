@@ -801,7 +801,7 @@ class Solution:
 >
 >    ​		$f(i, j, 1) =  f(i - 1, j, 1)$
 >
-> 3. 初始化：$f[0, 0, 0] = 1$ (这个状态是合法的：***啥***都没有可以从***啥都没有***转移过来）
+> 3. 初始化：$f[0, 0, 0] = 1$ (这个状态是合法的：**啥**都没有可以从**啥都没有**转移过来）
 
 <details>
 <summary>详细代码</summary>
@@ -2715,7 +2715,7 @@ public:
         int fstBuy = INT_MIN, secBuy = INT_MIN;
         for (int i = 1; i <= n; ++ i ) {
             fstSell = max(fstSell, fstBuy + prices[i - 1]);
-            fstBuy = max(fstBuy, -prices[i-1]);
+            fstBuy = max(fstBuy, -prices[i - 1]);
             secSell = max(secSell, secBuy + prices[i - 1]);
             secBuy = max(secBuy, fstSell - prices[i - 1]);
         }
@@ -4577,13 +4577,19 @@ public:
 
 > [!TIP] **思路**
 >
-> 1. 状态表示：`f[i][j]`表示走 i 步，在坐标为 j 时的总方案数；属性：数量。最后求的是 `f[i][0]`
+> 1. 状态表示：$f[i][j]$ 表示走 i 步，在坐标为 j 时的总方案数；属性：数量。最后求的是 $f[i][0]$
 >
-> 2. 状态转移：最后一步为划分：1）第 i-1 步是在坐标 j 的位置 2） 第 i-1 步是在坐标 j-1 的位置 3） 第 i-1 步是在坐标 j+1 的位置
+> 2. 状态转移：最后一步为划分：
+> 
+>    1）第 i-1 步是在坐标 j 的位置
+> 
+>    2）第 i-1 步是在坐标 j-1 的位置
+> 
+>    3）第 i-1 步是在坐标 j+1 的位置
 >
->    `f[i][j] = f[i - 1][j] + f[i - ][j] + f[i - 1][j + 1]` 
+>    $f[i][j] = f[i - 1][j] + f[i - 1][j] + f[i - 1][j + 1]$
 >
-> 3. 初始状态：`f[0][0] = 1  `，其他的都初始化为 0
+> 3. 初始状态：$f[0][0] = 1$ ，其他的都初始化为 0
 >
 > 
 >

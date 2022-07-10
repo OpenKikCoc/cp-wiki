@@ -1215,3 +1215,87 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 6115. 统计理想数组的数目](https://leetcode.cn/problems/count-the-number-of-ideal-arrays/) [TAG]**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> - 先考虑数列无重复数字的情况，显然可以 DP 递推来求每个长度下不同结尾数字的方案数
+> 
+> - 进一步考虑，在无重复数字情况下，每一种方案按隔板法求有重复数字下的方案数
+> 
+> 求和即可
+> 
+> > TODO: 积性函数解 https://leetcode.cn/problems/count-the-number-of-ideal-arrays/solution/shu-ju-fan-wei-ge-ju-xiao-liao-by-johnkr-dl63/
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 1e4 + 10, M = 15, MOD = 1e9 + 7;  // 对于 1e4 在一个数组内最多存在 log1e4 + 1 = 14 个不同的数
+    
+    int fact[N], infact[N];
+    int qmi(int a, int k, int p) {
+        int ret = 1;
+        while (k) {
+            if (k & 1)
+                ret = ((LL)ret * a) % MOD;
+            a = (LL)a * a % MOD;
+            k >>= 1;
+        }
+        return ret;
+    }
+    void init() {
+        fact[0] = infact[0] = 1;
+        for (int i = 1; i < N; ++ i ) {
+            fact[i] = (LL)fact[i - 1] * i % MOD;
+            infact[i] = (LL)infact[i - 1] * qmi(i, MOD - 2, MOD) % MOD;
+        }
+    }
+    int C(int x, int y) {
+        return (LL)fact[x] * infact[x - y] % MOD * infact[y] % MOD;
+    }
+    
+    int f[M][N];    // 长度为 i 末尾数值为 j 的所有不重复数方案数
+    
+    int idealArrays(int n, int maxValue) {
+        init();
+        
+        memset(f, 0, sizeof f);
+        for (int i = 1; i <= maxValue; ++ i )
+            f[1][i] = 1;
+        for (int i = 1; i < M - 1; ++ i )
+            for (int j = 1; j <= maxValue; ++ j )
+                for (int k = 2; k * j <= maxValue; ++ k )   // log
+                    f[i + 1][k * j] = (f[i + 1][k * j] + f[i][j]) % MOD;
+        
+        int res = 0;
+        for (int i = 1; i <= n && i < M; ++ i )
+            for (int j = 1; j <= maxValue; ++ j )
+                // C_{n - 1}^{i - 1} 隔板法
+                res = (res + (LL)f[i][j] * C(n - 1, i - 1)) % MOD;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

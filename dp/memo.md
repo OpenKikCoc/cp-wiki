@@ -226,7 +226,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 6110. 网格图中递增路径的数目](https://leetcode.cn/problems/number-of-increasing-paths-in-a-grid/)**
+> [!NOTE] **[LeetCode 2328. 网格图中递增路径的数目](https://leetcode.cn/problems/number-of-increasing-paths-in-a-grid/)**
 > 
 > 题意: 
 > 
@@ -356,7 +356,7 @@ public:
 };
 ```
 
-##### **C++**
+##### **C++ yxc**
 
 ```cpp
 // yxc
@@ -663,10 +663,15 @@ int tilingRectangle(int n, int m) {
 >
 > 原先写的bfs加个 map 就过了
 >
-> 1）吃一个；2）可以整除2:吃一半； 3）可以整除3，吃2/3
+> 1）吃一个
+> 
+> 2）可以整除2, 吃一半
+> 
+> 3）可以整除3, 吃 2/3
 >
-> 1. 尽可能选2）和3）方案
-> 2. 对于任意n，2）和3）都不行时，就先选择方案1），直到2）和3）成立，然后比较两种情况下哪种天数更少
+> 1. 尽可能选 2）和 3）方案
+> 
+> 2. 对于任意 n，2）和 3）都不行时，就先选择方案 1），直到 2）和 3）成立，然后比较两种情况下哪种天数更少
 
 <details>
 <summary>详细代码</summary>

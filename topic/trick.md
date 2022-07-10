@@ -2035,6 +2035,149 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 6114. 移动片段得到字符串](https://leetcode.cn/problems/move-pieces-to-obtain-a-string/)**
+> 
+> 题意: 
+> 
+> 其实和 769 一样
+
+> [!TIP] **思路**
+> 
+> 有更优雅写法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using PII = pair<int, int>;
+    vector<PII> get(string & s) {
+        int n = s.size();
+        vector<PII> t;
+        for (int i = 0; i < n; ++ i )
+            if (s[i] == 'L')
+                t.push_back({i, 0});
+            else if (s[i] == 'R')
+                t.push_back({i, 1});
+        return t;
+    }
+
+    bool canChange(string start, string target) {
+        auto a = get(start), b = get(target);
+        if (a.size() != b.size())
+            return false;
+        
+        int m = a.size();
+        for (int i = 0; i < m; ++ i ) {
+            if (a[i].second != b[i].second)
+                return false;
+            // 'L'
+            if (a[i].second == 0) {
+                if (b[i].first > a[i].first)
+                    return false;
+            } else {
+                if (b[i].first < a[i].first)
+                    return false;
+            }
+        }
+        return true;
+    }
+};
+```
+
+##### **C++ 比赛时**
+
+```cpp
+class Solution {
+public:
+    const static int N = 1e5 + 10;
+    
+    int l[N], r[N];
+    
+    string strim(string s) {
+        string t;
+        for (auto c : s)
+            if (c != '_')
+                t.push_back(c);
+        return t;
+    }
+    
+    bool canChange(string start, string target) {
+        if (strim(start) != strim(target))
+            return false;
+        int n = start.size();
+        vector<int> a, b;
+        {
+            stack<int> st;
+            for (int i = n - 1; i >= 0; -- i ) {
+                if (start[i] == '_')
+                    continue;
+                if (start[i] == 'R') {
+                    while (st.size())
+                        l[st.top()] = i, st.pop();
+                } else
+                    st.push(i);
+            }
+            while (st.size())
+                l[st.top()] = -1, st.pop();
+            for (int i = 0; i < n; ++ i )
+                if (start[i] == 'L')
+                    a.push_back(i);
+        }
+        {
+            stack<int> st;
+            for (int i = 0; i < n; ++ i ) {
+                if (start[i] == '_')
+                    continue;
+                if (start[i] == 'L') {
+                    while (st.size())
+                        r[st.top()] = i, st.pop();
+                } else
+                    st.push(i);
+            }
+            while (st.size())
+                r[st.top()] = n, st.pop();
+            for (int i = 0; i < n; ++ i )
+                if (start[i] == 'R')
+                    b.push_back(i);
+        }
+        for (int i = 0, j = 0, k = 0; i < n; ++ i ) {
+            if (target[i] == '_')
+                continue;
+            if (target[i] == 'L') {
+                int id = a[j];
+                if (i > id || i < l[id])
+                    return false;
+                j ++ ;
+            } else {
+                int id = b[k];
+                if (i < id || i > r[id])
+                    return false;
+                k ++ ;
+            }
+        }
+        return true;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[LeetCode 782. 变为棋盘](https://leetcode-cn.com/problems/transform-to-chessboard/)**
 > 
 > 题意: TODO
