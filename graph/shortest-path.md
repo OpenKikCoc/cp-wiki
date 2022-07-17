@@ -1795,6 +1795,104 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 882. 细分图中的可到达结点](https://leetcode.cn/problems/reachable-nodes-in-subdivided-graph/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 无向图边权非负 显然可以 dijkstra 跑最短路
+> 
+> 随后扫一遍边即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using PII = pair<int, int>;
+    const static int N = 3e3 + 10, M = 2e4 + 10;
+
+    int h[N], e[M], w[M], ne[M], idx;
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+    }
+    void add(int a, int b, int c) {
+        e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+
+    int dist[N];
+    bool st[N];
+    void dijkstra(int s) {
+        memset(dist, 0x3f, sizeof dist);
+        memset(st, 0, sizeof st);
+        priority_queue<PII, vector<PII>, greater<PII>> heap;
+        heap.push({0, s});
+        dist[s] = 0;
+        while (heap.size()) {
+            auto [d, u] = heap.top(); heap.pop();
+            if (st[u])
+                continue;
+            st[u] = true;
+            for (int i = h[u]; ~i; i = ne[i]) {
+                int j = e[i];
+                if (dist[j] > d + w[i] + 1) {
+                    dist[j] = d + w[i] + 1;
+                    heap.push({dist[j], j});
+                }
+            }
+        }
+    }
+
+    int reachableNodes(vector<vector<int>>& edges, int maxMoves, int n) {
+        init();
+        for (auto & e : edges) {
+            int a = e[0], b = e[1], c = e[2];
+            add(a, b, c), add(b, a, c);
+        }
+        dijkstra(0);
+
+        int res = 0;
+        for (auto & e : edges) {
+            int a = e[0], b = e[1], c = e[2];
+            if (dist[a] >= maxMoves && dist[b] >= maxMoves)
+                continue;
+            int add = 0;
+            if (dist[a] < maxMoves) {
+                add += maxMoves - dist[a];
+            }
+            if (dist[b] < maxMoves) {
+                add += maxMoves - dist[b];
+            }
+            // cout << " a = " << a << " b = " << b << " da = " << dist[a] << " db = " << dist[b] << " add = " << min(add, c) << endl;
+            res += min(add, c);
+        }
+        for (int i = 0; i < n; ++ i )
+            if (dist[i] <= maxMoves)
+                res ++ ;
+
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 ### bellmanford
 
@@ -3983,6 +4081,8 @@ int main() {
 >   **对于二维费用的最短路进行拆点再跑最短路**
 > 
 > - 也可以 dp 拆状态然后递推
+> 
+>   若按照时间的升序转移，由于图中边权均为正，从当前时间出发是不可能转移到过去的时间上的，从而保证状态无后效性
 
 <details>
 <summary>详细代码</summary>

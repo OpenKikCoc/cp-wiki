@@ -2105,6 +2105,99 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 1000. 合并石头的最低成本](https://leetcode.cn/problems/minimum-cost-to-merge-stones/)** [TAG]
+> 
+> 题意: 
+> 
+> 每次移动（move）需要将连续的 K 堆石头合并为一堆，而这个移动的成本为这 K 堆石头的总数。
+
+> [!TIP] **思路**
+> 
+> **状态定义与转移**
+> 
+> 并非所有点都可以作为分割点
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 31;
+
+    int s[N];
+    int f[N][N];
+
+    // 每次减少 k-1 堆
+    int mergeStones(vector<int>& stones, int k) {
+        int n = stones.size();
+        if ((n - 1) % (k - 1))  // YES
+            return -1;
+        
+        memset(s, 0, sizeof s);
+        for (int i = 1; i <= n; ++ i )
+            s[i] = s[i - 1] + stones[i - 1];
+        
+        memset(f, 0x3f, sizeof f);  // INF
+
+        // 纠正转移方程
+        /* WRONG
+        for (int i = 1; i <= n; ++ i )
+            f[i][i + k - 1] = s[i + k - 1] - s[i - 1];
+        for (int len = k + 1; len <= n; ++ len )
+            for (int l = 1; l + len - 1 <= n; ++ l ) {
+                int r = l + len - 1;
+                for (int x = 1; x < k; ++ x ) {
+                    int y = k - x - 1;
+                    f[l][r] = min(f[l][r], f[l + x][r - y] + s[r] - s[l - 1]);
+                }
+                // x = k
+                f[l][r] = min(f[l][r], f[l + k][r] + s[l + k - 1] - s[l - 1]);
+                // x = 0
+                f[l][r] = min(f[l][r], f[l][r - k] + f[r] - s[r - k]);
+            }
+        */
+        
+        // RIGHT
+        for (int i = 1; i <= n; ++ i )
+            f[i][i] = 0;
+        for (int len = 2; len <= n; ++ len )
+            for (int l = 1; l + len - 1 <= n; ++ l ) {
+                int r = l + len - 1;
+
+                // 并非任意点都可以作为分割点，需要确保分割后左右两个区间最终合并剩余点堆数之和在[1,k]
+                // 但可以进行一个优化，只需考虑做区间最终合并只剩余 1 堆的情况
+                // for (int x = r - 1; x >= l; x -= k - 1)
+                //     f[l][r] = min(f[l][r], f[l][x] + f[x + 1][r]);
+                for (int x = l; x < r; x += k - 1)
+                    f[l][r] = min(f[l][r], f[l][x] + f[x + 1][r]);
+                
+                // 如果当前区间最终合并后的堆数为 1，则需要额外添加上这段区间的总数。
+                if ((len - 1) % (k - 1) == 0)
+                    f[l][r] += s[r] - s[l - 1];
+            }
+        
+        return f[1][n];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 优化进阶
 
 尤其是线性优化

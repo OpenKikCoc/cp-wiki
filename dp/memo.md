@@ -935,3 +935,63 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 964. 表示数字的最少运算符](https://leetcode.cn/problems/least-operators-to-express-number/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 进制数思想 数学推导
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 首先必有解
+    // 其次运算符有优先级，可以按低优的 +- 把整个式子分成多个块，块内 */%
+    // 进制数思想
+    unordered_map<string, int> f;
+
+    int dp(int x, int target, int depth) {
+        if (!target)
+            return -1;
+        auto state = to_string(target) + ' ' + to_string(depth);
+        if (f.count(state))
+            return f[state];
+        int cost = depth ? depth : 2;
+        if (target == 1)
+            return f[state] = cost - 1;
+        
+        int d = target / x, r = target % x;
+        if (!r)
+            f[state] = dp(x, d, depth + 1);
+        else
+            f[state] = min(dp(x, d, depth + 1) + r * cost,
+                           dp(x, d + 1, depth + 1) + (x - r) * cost);
+        return f[state];
+    }
+
+    int leastOpsExpressTarget(int x, int target) {
+        return dp(x, target, 0);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

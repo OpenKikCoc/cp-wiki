@@ -2178,7 +2178,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 782. 变为棋盘](https://leetcode-cn.com/problems/transform-to-chessboard/)**
+> [!NOTE] **[LeetCode 782. 变为棋盘](https://leetcode-cn.com/problems/transform-to-chessboard/)** [TAG]
 > 
 > 题意: TODO
 

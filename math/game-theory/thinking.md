@@ -313,3 +313,225 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 810. 黑板异或游戏](https://leetcode.cn/problems/chalkboard-xor-game/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 本质是分情况讨论
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    bool xorGame(vector<int>& nums) {
+        // 如果长度为偶数，不管当前状况如何一定可以赢
+        // - 0 直接赢
+        // - 非0 则一定可以拿一个数得到新的非0 随后进入循环操作
+        if (nums.size() % 2 == 0)
+            return true;
+        
+        // 如果长度为奇数，只能当前局面 0
+        int x = 0;
+        for (auto y : nums)
+            x ^= y;
+        return x == 0;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 913. 猫和老鼠](https://leetcode.cn/problems/cat-and-mouse/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 博弈论 注意转移设计
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // O(n^3) DP
+    using TIII = tuple<int, int, int>;
+    const static int N = 51;
+
+    // 老鼠在 i 猫在 j；0 则下一步老鼠动 1 则下一步猫动
+    int f[N][N][2], deg[N][N][2];
+
+    int catMouseGame(vector<vector<int>>& graph) {
+        int n = graph.size();
+
+        memset(f, 0, sizeof f);
+        for (int i = 0; i < n; ++ i )
+            for (int j = 1; j < n; ++ j ) {
+                // TODO
+                deg[i][j][0] = graph[i].size();
+                deg[i][j][1] = graph[j].size();
+        }
+        for (int i = 0; i < n; ++ i )
+            for (auto x : graph[0])
+                deg[i][x][1] -- ;
+        
+        // 将已经确定的状态加入队列，按照拓扑顺序进行动态规划的转移。
+        // 队列里只存储可以完全确定老鼠获胜或者猫获胜的状态，不考虑平局的未知状态。
+        queue<TIII> q;
+        // 初始化老鼠必胜
+        for (int j = 1; j < n; ++ j ) {
+            f[0][j][0] = f[0][j][1] = 1;
+            q.push({0, j, 0}), q.push({0, j, 1});
+        }
+        // 初始化猫必胜
+        for (int i = 1; i < n; ++ i ) {
+            f[i][i][0] = f[i][i][1] = 2;
+            q.push({i, i, 1}), q.push({i, i, 0});
+        }
+
+        while (!q.empty()) {
+            auto [i, j, k] = q.front(); q.pop();
+            if (i == 1 && j == 2 && k == 0)
+                break;
+            
+            if (k == 0) {
+                // ATTENTION 实现
+                // 如果当前状态是老鼠移动，且是猫获胜，则上一步猫移动时，则必定会走到这个猫必胜的状态
+                // 所以所有相连的上一步的猫状态为猫必胜，且进队。
+                for (auto x : graph[j]) {
+                    if (x == 0)
+                        continue;
+                    if (f[i][x][1] != 0)
+                        continue;
+                    
+                    if (f[i][j][k] == 2) {
+                        f[i][x][1] = 2;
+                        q.push({i, x, 1});
+                    } else {
+                        deg[i][x][1] -- ;
+                        if (deg[i][x][1] == 0) {
+                            f[i][x][1] = 1;
+                            q.push({i, x, 1});
+                        }
+                    }
+                }
+            } else {
+                for (auto x : graph[i]) {
+                    if (f[x][j][0] != 0)
+                        continue;
+                    
+                    if (f[i][j][k] == 1) {
+                        f[x][j][0] = 1;
+                        q.push({x, j, 0});
+                    } else {
+                        deg[x][j][0] -- ;
+                        if (deg[x][j][0] == 0) {
+                            f[x][j][0] = 2;
+                            q.push({x, j, 0});
+                        }
+                    }
+                }
+            }
+        }
+        return f[1][2][0];
+    }
+};
+```
+
+##### **C++ 记忆化搜索 TLE**
+
+```cpp
+class Solution {
+public:
+    const static int N = 210;
+
+    int f[N * 2][N][N], n;
+    vector<vector<int>> g;
+
+    int dp(int k, int i, int j) {
+        int & v = f[k][i][j];
+        if (v != -1)
+            return v;
+        // k > n * 2 认为平局，实际上这样会 WA 66/92
+        // if (k > n * 2)
+        if (k > n * 2 * 4)  // 用 k > n * 8 则超时 92/92
+            return v = 0;
+        if (!i)
+            return v = 1;
+        if (i == j)
+            return v = 2;
+        
+        if (k % 2 == 0) {
+            // 老鼠走
+            int draws = 0;
+            for (auto x : g[i]) {
+                int t = dp(k + 1, x, j);
+                if (t == 1)
+                    return v = 1;
+                if (!t)
+                    draws ++ ;
+            }
+            if (draws)  // 如果不能赢 能平则平
+                return v = 0;
+            return v = 2;
+        } else {
+            int draws = 0;
+            for (auto x : g[j]) {
+                if (!x)
+                    continue;
+                int t = dp(k + 1, i, x);
+                if (t == 2)
+                    return v = 2;
+                if (!t)
+                    draws ++ ;
+            }
+            if (draws)
+                return v = 0;
+            return v = 1;
+        }
+    }
+
+    int catMouseGame(vector<vector<int>>& graph) {
+        this->g = graph;
+        this->n = g.size();
+        memset(f, -1, sizeof f);
+        return dp(0, 1, 2);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

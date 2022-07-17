@@ -1359,6 +1359,7 @@ int dieSimulator(int n, vector<int>& rollMax) {
 > 这样一来，我们只需要对普通序列进行两遍动态即可得到答案，
 > 
 > - 第一遍动态规划中我们删去普通序列中的第一个数，表示我们不会选第一个数；
+> 
 > - 第二遍动态规划中我们删去普通序列中的最后一个数，表示我们不会选最后一个数。
 > 
 > 将这两遍动态规划得到的结果去较大值，即为在环状序列上的答案。
@@ -5144,59 +5145,6 @@ public:
             res -- ;
         }
         return res;
-    }
-};
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[LeetCode 1866. 恰有 K 根木棍可以看到的排列数目](https://leetcode-cn.com/problems/number-of-ways-to-rearrange-sticks-with-k-sticks-visible/)** [TAG]
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 经典题目 dp时考虑当前枚举的是所有当中最小的即可
-> 
-> 和另一题假定枚举的是当前 `最大/最高` 的类似
-> 
-> > 另一种思路是 园排列
-> > 
-> > 本质是第一类斯特林数
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-class Solution {
-public:
-    using LL = long long;
-    const int MOD = 1e9 + 7;
-    
-    const static int N = 1010;
-    LL f[N][N];    // 用了高度1-i 左侧可以看到j个 最终 f[n][k]
-    
-    int rearrangeSticks(int n, int k) {
-        f[1][1] = 1;
-        for (int i = 2; i <= n; ++ i )
-            for (int j = 1; j <= i; ++ j )
-                f[i][j] = (f[i - 1][j - 1] + f[i - 1][j] * (i - 1) % MOD) % MOD;
-        
-        return f[n][k];
     }
 };
 ```

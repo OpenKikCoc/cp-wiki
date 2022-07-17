@@ -3413,3 +3413,100 @@ int main() {
 <br>
 
 * * *
+
+### 泛化物品的背包问题
+
+> [!NOTE] **[LeetCode 956. 最高的广告牌](https://leetcode.cn/problems/tallest-billboard/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 泛化背包问题：有限制的选择最优化问题
+> 
+> 重点在于状态定义与转移
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 21, M = 1e4 + 10, K = 5010;    // K 为偏移量
+
+    int f[N][M];    // 【从前 i 个棍子中选，左-右值为 j】左边的最大值
+
+    int tallestBillboard(vector<int>& rods) {
+        int n = rods.size(), m = accumulate(rods.begin(), rods.end(), 0);
+        memset(f, 0xcf, sizeof f);  // -INF
+        f[0][K] = 0;
+        for (int i = 1; i <= n; ++ i )
+            for (int j = 0; j < M; ++ j ) {
+                int x = rods[i - 1];
+                f[i][j] = f[i - 1][j];  // 0
+                if (j - x >= 0)
+                    f[i][j] = max(f[i][j], f[i - 1][j - x] + x);    // 1
+                if (j + x < M)
+                    f[i][j] = max(f[i][j], f[i - 1][j + x]);        // -1
+            }
+        return f[n][K];
+    }
+};
+```
+
+##### **C++ 状压TLE**
+
+```cpp
+class Solution {
+public:
+    const static int N = 1 << 20;
+
+    int s[N];
+
+    int tallestBillboard(vector<int>& rods) {
+        int n = rods.size();
+        memset(s, 0, sizeof s);
+        // 1e6 * 20
+        for (int i = 0; i < 1 << n; ++ i ) {
+            int c = 0;
+            for (int j = 0; j < n; ++ j )
+                if (i >> j & 1)
+                    c += rods[j];
+            s[i] = c;
+        }
+
+        int res = 0;
+        for (int i = 0; i < 1 << n; ++ i ) {
+            if (s[i] & 1)
+                continue;
+            
+            int t = i & (i - 1), tar = s[i] >> 1;
+            bool flag = false;
+            for (int j = t; j; j = (j - 1) & t)
+                if (s[j] == tar) {
+                    flag = true;
+                    break;
+                }
+            if (flag)
+                res = max(res, tar);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

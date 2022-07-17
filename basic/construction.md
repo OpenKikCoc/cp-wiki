@@ -1840,3 +1840,65 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 1040. 移动石子直到连续 II](https://leetcode.cn/problems/moving-stones-until-consecutive-ii/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 复杂分情况讨论 + 推理与构造
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<int> numMovesStonesII(vector<int>& stones) {
+        sort(stones.begin(), stones.end());
+        int n = stones.size();
+
+        vector<int> res(2);
+        // 先求最大值
+        int m = stones.back() - stones[0] - (n - 1);
+        // 分两种情况，取 min
+        res[1] = m - min(stones[1] - stones[0] - 1, stones[n - 1] - stones[n - 2] - 1);
+
+        // 再求最小值
+        res[0] = n;
+        for (int i = 0, j = 0; j < n; ++ j ) {
+            while (stones[j] - stones[i] + 1 > n)
+                i ++ ;
+            m = j - i + 1;
+
+            int r;
+            // 中间这一段是紧邻的
+            if (m == n - 1 && stones[j] - stones[i] == j - i)
+                r = 2;
+            // 其他情况
+            else
+                r = n - m;
+            
+            res[0] = min(res[0], r);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

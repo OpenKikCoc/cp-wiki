@@ -648,3 +648,155 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 837. 新 21 点](https://leetcode.cn/problems/new-21-game/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 有正反两种思路
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 正向**
+
+```cpp
+class Solution {
+public:
+    const static int N = 1e4 + 10;
+
+    // f[i] 表示得到 i 点分数的概率
+    double f[N], s[N];
+
+    double new21Game(int n, int k, int maxPts) {
+        if (k == 0)
+            return 1;
+        
+        memset(f, 0, sizeof f), memset(s, 0, sizeof s);
+        f[0] = s[0] = 1;
+
+        for (int i = 1; i <= n; ++ i ) {
+            int l = max(0, i - maxPts), r = min(k - 1, i - 1);
+            if (l <= r) {
+                if (l == 0)
+                    f[i] = s[r] / maxPts;
+                else
+                    f[i] = (s[r] - s[l - 1]) / maxPts;
+            }
+            s[i] = s[i - 1] + f[i];
+        }
+        return s[n] - s[k - 1];
+    }
+};
+```
+
+##### **C++ 反向**
+
+```cpp
+class Solution {
+public:
+    const static int N = 2e4 + 10;
+
+    // f[i] 表示当前位于 i 的局面，获胜的概率
+    // 所谓获胜即为得到 [k, min(n, k + maxPts - 1)] 的情况
+    double f[N];
+
+    double new21Game(int n, int k, int maxPts) {
+        if (k == 0)
+            return 1;
+        
+        memset(f, 0, sizeof f);
+        for (int i = k; i <= n && i < k + maxPts; ++ i )
+            f[i] = 1;
+
+        // 从 k-1 开始往前算
+        // 1. 计算 k-1
+        f[k - 1] = 0;
+        for (int i = 1; i <= maxPts; ++ i )
+            f[k - 1] += f[k - 1 + i] / (double)maxPts;
+        
+        // 2. 计算前面的部分
+        for (int i = k - 2; i >= 0; -- i )
+            // 基于 f[i + 1] 做修订，即得到 f[i]
+            // 修订即 (f[i+1]-f[i+maxPts+1])/maxPts
+            f[i] = f[i + 1] + (f[i + 1] - f[i + maxPts + 1]) / (double)maxPts;
+        
+        return f[0];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 808. 分汤](https://leetcode.cn/problems/soup-servings/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 细节推导，缩小范围，分情况讨论
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 510;
+
+    double f[N][N];
+
+    double g(int x, int y) {
+        return f[max(0, x)][max(0, y)];
+    }
+
+    double soupServings(int n) {
+        n = (n + 24) / 25;  // 先约减一下方便操作
+        if (n >= 500)       // 从期望上看，>= 500 时无限趋近于 1
+            return 1;
+        
+        for (int i = 0; i <= n; ++ i )
+            for (int j = 0; j <= n; ++ j ) {
+                if (!i && !j)
+                    f[i][j] = 0.5;
+                else if (i && !j)
+                    f[i][j] = 0;
+                else if (!i && j)
+                    f[i][j] = 1;
+                else
+                    f[i][j] = (g(i - 4, j) + g(i - 3, j - 1) + g(i - 2, j - 2) + g(i - 1, j - 3)) / 4.0;
+            }
+        return f[n][n];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

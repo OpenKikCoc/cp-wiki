@@ -702,6 +702,88 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 1044. 最长重复子串](https://leetcode.cn/problems/longest-duplicate-substring/)**
+> 
+> 题意: 
+> 
+> 找到字符串中重复出现过的长度最长的子串
+
+> [!TIP] **思路**
+> 
+> 显然可以 二分+字符串哈希
+> 
+> TODO: 有复杂度更优的 **后缀数组** 解法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using ULL = unsigned long long;
+    const static int N = 3e4 + 10, P = 131;
+
+    ULL p[N], h[N];
+    void init() {
+        p[0] = 1;
+        for (int i = 1; i < N; ++ i )
+            p[i] = p[i - 1] * P;
+    }
+    ULL get(int l, int r) {
+        return h[r] - h[l - 1] * p[r - l + 1];
+    }
+
+    int n, start;
+    bool check(int m) {
+        unordered_set<ULL> S;
+        for (int i = 1; i + m - 1 <= n; ++ i ) {
+            ULL t = get(i, i + m - 1);
+            if (S.count(t)) {
+                start = i;
+                return true;
+            }
+            S.insert(t);
+        }
+        return false;
+    }
+
+    string longestDupSubstring(string s) {
+        init();
+
+        this->n = s.size();
+        for (int i = 1; i <= n; ++ i )
+            h[i] = h[i - 1] * P + s[i - 1];
+        
+        int l = 0, r = n + 1;
+        while (l < r) {
+            int m = l + r >> 1;
+            if (check(m))
+                l = m + 1;
+            else
+                r = m;
+        }
+
+        check(l - 1);
+        return s.substr(start - 1, l - 1);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 ### 进阶
 

@@ -315,6 +315,135 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 803. 打砖块](https://leetcode.cn/problems/bricks-falling-when-hit/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 离线并查集 逆序操作处理击打的砖块
+> 
+> **经典 重复做**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 离线并查集 逆序操作处理击打的砖块
+    const static int N = 4e4 + 10;
+    
+    int p[N], sz[N];
+    void init() {
+        for (int i = 0; i < N; ++ i )
+            p[i] = i, sz[i] = 1;
+    }
+    int find(int x) {
+        if (p[x] != x)
+            p[x] = find(p[x]);
+        return p[x];
+    }
+
+    int n, m;
+    int get(int x, int y) {
+        return x * m + y;
+    }
+
+    int dx[4] = {-1, 0, 0, 1}, dy[4] = {0, -1, 1, 0};
+
+    vector<int> hitBricks(vector<vector<int>>& grid, vector<vector<int>>& hits) {
+        this->n = grid.size(), this->m = grid[0].size();
+        int S = n * m;  // 顶作为虚拟原点
+        init();
+
+        // 先将要击打的砖块移除，后面离线加回
+        vector<bool> st;
+        for (auto & p : hits) {
+            int x = p[0], y = p[1];
+            if (grid[x][y]) {
+                st.push_back(true);
+                grid[x][y] = 0;
+            } else
+                st.push_back(false);
+        }
+
+        // 移除后，处理现有图形
+        for (int i = 0; i < n; ++ i )
+            for (int j = 0; j < m; ++ j )
+                if (grid[i][j]) {
+                    int a = get(i, j);
+                    if (!i) {
+                        // 特殊处理最顶层的砖块
+                        if (find(S) != find(a)) {
+                            sz[find(S)] += sz[find(a)]; // 先操作sz
+                            p[find(a)] = find(S);
+                        }
+                    }
+                    for (int k = 0; k < 4; ++ k ) {
+                        int x = i + dx[k], y = j + dy[k];
+                        if (x < 0 || x >= n || y < 0 || y >= m || grid[x][y] == 0)
+                            continue;
+                        int b = get(x, y);
+                        if (find(a) != find(b)) {
+                            sz[find(b)] += sz[find(a)];
+                            p[find(a)] = find(b);
+                        }
+                    }
+                }
+        
+        // 逆序加回，通过联通量大小变化获取掉落砖块数量
+        vector<int> res(hits.size());
+        int last = sz[find(S)];
+        for (int i = hits.size() - 1; i >= 0; -- i )
+            if (st[i]) {
+                // 加回
+                int x = hits[i][0], y = hits[i][1];
+                grid[x][y] = 1;
+                int a = get(x, y);
+                if (!x) {
+                    // 特殊处理顶部的砖块
+                    if (find(S) != find(a)) {
+                        sz[find(S)] += sz[find(a)];
+                        p[find(a)] = find(S);
+                    }
+                }
+                for (int k = 0; k < 4; ++ k ) {
+                    int nx = x + dx[k], ny = y + dy[k];
+                    if (nx < 0 || nx >= n || ny < 0 || ny >= m || grid[nx][ny] == 0)
+                        continue;
+                    int b = get(nx, ny);
+                    if (find(a) != find(b)) {
+                        sz[find(b)] += sz[find(a)];
+                        p[find(a)] = find(b);
+                    }
+                }
+
+                // 变化的量（就是下面连接的部分的大小） 加上这个节点本身
+                res[i] = max(0, sz[find(S)] - last - 1);
+                last = sz[find(S)];
+            }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 联通性质进阶: 线段染色 / 快速找右侧的一个
 
 > [!NOTE] **[LeetCode 1851. 包含每个查询的最小区间](https://leetcode-cn.com/problems/minimum-interval-to-include-each-query/)** [TAG]

@@ -716,6 +716,62 @@ class Solution:
         return dfs(0, S)
 ```
 
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 887. 鸡蛋掉落](https://leetcode.cn/problems/super-egg-drop/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **状态定义与转移**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 1e4 + 10, M = 110;
+
+    // 扔了 i 次用了 j 个鸡蛋可以探测到的最大高度
+    int f[N][M];
+
+    int superEggDrop(int k, int n) {
+        for (int i = 1; i <= n; ++ i ) {
+            for (int j = 1; j <= k; ++ j )
+                // - 没碎 f[i-1,j]
+                // - 碎了 f[i-1,j-1]+1
+                f[i][j] = f[i - 1][j - 1] + 1 + f[i - 1][j];
+            if (f[i][k] >= n)
+                return i;
+        }
+        return -1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[Codeforces Antimatter](http://codeforces.com/problemset/problem/383/D)**
 > 
 > 题意: 
@@ -782,14 +838,6 @@ int main() {
 ```python
 
 ```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
 
 <!-- tabs:end -->
 </details>
@@ -940,6 +988,169 @@ int main() {
 
     return 0;
 }
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 920. 播放列表的数量](https://leetcode.cn/problems/number-of-music-playlists/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典问题
+> 
+> 状态定义与转移
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 一个线段每个点可以随意填，但是相同数值必须至少间隔 k ===> 经典问题
+    using LL = long long;
+    const static int N = 210, MOD = 1e9 + 7;
+
+    // 前 i 首歌，共 j 种不同的所有合法方案的集合
+    LL f[N][N];
+
+    int numMusicPlaylists(int n, int goal, int k) {
+        f[0][0] = 1;
+        for (int i = 1; i <= goal; ++ i )
+            for (int j = 1; j <= n && j <= i; ++ j )
+                // - 加个新歌 则前面 f[i-1][j] * 新歌种类数 (n-j+1)
+                // - 加个老歌 则可以播放 【j-k】 中的某一首
+                f[i][j] = (f[i - 1][j - 1] * (n - j + 1)
+                        + f[i - 1][j] * max(j - k, 0)) % MOD;
+        return f[goal][n];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1866. 恰有 K 根木棍可以看到的排列数目](https://leetcode-cn.com/problems/number-of-ways-to-rearrange-sticks-with-k-sticks-visible/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典题目 dp时考虑当前枚举的是所有当中最小的即可
+> 
+> 和另一题假定枚举的是当前 `最大/最高` 的类似
+> 
+> > 另一种思路是 园排列
+> > 
+> > 本质是第一类斯特林数
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const int MOD = 1e9 + 7;
+    
+    const static int N = 1010;
+    LL f[N][N];    // 用了高度1-i 左侧可以看到j个 最终 f[n][k]
+    
+    int rearrangeSticks(int n, int k) {
+        f[1][1] = 1;
+        for (int i = 2; i <= n; ++ i )
+            for (int j = 1; j <= i; ++ j )
+                f[i][j] = (f[i - 1][j - 1] + f[i - 1][j] * (i - 1) % MOD) % MOD;
+        
+        return f[n][k];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 903. DI 序列的有效排列](https://leetcode.cn/problems/valid-permutations-for-di-sequence/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 类似 [木棍 / 整数拆分] 状态定义与转移非常难想
+> 
+> **重点在于集合映射**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 210, MOD = 1e9 + 7;
+
+    int f[N][N];    // 0~i 的一个满足要求的排列 且最后一位为 j 的所有排列的集合
+    // 状态转移非常有跳跃性 其变换思想类似于 【左边能看到的木棍的数量】
+
+    int numPermsDISequence(string s) {
+        int n = s.size();
+        memset(f, 0, sizeof f);
+        f[0][0] = 1;
+        for (int i = 1; i <= n; ++ i )
+            if (s[i - 1] == 'D')
+                for (int j = i - 1; j >= 0; -- j )
+                    // 类似完全背包的优化 直接使用 f[i][j + 1]
+                    f[i][j] = (f[i - 1][j] + f[i][j + 1]) % MOD;
+            else
+                for (int j = 1; j <= i; ++ j )
+                    f[i][j] = (f[i - 1][j - 1] + f[i][j - 1]) % MOD;
+        
+        int res = 0;
+        for (int i = 0; i <= n; ++ i )
+            res = (res + f[n][i]) % MOD;
+        return res;
+    }
+};
 ```
 
 ##### **Python**

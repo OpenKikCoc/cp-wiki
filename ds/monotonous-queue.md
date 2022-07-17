@@ -15,21 +15,21 @@
 
 ## 概念
 
-顾名思义，单调队列的重点分为 **单调" 和 **队列**
+顾名思义，单调队列的重点分为 **单调** 和 **队列**
 
-"单调" 指的是元素的的 **规律"——递增（或递减）
+"单调" 指的是元素的的 **规律** ——递增（或递减）
 
 "队列" 指的是元素只能从队头和队尾进行操作
 
-Ps. 单调队列中的 **队列" 与正常的队列有一定的区别，稍后会提到
+Ps. 单调队列中的 **队列** 与正常的队列有一定的区别，稍后会提到
 
 ## 例题分析
 
-有了上面 **单调队列" 的概念，很容易想到用单调队列进行优化。
+有了上面 **单调队列** 的概念，很容易想到用单调队列进行优化。
 
-要求的是每连续的 $k$ 个数中的最大（最小）值，很明显，当一个数进入所要 **寻找" 最大值的范围中时，若这个数比其前面（先进队）的数要大，显然，前面的数会比这个数先出队且不再可能是最大值。
+要求的是每连续的 $k$ 个数中的最大（最小）值，很明显，当一个数进入所要 **寻找** 最大值的范围中时，若这个数比其前面（先进队）的数要大，显然，前面的数会比这个数先出队且不再可能是最大值。
 
-也就是说——当满足以上条件时，可将前面的数 **弹出"，再将该数真正 push 进队尾。
+也就是说——当满足以上条件时，可将前面的数 **弹出**，再将该数真正 push 进队尾。
 
 这就相当于维护了一个递减的队列，符合单调队列的定义，减少了重复的比较次数，不仅如此，由于维护出的队伍是查询范围内的且是递减的，队头必定是该查询区域内的最大值，因此输出时只需输出队头即可。
 
@@ -79,7 +79,7 @@ Ps. 单调队列中的 **队列" 与正常的队列有一定的区别，稍后�
 
 <br>
 
-Ps. 此处的 **队列" 跟普通队列的一大不同就在于可以从队尾进行操作，STL 中有类似的数据结构 deque。
+Ps. 此处的 **队列** 跟普通队列的一大不同就在于可以从队尾进行操作，STL 中有类似的数据结构 deque。
 
 > [!NOTE] **例题 2 [Luogu P2698 Flowerpot S ](https://www.luogu.com.cn/problem/P2698)**
 > 
@@ -245,7 +245,32 @@ if __name__ == '__main__':
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++**
+##### **C++ 标准单调队列**
+
+```cpp
+class Solution {
+public:
+    // [x, y-x]
+    using PII = pair<int, int>;
+
+    int findMaxValueOfEquation(vector<vector<int>>& points, int k) {
+        deque<PII> q;
+        int res = INT_MIN;
+        for (auto & p : points) {
+            while (q.size() && q.front().first < p[0] - k)
+                q.pop_front();
+            if (q.size())
+                res = max(res, p[0] + p[1] + q.front().second);
+            while (q.size() && q.back().second < p[1] - p[0])
+                q.pop_back();
+            q.push_back({p[0], p[1] - p[0]});
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 堆**
 
 ```cpp
 class Solution {
@@ -398,6 +423,83 @@ public:
     }
 };
 ```
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 推导变形得到单调队列性质
+
+> [!NOTE] **[LeetCode 862. 和至少为 K 的最短子数组](https://leetcode.cn/problems/shortest-subarray-with-sum-at-least-k/)**
+> 
+> 题意: 
+> 
+> 给你一个整数数组 $nums$ 和一个整数 $k$ ，找出 $nums$ 中和至少为 $k$ 的 最短非空子数组 ，并返回该子数组的长度。
+> 
+> (整数数组有正有负)
+> 
+> 如果不存在这样的 `子数组` ，返回 -1 。
+
+> [!TIP] **思路**
+> 
+>  如果数值都是正数，显然可以直接滑动窗口
+> 
+> - 考虑作为前面的前缀和 $s[j]$ 其一定会比 $j$ 之前的比 $s[j]$ 更大的位置更优
+> 
+>   所以可以维护 $s$ 递增的单调队列
+> 
+>   ==> 队列尾部可以在比当前值小时被弹出
+> 
+> - 对于当前 $s[i]$ 需要把满足 $s[j] + k <= s[i]$ 的所有 $j$ 遍历一遍
+> 
+>   且这些 $s[j]$ 与 $s[i]$ 配对一定会比其与 $s[i]$ 后面的其他配对更优
+> 
+>   ==> 队列头部可以在遍历时被弹出
+> 
+> **实际上是【非典型单调队列】**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 1e5 + 10;
+
+    LL s[N];
+
+    int shortestSubarray(vector<int>& nums, int k) {
+        int n = nums.size();
+        for (int i = 1; i <= n; ++ i )
+            s[i] = s[i - 1] + nums[i - 1];
+        
+        deque<int> q;   // 存下标
+        q.push_back(0);
+        int res = INT_MAX;
+        for (int i = 1; i <= n; ++ i ) {
+            while (q.size() && s[q.front()] + k <= s[i])
+                res = min(res, i - q.front()), q.pop_front();
+            while (q.size() && s[q.back()] >= s[i])
+                q.pop_back();
+            q.push_back(i);
+        }
+        return res == INT_MAX ? -1 : res;
+    }
+};
+```
+
 ##### **Python**
 
 ```python

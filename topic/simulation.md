@@ -2142,6 +2142,68 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 936. 戳印序列](https://leetcode.cn/problems/stamping-the-sequence/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 逆向模拟 实现细节
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 逆向操作 找到可以匹配的串恢复成 ?
+    bool work(string & stamp, string & target, int k) {
+        if (target.substr(k, stamp.size()) == string(stamp.size(), '?'))
+            return false;
+        for (int i = 0; i < stamp.size(); ++ i )
+            if (target[k + i] != '?' && stamp[i] != target[k + i])
+                return false;
+        for (int i = 0; i < stamp.size(); ++ i )
+            target[k + i] = '?';
+        return true;
+    }
+
+    vector<int> movesToStamp(string stamp, string target) {
+        vector<int> res;
+        for (;;) {
+            bool flag = true;
+            for (int i = 0; i + stamp.size() <= target.size(); ++ i )
+                if (work(stamp, target, i)) {
+                    res.push_back(i);
+                    flag = false;
+                }
+            if (flag)
+                break;
+        }
+        if (target != string(target.size(), '?'))
+            return {};
+        reverse(res.begin(), res.end());
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 字符串处理
 
 > [!NOTE] **[LeetCode 388. 文件的最长绝对路径](https://leetcode-cn.com/problems/longest-absolute-file-path/)**
@@ -3455,188 +3517,6 @@ public:
     }
     bool splitString(string s) {
         return dfs(s, -1, 0);
-    }
-};
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-### 经典递归处理字符串
-
-> [!NOTE] **[LeetCode 726. 原子的数量](https://leetcode-cn.com/problems/number-of-atoms/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 经典 递归处理字符串
-> 
-> 利用 map 保存的技巧, 使用 hash 记录的思路
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-class Solution {
-public:
-    using MPSI = map<string, int>;
-
-    MPSI dfs(string& str, int& u) {
-        MPSI res;
-        while (u < str.size()) {
-            if (str[u] == '(') {
-                u ++ ;
-                auto t = dfs(str, u);
-                u ++ ;
-                int cnt = 1, k = u;
-                while (k < str.size() && isdigit(str[k])) k ++ ;
-                if (k > u) {
-                    cnt = stoi(str.substr(u, k - u));
-                    u = k;
-                }
-                for (auto& [x, y]: t) res[x] += y * cnt;
-            } else if (str[u] == ')') break;
-            else {
-                int k = u + 1;
-                while (k < str.size() && str[k] >= 'a' && str[k] <= 'z') k ++ ;
-                auto key = str.substr(u, k - u);
-                u = k;
-                int cnt = 1;
-                while (k < str.size() && isdigit(str[k])) k ++ ;
-                if (k > u) {
-                    cnt = stoi(str.substr(u, k - u));
-                    u = k;
-                }
-                res[key] += cnt;
-            }
-        }
-        return res;
-    }
-
-    string countOfAtoms(string formula) {
-        int k = 0;
-        auto t = dfs(formula, k);
-        string res;
-        for (auto& [x, y]: t) {
-            res += x;
-            if (y > 1) res += to_string(y);
-        }
-        return res;
-    }
-};
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[LeetCode 736. Lisp 语法解析](https://leetcode-cn.com/problems/parse-lisp-expression/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 经典 递归处理字符串
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-class Solution {
-public:
-    using MPSI = unordered_map<string, int>;
-
-    int get_value(string & str, int & k, MPSI vars) {
-        int value;
-        if (str[k] == '-' || isdigit(str[k])) {
-            int i = k + 1;
-            while (isdigit(str[i]))
-                i ++ ;
-            value = stoi(str.substr(k, i - k));
-            k = i;
-        } else if (str[k] != '(') {
-            string name;
-            while (str[k] != ' ' && str[k] != ')')
-                name += str[k ++ ];
-            value = vars[name];
-        } else
-            value = dfs(str, k, vars);
-        return value;
-    }
-
-    int dfs(string & str, int & k, MPSI vars) {
-        int value;
-        // 跳过 '('
-        k ++ ;
-        auto type = str.substr(k, 3);
-        if (type == "let") {
-            // 跳过 "let "
-            k += 4;
-            while (str[k] != ')') {
-                if (str[k] == '(' || str[k] == '-' || isdigit(str[k])) {
-                    value = get_value(str, k, vars);
-                    break;
-                }
-                string name;
-                while (str[k] != ' ' && str[k] != ')')
-                    name += str[k ++ ];
-                if (str[k] == ')') {
-                    value = vars[name];
-                    break;
-                }
-                // 跳过 ' '
-                k ++ ;
-                vars[name] = get_value(str, k, vars);
-                // 跳过 ' '
-                k ++ ;
-            }
-        } else if (type == "add") {
-            k += 4;
-            int a = get_value(str, k, vars);
-            k ++ ;
-            int b = get_value(str, k, vars);
-            value = a + b;
-        } else {
-            k += 5;
-            int a = get_value(str, k, vars);
-            k ++ ;
-            int b = get_value(str, k, vars);
-            value = a * b;
-        }
-        // 跳过 ')'
-        k ++ ;
-        return value;
-    }
-
-    int evaluate(string expression) {
-        int k = 0;
-        return dfs(expression, k, MPSI());
     }
 };
 ```

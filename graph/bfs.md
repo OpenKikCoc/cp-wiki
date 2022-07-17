@@ -1065,6 +1065,76 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 818. 赛车](https://leetcode.cn/problems/race-car/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> bfs 最短路模型，包含一些重要推导过程
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 根据题意，约束范围的最短路
+    // 根据题意（倍增关系）转化模型
+
+    using TIII = tuple<int, int, int>;
+    const static int N = 2e4 + 10, M = 15;
+
+    int dist[N][M][2];
+
+    int racecar(int target) {
+        memset(dist, 0x3f, sizeof dist);
+        dist[0][0][1] = 0;  // 用 1 代表正向有特殊意义
+        queue<TIII> q;
+        q.push({0, 0, 1});
+        while (q.size()) {
+            auto [i, j, k] = q.front(); q.pop();
+
+            int d = dist[i][j][k];
+            int x = i + (1 << j) * (k * 2 - 1); // 正向与反向的巧妙使用
+            if (x >= 0 && x <= target * 2) {
+                int y = j + 1;
+                if (dist[x][y][k] > d + 1) {
+                    // 因为推理知必然以加速结束，所以可以写在这里
+                    if (x == target)
+                        return d + 1;
+                    dist[x][y][k] = d + 1;
+                    q.push({x, y, k});
+                }
+            }
+            
+            int y = 0, z = k ^ 1;
+            if (dist[i][y][z] > d + 1) {
+                dist[i][y][z] = d + 1;
+                q.push({i, y, z});
+            }
+        }
+        return -1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 01 bfs
 
 > [!NOTE] **[AcWing 175. 电路维修](https://www.acwing.com/problem/content/177/)**
