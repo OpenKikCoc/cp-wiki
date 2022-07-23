@@ -1539,6 +1539,137 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 1125. 最小的必要团队](https://leetcode.cn/problems/smallest-sufficient-team/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 非常典型的题目 注意状压定义与转移的 `for-loop` 顺序
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 标准**
+
+```cpp
+class Solution {
+public:
+    using PII = pair<int, int>;
+    const static int N = 61, M = 16;
+
+    int f[1 << M];
+    PII pre[1 << M];
+
+    vector<int> smallestSufficientTeam(vector<string>& req_skills, vector<vector<string>>& people) {
+        int n = req_skills.size(), m = people.size();
+        unordered_map<string, int> hash;
+        for (int i = 0; i < n; ++ i )
+            hash[req_skills[i]] = i;
+        
+        vector<int> sts;
+        for (int i = 0; i < people.size(); ++ i ) {
+            int st = 0;
+            for (auto & x : people[i])
+                st |= 1 << hash[x];
+            sts.push_back(st);
+        }
+        
+        memset(f, 0x3f, sizeof f);
+        
+        f[0] = 0;
+        // ATTENTION 先遍历状态
+        for (int i = 0; i < 1 << n; ++ i )
+            for (int j = 0; j < m; ++ j ) {
+                int x = sts[j];
+                // 因为 或 的性质，比较难推导或之前的状态，故反过来计算或之后的状态
+                if (f[i | x] > f[i] + 1) {
+                    f[i | x] = f[i] + 1;
+                    pre[i | x] = {i, j};
+                }
+            }
+
+        vector<int> res;
+        for (int st = (1 << n) - 1; st; ) {
+            res.push_back({pre[st].second});
+            st = pre[st].first;
+        }
+
+        return res;
+    }
+};
+```
+
+##### **C++ 最初的二维写法**
+
+```cpp
+class Solution {
+public:
+    using PII = pair<int, int>;
+    const static int N = 61, M = 16;
+
+    int f[N][1 << M];
+    PII pre[N][1 << M];
+
+    vector<int> smallestSufficientTeam(vector<string>& req_skills, vector<vector<string>>& people) {
+        int n = req_skills.size(), m = people.size();
+        unordered_map<string, int> hash;
+        for (int i = 0; i < n; ++ i )
+            hash[req_skills[i]] = i;
+        
+        vector<int> sts;
+        for (int i = 0; i < people.size(); ++ i ) {
+            int st = 0;
+            for (auto & x : people[i])
+                st |= 1 << hash[x];
+            sts.push_back(st);
+        }
+        
+        memset(f, 0x3f, sizeof f);
+        
+        f[0][0] = 0;
+        // ATTENTION 先遍历状态
+        for (int i = 0; i < m; ++ i )
+            for (int j = 0; j < 1 << n; ++ j ) {
+                int x = sts[i];
+                if (f[i + 1][j | x] > f[i][j] + 1) {
+                    f[i + 1][j | x] = f[i][j] + 1;
+                    pre[i + 1][j | x] = {i, j};
+                }
+                // 用二维 以及这个状态定义的情况下 必须加下面这一段
+                if (f[i + 1][j] > f[i][j]) {
+                    f[i + 1][j] = f[i][j];
+                    pre[i + 1][j] = {i, j};
+                }
+            }
+        // cout << " f = " << f[m][(1 << n) - 1] << endl;
+
+        vector<int> res;
+        for (int i = m, j = (1 << n) - 1; j; -- i ) {
+            auto [li, lj] = pre[i][j];
+            if (f[li][lj] != f[i][j])
+                res.push_back(i - 1);
+            j = lj;
+        }
+
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 ### 线性递推
 

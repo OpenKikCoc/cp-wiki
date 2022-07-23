@@ -3317,6 +3317,64 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 960. 删列造序 III](https://leetcode.cn/problems/delete-columns-to-make-sorted-iii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 转化思想
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 110;
+
+    vector<string> ss;
+    int f[N], n, m;
+
+    bool check(int j, int i) {
+        for (int k = 0; k < n; ++ k )
+            if (ss[k][j] > ss[k][i])
+                return false;
+        return true;
+    }
+
+    int minDeletionSize(vector<string>& strs) {
+        this->ss = strs, this->n = strs.size(), this->m = strs[0].size();
+        memset(f, 0, sizeof f);
+
+        int res = m;
+        for (int i = 0; i < m; ++ i ) {
+            f[i] = i;   // 最少删除次数
+            for (int j = 0; j < i; ++ j )
+                if (check(j, i))
+                    f[i] = min(f[i], f[j] + i - j - 1);
+            res = min(res, f[i] + m - 1 - i);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 ### 类 LIS 思想
 

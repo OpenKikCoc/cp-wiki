@@ -712,6 +712,63 @@ class Solution {
 
 * * *
 
+> [!NOTE] **[LeetCode 1498. 满足条件的子序列数目](https://leetcode.cn/problems/number-of-subsequences-that-satisfy-the-given-sum-condition/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 想到 **排序双指针** 的 trick 思维
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 1e6 + 10, MOD = 1e9 + 7;
+
+    int p[N];
+    void init() {
+        p[0] = 1;
+        for (int i = 1; i < N; ++ i )
+            p[i] = p[i - 1] * 2 % MOD;
+    }
+
+    int numSubseq(vector<int>& nums, int target) {
+        init();
+        sort(nums.begin(), nums.end()); // trick 直接排序双指针
+
+        int n = nums.size(), res = 0;
+        for (int i = 0, j = n - 1; i <= j; ++ i ) { // i <= j
+            while (i <= j && nums[i] + nums[j] > target)
+                j -- ;
+            // 实际上，对于重复值来说确实需要着重关心一下
+            // 但我们可以人为的定义其先后关系，保证计算没有多
+            if (i <= j && nums[i] + nums[j] <= target)
+                res = (res + p[j - i]) % MOD;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 快慢指针思想
 
 > 链表判环、找中点的快慢指针应用参见链表部分

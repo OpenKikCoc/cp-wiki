@@ -4341,6 +4341,62 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 857. 雇佣 K 名工人的最低成本](https://leetcode.cn/problems/minimum-cost-to-hire-k-workers/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 容易想到排序 重点在于贪心堆维护
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using PDI = pair<double, int>;
+    #define x first
+    #define y second
+
+    double mincostToHireWorkers(vector<int>& quality, vector<int>& wage, int k) {
+        vector<PDI> q;
+        for (int i = 0; i < quality.size(); ++ i )
+            q.push_back({(double)wage[i] / quality[i], quality[i]});
+        sort(q.begin(), q.end());
+
+        // 使用堆维护固定个数的最小值
+        priority_queue<int> heap;
+        double res = 1e18, sum = 0;
+        for (auto [x, y] : q) {
+            heap.push(y), sum += y;
+            if (heap.size() > k)
+                sum -= heap.top(), heap.pop();
+            if (heap.size() == k)
+                // 思考: 因为排序过 所以可以直接用 x (x 是前面可能不连续的 k 个元素的上界)
+                res = min(res, sum * x);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### trick
 
 > [!NOTE] **[Luogu 最大乘积](https://www.luogu.com.cn/problem/P1249)**

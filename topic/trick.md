@@ -2844,22 +2844,49 @@ public:
 
 > [!TIP] **思路**
 > 
-> 因为排序不能改变相对位置 也即： 原本 x1 < x2 且边后 x1 在 x2 后面 比如 `8xxx5` 改之后还是 `8 5`
+> 因为排序不能改变相对位置 也即： 原本 $x1 < x2$ 且边后 $x1$ 在 $x2$ 后面 比如 `8xxx5` 改之后还是 `8 5`
 > 
 > 排序会改变一段区间内元素的相对位置
 > 
-> 对于 s[i] 到 i 位置位置的每一个数 前面比它小的数的数量都必须小于等于 t[i] 位置前面比它小的数的数量
+> 对于 $s[i]$ 到 $i$ 位置位置的每一个数 前面比它小的数的数量都必须小于等于 $t[i]$ 位置前面比它小的数的数量
 > 
-> > 题解区有别的做法，如 `操作前后逆序对树木不增加即可转换` ，感觉并不优雅。
+> > 题解区有别的做法，如 `操作前后逆序对数目不增加即可转换` ，感觉并不优雅。
 
 <details>
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
+##### **C++ 标准**
+
+```cpp
+class Solution {
+public:
+    queue<int> p[10];
+
+    bool isTransformable(string s, string t) {
+        int n = s.size();
+        for (int i = 0; i < n; ++ i )
+            p[s[i] - '0'].push(i);
+        
+        // 根据冒泡排序性质
+        for (int i = 0; i < n; ++ i ) {
+            int x = t[i] - '0';
+            if (p[x].empty())
+                return false;
+            
+            for (int y = 0; y < x; ++ y )
+                if (!p[y].empty() && p[y].front() < p[x].front())
+                    return false;
+            p[x].pop();
+        }
+        return true;
+    }
+};
+```
+
 ##### **C++**
 
 ```cpp
-
 class Solution {
 public:
     bool isTransformable(string s, string t) {
@@ -2969,7 +2996,110 @@ public:
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++**
+##### **C++ 追加并查集判连通性**
+
+```c++
+class Solution {
+public:
+    // 如果一个点只有一个儿子 则可以缩点
+
+    // 追加：并查集判断连通性
+    vector<int> pa;
+    int find(int x) {
+        if (pa[x] != x)
+            pa[x] = find(pa[x]);
+        return pa[x];
+    }
+    
+    int checkWays(vector<vector<int>>& pairs) {
+        pa.resize(501);
+        for (int i = 0; i < 501; ++ i )
+            pa[i] = i;
+        // bitset 方便在比较的时候压位以降低复杂度
+        bitset<501> g[501];
+        for (auto & p : pairs) {
+            int a = p[0], b = p[1];
+            g[a][b] = g[b][a] = 1;
+            pa[find(a)] = find(b);
+        }
+        for (int i = 1; i <= 500; ++ i )
+            if (g[i].count())
+                g[i][i] = 1;
+
+        int res = 1;
+        set<int> rms;   // 记录删掉的点
+        for (int i = 1; i <= 500; ++ i ) {
+            // 循环删点
+            if (!g[i].count()) continue;
+            for (int j = i + 1; j <= 500; ++ j )
+                if (g[i] == g[j]) {
+                    res = 2;
+                    rms.insert(j);
+                    g[j][j] = 0;
+                }
+        }
+        
+        // 只保留单向关系
+        vector<int> vers, alls;
+        for (auto & p : pairs) {
+            int a = p[0], b = p[1];
+            // 追加 alls
+            alls.push_back(a), alls.push_back(b);
+            if (rms.count(a) || rms.count(b))
+                g[a][b] = g[b][a] = 0;
+            else
+                vers.push_back(a), vers.push_back(b);
+        }
+        // 追加 判断连通性
+        for (int i = 1; i < alls.size(); ++ i )
+            if (find(alls[0]) != find(alls[i]))
+                return false;
+        
+        if (vers.size()) {
+            // 去重
+            sort(vers.begin(), vers.end());
+            vers.erase(unique(vers.begin(), vers.end()), vers.end());
+        }
+        sort(vers.begin(), vers.end(), [&](int a, int b) {
+            return g[a].count() > g[b].count();
+        });
+        
+        for (auto & p : pairs) {
+            int & a = p[0], & b = p[1];
+            if (!rms.count(a) && !rms.count(b)) {
+                if (g[a].count() == g[b].count()) return 0;
+                else if (g[a].count() > g[b].count()) swap(a, b);
+            }
+        }
+        
+        for (auto & p : pairs) {
+            int & a = p[0], & b = p[1];
+            if (!rms.count(a) && !rms.count(b))
+                g[a][b] = 0;
+        }
+
+        // 是否有一个点可以到达所有点
+        if (vers.size() && g[vers[0]].count() != vers.size())
+            return false;
+        
+        for (int i = 0; i < vers.size(); ++ i ) {
+            int a = vers[i];
+            if (!g[a].count()) continue;
+            for (int j = i + 1; j < vers.size(); ++ j ) {
+                int b = vers[j];
+                // 此时ab必然是一条边
+                if (g[a][b]) {
+                    if ((g[a] & g[b]) != g[b]) return 0;
+                    g[a] &= ~g[b];  // 删掉b子集
+                }
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 后来 WA**
 
 ```cpp
 class Solution {

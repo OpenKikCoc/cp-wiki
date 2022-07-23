@@ -310,3 +310,81 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 952. 按公因数计算最大组件大小](https://leetcode.cn/problems/largest-component-size-by-common-factor/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然分解质因子 + 并查集即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 1e5 + 10;
+
+    int pa[N], sz[N];
+    void init() {
+        for (int i = 0; i < N; ++ i )
+            pa[i] = i, sz[i] = 1;
+    }
+    int find(int x) {
+        if (pa[x] != x)
+            pa[x] = find(pa[x]);
+        return pa[x];
+    }
+
+    int largestComponentSize(vector<int>& nums) {
+        init();
+
+        unordered_map<int, vector<int>> hash;   // 记录每个因子都有哪些数
+        int n = nums.size();
+        for (int i = 0; i < n; ++ i ) {
+            int x = nums[i];
+            for (int j = 2; j <= x / j; ++ j )
+                if (x % j == 0) {
+                    hash[j].push_back(i);
+                    while (x % j == 0)
+                        x /= j;
+                }
+            if (x > 1)
+                hash[x].push_back(i);
+        }
+
+        for (auto & [k, v] : hash)
+            for (int i = 1; i < v.size(); ++ i ) {
+                int a = v[0], b = v[i];
+                if (find(a) != find(b)) {
+                    sz[find(a)] += sz[find(b)];
+                    pa[find(b)] = find(a);
+                }
+            }
+        
+        int res = 0;
+        for (int i = 0; i < n; ++ i )
+            if (find(i) == i)
+                res = max(res, sz[i]);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

@@ -392,6 +392,8 @@ int main() {
 > 
 > 可以部分参考 [898. 子数组按位或操作](https://leetcode-cn.com/problems/bitwise-ors-of-subarrays/)
 > 
+> - 双指针 + 前缀和
+> 
 > - 动态维护 TODO clear
 > 
 > - 模拟退火 TODO clear
@@ -399,6 +401,48 @@ int main() {
 <details>
 <summary>详细代码</summary>
 <!-- tabs:start -->
+
+##### **C++ 双指针+前缀和**
+
+```cpp
+class Solution {
+public:
+    // 1e6 数据范围 则最多不超过 20 个不同的值 => 思考
+    const static int N = 1e5 + 10, M = 20;
+
+    int s[N][M];    // 逆序思维: 不记录有没有 1 而是记录某一位有没有 0
+
+    int get_sum(int l, int r) {
+        int res = 0;
+        for (int i = 0; i < M; ++ i )
+            if (s[r][i] - s[l - 1][i] == 0) // 没有 0 存在
+                res += 1 << i;
+        return res;
+    }
+
+    int closestToTarget(vector<int>& arr, int target) {
+        int n = arr.size();
+
+        memset(s, 0, sizeof s);
+        for (int i = 1; i <= n; ++ i )
+            for (int j = 0; j < M; ++ j ) {
+                s[i][j] = s[i - 1][j];
+                if (!(arr[i - 1] >> j & 1))
+                    s[i][j] ++ ;
+            }
+        
+        int res = INT_MAX;
+        for (int l = 1, r = 1; r <= n; ++ r ) {
+            while (l < r && abs(get_sum(l + 1, r)) <= target)
+                l ++ ;
+            res = min(res, abs(get_sum(l, r) - target));
+            if (l < r)
+                res = min(res, abs(get_sum(l + 1, r) - target));
+        }
+        return res;
+    }
+};
+```
 
 ##### **C++ 动态维护**
 
@@ -511,6 +555,8 @@ public:
 > 典型模拟退火 【数据范围不大 答案和顺序有关】
 > 
 > 状压也可 但需要对状态表示进行优化（编码）
+> 
+> TODO: **移动到多进制状压部分，本题进制数是根据数据灵活变化的**
 
 <details>
 <summary>详细代码</summary>

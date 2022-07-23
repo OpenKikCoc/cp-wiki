@@ -641,6 +641,8 @@ $$
 > 多字符串的 LCS 问题
 > 
 > SAM 模版题
+> 
+> TODO 多模哈希也可以过
 
 <details>
 <summary>详细代码</summary>
@@ -735,6 +737,12 @@ public:
         return res;
     }
 };
+```
+
+##### **C++ TODO 多模哈希**
+
+```cpp
+
 ```
 
 ##### **Python**

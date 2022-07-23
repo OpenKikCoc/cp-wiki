@@ -2115,13 +2115,113 @@ public:
 > 
 > **状态定义与转移**
 > 
+> **三维压缩为二维的思维推导**
+> 
 > 并非所有点都可以作为分割点
 
 <details>
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++**
+##### **C++ 状态定义**
+
+```cpp
+class Solution {
+public:
+    const static int N = 31, INF = 0x3f3f3f3f;
+
+    int s[N];
+    int f[N][N][N];
+
+    // 每次减少 k-1 堆
+    int mergeStones(vector<int>& stones, int k) {
+        int n = stones.size();
+        if ((n - 1) % (k - 1))  // YES
+            return -1;
+        
+        memset(s, 0, sizeof s);
+        for (int i = 1; i <= n; ++ i )
+            s[i] = s[i - 1] + stones[i - 1];
+        
+        memset(f, 0x3f, sizeof f);  // INF
+        // 初始化长度为 1 的情况 (不能合并)
+        for (int i = 1; i <= n; ++ i )
+            f[i][i][1] = 0;
+        
+        for (int len = 2; len <= n; ++ len )
+            for (int l = 1; l + len - 1 <= n; ++ l ) {
+                int r = l + len - 1;
+                // 枚举从最右侧拿一些作为一堆，左侧是剩余其他堆，但未触发合并操作的情况
+                for (int t = 2; t <= k; ++ t )
+                    for (int u = l; u < r; ++ u )
+                        f[l][r][t] = min(f[l][r][t], f[l][u][t - 1] + f[u + 1][r][1]);
+                
+                // 触发合并的情况
+                f[l][r][1] = f[l][r][k] + s[r] - s[l - 1];
+            }
+        
+        if (f[1][n][1] >= INF / 2)
+            return -1;
+        return f[1][n][1];
+    }
+};
+```
+
+##### **C++ 状态定义->优化**
+
+```cpp
+class Solution {
+public:
+    const static int N = 31, INF = 0x3f3f3f3f;
+
+    // 优化 2: 考虑每次只能减少 k-1 堆， k-1 | (r-l+1-t)
+    // 则第三维可以被前两维唯一确定，除了被确定的这个，其他都是非法状态
+    // 故直接删去第三维
+
+    int s[N];
+    int f[N][N];
+
+    // 每次减少 k-1 堆
+    int mergeStones(vector<int>& stones, int k) {
+        int n = stones.size();
+        if ((n - 1) % (k - 1))  // YES
+            return -1;
+        
+        memset(s, 0, sizeof s);
+        for (int i = 1; i <= n; ++ i )
+            s[i] = s[i - 1] + stones[i - 1];
+        
+        memset(f, 0x3f, sizeof f);  // INF
+        // 初始化长度为 1 的情况 (不能合并)
+        for (int i = 1; i <= n; ++ i )
+            f[i][i] = 0;
+        
+        for (int len = 2; len <= n; ++ len )
+            for (int l = 1; l + len - 1 <= n; ++ l ) {
+                int r = l + len - 1;
+                // 枚举从最右侧拿一些作为一堆，左侧是剩余其他堆，但未触发合并操作的情况
+                // 优化 2: 移除 t 的枚举
+                // for (int t = 2; t <= k; ++ t )
+                    // for (int u = l; u < r; ++ u )
+                    // 优化 1: 只保留有效部分的结果 (右侧选的差值) ==> 此时需要逆序遍历来保证
+                    for (int u = r - 1; u >= l; u -= (k - 1))
+                        f[l][r] = min(f[l][r], f[l][u] + f[u + 1][r]);
+                
+                // 触发合并的情况
+                // 优化 2: ==> 并非所有情况都会触发合并
+                // 需要添加 if 条件
+                if ((len - 1) % (k - 1) == 0)
+                    f[l][r] = f[l][r] + s[r] - s[l - 1];
+            }
+        
+        if (f[1][n] >= INF / 2)
+            return -1;
+        return f[1][n];
+    }
+};
+```
+
+##### **C++ 空间压缩->最终结果**
 
 ```cpp
 class Solution {

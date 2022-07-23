@@ -487,6 +487,90 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 864. 获取所有钥匙的最短路径](https://leetcode.cn/problems/shortest-path-to-get-all-keys/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 结合状压
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 31, M = 1 << 6;
+    struct Node {
+        int x, y, s;
+    };
+
+    int dist[N][N][M];
+    int n, m, S;
+    int dx[4] = {-1, 0, 0, 1}, dy[4] = {0, -1, 1, 0};
+
+    int shortestPathAllKeys(vector<string>& grid) {
+        this->n = grid.size(), this->m = grid[0].size(), this->S = 0;
+        memset(dist, 0x3f, sizeof dist);
+
+        queue<Node> q;
+        for (int i = 0; i < n; ++ i )
+            for (int j = 0; j < m; ++ j )
+                if (grid[i][j] == '@') {
+                    dist[i][j][0] = 0;
+                    q.push({i, j, 0});
+                } else if (grid[i][j] >= 'A' && grid[i][j] <= 'Z')
+                    S ++ ;  // 题目保证是顺序的前 k 个字母
+
+        while (q.size()) {
+            auto [x, y, s] = q.front(); q.pop();
+            int d = dist[x][y][s];
+            if (s == (1 << S) - 1)
+                return d;
+            for (int i = 0; i < 4; ++ i ) {
+                int nx = x + dx[i], ny = y + dy[i], ns = s;
+                if (nx < 0 || nx >= n || ny < 0 || ny >= m || grid[nx][ny] == '#')
+                    continue;
+                char c = grid[nx][ny];
+                if (c >= 'a' && c <= 'z') {
+                    ns |= 1 << c - 'a';
+                    if (dist[nx][ny][ns] > d + 1) {
+                        dist[nx][ny][ns] = d + 1;
+                        q.push({nx, ny, ns});
+                    }
+                } else if (c >= 'A' && c <= 'Z') {
+                    if ((ns & (1 << c - 'A')) && dist[nx][ny][ns] > d + 1) {
+                        dist[nx][ny][ns] = d + 1;
+                        q.push({nx, ny, ns});
+                    }
+                } else if (dist[nx][ny][ns] > d + 1) {
+                    dist[nx][ny][ns] = d + 1;
+                    q.push({nx, ny, ns});
+                }
+            }
+        }
+        return -1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### trick bfs
 
 > [!NOTE] **[LeetCode 675. 为高尔夫比赛砍树](https://leetcode-cn.com/problems/cut-off-trees-for-golf-event/)**

@@ -451,6 +451,8 @@ int main() {
 > **graham 维护凸包 (下凸壳)** 即可
 > 
 > 与 dp 的斜率优化略有不同
+> 
+> **也是单调栈的思想**
 
 <details>
 <summary>详细代码</summary>

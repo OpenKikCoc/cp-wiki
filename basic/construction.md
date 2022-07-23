@@ -1902,3 +1902,54 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 932. 漂亮数组](https://leetcode.cn/problems/beautiful-array/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 推理 递归构造
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 考虑 i 都在左侧，j 都在右侧
+    // 则左侧全放奇数，右侧全放偶数
+    //
+    // 但 k 位置未可知，所以必须递归执行本个构造流程
+
+    vector<int> beautifulArray(int n) {
+        if (n == 1)
+            return {1};
+        auto left = beautifulArray((n + 1) / 2);    // 如果 n 是奇数，左侧用的多一个
+        auto right = beautifulArray(n / 2);
+
+        vector<int> res;
+        for (auto x : left)
+            res.push_back(x * 2 - 1);
+        for (auto x : right)
+            res.push_back(x * 2);
+        return res;
+    }
+};/
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
