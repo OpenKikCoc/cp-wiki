@@ -2186,6 +2186,61 @@ if __name__ == '__main__':
 
 * * *
 
+> [!NOTE] **[LeetCode 879. 盈利计划](https://leetcode.cn/problems/profitable-schemes/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 类似 【潜水员】
+> 
+> 注意状态定义最后一维是 【至少 k】
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 110, MOD = 1e9 + 7;
+
+    int f[N][N];
+
+    int profitableSchemes(int n, int minProfit, vector<int>& group, vector<int>& profit) {
+        memset(f, 0, sizeof f);
+        for (int i = 0; i <= n; ++ i )
+            f[i][0] = 1;
+        
+        // 二维费用背包问题 所有任务(物品)
+        // 类似于 [潜水]
+        for (int i = 0; i < group.size(); ++ i ) {
+            int g = group[i], p = profit[i];
+            // 空间压缩
+            for (int j = n; j >= g; -- j )
+                for (int k = minProfit; k >= 0; -- k )  // ATTENTION 获利下限
+                    f[j][k] = (f[j][k] + f[j - g][max(0, k - p)]) % MOD;
+        }
+        return f[n][minProfit];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[LeetCode 474. 一和零](https://leetcode-cn.com/problems/ones-and-zeroes/)**
 > 
 > 题意: TODO

@@ -1,3 +1,9 @@
+> [!TIP] **数位 DP 两大思想**
+> 
+> - 补集的思想
+> 
+> - `求区间` 变 `区间减` 思想
+
 数位：把一个数字按照个、十、百、千等等一位一位地拆开，关注它每一位上的数字。如果拆的是十进制数，那么每一位数字都是 0~9，其他进制可类比十进制。
 
 数位 DP 特征：
@@ -1156,6 +1162,78 @@ public:
 
 ```cpp
 TODO
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1012. 至少有 1 位重复的数字](https://leetcode.cn/problems/numbers-with-repeated-digits/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 补集思想的应用
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 排列数
+    int P(int a, int b) {
+        int ret = 1;
+        for (int i = a, j = 0; j < b; -- i , ++ j )
+            ret *= i;
+        return ret;
+    }
+
+    // 本题即使用补集的思想, 算不能重复的数的个数
+    int numDupDigitsAtMostN(int n) {
+        int res = n;
+
+        vector<int> nums;
+        while (n)
+            nums.push_back(n % 10), n /= 10;
+        
+        // 1. 枚举较少位数的情况
+        for (int i = 1; i < nums.size(); ++ i )
+            // 首位不能为 0, 后面的每个都和前面的不同
+            res -= 9 * P(9, i - 1);
+        // 2. 枚举相同位数的情况, 但是首位较低, 后续自由选
+        res -= (nums.back() - 1) * P(9, nums.size() - 1);
+
+        // 3. 位数相同, 且首位相同的情况, 后续选择会受限制
+        vector<bool> st(10);    // 前后有关联关系 对于本题来说就是哪个数有没有被用过
+        st[nums.back()] = true;
+        for (int i = nums.size() - 2; i >= 0; -- i ) {
+            int x = nums[i];
+            for (int j = 0; j < x; ++ j )
+                if (!st[j])
+                    // 用过的数 nums.size()-i ==> 没有用过的数 10-(nums.size()-i)
+                    res -= P(10 - (nums.size() - i), i);
+            
+            if (st[x])
+                return res;
+            st[x] = true;
+        }
+        return res - 1;
+    }
+};
 ```
 
 ##### **Python**

@@ -3156,6 +3156,67 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 847. 访问所有节点的最短路径](https://leetcode.cn/problems/shortest-path-visiting-all-nodes/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 一开始在想图论，实际上这个数据范围直接状压枚举再跑 BFS 即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using PII = pair<int, int>;
+    const static int N = 12;
+
+    int f[1 << N][N];
+
+    int shortestPathLength(vector<vector<int>>& graph) {
+        memset(f, 0x3f, sizeof f);
+        int n = graph.size();
+        queue<PII> q;
+        for (int i = 0; i < n; ++ i )
+            f[1 << i][i] = 0, q.push({1 << i, i});
+        
+        while (q.size()) {
+            auto [st, u] = q.front(); q.pop();
+
+            for (auto v : graph[u]) {
+                int nst = st | 1 << v;
+                if (f[nst][v] > f[st][u] + 1) {
+                    f[nst][v] = f[st][u] + 1;
+                    q.push({nst, v});
+                }
+            }
+        }
+        
+        int res = 0x3f3f3f3f;
+        for (int i = 0; i < n; ++ i )
+            res = min(res, f[(1 << n) - 1][i]);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 ### 三进制状压
 
@@ -3711,7 +3772,7 @@ public:
 
 * * *
 
-### 状压 +  记忆化搜索
+### 状压 + 记忆化搜索
 
 > [!NOTE] **[LeetCode 1900. 最佳运动员的比拼回合](https://leetcode-cn.com/problems/the-earliest-and-latest-rounds-where-players-compete/)**
 > 

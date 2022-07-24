@@ -474,3 +474,76 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 850. 矩形面积 II](https://leetcode.cn/problems/rectangle-area-ii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 原来想着二维离散化 + 差分，实际上只离散化一维就够了
+> 
+> **标准扫描线思想**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    using PII = pair<int, int>;
+    const static int MOD = 1e9 + 7;
+    
+    vector<vector<int>> recs;
+
+    LL get(int l, int r) {
+        vector<PII> t;
+        for (auto & rec : recs)
+            if (rec[0] <= l && rec[2] >= r)
+                t.push_back({rec[1], rec[3]});  // 能够占据 [l,r] 完整的一段
+        
+        sort(t.begin(), t.end());
+        LL ret = 0, st = -1, ed = -1;
+        for (auto [d, u] : t)
+            if (d > ed) {
+                ret += ed - st;
+                st = d, ed = u;
+            } else
+                ed = max(ed, (LL)u);
+        ret += ed - st;
+        return ret * (r - l);
+    }
+
+    int rectangleArea(vector<vector<int>>& rectangles) {
+        this->recs = rectangles;
+
+        vector<int> xs; // 原来想着二维离散化 + 差分，实际上只离散化一维就够了
+        for (auto & rec : recs)
+            xs.push_back(rec[0]), xs.push_back(rec[2]);
+        sort(xs.begin(), xs.end());
+        xs.erase(unique(xs.begin(), xs.end()), xs.end());
+
+        LL res = 0;
+        for (int i = 1; i < xs.size(); ++ i )
+            res += get(xs[i - 1], xs[i]);
+        return res % MOD;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

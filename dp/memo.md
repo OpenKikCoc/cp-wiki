@@ -613,7 +613,64 @@ class Solution:
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++**
+##### **C++ 标准暴搜**
+
+```cpp
+class Solution {
+public:
+    const static int N = 14;
+
+    int n, m, res;
+    bool st[N][N];
+
+    bool check(int x, int y, int len) {
+        for (int i = x; i < x + len; ++ i )
+            for (int j = y; j < y + len; ++ j )
+                if (st[i][j])
+                    return false;
+        return true;
+    }
+
+    void fill(int x, int y, int len, bool t) {
+        for (int i = x; i < x + len; ++ i )
+            for (int j = y; j < y + len; ++ j )
+                st[i][j] = t;
+    }
+
+    void dfs(int x, int y, int cnt) {
+        // 1. 最优性剪枝
+        if (cnt >= res)
+            return;
+        // 2. 组合数优化 (将排列数优化为组合数)
+        // 人为定义一个顺序 ==> 每行从左到右去扫描
+        if (y == m)
+            x ++ , y = 0;
+        if (x == n)
+            res = cnt;
+        else {
+            if (st[x][y])
+                dfs(x, y + 1, cnt);
+            // 3. 搜索顺序优化 先搜长的
+            for (int len = min(n - x, m - y); len; -- len )
+                if (check(x, y, len)) {
+                    fill(x, y, len, true);
+                    dfs(x, y + 1, cnt + 1);
+                    fill(x, y, len, false);
+                }
+        }
+    }
+
+    int tilingRectangle(int n, int m) {
+        this->n = n, this->m = m, this->res = n * m;
+        memset(st, 0, sizeof st);
+
+        dfs(0, 0, 0);
+        return res;
+    }
+};
+```
+
+##### **C++ 打表**
 
 ```cpp
 vector<vector<int>> v = {{1},
@@ -641,10 +698,6 @@ int tilingRectangle(int n, int m) {
 ```python
 
 ```
-
-
-
-
 
 <!-- tabs:end -->
 </details>

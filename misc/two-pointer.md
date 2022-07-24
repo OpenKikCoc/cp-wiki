@@ -1964,3 +1964,64 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 992. K 个不同整数的子数组](https://leetcode.cn/problems/subarrays-with-k-different-integers/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 枚举右端点，维护左侧为 `k`, `k-1` 的区间范围
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int subarraysWithKDistinct(vector<int>& nums, int k) {
+        unordered_map<int, int> S1, S2;
+        int res = 0;
+        for (int i = 0, j1 = 0, j2 = 0, c1 = 0, c2 = 0; i < nums.size(); ++ i ) {
+            if (!S1[nums[i]])
+                c1 ++ ;
+            S1[nums[i]] ++ ;
+            while (j1 <= i && c1 > k) {
+                S1[nums[j1]] -- ;
+                if (!S1[nums[j1]])
+                    c1 -- ;
+                j1 ++ ;
+            }
+
+            if (!S2[nums[i]])
+                c2 ++ ;
+            S2[nums[i]] ++ ;
+            while (j2 <= i && c2 >= k) {
+                S2[nums[j2]] -- ;
+                if (!S2[nums[j2]])
+                    c2 -- ;
+                j2 ++ ;
+            }
+
+            res += j2 - j1;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
