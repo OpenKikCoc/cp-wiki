@@ -108,6 +108,8 @@
 
 ## 习题
 
+### 待细分
+
 > [!NOTE] **[LeetCode 667. 优美的排列 II](https://leetcode-cn.com/problems/beautiful-arrangement-ii/)**
 > 
 > 题意: TODO
@@ -393,175 +395,6 @@ int main() {
     
     return 0;
 }
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[LeetCode 2081. k 镜像数字的和](https://leetcode-cn.com/problems/sum-of-k-mirror-numbers/)** [TAG]
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 经典模型：**求k进制下的第n个回文数字**
-> 
-> - 折半搜索缩小至 `sqrt(n)` 规模
-> - 将当前数翻转并追加到当前数后面
-> - 显然形成 `奇/偶` 两种长度情况，根据有序性质推理先生成前者
-> - 规定搜索的范围，`i` 需要在 `[10^k, 10^(k+1)]` 的范围内，使用 `[l, r]` 维护
-> 
-> 显然也可以打表... 略
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-class Solution {
-public:
-    // 基础知识: [求 k 进制下的第 n 个回文数]
-    // 在此基础上加上 10 进制回文的判断，中间累加和即可
-    // 
-    // Knowledge: 1e9里的十进制回文数有109998个
-    using LL = long long;
-    
-    bool check(LL x) {
-        string s = to_string(x);
-        for (int i = 0, j = s.size() - 1; i < j; ++ i , -- j )
-            if (s[i] != s[j])
-                return false;
-        return true;
-    }
-    
-    long long kMirror(int k, int n) {
-        LL res = 0, l = 1;
-        while (n) {
-            LL r = l * k;
-            for (int op = 0; op < 2; ++ op )
-                for (int i = l; i < r && n; ++ i ) {
-                    int x = (op ? i : i / k);   // 生成奇数还是偶数位 0代表奇数
-                    LL conbined = i;
-                    while (x) {
-                        conbined = conbined * k + x % k;
-                        x /= k;
-                    }
-                    // 本题要求 10 进制回文  特殊处理
-                    if (check(conbined) && n) {
-                        res += conbined;
-                        n -- ;
-                    }
-                }
-            l = r;
-        }
-        return res;
-    }
-};
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[LeetCode 2217. 找到指定长度的回文数](https://leetcode-cn.com/problems/find-palindrome-with-fixed-length/)** [TAG]
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 观察 **折半** 构造
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-class Solution {
-public:
-    // 1e15 数据范围较大 观察知当前长度的第k大也即折半后的第k大 故直接折半构造
-    using LL = long long;
-    
-    vector<long long> kthPalindrome(vector<int>& queries, int intLength) {
-        int m = (intLength + 1) / 2;
-        LL base = pow(10, m - 1), upper = base * 9;
-        vector<LL> res;
-        for (auto x : queries)
-            // ATTENTION: base * 9, not base * 10
-            // 因为这里 x 代表第几个，因为首位不可能为 0 ，个数显然无法超过 base * (10 - 1)
-            if (x <= upper) {
-                LL v = base + x - 1;
-                string s = to_string(v);
-                if (intLength & 1) {
-                    int n = s.size();
-                    for (int i = n - 2; i >= 0; -- i )
-                        s.push_back(s[i]);
-                    res.push_back(stoll(s));
-                } else {
-                    int n = s.size();
-                    for (int i = n - 1; i >= 0; -- i )
-                        s.push_back(s[i]);
-                    res.push_back(stoll(s));
-                }
-            } else
-                res.push_back(-1);
-        return res;
-    }
-};
-```
-
-##### **C++ Other**
-
-```cpp
-class Solution {
-public:
-    typedef long long LL;
-    vector<long long> kthPalindrome(vector<int>& q, int len) {
-        vector<LL> res;
-        int md = len + 1 >> 1;
-        LL B = 1;
-        for (int i = 1; i < md; ++i) B *= 10;
-        for (int x : q) {
-            LL t = B + x - 1;
-            if (t >= 10 * B) {
-                res.push_back(-1);
-                continue;
-            }
-            LL y = t;
-            if (len & 1) {
-                y /= 10;
-            }
-            while (y) {
-                t = t * 10 + y % 10;
-                y /= 10;
-            }
-            res.push_back(t);
-        }
-        return res;
-    }
-};
 ```
 
 ##### **Python**
@@ -1662,6 +1495,247 @@ int main() {
 
 * * *
 
+### 回文数构造
+
+> [!NOTE] **[LeetCode 906. 超级回文数](https://leetcode.cn/problems/super-palindromes/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典题
+> 
+> 深入理解 `折半` 构造过程
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+
+    bool check(LL x) {
+        string s = to_string(x);
+        for (int i = 0, j = s.size() - 1; i < j; ++ i , -- j )
+            if (s[i] != s[j])
+                return false;
+        return true;
+    }
+
+    LL getFrontHalfPart(LL x) {
+        string s = to_string(x);
+        s = s.substr(0, s.size() / 2);
+        return s.empty() ? 0 : stoll(s);
+    }
+
+    int superpalindromesInRange(string left, string right) {
+        LL L = stoll(left), R = stoll(right);
+        LL l = sqrt(L), r = sqrt(R), res = 0;
+        for (int op = 0; op < 2; ++ op )
+            // 必须 getFrontHalfPart(l) 而非直接使用 l
+            // - 直接使用 l 显然是错误的，因为会遗漏部分数据
+            // - 直接从 1 开始显然会 TLE
+            for (LL i = getFrontHalfPart(l); i <= r; ++ i ) {
+                LL x = (op ? i : i / 10);  // 先按奇数长度再按偶数长度, 这里进制 k=10
+                LL conbined = i;
+                while (x)
+                    conbined = conbined * 10 + x % 10, x /= 10;
+                if (conbined > r)  // 需要 quick fail
+                    break;
+                LL t = conbined * conbined;
+                if (t >= L && t <= R && check(t))
+                    res ++ ;
+            }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 2081. k 镜像数字的和](https://leetcode-cn.com/problems/sum-of-k-mirror-numbers/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典模型：**求k进制下的第n个回文数字**
+> 
+> - 折半搜索缩小至 `sqrt(n)` 规模
+> - 将当前数翻转并追加到当前数后面
+> - 显然形成 `奇/偶` 两种长度情况，根据有序性质推理先生成前者
+> - 规定搜索的范围，`i` 需要在 `[10^k, 10^(k+1)]` 的范围内，使用 `[l, r]` 维护
+> 
+> 显然也可以打表... 略
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 基础知识: [求 k 进制下的第 n 个回文数]
+    // 在此基础上加上 10 进制回文的判断，中间累加和即可
+    // 
+    // Knowledge: 1e9里的十进制回文数有109998个
+    using LL = long long;
+    
+    bool check(LL x) {
+        string s = to_string(x);
+        for (int i = 0, j = s.size() - 1; i < j; ++ i , -- j )
+            if (s[i] != s[j])
+                return false;
+        return true;
+    }
+    
+    long long kMirror(int k, int n) {
+        LL res = 0, l = 1;
+        while (n) {
+            LL r = l * k;
+            for (int op = 0; op < 2; ++ op )
+                for (int i = l; i < r && n; ++ i ) {
+                    int x = (op ? i : i / k);   // 生成奇数还是偶数位 0代表奇数
+                    LL conbined = i;
+                    while (x) {
+                        conbined = conbined * k + x % k;
+                        x /= k;
+                    }
+                    // 本题要求 10 进制回文  特殊处理
+                    if (check(conbined) && n) {
+                        res += conbined;
+                        n -- ;
+                    }
+                }
+            l = r;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 2217. 找到指定长度的回文数](https://leetcode-cn.com/problems/find-palindrome-with-fixed-length/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 观察 **折半** 构造
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 1e15 数据范围较大 观察知当前长度的第k大也即折半后的第k大 故直接折半构造
+    using LL = long long;
+    
+    vector<long long> kthPalindrome(vector<int>& queries, int intLength) {
+        int m = (intLength + 1) / 2;
+        LL base = pow(10, m - 1), upper = base * 9;
+        vector<LL> res;
+        for (auto x : queries)
+            // ATTENTION: base * 9, not base * 10
+            // 因为这里 x 代表第几个，因为首位不可能为 0 ，个数显然无法超过 base * (10 - 1)
+            if (x <= upper) {
+                LL v = base + x - 1;
+                string s = to_string(v);
+                if (intLength & 1) {
+                    int n = s.size();
+                    for (int i = n - 2; i >= 0; -- i )
+                        s.push_back(s[i]);
+                    res.push_back(stoll(s));
+                } else {
+                    int n = s.size();
+                    for (int i = n - 1; i >= 0; -- i )
+                        s.push_back(s[i]);
+                    res.push_back(stoll(s));
+                }
+            } else
+                res.push_back(-1);
+        return res;
+    }
+};
+```
+
+##### **C++ Other**
+
+```cpp
+class Solution {
+public:
+    typedef long long LL;
+    vector<long long> kthPalindrome(vector<int>& q, int len) {
+        vector<LL> res;
+        int md = len + 1 >> 1;
+        LL B = 1;
+        for (int i = 1; i < md; ++i) B *= 10;
+        for (int x : q) {
+            LL t = B + x - 1;
+            if (t >= 10 * B) {
+                res.push_back(-1);
+                continue;
+            }
+            LL y = t;
+            if (len & 1) {
+                y /= 10;
+            }
+            while (y) {
+                t = t * 10 + y % 10;
+                y /= 10;
+            }
+            res.push_back(t);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 ### 进制数 思想
 

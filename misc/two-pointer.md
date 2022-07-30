@@ -719,6 +719,8 @@ class Solution {
 > [!TIP] **思路**
 > 
 > 想到 **排序双指针** 的 trick 思维
+> 
+> PS: 是 [LeetCode 891. 子序列宽度之和](https://leetcode.cn/problems/sum-of-subsequence-widths/) 的修改版，都要想到先排序
 
 <details>
 <summary>详细代码</summary>

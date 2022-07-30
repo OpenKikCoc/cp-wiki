@@ -5458,6 +5458,86 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 910. 最小差值 II](https://leetcode.cn/problems/smallest-range-ii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 比较简单，显然的思路：考虑相对变化，枚举分界点
+> 
+> - 左侧都 +k
+> 
+> - 右侧都 -k
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int smallestRangeII(vector<int>& nums, int k) {
+        sort(nums.begin(), nums.end());
+        int res = nums.back() - nums[0];
+        for (int i = 0; i + 1 < nums.size(); ++ i ) {
+            int maxv = max(nums[i] + k, nums.back() - k);
+            int minv = min(nums[0] + k, nums[i + 1] - k);
+            res = min(res, maxv - minv);
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 自己**
+
+```cpp
+class Solution {
+public:
+    int smallestRangeII(vector<int>& nums, int k) {
+        int n = nums.size();
+        if (n == 1)
+            return 0;
+
+        sort(nums.begin(), nums.end());
+        multiset<int> s1, s2;
+        s1.insert(nums[0] + 2 * k);
+        for (int i = 1; i < n; ++ i )
+            s2.insert(nums[i]);
+        
+        int res = nums[n - 1] - nums[0];    // ATTENTION 可以全部同时 +/- k
+        for (int i = 1; i < n; ++ i ) {     // 枚举分界的思想
+            vector<int> xs = {*s1.begin(), *s1.rbegin(), *s2.begin(), *s2.rbegin()};
+            int t = -1e9;
+            for (int i = 0; i < 4; ++ i )
+                for (int j = i + 1; j < 4; ++ j )
+                    t = max(t, abs(xs[i] - xs[j]));
+            res = min(res, t);
+            t = *s2.begin();
+            s2.erase(s2.find(t)), s1.insert(t + 2 * k);
+        }
+
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 根据题意简化思维
 
 > [!NOTE] **[Codeforces C. Dima and Staircase](https://codeforces.com/problemset/problem/272/C)**

@@ -638,6 +638,111 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 943. 最短超级串](https://leetcode.cn/problems/find-the-shortest-superstring/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 类似哈密顿路径，**状压枚举 + 记录方案** 即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 13;
+
+    int d[N][N];
+    int f[1 << N][N], g[1 << N][N];
+
+    int get_dis(string & a, string & b) {   // 记录 a 串末尾与 b 串开头的公共长度
+        int m = min(a.size(), b.size());
+        for (int i = m; i >= 1; -- i ) {
+            bool flag = true;
+            for (int j = a.size() - i, k = 0; k < i; ++ j , ++ k )
+                if (a[j] != b[k]) {
+                    flag = false;
+                    break;
+                }
+            if (flag)
+                return i;
+        }
+        return 0;
+    }
+
+    string shortestSuperstring(vector<string>& words) {
+        memset(d, 0x3f, sizeof d);
+        int n = words.size();
+        for (int i = 0; i < n; ++ i )
+            for (int j = 0; j < n; ++ j )
+                if (i != j)
+                    d[i][j] = get_dis(words[i], words[j]);
+                else
+                    d[i][j] = words[i].size();
+        
+        memset(f, 0x3f, sizeof f), memset(g, -1, sizeof g);
+        for (int i = 0; i < n; ++ i )
+            f[1 << i][i] = words[i].size();
+        
+        for (int i = 0; i < 1 << n; ++ i )
+            for (int j = 0; j < n; ++ j )
+                if (i >> j & 1)
+                    for (int k = 0; k < n; ++ k )
+                        if (j != k && i >> k & 1) {
+                            int t = f[i ^ (1 << j)][k] + (int)words[j].size() - d[k][j];
+                            if (f[i][j] > t) {
+                                f[i][j] = t;
+                                g[i][j] = k;
+                            }
+                        }
+        
+        string res;
+        {
+            int p = -1, cap = (1 << n) - 1;
+            for (int i = 0; i < n; ++ i )
+                if (p == -1 || f[cap][p] > f[cap][i])
+                    p = i;
+            // cout << " minv = " << f[cap][p] << endl;
+            
+            vector<int> t;
+            for (int i = cap, j = p; j != -1; ) {
+                // cout << " i = " << i << " j = " << j << endl;
+                t.push_back(j);
+                int tmp = j;    // 这里需要一个临时变量
+                j = g[i][tmp], i = i ^ (1 << tmp);
+            }
+            reverse(t.begin(), t.end());
+
+            for (int i = 0; i < t.size() - 1; ++ i ) {
+                int a = t[i], b = t[i + 1];
+                res += words[a].substr(0, words[a].size() - d[a][b]);
+            }
+            res += words[t.back()];
+        }
+        // cout << " res.size() = " << res.size() << endl;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 递推计算
 
 > [!NOTE] **[AcWing 291. 蒙德里安的梦想](https://www.acwing.com/problem/content/293/)**

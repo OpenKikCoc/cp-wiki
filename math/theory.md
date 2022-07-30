@@ -583,3 +583,82 @@ int main() {
 <br>
 
 * * *
+
+### 有理数
+
+> [!NOTE] **[LeetCode 972. 相等的有理数](https://leetcode.cn/problems/equal-rational-numbers/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 任何一个有理数都可以和一个分数一一对应
+    // 3.5(25) ==> 3/1 + 5/10 + 25/990
+    // 0.(32) ==> 32/99
+
+    using LL = long long;
+
+    class Frac {
+    public:
+        LL x, y;
+        Frac(LL _x, LL _y) {
+            LL t = gcd(_x, _y);
+            x = _x / t, y = _y / t;
+        }
+
+        LL gcd(LL x, LL y) { return y ? gcd(y, x % y) : x; }
+        bool operator == (const Frac & p) const { return x == p.x && y == p.y; }
+        Frac operator + (const Frac & p) const { return Frac(x * p.y + y * p.x, y * p.y); }
+    };
+
+    Frac get(string s) {
+        int n = s.size(), i = 0;
+
+        LL a = 0, b = 0, lb = 1, c = 0, lc = 1;
+
+        while (i < n && s[i] != '.')
+            a = a * 10 + s[i] - '0', i ++ ;
+        i ++ ;  // skip '.'
+
+        while (i < n && s[i] != '(')
+            b = b * 10 + s[i] - '0', lb *= 10, i ++ ;
+        i ++ ;  // skip '('
+
+        while (i < n && s[i] != ')')
+            c = c * 10 + s[i] - '0', lc *= 10, i ++ ;
+        
+        auto ret = Frac(a, 1) + Frac(b, lb);
+        if (lc != 1)    // non-empty
+            ret = ret + Frac(c, (lc - 1) * lb); // ATTENTION: *lb
+        return ret;
+    }
+
+    bool isRationalEqual(string s, string t) {
+        return get(s) == get(t);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

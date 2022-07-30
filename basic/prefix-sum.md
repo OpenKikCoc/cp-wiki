@@ -1106,6 +1106,65 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 1074. 元素和为目标值的子矩阵数量](https://leetcode.cn/problems/number-of-submatrices-that-sum-to-target/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 固定左右边界 随后根据预处理的前缀和计算个数即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 110;
+
+    int n, m;
+    int s[N][N];
+
+    int numSubmatrixSumTarget(vector<vector<int>>& matrix, int target) {
+        this->n = matrix.size(), this->m = matrix[0].size();
+
+        for (int i = 1; i <= n; ++ i )
+            for (int j = 1; j <= m; ++ j )
+                s[i][j] = s[i - 1][j] + s[i][j - 1] - s[i - 1][j - 1] + matrix[i - 1][j - 1];
+        
+        int res = 0;
+        for (int l = 1; l <= n; ++ l )
+            for (int r = l; r <= n; ++ r ) {
+                unordered_map<int, int> hash;
+                hash[0] = 1;
+                for (int k = 1; k <= m; ++ k ) {
+                    int x = s[r][k] - s[l - 1][k];
+                    int y = x - target;
+                    res += hash[y];
+                    hash[x] ++ ;
+                }
+            }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[LeetCode 1139. 最大的以 1 为边界的正方形](https://leetcode-cn.com/problems/largest-1-bordered-square/)**
 > 
 > 题意: TODO
