@@ -2084,6 +2084,58 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 1049. 最后一块石头的重量 II](https://leetcode.cn/problems/last-stone-weight-ii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 模型转换：最终的值一定可以表示为 [在所有的数字前面加正负号] 的结果
+> 
+> 假定负数部分总和为 $x$ 则正数部分为 $s-x$, 最终结果为 $s-2*x$ [思考数值大小关系]
+> 
+> 考虑 $0-1$ 背包求负数的最大总和 [不能超过 $s/2$]
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public: 
+    const static int N = 1510;
+
+    int f[N];
+
+    int lastStoneWeightII(vector<int>& stones) {
+        int sum = accumulate(stones.begin(), stones.end(), 0);
+        int m = sum / 2;
+        memset(f, 0, sizeof f);
+
+        for (auto x : stones)
+            for (int j = m; j >= x; -- j )
+                f[j] = max(f[j], f[j - x] + x);
+        
+        return sum - f[m] * 2;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 二维背包
 
 > [!NOTE] **[AcWing 1020. 潜水员](https://www.acwing.com/problem/content/description/1022/)**

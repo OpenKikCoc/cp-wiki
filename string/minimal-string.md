@@ -230,6 +230,64 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 899. 有序队列](https://leetcode.cn/problems/orderly-queue/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 简单推导，显然在 `k = 1` 时是最小表示法
+> 
+> 其他情况都可以直接搞成全局最小 `sorting`
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    string orderlyQueue(string s, int k) {
+        if (k == 1) {
+            int i = 0, j = 1, n = s.size();
+            s = s + s;
+            while (i < n && j < n) {
+                int k = 0;
+                while (k < n && s[i + k] == s[j + k])
+                    k ++ ;
+                if (k == n)
+                    break;
+                if (s[i + k] > s[j + k])
+                    i += k + 1;
+                else
+                    j += k + 1;
+                if (i == j)
+                    j ++ ;
+            }
+            int k = min(i, j);
+            return s.substr(k, n);
+        }
+        sort(s.begin(), s.end());
+        return s;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 最大表示法
 
 > [!NOTE] **[LeetCode 1163. 按字典序排在最后的子串](https://leetcode-cn.com/problems/last-substring-in-lexicographical-order/)**

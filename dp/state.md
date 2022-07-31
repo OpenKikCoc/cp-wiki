@@ -4416,6 +4416,56 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 982. 按位与为零的三元组](https://leetcode.cn/problems/triples-with-bitwise-and-equal-to-zero/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 一开始想的是按值去重分类，然后预处理当前值会对那些集合产生影响。需要考虑去重等非常繁琐。
+> 
+> 放弃，其实根据数据范围可以直接两两与
+> 
+> **类似 meet in the middle** 的思想
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int countTriplets(vector<int>& nums) {
+        int n = nums.size();
+        unordered_map<int, int> hash;
+        for (int i = 0; i < n; ++ i )
+            for (int j = 0; j < n; ++ j )
+                hash[nums[i] & nums[j]] ++ ;
+        int res = 0;
+        for (int i = 0; i < n; ++ i )
+            for (int j = 0; j < 1 << 16; ++ j )
+                if (!(j & nums[i]))
+                    res += hash[j];
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### bitset
 
 > [!NOTE] **[Luogu 砝码称重](https://www.luogu.com.cn/problem/P1441)**

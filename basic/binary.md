@@ -2153,6 +2153,71 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 774. 最小化去加油站的最大距离](https://leetcode.cn/problems/minimize-max-distance-to-gas-station/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 浮点数二分
+> 
+> 细节：注意 `floor` 取值
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int n, k;
+    vector<int> sts;
+
+    bool check(double m) {
+        int c = 0;
+        for (int i = 1; i < n; ++ i ) {
+            int d = sts[i] - sts[i - 1];
+            int t = floor(double(d) / m - 1e-8);
+            c += t;
+            if (c > k)
+                return false;
+        }
+        return true;
+    }
+
+    double minmaxGasDist(vector<int>& stations, int k) {
+        this->sts = stations, this->k = k, this->n = sts.size();
+        double l = 0, r = 0;
+        for (int i = 1; i < n; ++ i )
+            r = max(r, (double)(sts[i] - sts[i - 1]));
+        
+        while (fabs(r - l) > 1e-8) {
+            double m = (l + r) / 2.0;
+            if (check(m))
+                r = m;
+            else
+                l = m;
+        }
+        return l;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 二分套二分
 
 > [!NOTE] **[LeetCode 2040. 两个有序数组的第 K 小乘积](https://leetcode-cn.com/problems/kth-smallest-product-of-two-sorted-arrays/)** [TAG]

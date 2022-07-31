@@ -746,6 +746,59 @@ public:
  */
 ```
 
+##### **Go**
+
+```go
+type RandomizedSet struct {
+	hash  map[int]int
+	nums  []int
+	count int
+}
+
+func Constructor() RandomizedSet {
+	return RandomizedSet{
+		hash:  make(map[int]int, 0),
+		nums:  make([]int, 0),
+		count: 0,
+	}
+}
+
+func (this *RandomizedSet) Insert(val int) bool {
+	if _, ok := this.hash[val]; !ok {
+		this.nums = append(this.nums, val)
+		this.hash[val] = this.count
+		this.count++
+		return true
+	}
+	return false
+}
+
+func (this *RandomizedSet) Remove(val int) bool {
+	if px, ok := this.hash[val]; ok {
+		this.count--
+		y := this.nums[this.count]
+		py := this.hash[y]
+		this.nums[px], this.hash[y] = this.nums[py], px
+		delete(this.hash, val)
+		this.nums = this.nums[:this.count]
+		return true
+	}
+	return false
+}
+
+func (this *RandomizedSet) GetRandom() int {
+	return this.nums[rand.Intn(this.count)]
+}
+
+/**
+ * Your RandomizedSet object will be instantiated and called as such:
+ * obj := Constructor();
+ * param_1 := obj.Insert(val);
+ * param_2 := obj.Remove(val);
+ * param_3 := obj.GetRandom();
+ */
+```
+
 ##### **Python**
 
 ```python

@@ -2669,6 +2669,54 @@ public:
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
+##### **C++ yxc 线性优化**
+
+```cpp
+const static int N = 510;
+
+int s[N], f[N][N];
+
+class Solution {
+public:
+    int get(int l, int r) {
+        return s[r] - s[l - 1];
+    }
+
+    int stoneGameV(vector<int>& stoneValue) {
+        memset(s, 0, sizeof s);
+        int n = stoneValue.size();
+        for (int i = 1; i <= n; ++ i )
+            s[i] = s[i - 1] + stoneValue[i - 1];
+        
+        memset(f, 0, sizeof f);
+        for (int len = 2; len <= n; ++ len )
+            for (int l = 1; l + len - 1 <= n; ++ l ) {
+                int r = l + len - 1;
+                int s = get(l, r), k = l, p = stoneValue[l - 1];
+
+                int t = 0;
+                while (p < s - p) {
+                    if (t < p + f[l][k])
+                        t = p + f[l][k];
+                    p += stoneValue[k ++ ];
+                }
+                if (p == s - p) {
+                    if (t < p + max(f[l][k], f[k + 1][r]))
+                        t = p + max(f[l][k], f[k + 1][r]);
+                    p += stoneValue[k ++ ];
+                }
+                while (k < r) {
+                    if (t < s - p + f[k + 1][r])
+                        t = s - p + f[k + 1][r];
+                    p += stoneValue[k ++ ];
+                }
+                f[l][r] = t;
+            }
+        return f[1][n];
+    }
+};
+```
+
 ##### **C++ TLE**
 
 ```cpp
