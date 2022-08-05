@@ -2027,3 +2027,63 @@ public:
 <br>
 
 * * *
+
+### 优雅的双指针实现
+
+> [!NOTE] **[LeetCode 2332. 坐上公交的最晚时间](https://leetcode.cn/problems/the-latest-time-to-catch-a-bus/) [TAG]**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 非常有意思的模拟
+> 
+> **优雅的双指针实现**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int latestTimeCatchTheBus(vector<int>& b, vector<int>& p, int cap) {
+        sort(b.begin(), b.end()); sort(p.begin(), p.end());
+        int n = b.size(), m = p.size();
+        
+        int j = 0, c = 0;   // ATTENTION: 置于外部的细节
+        for (int i = 0; i < n; ++ i ) {
+            c = cap;        // ATTENTION: 使用外部变量
+            while (j < m && p[j] <= b[i] && c)
+                j ++ , c -- ;
+        }
+        j -- ;
+        
+        int res;
+        if (c)  // 车装不满所有人 则可以直接从最后一个车的发车时间开始往前
+            res = b.back();
+        else    // 否则在最后一个可以上车的人的时间往前
+            res = p[j];     // 注意这里直接赋值 p[j] 而不是 p[j]-1 是为了后面 while 好写
+        
+        while (j >= 0 && p[j] == res)
+            res -- , j -- ;
+        
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

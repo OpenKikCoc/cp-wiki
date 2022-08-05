@@ -1520,6 +1520,8 @@ public:
 > 考虑：必然存在一个阈值 T 使得结束后所有颜色球个数 x <= T。
 > 
 > 故二分先查找 T，随后统计即可
+> 
+> **贪心做法 细节很多**
 
 <details>
 <summary>详细代码</summary>
@@ -1554,6 +1556,178 @@ public:
                 orders -= cnt;
             }
         (res += LL(orders) * (l - 1) % mod) %= mod;
+        return res;
+    }
+};
+```
+
+##### **C++ 贪心 TODO**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int MOD = 1e9 + 7;
+
+    LL qpow(LL a, LL b) {
+        LL ret = 1;
+        while (b) {
+            if (b & 1)
+                ret = ret * a % MOD;
+            a = a * a % MOD;
+            b >>= 1;
+        }
+        return ret;
+    }
+
+    int maxProfit(vector<int>& inventory, int orders) {
+        int n = inventory.size();
+
+        LL res = 0, sum = 0, inver = qpow(2, MOD - 2);
+        for (auto x : inventory)
+            res = (res + (LL)x * (x + 1) % MOD * inver % MOD) % MOD, sum += x;
+        
+        if (sum <= orders)
+            return res;
+
+        inventory.push_back(0); // 哨兵节点
+        sort(inventory.begin(), inventory.end(), greater<int>());
+
+        LL tot = res, k = orders;
+        for (int i = 0; ; ++ i ) {
+            LL x = inventory[i], cost = (LL)(inventory[i] - inventory[i + 1]) * (i + 1);
+            tot = tot - x * (x + 1) % MOD * inver % MOD;
+            if (cost <= k) {
+                k -= cost;
+                continue;
+            }
+            x -= k / (i + 1);
+            LL a = k % (i + 1), b = i + 1 - a;
+            tot = (tot + a * (x - 1 + 1) % MOD * (x - 1) % MOD * inver % MOD + b * (x + 1) % MOD * x % MOD * inver % MOD) % MOD;
+            break;
+        }
+        return (res - tot + MOD) % MOD;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 2333. 最小差值平方和](https://leetcode.cn/problems/minimum-sum-of-squared-difference/) [TAG]**
+> 
+> 题意: 
+> 
+> 同 [LeetCode 1648. 销售价值减少的颜色球](https://leetcode-cn.com/problems/sell-diminishing-valued-colored-balls/) 稍作修改
+
+> [!TIP] **思路**
+> 
+> - **二分**
+> 
+> - **贪心维护**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 二分**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    
+    long long minSumSquareDiff(vector<int>& nums1, vector<int>& nums2, int k1, int k2) {
+        int n = nums1.size(), k = k1 + k2;
+        vector<LL> d(n);
+        for (int i = 0; i < n; ++ i )
+            d[i] = abs(nums1[i] - nums2[i]);
+        
+        int l = 0, r = 1e9; // ATTENTION r
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+            LL s = 0;
+            for (auto x : d)
+                if (x >= mid)
+                    s += x - mid;
+            if (s > k)
+                l = mid + 1;
+            else
+                r = mid;
+        }
+        
+        // 当前的 l 能够实现不超过 k 的消耗
+        if (!l)
+            return 0;   // needed
+        
+        LL res = 0, tot = k;
+        for (auto x : d)
+            if (x >= l)
+                tot -= x - l;
+        // tot 为剩余
+        
+        for (auto x : d)
+            if (x >= l) {
+                // 较大的部分看能减多少
+                LL t = l - min(1ll, max(0ll, tot -- )); // ATTENTION: trick 写法
+                res += t * t; 
+            } else
+                // 较小的部分直接加
+                res += x * x;
+        
+        return res;
+    }
+};
+```
+
+##### **C++ 贪心**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    
+    long long minSumSquareDiff(vector<int>& nums1, vector<int>& nums2, int k1, int k2) {
+        int n = nums1.size(), k = k1 + k2;
+        vector<LL> d(n);
+        for (int i = 0; i < n; ++ i )
+            d[i] = abs(nums1[i] - nums2[i]);
+        
+        LL res = 0, sum = 0;
+        for (int i = 0; i < n; ++ i )
+            sum += d[i], res += d[i] * d[i];
+        
+        d.push_back(0); // 哨兵
+        sort(d.begin(), d.end(), greater<int>());   // 从大到小排序
+        
+        if (sum <= k)
+            return 0;   // needed 否则后面 for-loop 会越界
+        
+        // 从前往后削峰，看能削多少
+        for (int i = 0; ; ++ i ) {
+            LL x = d[i], cost = (d[i] - d[i + 1]) * (i + 1);
+            res -= x * x;
+            if (cost <= k) {
+                k -= cost;
+                continue;
+            }
+            x -= k / (i + 1); // 大一的数值
+            // ATTENTION: 细节计算
+            LL a = k % (i + 1), b = i + 1 - a;
+            res += a * (x - 1) * (x - 1) + b * x * x;
+            break;
+        }
+        
         return res;
     }
 };

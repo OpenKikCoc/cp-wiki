@@ -2826,6 +2826,118 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 2334. 元素值大于变化阈值的子数组](https://leetcode.cn/problems/subarray-with-elements-greater-than-varying-threshold/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> - 较显然的有单调栈做法
+> 
+> - **另有并查集思录**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 单调栈**
+
+```cpp
+class Solution {
+public:
+    int validSubarraySize(vector<int>& nums, int threshold) {
+        int n = nums.size();
+        vector<int> l(n, -1), r(n, n);
+        stack<int> st;
+        // 考虑某一个区间，受该区间内最小的值影响
+        // 那么去找某个位置作为最小的值可以延伸的左右边界
+        {
+            for (int i = n - 1; i >= 0; -- i ) {
+                while (st.size() && nums[st.top()] > nums[i]) {
+                    l[st.top()] = i;
+                    st.pop();
+                }
+                st.push(i);
+            }
+            while (st.size())
+                st.pop();
+        }
+        {
+            for (int i = 0; i < n; ++ i ) {
+                while (st.size() && nums[st.top()] > nums[i]) {
+                    r[st.top()] = i;
+                    st.pop();
+                }
+                st.push(i);
+            }
+            while (st.size())
+                st.pop();
+        }
+        
+        for (int i = 0; i < n; ++ i ) {
+            int lx = l[i], rx = r[i];
+            int k = rx - lx - 1;
+            if (nums[i] > threshold / k)
+                return k;
+        }
+        return -1;
+    }
+};
+```
+
+##### **C++ 并查集 思维**
+
+```cpp
+class Solution {
+public:
+    using PII = pair<int, int>;
+    const static int N = 1e5 + 10;
+    
+    int fa[N], sz[N];
+    void init() {
+        for (int i = 0; i < N; ++ i )
+            fa[i] = i, sz[i] = 1;
+    }
+    int find(int x) {
+        if (fa[x] != x)
+            fa[x] = find(fa[x]);
+        return fa[x];
+    }
+    
+    int validSubarraySize(vector<int>& nums, int threshold) {
+        init();
+        
+        vector<PII> xs;
+        int n = nums.size();
+        for (int i = 0; i < n; ++ i )
+            xs.push_back({nums[i], i});
+        
+        sort(xs.begin(), xs.end());
+        // ATTENTION: 思维 从大到小去逐个合并
+        for (int i = n - 1; i >= 0; -- i ) {
+            int pi = xs[i].second, pj = find(pi + 1);   // ATTENTION 细节
+            fa[pi] = pj;
+            sz[pj] += sz[pi];
+            if (xs[i].first > threshold / (sz[pj] - 1)) // -1 cause we link n-th when i=n-1
+                return sz[pj] - 1;
+        }
+        return -1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 ### 并查集的抽象进阶
 
