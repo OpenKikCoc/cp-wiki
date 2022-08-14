@@ -352,8 +352,10 @@ int main() {
 > [!TIP] **思路**
 > 
 > $$
-> C_{a}^{b} = a! / ((a - b)! b!)
->   fact[i] = i! mod 1e9+7
+> C_{a}^{b} = a! / ((a - b)! b!) \\
+> 
+> fact[i] = i! mod 1e9+7 \\
+> 
 > infacr[i] = (i!)^-1 mod 1e9+7
 > $$
 > 
@@ -435,6 +437,7 @@ int main() {
 > 时间复杂度 接近 10^18 -> 4*10^7   $PlogNlogP$
 >
 > 基于：
+> 
 >    $$ [C_{a}^{b}] = [C_{a\bmod p}^{b\bmod p}] * [C_{a/p}^{b/p}]  (\bmod p)$$
 
 <details>
@@ -824,6 +827,47 @@ int main() {
 <details>
 <summary>详细代码</summary>
 <!-- tabs:start -->
+
+##### **C++ yxc 标准**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 1e3 + 10, MOD = 1e9 + 7;
+
+    int C[N][N];
+    void init() {
+        for (int i = 0; i < N; ++ i )
+            for (int j = 0; j <= i; ++ j )
+                if (!j)
+                    C[i][j] = 1;
+                else
+                    C[i][j] = (C[i - 1][j] + C[i - 1][j - 1]) % MOD;
+    }
+
+    int f(vector<int> nums) {
+        if (nums.empty())
+            return 1;
+        int n = nums.size(), k = nums[0];
+        vector<int> l, r;
+        // 排列 不会有多个等于 k 的数
+        for (auto x : nums)
+            if (x < k)
+                l.push_back(x);
+            else if (x > k)
+                // ATTENTION: 必须进行下标转移的映射
+                r.push_back(x - k);
+        return (LL)C[n - 1][k - 1] * f(l) % MOD * f(r) % MOD;
+    }
+
+    int numOfWays(vector<int>& nums) {
+        init();
+        // 减去最初的一种方案
+        return (f(nums) - 1 + MOD) % MOD;
+    }
+};
+```
 
 ##### **C++**
 
