@@ -5538,6 +5538,57 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2350. 不可能得到的最短骰子序列](https://leetcode.cn/problems/shortest-impossible-sequence-of-rolls/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> trick
+> 
+> 考虑一个包含了所有 k 种数的周期
+> 
+> 则每形成一个完整的周期，可以表示的长度 +1
+> 
+> ==> 思考 推导
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int shortestSequence(vector<int>& rolls, int k) {
+        unordered_set<int> S;
+        int res = 0;
+        for (auto x : rolls) {
+            S.insert(x);
+            if (S.size() == k) {
+                S.clear();
+                res ++ ;    // ATTENTION
+            }
+        }
+        return res + 1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 根据题意简化思维
 
 > [!NOTE] **[Codeforces C. Dima and Staircase](https://codeforces.com/problemset/problem/272/C)**
