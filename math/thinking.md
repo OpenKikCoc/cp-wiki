@@ -2575,3 +2575,68 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2354. 优质数对的数目](https://leetcode.cn/problems/number-of-excellent-pairs/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 较显然的，`x or y` + `x and y` 的 1 的数量和即为其各自的 1 的数量的和
+> 
+> 为什么不需要考虑去重？==> 因为:
+> 
+> > **注意：**如果 `num1` 在数组中至少出现 **一次** ，则满足 `num1 == num2` 的数对 `(num1, num2)` 也可以是优质数对。
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    using PII = pair<int, int>;
+    const static int N = 1e5 + 10, M = 62;
+    
+    
+    vector<PII> xs[M];
+    int c[M], s[M];
+    
+    long long countExcellentPairs(vector<int>& nums, int k) {
+        {
+            memset(c, 0, sizeof c), memset(s, 0, sizeof s);
+            sort(nums.begin(), nums.end());
+            nums.erase(unique(nums.begin(), nums.end()), nums.end());
+            for (auto x : nums)
+                c[__builtin_popcount(x)] ++ ;
+            for (int i = 60; i >= 0; -- i )
+                s[i] = s[i + 1] + c[i];
+        }
+        
+        LL res = 0;
+        for (int i = 0; i < M; ++ i ) {
+            int need = k - i;
+            res += (LL)c[i] * (LL)s[max(0, need)];
+            // ATTENTION: 为什么不需要在 res -= (相同值的数目?)
+            // 相同时 res += c[i] * (c[i] - 1) + c[i];
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

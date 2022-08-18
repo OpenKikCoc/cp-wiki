@@ -557,6 +557,8 @@ def pre():
 
 ## 习题
 
+### 一般筛法
+
 > [!NOTE] **[LeetCode 1390. 四因数](https://leetcode-cn.com/problems/four-divisors/)**
 > 
 > 题意: 
@@ -919,6 +921,245 @@ int main() {
         printf("%d\n", s[r] - s[l]);
     }
 
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1292. 哥德巴赫猜想](https://www.acwing.com/problem/content/1294/)**
+> 
+> 题意: 
+> 
+> 哥德巴赫猜想的内容如下：
+> 
+> 任意一个大于 4 的偶数都可以拆成两个奇素数之和。
+> 
+> 验证所有小于一百万的偶数能否满足哥德巴赫猜想
+
+> [!TIP] **思路**
+> 
+> 素数筛
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 1000010;
+
+int primes[N], cnt;
+bool st[N];
+
+void init(int n) {
+    for (int i = 2; i <= n; ++ i ) {
+        if (!st[i]) primes[cnt ++ ] = i;
+        for (int j = 0; primes[j] <= n / i; ++ j ) {
+            st[primes[j] * i] = true;
+            if (i % primes[j] == 0) break;
+        }
+    }
+}
+
+int main() {
+    init(N - 1);
+    
+    int n;
+    while (cin >> n, n) {
+        for (int i = 1; ; ++ i ) {
+            int a = primes[i];
+            int b = n - a;
+            if (!st[b]) {
+                printf("%d = %d + %d\n", n, a, b);
+                break;
+            }
+        }
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1293. 夏洛克和他的女朋友](https://www.acwing.com/problem/content/1295/)**
+> 
+> 题意: 
+> 
+> 给这些珠宝染色，使得一件珠宝的价格是另一件珠宝的价格的质因子时，两件珠宝的颜色不同
+
+> [!TIP] **思路**
+> 
+> 所有质数染成一个色 1 即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// 所有质数染成一个色1即可
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 100010;
+
+int primes[N], cnt;
+bool st[N];
+
+void init(int n) {
+    for (int i = 2; i <= n; ++ i ) {
+        if (!st[i]) primes[cnt ++ ] = i;
+        for (int j = 0; primes[j] <= n / i; ++ j ) {
+            st[primes[j] * i] = true;
+            if (i % primes[j] == 0) break;
+        }
+    }
+}
+
+int main() {
+    int n;
+    cin >> n;
+    
+    init(n + 1);
+    
+    if (n <= 2) cout << 1 << endl;
+    else cout << 2 << endl;
+    
+    for (int i = 2; i <= n + 1; ++ i )
+        if (!st[i]) cout << "1 ";
+        else cout << "2 ";
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 区间筛
+
+> [!NOTE] **[AcWing 196. 质数距离](https://www.acwing.com/problem/content/198/)** [TAG]
+> 
+> 题意: 
+> 
+> 在闭区间 `[L,U]` 内找到距离最接近的两个相邻质数 `C1` 和 `C2`
+
+> [!TIP] **思路**
+> 
+> 区间范围给定的最大值是 `2^31 - 1` 
+> 
+> 1. 若一个数 `n` 是一个合数，其每一对因子中必然存在一个较小的因子且小于 `√ n` 的因子；
+> 
+> 2.  若 `x` 属于 `[L, R]` 且是合数，则一定存在 `P <= √ 2^31 - 1  (P <= 50000) ` 使得 `P` 能够整除 `X` ，其中 `P < x` 。
+> 
+> 故
+> 
+> 1. 先找出 50000 以内的所有质因子；
+> 
+> 2. 对于每个质数 `P` ，将 `[L, R]` 中所有 `P` 的倍数筛掉 (至少2倍)。
+> 
+>    找到大于等于 `L` 的最小的 `P` 的倍数 `P0` ，找下一个倍数时只需要 `+= P` 即可。
+> 
+> >  分数的向上取整： `[ L / P ]` 向上取整 `=`  `(l + p - 1) / p`
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+const int N = 1000010;  // lr差值
+
+int primes[N], cnt;
+bool st[N];
+
+void init(int n) {
+    memset(st, 0, sizeof st);
+    cnt = 0;
+    for (int i = 2; i <= n; ++ i ) {
+        if (!st[i]) primes[cnt ++ ] = i;
+        for (int j = 0; primes[j] <= n / i; ++ j ) {
+            st[primes[j] * i] = true;
+            if (i % primes[j] == 0) break;
+        }
+    }
+}
+
+int main() {
+    int l, r;
+    while (cin >> l >> r) {
+        init(50000);
+        
+        memset(st, 0, sizeof st);
+        for (int i = 0; i < cnt; ++ i ) {
+            LL p = primes[i];
+            for (LL j = max(p * 2, (l + p - 1) / p * p); j <= r; j += p)
+                st[j - l] = true;
+        }
+        
+        cnt = 0;
+        for (int i = 0; i <= r - l; ++ i )
+            if (!st[i] && i + l >= 2)
+                primes[cnt ++ ] = i + l;
+        
+        if (cnt < 2) cout << "There are no adjacent primes." << endl;
+        else {
+            int minp = 0, maxp = 0;
+            for (int i = 0; i + 1 < cnt; ++ i ) {
+                int d = primes[i + 1] - primes[i];
+                if (d < primes[minp + 1] - primes[minp]) minp = i;
+                if (d > primes[maxp + 1] - primes[maxp]) maxp = i;
+            }
+            
+            printf("%d,%d are closest, %d,%d are most distant.\n",
+                primes[minp], primes[minp + 1],
+                primes[maxp], primes[maxp + 1]);
+        }
+        
+    }
     return 0;
 }
 ```

@@ -473,3 +473,160 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[AcWing 201. 可见的点](https://www.acwing.com/problem/content/203/)**
+> 
+> 题意: 
+> 
+> 给定整数 $N$ 的情况下，满足 $0≤x, y≤N$ 的可见点 $(x,y)$ 的数量（可见点不包括原点）
+> 
+> 视线起始点为原点
+
+> [!TIP] **思路**
+> 
+> 筛法
+> 
+> TODO 细看
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 1010;
+
+int primes[N], cnt;
+bool st[N];
+int phi[N];
+
+void init(int n) {
+    // 注意处理1的情况
+    phi[1] = 1;
+    for (int i = 2; i <= n; ++ i ) {
+        if (!st[i]) primes[cnt ++ ] = i, phi[i] = i - 1;
+        for (int j = 0; primes[j] <= n / i; ++ j ) {
+            int t = primes[j] * i;
+            st[t] = true;
+            if (i % primes[j] == 0) {
+                phi[t] = phi[i] * primes[j];
+                break;
+            }
+            phi[t] = phi[i] * (primes[j] - 1);
+        }
+    }
+}
+
+int main() {
+    init(N - 1);
+    
+    int n, m;
+    cin >> m;
+    for (int T = 1; T <= m; ++ T ) {
+        cin >> n;
+        int res = 1;
+        for (int i = 1; i <= n; ++ i ) res += phi[i] * 2;
+        cout << T << ' ' << n << ' ' << res << endl;
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 220. 最大公约数](https://www.acwing.com/problem/content/222/)**
+> 
+> 题意: 
+> 
+> 求 $1<=x,y<=N$ 且 $GCD(x,y)$ 为素数的数对 $(x,y)$ 有多少对
+
+> [!TIP] **思路**
+> 
+> 枚举每一个质数 $p$
+> 
+> 统计其 $(x, y) = p$ 等价于统计 $(\frac{x}{p}, \frac{y}{p}) = 1$ 的个数
+> 
+> 也即对于每一个 $\frac{y}{p}$ 统计其欧拉函数
+> 
+> TODO: 重复
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+const int N = 1e7 + 10;
+
+int primes[N], cnt;
+bool st[N];
+int phi[N];
+LL s[N];
+
+void init(int n) {
+    // 1的时候特殊 只有0个而非phi(1)个 所以特殊处理phi[1] = 0
+    for (int i = 2; i <= n; ++ i ) {
+        if (!st[i]) primes[cnt ++ ] = i, phi[i] = i - 1;
+        for (int j = 0; primes[j] <= n / i; ++ j ) {
+            int t = primes[j] * i;
+            st[t] = true;
+            if (i % primes[j] == 0) {
+                phi[t] = phi[i] * primes[j];
+                break;
+            }
+            phi[t] = phi[i] * (primes[j] - 1);
+        }
+    }
+    for (int i = 1; i <= n; ++ i )
+        s[i] = s[i - 1] + phi[i];
+}
+
+int main() {
+    int n;
+    cin >> n;
+    init(n);
+    
+    LL res = 0;
+    for (int i = 0; i < cnt; ++ i ) {
+        // 1~n/p范围内 且互质 与上题相同
+        int p = primes[i];
+        res += s[n / p] * 2 + 1;
+    }
+    cout << res << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

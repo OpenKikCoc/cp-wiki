@@ -1182,3 +1182,103 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2360. 图中的最长环](https://leetcode.cn/problems/longest-cycle-in-a-graph/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 题目约束：每个节点 **至多** 有一条出边。
+> 
+> 直接 tarjan 找最大的分量即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 1e5 + 10, M = N;
+    
+    int h[N], e[M], ne[M], idx;
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+    }
+    void add(int a, int b) {
+        e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    int n;
+    
+    int dfn[N], low[N], timestamp;
+    int stk[N], top;
+    bool in_stk[N];
+    int scc_cnt, sz[N];
+    
+    void tarjan(int u) {
+        dfn[u] = low[u] = ++ timestamp;
+        stk[ ++ top] = u, in_stk[u] = true;
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (!dfn[j]) {
+                tarjan(j);
+                low[u] = min(low[u], low[j]);
+            } else if (in_stk[j])
+                low[u] = min(low[u], dfn[j]);
+        }
+        if (dfn[u] == low[u]) {
+            ++ scc_cnt;
+            int y;
+            do {
+                y = stk[top -- ];
+                in_stk[y] = false;
+                sz[scc_cnt] ++ ;
+            } while (y != u);
+        }
+    }
+    
+    int longestCycle(vector<int>& edges) {
+        init();
+        this->n = edges.size();
+        for (int i = 0; i < n; ++ i )
+            if (edges[i] != -1)
+                add(i, edges[i]);
+        /* 可以省略
+        {
+            memset(dfn, 0, sizeof dfn), memset(low, 0, sizeof low);
+            timestamp = 0;
+            top = 0;
+            memset(in_stk, 0, sizeof in_stk);
+            memset(sz, 0, sizeof sz);
+            scc_cnt = 0;
+        }
+        */
+        for (int i = 0; i < n; ++ i )
+            if (!dfn[i])
+                tarjan(i);
+        
+        int res = -1;
+        for (int i = 1; i <= scc_cnt; ++ i )
+            res = max(res, sz[i] > 1 ? sz[i] : -1);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

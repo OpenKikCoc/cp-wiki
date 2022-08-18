@@ -599,3 +599,128 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[AcWing 1289. 序列的第k个数](https://www.acwing.com/problem/content/1291/)**
+> 
+> 题意: 
+> 
+> 给你 **整数** 序列的前三项，这个序列要么是等差序列，要么是等比序列
+> 
+> 求出第 *k* 项的值
+
+> [!TIP] **思路**
+> 
+> 快速幂求逆元即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+const int mod = 200907;
+
+int qmi(int a, int k) {
+    int res = 1;
+    while (k) {
+        if (k & 1) res = (LL)res * a % mod;
+        a = (LL)a * a % mod;
+        k >>= 1;
+    }
+    return res;
+}
+
+int main() {
+    int n;
+    cin >> n;
+    while (n -- ) {
+        int a, b, c, k;
+        cin >> a >> b >> c >> k;
+        if (a + c == b * 2) cout << (a + (b - a) * (LL)(k - 1)) % mod << endl;
+        else cout << (LL)a * qmi(b / a, k - 1) % mod << endl;
+    }
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1290. 越狱](https://www.acwing.com/problem/content/1292/)**
+> 
+> 题意: 
+> 
+> $n$ 个房间每个有个凡人，共 $m$ 种宗教。
+> 
+> 如果相邻房间的犯人信仰的宗教相同，就可能发生越狱。
+> 
+> 求有多少种状态可能发生越狱。
+
+> [!TIP] **思路**
+> 
+> 结合容斥原理
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+/*
+直接求不好求 所以用容斥原理
+总方案数 m^n 不发生越狱的方案是m*(m-1)^n-1
+*/
+#include<bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+const int mod = 100003;
+
+int qmi(int a, LL k) {
+    int res = 1;
+    while (k) {
+        if (k & 1) res = (LL)res * a % mod;
+        a = (LL)a * a % mod;
+        k >>= 1;
+    }
+    return res;
+}
+
+int main() {
+    int m;
+    LL n;
+    cin >> m >> n;
+    cout << (qmi(m, n) - (LL)m * qmi(m - 1, n - 1) % mod + mod) % mod << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

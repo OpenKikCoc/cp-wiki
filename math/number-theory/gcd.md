@@ -410,6 +410,457 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 650. 只有两个键的键盘](https://leetcode-cn.com/problems/2-keys-keyboard/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 约数做法
+    // [122...22] [122....22] ... 操作分解
+    // n = p1 * p2 * ... * pn 
+    // res = p1 + p2 + ... + pn
+    int minSteps(int n) {
+        int res = 0;
+        for (int i = 2; i <= n / i; ++ i )
+            while (n % i == 0)
+                res += i, n /= i;
+        if (n > 1) res += n;
+        return res;
+    }
+};
+```
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int minSteps(int n) {
+        vector<int> f(n + 1, INT_MAX);
+        f[1] = 0;
+        for (int i = 2; i <= n; ++ i )
+            if (n % i == 0)
+                // 枚举约数
+                for (int j = 1; j * j <= n; ++ j )
+                    if (i % j == 0) {
+                        f[i] = min(f[i], f[j] + i / j);
+                        f[i] = min(f[i], f[i / j] + j);
+                    }
+        return f[n];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1250. 检查「好数组」](https://leetcode-cn.com/problems/check-if-it-is-a-good-array/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 类似倒水问题
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    bool isGoodArray(vector<int>& nums) {
+        int n = nums.size();
+        int res = nums[0];
+        for (int i = 1; i < n; ++i) res = __gcd(res, nums[i]);
+        return res == 1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1819. 序列中不同最大公约数的数目](https://leetcode-cn.com/problems/number-of-different-subsequences-gcds/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 逆向考虑枚举每一个 GCD 即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+ass Solution {
+public:
+    int countDifferentSubsequenceGCDs(vector<int>& nums) {
+        vector<bool> st(200010);
+        int mxv = 0;
+        for (auto v : nums) {
+            mxv = max(mxv, v);
+            st[v] = true;
+        }
+        
+        int res = 0;
+        for (int i = 1; i <= mxv; ++ i ) {
+            int g = -1;
+            for (int j = i; j <= mxv; j += i)
+                if (st[j]) {
+                    if (g == -1)
+                        g = j;
+                    else
+                        g = __gcd(j, g); // ATTENTION
+                }
+            if (g == i)
+                res ++ ;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 2001. 可互换矩形的组数](https://leetcode-cn.com/problems/number-of-pairs-of-interchangeable-rectangles/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> `double` 统计即可 对于本题只要保证精度即可边统计边更新记录
+> 
+> 更稳妥的是使用 gcd
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    
+    // wi * hj == wj * hi
+    long long interchangeableRectangles(vector<vector<int>>& recs) {
+        unordered_map<double, int> cnt;
+        LL res = 0;
+        for (auto rec : recs) {
+            double w = rec[0], h = rec[1];
+            res += cnt[w / h];
+            cnt[w / h] ++ ;
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ gcd**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    LL interchangeableRectangles(vector<vector<int>>& rectangles) {
+        const int n = rectangles.size();
+        unordered_map<LL, int> seen;
+
+        LL ans = 0;
+        for (const auto &r : rectangles) {
+            int w = r[0], h = r[1];
+            const int g = __gcd(r[0], r[1]);
+
+            w /= g; h /= g;
+            LL hv = (LL)(w) * 100001 + h;
+
+            ans += seen[hv];
+            seen[hv]++;
+        }
+
+        return ans;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces Petya and Divisors](http://codeforces.com/problemset/problem/111/B)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 简单应用 + trick
+> 
+> > 思维转化并用 last 记录
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: B. Petya and Divisors
+// Contest: Codeforces - Codeforces Beta Round #85 (Div. 1 Only)
+// URL: https://codeforces.com/problemset/problem/111/B
+// Memory Limit: 256 MB
+// Time Limit: 5000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+#define x first
+#define y second
+
+using PII = pair<int, int>;
+const static int N = 1e5 + 10;
+
+int n;
+PII a[N];
+int last[N];
+
+bool check(int v, int i, int d) {
+    if (d) {
+        return last[v] < i - d;
+    }
+    return true;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    memset(last, 0, sizeof last);
+
+    cin >> n;
+    for (int i = 1; i <= n; ++i)
+        cin >> a[i].x >> a[i].y;
+
+    for (int i = 1; i <= n; ++i) {
+        int t = a[i].x, d = a[i].y, res = 0;
+        for (int j = 1; j <= t / j; ++j)
+            if (t % j == 0) {
+                res += check(j, i, d);
+                if (t / j != j)
+                    res += check(t / j, i, d);
+                last[j] = last[t / j] = i;
+            }
+        cout << res << endl;
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1291. 轻拍牛头](https://www.acwing.com/problem/content/1293/)**
+> 
+> 题意: 
+> 
+> $n$ 个奶牛围成一圈，每个奶牛都绕走一圈，如果该奶牛数值可以被某个奶牛整除则拍这某个奶牛的头
+> 
+> 求每个奶牛拍其他牛多少次
+
+> [!TIP] **思路**
+> 
+> 反向思路
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+/*
+反向：求某个数有多少个数是它的倍数
+*/
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 1000010;
+
+int n;
+int a[N], cnt[N], s[N];
+
+int main() {
+    cin >> n;
+    for (int i = 0; i < n; ++ i ) {
+        cin >> a[i];
+        cnt[a[i]] ++ ;
+    }
+    for (int i = 1; i < N; ++ i )
+        for (int j = i; j < N; j += i)
+            s[j] += cnt[i];
+    for (int i = 0; i < n; ++ i ) cout << s[a[i]] - 1 << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1294. 樱花](https://www.acwing.com/problem/content/1296/)**
+> 
+> 题意: 
+> 
+> 求有多少正整数数对 $(x,y)$ 满足 $\frac{1}{x} + \frac{1}{y} = \frac{1}{n!}$
+
+> [!TIP] **思路**
+> 
+> 原题转化为求 $(n!)^2$ 的约数个数
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+/*
+原题转化为求 (n!)^2 的约数个数
+*/
+#include<bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+const int mod = 1e9 + 7;
+const int N = 1000010;
+
+int primes[N], cnt;
+bool st[N];
+
+void init(int n) {
+    for (int i = 2; i <= n; ++ i ) {
+        if (!st[i]) primes[cnt ++ ] = i;
+        for (int j = 0; primes[j] <= n / i; ++ j ) {
+            st[primes[j] * i] = true;
+            if (i % primes[j] == 0) break;
+        }
+    }
+}
+
+int main() {
+    int n;
+    cin >> n;
+    
+    init(n);
+    
+    int res = 1;
+    for (int i = 0; i < cnt; ++ i ) {
+        int p = primes[i];
+        int s = 0;
+        for (int j = n; j; j /= p) s += j / p;
+        res = (LL)res * (2 * s + 1) % mod;
+    }
+    cout << res << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 约数个数与约数和
+
 > [!NOTE] **[AcWing 870. 约数个数](https://www.acwing.com/problem/content/872/)**
 > 
 > 题意: TODO
@@ -822,326 +1273,6 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 650. 只有两个键的键盘](https://leetcode-cn.com/problems/2-keys-keyboard/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-class Solution {
-public:
-    // 约数做法
-    // [122...22] [122....22] ... 操作分解
-    // n = p1 * p2 * ... * pn 
-    // res = p1 + p2 + ... + pn
-    int minSteps(int n) {
-        int res = 0;
-        for (int i = 2; i <= n / i; ++ i )
-            while (n % i == 0)
-                res += i, n /= i;
-        if (n > 1) res += n;
-        return res;
-    }
-};
-```
-
-##### **C++**
-
-```cpp
-class Solution {
-public:
-    int minSteps(int n) {
-        vector<int> f(n + 1, INT_MAX);
-        f[1] = 0;
-        for (int i = 2; i <= n; ++ i )
-            if (n % i == 0)
-                // 枚举约数
-                for (int j = 1; j * j <= n; ++ j )
-                    if (i % j == 0) {
-                        f[i] = min(f[i], f[j] + i / j);
-                        f[i] = min(f[i], f[i / j] + j);
-                    }
-        return f[n];
-    }
-};
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[LeetCode 1250. 检查「好数组」](https://leetcode-cn.com/problems/check-if-it-is-a-good-array/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 类似倒水问题
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-class Solution {
-public:
-    bool isGoodArray(vector<int>& nums) {
-        int n = nums.size();
-        int res = nums[0];
-        for (int i = 1; i < n; ++i) res = __gcd(res, nums[i]);
-        return res == 1;
-    }
-};
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[LeetCode 1819. 序列中不同最大公约数的数目](https://leetcode-cn.com/problems/number-of-different-subsequences-gcds/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 逆向考虑枚举每一个 GCD 即可
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-ass Solution {
-public:
-    int countDifferentSubsequenceGCDs(vector<int>& nums) {
-        vector<bool> st(200010);
-        int mxv = 0;
-        for (auto v : nums) {
-            mxv = max(mxv, v);
-            st[v] = true;
-        }
-        
-        int res = 0;
-        for (int i = 1; i <= mxv; ++ i ) {
-            int g = -1;
-            for (int j = i; j <= mxv; j += i)
-                if (st[j]) {
-                    if (g == -1)
-                        g = j;
-                    else
-                        g = __gcd(j, g); // ATTENTION
-                }
-            if (g == i)
-                res ++ ;
-        }
-        return res;
-    }
-};
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[LeetCode 2001. 可互换矩形的组数](https://leetcode-cn.com/problems/number-of-pairs-of-interchangeable-rectangles/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> `double` 统计即可 对于本题只要保证精度即可边统计边更新记录
-> 
-> 更稳妥的是使用 gcd
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-class Solution {
-public:
-    using LL = long long;
-    
-    // wi * hj == wj * hi
-    long long interchangeableRectangles(vector<vector<int>>& recs) {
-        unordered_map<double, int> cnt;
-        LL res = 0;
-        for (auto rec : recs) {
-            double w = rec[0], h = rec[1];
-            res += cnt[w / h];
-            cnt[w / h] ++ ;
-        }
-        return res;
-    }
-};
-```
-
-##### **C++ gcd**
-
-```cpp
-class Solution {
-public:
-    using LL = long long;
-    LL interchangeableRectangles(vector<vector<int>>& rectangles) {
-        const int n = rectangles.size();
-        unordered_map<LL, int> seen;
-
-        LL ans = 0;
-        for (const auto &r : rectangles) {
-            int w = r[0], h = r[1];
-            const int g = __gcd(r[0], r[1]);
-
-            w /= g; h /= g;
-            LL hv = (LL)(w) * 100001 + h;
-
-            ans += seen[hv];
-            seen[hv]++;
-        }
-
-        return ans;
-    }
-};
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[Codeforces Petya and Divisors](http://codeforces.com/problemset/problem/111/B)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 简单应用 + trick
-> 
-> > 思维转化并用 last 记录
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-// Problem: B. Petya and Divisors
-// Contest: Codeforces - Codeforces Beta Round #85 (Div. 1 Only)
-// URL: https://codeforces.com/problemset/problem/111/B
-// Memory Limit: 256 MB
-// Time Limit: 5000 ms
-
-#include <bits/stdc++.h>
-using namespace std;
-
-#define x first
-#define y second
-
-using PII = pair<int, int>;
-const static int N = 1e5 + 10;
-
-int n;
-PII a[N];
-int last[N];
-
-bool check(int v, int i, int d) {
-    if (d) {
-        return last[v] < i - d;
-    }
-    return true;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    cout.tie(nullptr);
-
-    memset(last, 0, sizeof last);
-
-    cin >> n;
-    for (int i = 1; i <= n; ++i)
-        cin >> a[i].x >> a[i].y;
-
-    for (int i = 1; i <= n; ++i) {
-        int t = a[i].x, d = a[i].y, res = 0;
-        for (int j = 1; j <= t / j; ++j)
-            if (t % j == 0) {
-                res += check(j, i, d);
-                if (t / j != j)
-                    res += check(t / j, i, d);
-                last[j] = last[t / j] = i;
-            }
-        cout << res << endl;
-    }
-
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-
 ### 欧几里得
 
 > [!NOTE] **[AcWing 877. 扩展欧几里得算法](https://www.acwing.com/problem/content/879/)**
@@ -1532,6 +1663,123 @@ public:
         return true;
     }
 };
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 进阶
+
+> [!NOTE] **[AcWing 200. Hankson的趣味题](https://www.acwing.com/problem/content/202/)** [TAG]
+> 
+> 题意: 
+> 
+> - $x$ 和 $a0$ 的最大公约数是 $a1$
+> 
+> - $x$ 和 $b0$ 的最大公约数是 $b1$
+> 
+> 求 $x$
+
+> [!TIP] **思路**
+> 
+> 枚举d的约数 优化一下 除其所有的质数
+> 
+> 2e9 情况下约数只有 1600 个
+> 
+> 质数最多只有 50000 个
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+const int N =50010;
+
+int primes[N], cnt;
+bool st[N];
+struct Factor{
+    int p, s;
+}factor[10];
+int fcnt;
+
+int dividor[1601], dcnt;
+
+void init(int n) {
+    for (int i = 2; i <+ n; ++ i ) {
+        if (!st[i]) primes[cnt ++ ] = i;
+        for (int j = 0; primes[j] <= n / i; ++ j ) {
+            st[primes[j] * i] = true;
+            if (i % primes[j] == 0) break;
+        }
+    }
+}
+
+void dfs(int u, int p) {
+    if (u == fcnt) {
+        dividor[dcnt ++ ] = p;
+        return;
+    }
+    for (int i = 0; i <= factor[u].s; ++ i ) {
+        dfs(u + 1, p);
+        p *= factor[u].p;
+    }
+}
+
+int main() {
+    init(N - 1);
+    
+    int n;
+    cin >> n;
+    while (n -- ) {
+        int a, b, c, d;
+        cin >> a >> b >> c >> d;
+        
+        fcnt = 0;
+        int t = d;
+        // 分解质因数
+        // 复杂度 50000
+        for (int i = 0; primes[i] <= t / primes[i]; ++ i ) {
+            int p = primes[i];
+            if (t % p == 0) {
+                int s = 0;
+                while (t % p == 0) t /= p, ++ s ;
+                factor[fcnt ++ ] = {p, s};
+            }
+        }
+        if (t > 1) factor[fcnt ++ ] = {t, 1};
+        
+        // 复杂度1600
+        dcnt = 0;
+        dfs(0, 1);
+        
+        // dcnt爆搜得到的所有约数
+        // 复杂度1600
+        int res = 0;
+        for (int i = 0; i < dcnt; ++ i ) {
+            int x = dividor[i];
+            if (__gcd(a, x) == b && (LL)c * x / __gcd(c, x) == d) ++ res ;
+        }
+        cout << res << endl;
+    }
+    return 0;
+}
 ```
 
 ##### **Python**

@@ -388,3 +388,64 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[AcWing 197. 阶乘分解](https://www.acwing.com/problem/content/199/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 标准先筛素数再分解 略
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 1000010;
+
+int primes[N], cnt;
+bool st[N];
+
+void init(int n) {
+    for (int i = 2; i <= n; ++ i ) {
+        if (!st[i]) primes[cnt ++ ] = i;
+        for (int j = 0; primes[j] <= n / i; ++ j ) {
+            st[primes[j] * i] = true;
+            if (i % primes[j] == 0) break;
+        }
+    }
+}
+
+int main() {
+    int n;
+    cin >> n;
+    init(n);
+    
+    for (int i = 0; i < cnt; ++ i ) {
+        int p = primes[i];
+        int s = 0;
+        for (int j = n; j; j /= p) s += j / p;  // 注意
+        printf("%d %d\n", p, s);
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
