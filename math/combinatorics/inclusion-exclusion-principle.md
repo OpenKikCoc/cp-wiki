@@ -1043,3 +1043,75 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[AcWing 1310. 数三角形](https://www.acwing.com/problem/content/1312/)**
+> 
+> 题意: 
+> 
+> $n * m$ 长宽的矩形，求在整数点左边且能形成三角形的方案数
+
+> [!TIP] **思路**
+> 
+> 容斥
+> 
+> 重点在计算 **斜率存在且非 0 的选取方案数**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+int gcd(int a, int b) {
+    if (!b)
+        return a;
+    return gcd(b, a % b);
+}
+
+// n 里面无序选 3 个
+LL C(int n) {
+    return (LL)n * (n - 1) * (n - 2) / 6;
+}
+
+int main() {
+    int n, m;
+    cin >> n >> m;
+    
+    n ++ , m ++ ;
+    
+    // res = 任选 - 选行(三点共线) - 选列(三点共线)
+    LL res = C(n * m) - (LL)n * C(m) - (LL)m * C(n);
+    
+    // 减去斜率存在且非0的三点共线情况
+    //  只考虑斜率为正的情况，负的情况相同直接*2ll
+    //  【枚举三个点里端点的坐标之差 (i, j)】
+    //  则有这样坐标差的选取的方案数共有 (n - i) * (m - j)
+    //  进一步：中间点的数量即为 gcd(i, j) - 1
+    for (int i = 1; i <= n; ++ i )
+        for (int j = 1; j <= m; ++ j )
+            res -= 2ll * (gcd(i, j) - 1) * (n - i) * (m - j);
+    
+    cout << res << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

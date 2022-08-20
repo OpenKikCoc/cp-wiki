@@ -6050,3 +6050,62 @@ public:
 <br>
 
 * * *
+
+### 思维与推导
+
+> [!NOTE] **[LeetCode 2366. 将数组排序的最少替换次数](https://leetcode.cn/problems/minimum-replacements-to-sort-the-array/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 从后往前考虑，显然希望每个数及拆分后的数越大越好
+> 
+> 本题约束下，【拆分后的数越大恰好可以满足拆分次数越少】故直接贪心
+> 
+> 考虑把当前数分为 k 个数，则其必须满足 $(x + last - 1) / last$ （因为分割后最后一个数的大小不能超过 last）
+> 
+> 进一步有分割后最前面的数为 $x / k$
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 贪心思维 结合数学
+    using LL = long long;
+    
+    long long minimumReplacement(vector<int>& nums) {
+        int n = nums.size();
+        LL res = 0;
+        for (int i = n - 2, last = nums[n - 1]; i >= 0; -- i ) {
+            if (nums[i] > last) {
+                // 此时才需要拆分，且【让拆分后最前面的值尽量的大（但不超过 nums[i]）】
+                // 假定至少拆为 k 份
+                int k = (nums[i] + last - 1) / last;
+                res += (LL)k - 1;
+                last = nums[i] / k; // default 下取整
+            } else
+                last = nums[i];
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

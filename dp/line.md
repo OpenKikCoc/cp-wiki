@@ -627,7 +627,7 @@ class Solution:
         return f[row][column][0]
 ```
 
-#### **Python 记忆化搜索**
+##### **Python 记忆化搜索**
 
 ```python
 class Solution:
@@ -878,6 +878,60 @@ class Solution:
                     f[i][j][1] += (f[i - 1][j - 1][1] + f[i - 1][j - 1][0]) % mod
         # return (f[n - 1][k][0] + f[n - 1][k][1]) % mod;
         return sum(f[n - 1][k]) % mod
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1307. 牡牛和牝牛](https://www.acwing.com/problem/content/1309/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然状态定义为长度为 i 的结尾为 1 的种类数
+> 
+> 重点在于初始化：`f[0] = 1`
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 1e5 + 10, MOD = 5000011;
+
+int f[N], s[N];
+int n, k;
+
+int main() {
+    cin >> n >> k;
+    
+    memset(f, 0, sizeof f), memset(s, 0, sizeof s);
+    
+    f[0] = 1, s[0] = 1;
+    for (int i = 1; i <= n; ++ i ) {
+        f[i] = s[max(0, i - k - 1)];
+        s[i] = (s[i - 1] + f[i]) % MOD;
+    }
+    cout << s[n] << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
 ```
 
 <!-- tabs:end -->

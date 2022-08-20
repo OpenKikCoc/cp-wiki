@@ -616,6 +616,90 @@ int main() {
 
 * * *
 
+### 组合数-隔板法
+
+> [!NOTE] **[AcWing 1308. 方程的解](https://www.acwing.com/problem/content/1310/)**
+> 
+> 题意: 
+> 
+> 求非负整数解
+
+> [!TIP] **思路**
+> 
+> 隔板法 + 高精度加
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 150;   // 组合数大数的位数
+
+int k, x;
+int f[1000][100][N];    // 大数记录组合数
+
+int qmi(int a, int b, int p) {
+    a %= p;
+    int ret = 1;
+    while (b) {
+        if (b & 1)
+            ret = ret * a % p;
+        a = a * a % p;
+        b >>= 1;
+    }
+    return ret;
+}
+
+void add(int c[], int a[], int b[]) {
+    for (int i = 0, t = 0; i < N; ++ i ) {
+        t += a[i] + b[i];
+        c[i] = t % 10;
+        t /= 10;
+    }
+}
+
+int main() {
+    cin >> k >> x;
+    
+    int n = qmi(x, x, 1000);
+    
+    // C(n - 1, k - 1);
+    for (int i = 0; i < n; ++ i )
+        for (int j = 0; j <= i && j < k; ++ j )
+            if (!j)
+                f[i][j][0] = 1;
+            else
+                add(f[i][j], f[i - 1][j], f[i - 1][j - 1]);
+    
+    int *g = f[n - 1][k - 1];
+    int i = N - 1;
+    while (!g[i])
+        i -- ;
+    while (i >= 0)
+        cout << g[i -- ];
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 组合数应用
 
 > [!NOTE] **[AcWing 889. 满足条件的01序列](https://www.acwing.com/problem/content/891/)**
@@ -1329,6 +1413,98 @@ public:
         return res;
     }
 };
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 排列数
+
+> [!NOTE] **[AcWing 1309. 车的放置](https://www.acwing.com/problem/content/1311/)** [TAG]
+> 
+> 题意: 
+> 
+> L 型方格，求放 $k$ 个 `车` 的方案数
+
+> [!TIP] **思路**
+> 
+> 先考虑简单情况，对于 $n * m$ 的矩阵，放置 $k$ 个 `车` 的方案数为：
+> 
+> $C_n^k * A_m^k$ 先选 $k$ 行，再有次序的选择 $k$ 列 (**组合数**)
+> 
+> 对于本题，按照上下两部分进行切分，切分后各自结合符合 **乘法原理**
+> 
+> 假定上半部分摆放 $i$ 个 ==> $C_b^i * A_a^i$
+> 
+> 下半部分相应为 $k-i$ 个 ==> $C_d^{k-i} * A_{a+c-i}^{k-i}$
+> 
+> 枚举 $i$ 相乘累加即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const static int N = 2010, MOD = 100003;
+
+int fact[N], infact[N];
+
+int qmi(int a, int k) {
+    int ret = 1;
+    while (k) {
+        if (k & 1)
+            ret = (LL)ret * a % MOD;
+        a = (LL)a * a % MOD;
+        k >>= 1;
+    }
+    return ret;
+}
+
+int C(int a, int b) {
+    if (a < b)
+        return 0;
+    return (LL)fact[a] * infact[a - b] % MOD * infact[b] % MOD;
+}
+
+int A(int a, int b) {
+    if (a < b)
+        return 0;
+    return (LL)fact[a] * infact[a - b] % MOD;
+}
+
+int main() {
+    fact[0] = infact[0] = 1;
+    for (int i = 1; i < N; ++ i ) {
+        fact[i] = (LL)fact[i - 1] * i % MOD;
+        infact[i] = (LL)infact[i - 1] * qmi(i, MOD - 2) % MOD;
+    }
+    
+    int a, b, c, d, k;
+    cin >> a >> b >> c >> d >> k;
+    
+    int res = 0;
+    for (int i = 0; i <= k; ++ i )
+        res = (res + (LL)C(b, i) * A(a, i) % MOD * C(d, k - i) % MOD * A(a + c - i, k - i) % MOD) % MOD;
+    cout << res << endl;
+    
+    return 0;
+}
 ```
 
 ##### **Python**

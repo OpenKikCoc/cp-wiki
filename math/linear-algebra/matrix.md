@@ -1,3 +1,15 @@
+> [!NOTE] **基本**
+> 
+> 
+> $[A X B] * [B X C] = [A X C]$
+> 
+> ```cpp
+> for (int i = 1; i <= A; ++ i )
+>     for (int j = 1; j <= C; ++ j )
+>         for (int k = 1; k <= B; ++ k )
+>             R[i][j] += P[i][k] * Q[k][j]
+> ```
+
 ## 定义
 
 对于矩阵 $A$，主对角线是指 $A_{i,i}$ 的元素。
@@ -411,3 +423,256 @@ $$
 - [洛谷 P1962 斐波那契数列](https://www.luogu.com.cn/problem/P1962)，即上面的例题，同题 POJ3070
 - [洛谷 P1349 广义斐波那契数列](https://www.luogu.com.cn/problem/P1349)，$\text{base}$ 矩阵需要变化一下
 - [洛谷 P1939【模板】矩阵加速（数列）](https://www.luogu.com.cn/problem/P1939)，$\text{base}$ 矩阵变成了 $3 \times 3$ 的矩阵，推导过程与上面差不多。
+
+
+> [!NOTE] **[AcWing 1303. 斐波那契前 n 项和](https://www.acwing.com/problem/content/1305/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+const int N = 3;
+
+int n, m;
+
+void mul(int c[], int a[], int b[][N]) {
+    int temp[N] = {0};
+    for (int i = 0; i < N; ++ i )
+        for (int j = 0; j < N; ++ j )
+            temp[i] = (temp[i] + (LL)a[j]*b[j][i]) % m;
+    memcpy(c, temp, sizeof temp);
+}
+
+void mul(int c[][N], int a[][N], int b[][N]) {
+    int temp[N][N] = {0};
+    for (int i = 0; i < N; ++ i )
+        for (int j = 0; j < N; ++ j )
+            for (int k = 0; k < N; ++ k )
+                temp[i][j] = (temp[i][j] + (LL)a[i][k]*b[k][j]) % m;
+    memcpy(c, temp, sizeof temp);
+}
+
+int main() {
+    cin >> n >> m;
+    
+    // f1 f2 s1
+    int f1[N] = {1, 1, 1};
+    // 递推矩阵
+    int a[N][N] = {
+        {0, 1, 0},
+        {1, 1, 1},
+        {0, 0, 1}
+    };
+    
+    -- n ;
+    while (n) {
+        if (n & 1) mul(f1, f1, a);
+        mul(a, a, a);
+        n >>= 1;
+    }
+    cout << f1[2] << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1304. 佳佳的斐波那契](https://www.acwing.com/problem/content/1306/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+/*
+[A X B] * [B X C] = [A X C]
+
+for (int i = 1; i <= A; ++ i )
+    for (int j = 1; j <= C; ++ j )
+        for (int k = 1; k <= B; ++ k )
+            R[i][j] += P[i][k] * Q[k][j]
+*/
+#include<bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+
+const int N = 4;
+
+int n, m;
+
+void mul(int c[][N], int a[][N], int b[][N]) {
+    static int t[N][N];
+    memset(t, 0, sizeof t);
+    for (int i = 0; i < N; ++ i )
+        for (int j = 0; j < N; ++ j )
+            for (int k = 0; k < N; ++ k )
+                t[i][j] = (t[i][j] + (LL)a[i][k] * b[k][j]) % m;
+    memcpy(c, t, sizeof t);
+}
+
+int main() {
+    cin >> n >> m;
+    
+    // {fn, fn+1, sn, pn}
+    // pn = n * sn - tn
+    int f1[N][N] = {1, 1, 1, 0};
+    int a[N][N] = {
+        {0, 1, 0, 0},
+        {1, 1, 1, 0},
+        {0, 0, 1, 1},
+        {0, 0, 0, 1},
+    };
+    
+    int k = n - 1;
+    while (k) {
+        if (k & 1) mul(f1, f1, a);
+        mul(a, a, a);
+        k >>= 1;
+    }
+    
+    cout << (((LL)n * f1[0][2] - f1[0][3]) % m + m) % m << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1305. GT考试](https://www.acwing.com/problem/content/1307/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **矩阵乘法优化DP问题**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 25;
+
+int n, m, mod;
+char str[N];
+int ne[N];
+int a[N][N];
+
+// c = a * b
+void mul(int c[][N], int a[][N], int b[][N]) {
+    static int t[N][N];
+    memset(t, 0, sizeof t);
+    
+    for (int i = 0; i < m; ++ i )
+        for (int j = 0; j < m; ++ j )
+            for (int k = 0; k < m; ++ k )
+                t[i][j] = (t[i][j] + a[i][k] * b[k][j]) % mod;
+    memcpy(c, t, sizeof t);
+}
+
+int qmi(int k) {
+    int f0[N][N] = {1};
+    while (k) {
+        if (k & 1)
+            mul(f0, f0, a); // f0 = f0 * a
+        mul(a, a, a);       // a = a * a
+        k >>= 1;
+    }
+    int res = 0;
+    for (int i = 0; i < m; ++ i )
+        res = (res + f0[0][i]) % mod;
+    return res;
+}
+
+int main() {
+    cin >> n >> m >> mod;
+    cin >> str + 1;
+    
+    // kmp
+    for (int i = 2, j = 0; i <= m; ++ i ) {
+        while (j && str[j + 1] != str[i])
+            j = ne[j];
+        if (str[j + 1] == str[i])
+            j ++ ;
+        ne[i] = j;
+    }
+    
+    // 初始化 A[i][j]
+    for (int j = 0; j < m; ++ j )
+        for (int c = '0'; c <= '9'; ++ c ) {
+            int k = j;
+            while (k && str[k + 1] != c)
+                k = ne[k];
+            if (str[k + 1] == c)
+                k ++ ;
+            if (k < m)
+                a[j][k] ++ ;
+        }
+    
+    // f[n] = f[0] * A^n
+    cout << qmi(n) << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
