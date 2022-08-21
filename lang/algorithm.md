@@ -351,6 +351,65 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2375. 根据模式串构造最小数字](https://leetcode.cn/problems/construct-smallest-number-from-di-string/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 一开始在想贪心填，实际上 `9! = 362880` 可以直接生成
+> 
+> `next_permutation`
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int n;
+    
+    bool check(string & a, string & b) {
+        for (int i = 1; i <= n; ++ i )
+            if ((a[i] > a[i - 1]) && (b[i - 1] != 'I') || (a[i] < a[i - 1]) && (b[i - 1] != 'D'))
+                return false;
+        return true;
+    }
+    
+    string smallestNumber(string pattern) {
+        n = pattern.size();
+        string t, res;
+        for (int i = 1; i <= n + 1; ++ i )
+            t.push_back('0' + i);
+        
+        do {
+            if (check(t, pattern)) {
+                res = t;
+                break;
+            }
+        } while (next_permutation(t.begin(), t.end()));
+        
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### min
 
 > [!NOTE] **[LeetCode 1189. “气球” 的最大数量](https://leetcode-cn.com/problems/maximum-number-of-balloons/)**

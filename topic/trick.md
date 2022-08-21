@@ -5589,6 +5589,48 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 6157. 二进制字符串重新安排顺序需要的时间](https://leetcode.cn/problems/time-needed-to-rearrange-a-binary-string/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 除去模拟外，注意有 O(n) 写法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int secondsToRemoveOccurrences(string s) {
+        int res = 0, cnt = 0;
+        for (auto c : s)
+            if (c == '0')
+                cnt ++ ;
+            else if (cnt)   // ATTENTION 左边有0才需要计数
+                res = max(res + 1, cnt);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 根据题意简化思维
 
 > [!NOTE] **[Codeforces C. Dima and Staircase](https://codeforces.com/problemset/problem/272/C)**

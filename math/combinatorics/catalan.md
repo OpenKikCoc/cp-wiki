@@ -89,3 +89,222 @@ print(f[n])
 3.  从 $(0,0)$ 到 $(n,n)$ 的除端点外不穿过直线 $y=x$ 的非降路径数：
 
     用类似的方法可以得到：$\dfrac{2}{n+1}\dbinom{2n}{n}$
+
+## 习题
+
+> [!NOTE] **[AcWing 1315. 网格](https://www.acwing.com/problem/content/1317/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 我们需要求出点 $(n, m)$ 关于 $y = x + 1$ 对称的点的坐标
+> 
+> 假设为 $(a, b)$，则任何一种不合法的方案都可以转化为到达 $(a, b)$ 的路径，如下图：
+> 
+> ![图](https://cdn.acwing.com/media/article/image/2021/04/20/61813_28682e03a1-image-20210420210644258.png)
+> 
+> 易知 $(a, b) = (m - 1, n + 1)$
+> 
+> 答案为 $C_{m+n}^{n} - C_{m+n}^{m-1}$
+> 
+> TODO: 详细推导过程
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 100010;
+
+int primes[N], cnt;
+bool st[N];
+int a[N], b[N];
+
+void init(int n) {
+    for (int i = 2; i <= n; i ++ ) {
+        if (!st[i]) primes[cnt ++ ] = i;
+        for (int j = 0; primes[j] * i <= n; j ++ ) {
+            st[primes[j] * i] = true;
+            if (i % primes[j] == 0) break;
+        }
+    }
+}
+
+int get(int n, int p) {
+    int s = 0;
+    while (n) s += n / p, n /= p;
+    return s;
+}
+
+void mul(int r[], int &len, int x) {
+    int t = 0;
+    for (int i = 0; i < len; i ++ ) {
+        t += r[i] * x;
+        r[i] = t % 10;
+        t /= 10;
+    }
+    while (t) {
+        r[len ++ ] = t % 10;
+        t /= 10;
+    }
+}
+
+void sub(int a[], int al, int b[], int bl) {
+    for (int i = 0, t = 0; i < al; ++ i ) {
+        a[i] -= t + b[i];
+        if (a[i] < 0) a[i] += 10, t = 1;
+        else t = 0;
+    }
+}
+
+int C(int x, int y, int r[N]) {
+    int len = 1;
+    r[0] = 1;
+
+    for (int i = 0; i < cnt; i ++ ) {
+        int p = primes[i];
+        int s = get(x, p) - get(y, p) - get(x - y, p);
+        while (s -- ) mul(r, len, p);
+    }
+
+    return len;
+}
+
+int main() {
+    init(N - 1);
+
+    int n, m;
+    cin >> n >> m;
+    int al = C(n + m, m, a);
+    int bl = C(n + m, n + 1, b);
+
+    sub(a, al, b, bl);
+
+    int k = al - 1;
+    while (!a[k] && k > 0) k -- ;
+    while (k >= 0) printf("%d", a[k -- ]);
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing ]()**
+> 
+> 题意: 
+> 
+> 长度为 $2n$ 的数列是有趣的，当且仅当该数列满足以下三个条件：
+> 
+> 1. 它是从 $1$ 到 $2n$ 共 $2n$ 个整数的一个排列 ${ai}$；
+> 
+> 2. 所有的奇数项满足 $a1<a3<⋯<a2n−1$ ，所有的偶数项满足 $a2<a4<⋯<a2n$；
+> 
+> 3. 任意相邻的两项 $a_2i−1$ 与 $a_2i$ $(1≤i≤n)$ 满足奇数项小于偶数项，即：$a_2i−1<a_2i$。
+> 
+> 任务是：对于给定的 $n$，请求出有多少个不同的长度为 $2n$ 的有趣的数列。
+
+> [!TIP] **思路**
+> 
+> 推导知为 `第 $n$ 个卡特兰数` $\frac{C_{2n}^{n}}{n+1}$
+> 
+> $P$ 可能非质数，所以不能求逆元。考虑分解质因数+快速幂
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include<bits/stdc++.h>
+
+using namespace std;
+
+using LL = long long;
+const int N = 2000010;
+
+int n, p;
+int primes[N], cnt;
+bool st[N];
+
+void init(int n) {
+    for (int i = 2; i <= n; i ++ ) {
+        if  (!st[i]) primes[cnt ++ ] = i;
+        for (int j = 0; primes[j] * i <= n; j ++ ) {
+            st[i * primes[j]] = true;
+            if (i % primes[j] == 0) break;
+        }
+    }
+}
+
+int qmi(int a, int k) {
+    int res = 1;
+    while (k) {
+        if (k & 1) res = (LL)res * a % p;
+        a = (LL)a * a % p;
+        k >>= 1;
+    }
+    return res;
+}
+
+int get(int n, int p) {
+    int s = 0;
+    while (n) {
+        s += n / p;
+        n /= p;
+    }
+    return s;
+}
+
+int C(int a, int b) {
+    int res = 1;
+    for (int i = 0; i < cnt; ++ i ){
+        int prime = primes[i];
+        int s = get(a, prime) - get(b, prime) - get(a - b, prime);
+
+        res = (LL)res * qmi(prime, s) % p;
+    }
+
+    return res;
+}
+
+int main() {
+    scanf("%d%d", &n, &p);
+    init(n * 2);
+
+    cout << (C(n * 2, n) - C(n * 2, n - 1) + p) % p << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

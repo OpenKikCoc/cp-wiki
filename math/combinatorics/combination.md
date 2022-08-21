@@ -700,6 +700,126 @@ int main() {
 
 * * *
 
+> [!NOTE] **[AcWing 1312. 序列统计](https://www.acwing.com/problem/content/1314/)** [TAG]
+> 
+> 题意: 
+> 
+> 给定三个整数 $N,L,R$，统计长度在 $1$ 到 $N$ 之间，元素大小都在 $L$ 到 $R$ 之间的单调不降序列的数量。
+> 
+> 输出答案对 $10^6+3$ 取模的结果。
+
+> [!TIP] **思路**
+> 
+> 约定：题目中的 $N,L,R$ 用 $n,l,r$ 表示。
+> 
+> 数据之间只存在相对关系，则将 $[l,r]$ 区间映射到 $[0,r-l]$，设序列长度为 $k$，题意即求：
+> 
+> $$
+> 满足 \ 0 \le a_1 \le a_2 \le \cdots \le a_k \le r-l,\ 其中 \ a_i \in[0,r-l] \ 的序列个数
+> $$
+> 
+> 令 $x_1 = a_1, x_2 = a_2 - a_1, \cdots, x_k = a_k - a_{k-1}$，则有：
+> 
+> $$
+> 0 \le x_1 + x_2 + \cdots + x_k \le r-l,\ 其中 \ x_i \ge 0 
+> $$
+> 
+> 问题即：用不超过 $r-l$ 个小球放入 $k$ 个盒子，**盒子允许为空**的方案数。
+> 
+> 等价为：先给每一个盒子放入一个小球（需要令小球的总数 $+k$），即用不超过 $r-l+k$ 个小球放入 $k$ 个盒子，且**盒子不空**的方案数。
+> 
+> 显然可以「隔板法」。但本题的条件是不等式，对于等式直接用 $k-1$ 个隔板将所有小球分为 $k$ 部分即可；对于不等式要用 $k$ 个隔板，将所有小球分为 $k+1$ 部分，其中最后一部分被舍弃（即不选用），本题最后一部分的个数可以为零。
+> 
+> 则最终答案为 $\sum_{k=1}^{n}C_{r-l+k}^{k}$
+> 
+> 数据范围 $10^9$，显然不能枚举长度 $k$ 来累加答案，由两个组合数公式进行推导：
+> 
+> $$
+> C_n^m=C_n^{n-m}, \ C_n^m = C_{n-1}^{m} + C_{n-1}^{m-1}
+> $$
+> 
+> 令 $r-l=m$，则：
+> 
+> $$
+> \begin{aligned}
+> 原式= &\sum_{k=1}^{n}C_{m+k}^{k} \\
+> = &C_{m+1}^{1} + C_{m+2}^{2} + \cdots + C_{m+n}^{n} \\
+> = &C_{m+1}^{m} + C_{m+2}^{m} + \cdots + C_{m+n}^{m} \\
+> = &({\color{red}{C_{m+1}^{m+1}}} + C_{m+1}^{m}) + \cdots + C_{m+n}^{m} - {\color{red}{C_{m+1}^{m+1}}} \\
+> = &(C_{m+2}^{m+1} + C_{m+2}^{m}) + \cdots + C_{m+n}^{m} - 1 \\
+> = &\cdots \\
+> = &C_{m+n+1}^{m+1} - 1
+> \end{aligned}
+> $$
+> 
+> 然后用 $\rm Lucas$ 定理求解组合数即可。
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const static int MOD = 1000003;
+
+int qmi(int a, int k) {
+    int ret = 1;
+    while (k) {
+        if (k & 1)
+            ret = (LL)ret * a % MOD;
+        a = (LL)a * a % MOD;
+        k >>= 1;
+    }
+    return ret;
+}
+
+int C(int a, int b) {
+    if (a < b)
+        return 0;
+    int down = 1, up = 1;
+    for (int i = a, j = 1; j <= b; -- i , ++ j ) {
+        up = (LL)up * i % MOD;
+        down = (LL)down * j % MOD;
+    }
+    return (LL)up * qmi(down, MOD - 2) % MOD;
+}
+
+int lucas(int a, int b) {
+    if (a < MOD && b < MOD)
+        return C(a, b);
+    return (LL)lucas(a / MOD, b / MOD) * C(a % MOD, b % MOD) % MOD;
+}
+
+int main() {
+    int T;
+    cin >> T;
+    while (T -- ) {
+        int n, l, r;
+        cin >> n >> l >> r;
+        cout << (lucas(r - l + n + 1, r - l + 1) + MOD - 1) % MOD << endl;
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 组合数应用
 
 > [!NOTE] **[AcWing 889. 满足条件的01序列](https://www.acwing.com/problem/content/891/)**

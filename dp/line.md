@@ -941,6 +941,56 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 2369. 检查数组是否存在有效划分](https://leetcode.cn/problems/check-if-there-is-a-valid-partition-for-the-array/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 要能想到 dp 而非是模拟
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 1e5 + 10;
+    
+    bool f[N];
+    
+    bool validPartition(vector<int>& nums) {
+        int n = nums.size();
+        f[0] = true;
+        for (int i = 1; i <= n; ++ i ) {
+            if (i >= 2 && nums[i - 1] == nums[i - 2])
+                f[i] |= f[i - 2];
+            if (i >= 3 && nums[i - 1] == nums[i - 2] && nums[i - 2] == nums[i - 3])
+                f[i] |= f[i - 3];
+            if (i >= 3 && nums[i - 1] == nums[i - 2] + 1 && nums[i - 2] == nums[i - 3] + 1)
+                f[i] |= f[i - 3];
+        }
+        return f[n];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 复杂线性
 
 > [!NOTE] **[LeetCode 689. 三个无重叠子数组的最大和](https://leetcode-cn.com/problems/maximum-sum-of-3-non-overlapping-subarrays/)**

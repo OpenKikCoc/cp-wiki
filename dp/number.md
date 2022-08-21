@@ -1249,6 +1249,76 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2376. 统计特殊整数](https://leetcode.cn/problems/count-special-integers/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 同上题 **[LeetCode 1012. 至少有 1 位重复的数字](https://leetcode.cn/problems/numbers-with-repeated-digits/)**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 排列数
+    int P(int a, int b) {
+        int ret = 1;
+        for (int i = a, j = 0; j < b; -- i , ++ j )
+            ret *= i;
+        return ret;
+    }
+    
+    int countSpecialNumbers(int n) {
+        vector<int> nums;
+        while (n)
+            nums.push_back(n % 10), n /= 10;
+        
+        int res = 0;
+        // 1. 枚举较少位数的情况
+        for (int i = 1; i < nums.size(); ++ i )
+            // 首位不能为 0, 后面的每个都和前面的不同
+            res += 9 * P(9, i - 1);
+        // 2. 枚举相同位数的情况, 但是首位较低, 后续自由选
+        res += (nums.back() - 1) * P(9, nums.size() - 1);
+
+        // 3. 位数相同, 且首位相同的情况, 后续选择会受限制
+        vector<bool> st(10);    // 前后有关联关系 对于本题来说就是哪个数有没有被用过
+        st[nums.back()] = true;
+        for (int i = nums.size() - 2; i >= 0; -- i ) {
+            int x = nums[i];
+            for (int j = 0; j < x; ++ j )
+                if (!st[j])
+                    // 用过的数 nums.size()-i ==> 没有用过的数 10-(nums.size()-i)
+                    res += P(10 - (nums.size() - i), i);
+            
+            if (st[x])
+                return res;
+            st[x] = true;
+        }
+        return res + 1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### TODO 汇总
 
 #### 拓展 n以内所有数字 每个数字在各个数位出现多少次

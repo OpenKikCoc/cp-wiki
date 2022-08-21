@@ -238,6 +238,80 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 6159. 删除操作后的最大子段和](https://leetcode.cn/problems/maximum-segment-sum-after-removals/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典并查集维护连通性，逆序操作即可，略
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 1e5 + 10;
+    
+    int pa[N];
+    LL sz[N];
+    void init() {
+        memset(sz, 0, sizeof sz);
+        for (int i = 0; i < N; ++ i )
+            pa[i] = i;
+    }
+    int find(int x) {
+        if (pa[x] != x)
+            pa[x] = find(pa[x]);
+        return pa[x];
+    }
+    
+    vector<long long> maximumSegmentSum(vector<int>& nums, vector<int>& removeQueries) {
+        init();
+        int n = nums.size();
+        vector<bool> t(n, false);
+        
+        vector<LL> res;
+        LL maxv = 0;
+        for (int _ = n - 1; _ >= 0; -- _ ) {
+            res.push_back(maxv);
+            int i = removeQueries[_];
+            sz[i] = nums[i]; // ATTENTION sz[i] = nums[i]
+            if (i + 1 < n && t[i + 1]) {
+                sz[find(i + 1)] += sz[find(i)];
+                pa[find(i)] = find(i + 1);
+            }
+            if (i - 1 >= 0 && t[i - 1]) {
+                sz[find(i - 1)] += sz[find(i)];
+                pa[find(i)] = find(i - 1);
+            }
+            maxv = max(maxv, sz[find(i)]);
+            t[i] = true;
+        }
+        reverse(res.begin(), res.end());
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 离线并查集
 
 > [!NOTE] **[LeetCode 1697. 检查边长度限制的路径是否存在](https://leetcode-cn.com/problems/checking-existence-of-edge-length-limited-paths/)** [TAG]
