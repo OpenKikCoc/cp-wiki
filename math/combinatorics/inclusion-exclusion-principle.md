@@ -1115,3 +1115,174 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[AcWing 214. Devu和鲜花](https://www.acwing.com/problem/content/216/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 容斥原理 + 隔板法 + 补集思想（二进制枚举）
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const static int N = 20, MOD = 1e9 + 7;
+
+LL A[N];
+int down = 1;   // 卡常优化
+
+int qmi(int a, int b, int p) {
+    int ret = 1;
+    while (b) {
+        if (b & 1)
+            ret = (LL)ret * a % p;
+        a = (LL)a * a % p;
+        b >>= 1;
+    }
+    return ret;
+}
+
+int C(LL a, LL b) {
+    if (a < b)
+        return 0;
+    int up = 1;
+    for (LL i = a; i > a - b; -- i )
+        up = i % MOD * up % MOD;
+    return (LL)up * down % MOD;
+}
+
+int main() {
+    LL n, m;
+    cin >> n >> m;
+    for (int i = 0; i < n; ++ i )
+        cin >> A[i];
+    
+    // 卡常优化
+    for (int j = 1; j <= n - 1; ++ j )
+        down = (LL)j * down % MOD;
+    down = qmi(down, MOD - 2, MOD);
+    
+    int res = 0;
+    for (int i = 0; i < 1 << n; ++ i ) {
+        LL a = m + n - 1, b = n - 1;
+        int sign = 1;
+        for (int j = 0; j < n; ++ j )
+            if (i >> j & 1) {
+                sign *= -1;
+                a -= A[j] + 1;
+            }
+        res = (res + C(a, b) * sign) % MOD;
+    }
+    cout << (res + MOD) % MOD << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 215. 破译密码](https://www.acwing.com/problem/content/217/)**
+> 
+> 题意: 
+> 
+> 对于给定的整数 $a,b$ 和 $d$，有多少正整数对 $x,y$，满足 $x≤a，y≤b$，并且 $gcd(x,y)=d$。
+
+> [!TIP] **思路**
+> 
+> 容斥 + 线性筛求莫比乌斯函数
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const static int N = 5e4 + 10;
+
+int primes[N], cnt;
+bool st[N];
+int mobius[N], sum[N];
+
+// 线性筛求莫比乌斯函数
+void init(int n) {
+    mobius[1] = 1;
+    for (int i = 2; i <= n; ++ i ) {
+        if (!st[i])
+            primes[cnt ++ ] = i, mobius[i] = -1;
+        for (int j = 0; primes[j] <= n / i; ++ j ) {
+            int t = primes[j] * i;
+            st[t] = true;
+            if (i % primes[j] == 0) {
+                mobius[t] = 0;
+                break;
+            }
+            mobius[t] = mobius[i] * -1;
+        }
+    }
+    
+    for (int i = 1; i <= n; ++ i )
+        sum[i] = sum[i - 1] + mobius[i];
+}
+
+int main() {
+    init(N - 1);
+    
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+    
+    int T;
+    cin >> T;
+    while (T -- ) {
+        int a, b, d;
+        cin >> a >> b >> d;
+        a /= d, b /= d;
+        int n = min(a, b);
+        LL res = 0;
+        for (int l = 1, r; l <= n; l = r + 1) {
+            r = min(n, min(a / (a / l), b / (b / l)));
+            res += (sum[r] - sum[l - 1]) * (LL)(a / l) * (b / l);
+        }
+        cout << res << endl;
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

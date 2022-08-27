@@ -126,7 +126,7 @@
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++**
+##### **C++ 爬山法**
 
 ```cpp
 #include <bits/stdc++.h>
@@ -172,6 +172,67 @@ int main() {
     for (int i = 0; i < n; ++ i )
         printf("%.3lf ", res[i]);
     cout << endl;
+    
+    return 0;
+}
+```
+
+##### **C++ 高斯消元**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 15;
+
+int n;
+double a[N][N], b[N][N];
+
+void gauss() {
+    // 转化成上三角矩阵
+    for (int r = 1, c = 1; c <= n; ++ c, ++ r ) {
+        // 找主元
+        int t = r;
+        for (int i = r + 1; i <= n; ++ i )
+            if (fabs(b[i][c]) > fabs(b[t][c]))
+                t = i;
+        
+        // 交换
+        for (int i = c; i <= n + 1; ++ i )
+            swap(b[t][i], b[r][i]);
+        // 归一化
+        for (int i = n + 1; i >= c; -- i )
+            b[r][i] /= b[r][c];
+        // 消除
+        for (int i = r + 1; i <= n; ++ i )
+            for (int j = n + 1; j >= c; -- j )
+                b[i][j] -= b[i][c] * b[r][j];
+    }
+    
+    // 转化成对角矩阵
+    for (int i = n; i > 1; -- i )
+        for (int j = i - 1; j; -- j ) {
+            b[j][n + 1] -= b[i][n + 1] * b[j][i];
+            b[j][i] = 0;
+        }
+}
+
+int main() {
+    cin >> n;
+    for (int i = 0; i < n + 1; ++ i )
+        for (int j = 1; j <= n; ++ j )
+            cin >> a[i][j];
+    
+    for (int i = 1; i <= n; ++ i )
+        for (int j = 1; j <= n; ++ j ) {
+            b[i][j] += 2 * (a[i][j] - a[0][j]);
+            b[i][n + 1] += a[i][j] * a[i][j] - a[0][j] * a[0][j];
+        }
+    
+    gauss();
+    
+    for (int i = 1; i <= n; ++ i )
+        printf("%.3lf ", b[i][n + 1]);
     
     return 0;
 }
