@@ -139,3 +139,170 @@ $$
 [NOIP2017 初赛 T14, T15](https://ti.luogu.com.cn/problemset/1022)
 
 [NOIP2016 换教室](https://uoj.ac/problem/262)（概率期望 DP）
+
+## 习题
+
+> [!NOTE] **[AcWing 217. 绿豆蛙的归宿](https://www.acwing.com/problem/content/219/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 记忆化 dp 求期望
+> 
+> TODO: **公式推导过程**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 1e5 + 10, M = 2e5 + 10;
+
+int n, m;
+int h[N], e[M], w[M], ne[M], idx;
+int dout[N];
+double f[N];
+
+void init() {
+    memset(h, -1, sizeof h);
+}
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+double dp(int u) {
+    if (f[u] >= 0)
+        return f[u];
+    f[u] = 0;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        f[u] += (w[i] + dp(j)) / dout[u];
+    }
+    return f[u];
+}
+
+int main() {
+    init();
+    cin >> n >> m;
+    
+    for (int i = 0; i < m; ++ i ) {
+        int a, b, c;
+        cin >> a >> b >> c;
+        add(a, b, c);
+        dout[a] ++ ;
+    }
+    memset(f, -1, sizeof f);
+    printf("%.2lf\n", dp(1));
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 218. 扑克牌](https://www.acwing.com/problem/content/220/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> TODO: 分情况讨论和推导计算
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 14;
+const static double INF = 1e20;
+
+int A, B, C, D;
+double f[N][N][N][N][5][5];
+
+double dp(int a, int b, int c, int d, int x, int y) {
+    double & v = f[a][b][c][d][x][y];
+    if (v >= 0)
+        return v;
+    int as = a + (x == 0) + (y == 0);
+    int bs = b + (x == 1) + (y == 1);
+    int cs = c + (x == 2) + (y == 2);
+    int ds = d + (x == 3) + (y == 3);
+    if (as >= A && bs >= B && cs >= C && ds >= D)
+        return v = 0;
+    
+    int sum = a + b + c + d + (x != 4) + (y != 4);
+    sum = 54 - sum;
+    if (sum <= 0)
+        return v = INF;
+    
+    v = 1;
+    if (a < 13)
+        v += (13.0 - a) / sum * dp(a + 1, b, c, d, x, y);
+    if (b < 13)
+        v += (13.0 - b) / sum * dp(a, b + 1, c, d, x, y);
+    if (c < 13)
+        v += (13.0 - c) / sum * dp(a, b, c + 1, d, x, y);
+    if (d < 13)
+        v += (13.0 - d) / sum * dp(a, b, c, d + 1, x, y);
+    if (x == 4) {
+        double t = INF;
+        for (int i = 0; i < 4; ++ i )
+            t = min(t, 1.0 / sum * dp(a, b, c, d, i, y));
+        v += t;
+    }
+    if (y == 4) {
+        double t = INF;
+        for (int i = 0; i < 4; ++ i )
+            t = min(t, 1.0 / sum * dp(a, b, c, d, x, i));
+        v += t;
+    }
+    return v;
+}
+
+int main() {
+    cin >> A >> B >> C >> D;
+    memset(f, -1, sizeof f);
+    
+    double t = dp(0, 0, 0, 0, 4, 4);
+    if (t > INF / 2)
+        t = -1;
+    printf("%.3lf\n", t);
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
