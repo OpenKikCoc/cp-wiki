@@ -4397,6 +4397,174 @@ public:
 
 * * *
 
+### 贪心 堆 负数转正数思想 TODO
+
+
+> [!NOTE] **[LeetCode 1982. 从子集的和还原数组](https://leetcode-cn.com/problems/find-array-given-subset-sums/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 核心在于将负数集合转化为正数集合
+> 
+> 随后简化处理流程
+> 
+> > https://leetcode-cn.com/problems/find-array-given-subset-sums/solution/ti-jie-cong-zi-ji-de-he-huan-yuan-shu-zu-q9qw/
+> > 
+> > 全非负数的基础版 题目链接 https://www.codechef.com/problems/ANUMLA
+> > 
+> > 理解思路
+> 
+> > https://leetcode-cn.com/problems/find-array-given-subset-sums/solution/jian-yi-ti-jie-by-sfiction-9i43/
+> > 
+> > 本题有负值，则将所有数 -min_element 转化为非负问题
+> > 
+> > [非负问题中最小值必为0 次小值就是原集合的最小值] ===> [最大值与最小值差即为该数的绝对值 正负性待定]。递归求解
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<int> recoverArray(int n, vector<int>& a) {
+        sort(a.begin(), a.end());
+        int B = -a[0];
+        
+        // 非负集合
+        vector<int> b;
+        for (auto x : a)
+            b.push_back(B + x);
+        
+        vector<int> res;
+        for (int _ = 0; _ < n; ++ _ ) {
+            // 最小值为空集 次小值-最小值即为当前最小的数的绝对值
+            int t = b[1] - b[0];
+            res.push_back(t);
+            
+            // d 替代set实现值的删除
+            int m = b.back();
+            vector<int> d(m + 1);
+            for (auto x : b)
+                d[x] ++ ;
+            b.clear();
+            // ATTENTION
+            for (int i = 0; i <= m; ++ i )
+                if (d[i]) {
+                    b.push_back(i);
+                    d[i] -- ;
+                    d[i + t] -- ;
+                    i -- ; // 回退 继续检查当前值
+                }
+        }
+        
+        // 枚举子集
+        for (int i = 0; i < 1 << n; ++ i ) {
+            int t = 0;
+            for (int j = 0; j < n; ++ j )
+                if (i >> j & 1)
+                    t += res[j];
+            if (t == B) {
+                // 则该子集中的所有数字都应是负数
+                for (int j = 0; j < n; ++ j )
+                    if (i >> j & 1)
+                        res[j] *= -1;
+                return res;
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 2386. 找出数组的第 K 大和](https://leetcode.cn/problems/find-the-k-sum-of-an-array/)** [TAG]
+> 
+> 题意: 
+> 
+> 数组有正有负，返回数组所有子数组的 `第 k 大和`
+
+> [!TIP] **思路**
+> 
+> 细节 推导
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    using PLI = pair<LL, int>;
+    
+    // 考虑将操作简化：先求所有正数和，则移除正数或添加负数都可以当作减去某一个数值
+    long long kSum(vector<int>& nums, int k) {
+        // 1. 对正数求和，同时将负数取反
+        LL s = 0;
+        for (auto & x : nums)
+            if (x >= 0)
+                s += x;
+            else
+                x = -x;
+        sort(nums.begin(), nums.end());
+        
+        priority_queue<PLI> q;
+        q.push({s, 0}); // PLI{当前和, 当前要考虑是否减去的数的下标}
+        
+        // 2. 循环 k-1 次
+        while ( -- k ) {
+            auto [s, i] = q.top(); q.pop();
+            if (i == nums.size())
+                continue;
+            
+            // ATTENTION 考虑每个数字都有 [选(保留在s里)/不选(从s里删除)] 两种方式
+            // 【且初始化时已经有了 选0-th 的情况】
+            // 后续只需考虑要不要让前面那个选
+            
+            // 不选
+            q.push({s - nums[i], i + 1});
+            
+            // 选
+            if (i)
+                q.push({s - nums[i] + nums[i - 1], i + 1});
+        }
+        return q.top().first;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### trick
 
 > [!NOTE] **[Luogu 最大乘积](https://www.luogu.com.cn/problem/P1249)**

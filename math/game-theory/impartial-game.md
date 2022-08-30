@@ -850,3 +850,258 @@ int main() {
 <br>
 
 * * *
+
+### 复杂博弈
+
+> [!NOTE] **[AcWing 1319. 移棋子游戏](https://www.acwing.com/problem/content/1321/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 标准 SG 函数模版题
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 2010, M = 6010;
+
+int h[N], e[M], ne[M], idx;
+void init() {
+    memset(h, -1, sizeof h);
+    idx = 0;
+}
+void add(int a, int b) {
+    e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+int n, m, k;
+int f[N];   // sg 值, 记忆化搜索
+
+int sg(int u) {
+    if (f[u] != -1)
+        return f[u];
+    
+    set<int> S;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        S.insert(sg(j));
+    }
+    
+    for (int i = 0; ; ++ i )
+        if (S.count(i) == 0) {
+            f[u] = i;
+            break;
+        }
+    return f[u];
+}
+
+int main() {
+    init();
+    cin >> n >> m >> k;
+    for (int i = 0; i < m; ++ i ) {
+        int a, b;
+        cin >> a >> b;
+        add(a, b);
+    }
+    
+    memset(f, -1, sizeof f);
+    int res = 0;
+    for (int i = 0; i < k; ++ i ) {
+        int u;
+        cin >> u;
+        res ^= sg(u);
+    }
+    if (res)
+        cout << "win" << endl;
+    else
+        cout << "lose" << endl;
+        
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1321. 取石子](https://www.acwing.com/problem/content/1323/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 复杂推导和分情况讨论
+> 
+> TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 55, M = 50050;
+
+int f[N][M];
+
+int dp(int a, int b) {
+    int & v = f[a][b];
+    if (v != -1)
+        return v;
+    if (!a)
+        return v = b % 2;
+    if (b == 1)
+        return dp(a + 1, 0);
+    
+    if (a && !dp(a - 1, b))
+        return v = 1;
+    if (b && !dp(a, b - 1))
+        return v = 1;
+    if (a >= 2 && !dp(a - 2, b + (b ? 3 : 2)))
+        return v = 1;
+    if (a && b && !dp(a - 1, b + 1))
+        return v = 1;
+    return v = 0;
+}
+
+int main() {
+    memset(f, -1, sizeof f);    // 全局都只需要被计算一次
+    
+    int T;
+    cin >> T;
+    while (T -- ) {
+        int n;
+        cin >> n;
+        int a = 0, b = 0;
+        for (int i = 0; i < n; ++ i ) {
+            int x;
+            cin >> x;
+            if (x == 1)
+                a ++ ;
+            else
+                b += b ? x + 1 : x;
+        }
+        
+        if (dp(a, b))
+            cout << "YES" << endl;
+        else
+            cout << "NO" << endl;
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[AcWing 1322. 取石子游戏](https://www.acwing.com/problem/content/1324/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 结合区间
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 1010;
+
+int n;
+int a[N];
+int l[N][N], r[N][N];
+
+int main() {
+    int T;
+    cin >> T;
+    while (T -- ) {
+        cin >> n;
+        for (int i = 1; i <= n; ++ i )
+            cin >> a[i];
+        
+        for (int len = 1; len <= n; ++ len )
+            for (int i = 1; i + len - 1 <= n; ++ i ) {
+                int j = i + len - 1;
+                if (len == 1)
+                    l[i][j] = r[i][j] = a[i];
+                else {
+                    int L = l[i][j - 1], R = r[i][j - 1], X = a[j];
+                    if (R == X)
+                        l[i][j] = 0;
+                    else if (X < L && X < R || X > L && X > R)
+                        l[i][j] = X;
+                    else if (L > R)
+                        l[i][j] = X - 1;
+                    else
+                        l[i][j] = X + 1;
+                    
+                    L = l[i + 1][j], R = r[i + 1][j], X = a[i];
+                    if (L == X)
+                        r[i][j] = 0;
+                    else if (X < L && X < R || X > L && X > R)
+                        r[i][j] = X;
+                    else if (R > L)
+                        r[i][j] = X - 1;
+                    else
+                        r[i][j] = X + 1;
+                }
+            }
+        if (n == 1)
+            cout << "1" << endl;
+        else
+            cout << (l[2][n] != a[1] ? "1" : "0") << endl;
+    }
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

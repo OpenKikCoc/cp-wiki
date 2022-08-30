@@ -207,7 +207,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[AcWing ]()**
+> [!NOTE] **[AcWing 1316. 有趣的数列](https://www.acwing.com/problem/content/1318/)**
 > 
 > 题意: 
 > 
