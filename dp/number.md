@@ -595,11 +595,12 @@ int main() {
     
     // i位长度 后面不超过j个 种类总数
     for (int i = 0; i < N; ++ i )
-        for (int j = 0; j < N; ++ j )
+        for (int j = 0; j < N; ++ j )   // j < N instead of j <= i
             for (int k = 0; k <= j; ++ k )
                 f[i][j] += c[i][k];
     
     for (int i = 1, s = 0; i <= n; ++ i ) {
+        // 假设当前位填0，看后面还有多少种选择
         LL x = f[n - i][L - s];
         if (I > x) {
             cout << 1;
@@ -1003,6 +1004,44 @@ int main() {
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
+##### **C++ 标准**
+
+```cpp
+class Solution {
+public:
+    int countDigitOne(int n) {
+        if (!n)
+            return 0;
+        vector<int> nums;
+        while (n)
+            nums.push_back(n % 10), n /= 10;
+
+        int res = 0;
+        // i = nums.size() - 1 - !v
+        for (int i = nums.size() - 1 - !1; i >= 0; -- i ) {
+            int x = nums[i];
+            int l = 0, r = 0, p = 1;
+            for (int j = nums.size() - 1; j > i; -- j )
+                l = l * 10 + nums[j];
+            for (int j = i - 1; j >= 0; -- j )
+                r = r * 10 + nums[j], p *= 10;
+            
+            if (i < nums.size() - 1) {
+                res += l * p;
+                if (!1) // v = 1, will not come in
+                    res -= p;
+            }
+
+            if (x == 1)
+                res += r + 1;
+            else if (x > 1)
+                res += p;
+        }
+        return res;
+    }
+};
+```
+
 ##### **C++**
 
 ```cpp
@@ -1100,6 +1139,49 @@ class Solution:
 <details>
 <summary>详细代码</summary>
 <!-- tabs:start -->
+
+##### **C++ 标准**
+
+```cpp
+class Solution {
+public:
+    const static int N = 35;
+
+    int f[N][2];
+    void init() {
+        f[1][0] = f[1][1] = 1;
+        for (int i = 2; i < N; ++ i ) {
+            f[i][0] = f[i - 1][0] + f[i - 1][1];
+            f[i][1] = f[i - 1][0];
+        }
+    }
+
+    int findIntegers(int n) {
+        if (!n)
+            return 1;
+        
+        init();
+        vector<int> nums;
+        while (n)
+            nums.push_back(n % 2), n /= 2;
+        
+        int res = 0;
+        int last = 0;   // 上一位是啥
+        for (int i = nums.size() - 1; i >= 0; -- i ) {
+            int x = nums[i];
+            if (x)
+                // 假定当前位为0
+                res += f[i + 1][0];
+            if (last && x)
+                break;
+            last = x;
+            if (!i)
+                res ++ ;
+        }
+        return res;
+    }
+};
+```
 
 ##### **C++**
 

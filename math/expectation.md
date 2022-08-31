@@ -306,3 +306,86 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 九坤-04. 筹码游戏](https://leetcode.cn/contest/ubiquant2022/problems/I3Gm2h/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> TODO: **计算式推导**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // ATTENTION 每种面值无限多个说明取出任意一种的概率都是定植
+    
+    int k;
+    double res;
+    vector<int> ns;
+    
+    // map instead of unordered_map
+    map<vector<int>, double> hash;
+    
+    double dp(vector<int> t) {
+        if (hash.count(t))
+            return hash[t];
+        
+        int cnt = 0;
+        double ret = 0;
+        for (int i = 0; i < k; ++ i ) {
+            // 合法状态实际上很多为同一种状态，可以进行合并，不需要每次都计算
+            // 按照从小到大进行排序，每次选择在相同的元素的末尾的一个元素进行加 1 即可
+            // ==> 找这组相同的里面的最后一个去加
+            int j = i;
+            while (j < k && t[j] == t[i])
+                j ++ ;
+            // ATTENTION: TODO
+            if (t[j - 1] == ns[j - 1])
+                continue;
+            
+            t[j - 1] ++ ;
+            double adt = dp(t);
+            t[j - 1] -- ;
+            
+            ret += (j - i) * adt;
+            cnt += j - i;
+            
+            i = j - 1;
+        }
+        ret = (ret + k) / cnt;
+        return hash[t] = ret;
+    }
+    
+    double chipGame(vector<int>& nums, int kind) {
+        this->k = kind, this->res = 0;
+        hash.clear();
+        
+        this->ns = nums;
+        ns.resize(k);
+        sort(ns.begin(), ns.end());
+        hash[ns] = 0;
+        
+        return dp(vector<int>(k, 0));
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
