@@ -651,3 +651,101 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[Luogu P2900 [USACO08MAR]Land Acquisition G](https://www.luogu.com.cn/problem/P2900)**
+> 
+> 题意: 
+> 
+> 考虑购买 $N$ 块长方形的土地
+> 
+> 可以选择并购一组土地，并购的价格为这些土地中最大的长乘以最大的宽。比如 FJ 并购一块 $3 \times 5$ 和一块 $5 \times 3$ 的土地，他只需要支付 $5 \times 5=25$ 元， 比单买合算。
+> 
+> 求购买所有土地所需的最小费用
+
+> [!TIP] **思路**
+> 
+> - 细节: 注意 sorting 规则, 必须 `while`
+> 
+> - `long long`
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+using PLL = pair<LL, LL>;
+const static int N = 5e4 + 10;
+
+int n;
+PLL xs[N];
+LL f[N];
+int q[N];
+
+int main() {
+    cin >> n;
+    for (int i = 1; i <= n; ++i)
+        cin >> xs[i].first >> xs[i].second;  // w, h
+    {
+        sort(xs + 1, xs + n + 1);
+        int p = 1;
+        // ATTENTION sort rule
+        for (int i = 1; i <= n; ++i) {
+            // ATTENTION 不能一个简单的 if-condition, 必须是 while 不断更新
+            while (p && xs[p].second <= xs[i].second)
+                p--;
+            xs[++p] = xs[i];
+        }
+        n = p;
+        // 剩下的都是  [w 递增, h 递减] 的序列
+    }
+
+    memset(f, 0x3f, sizeof f);
+    f[0] = 0;
+
+    // f[i] = min{f[j] + xs[i].first * xs[j + 1].second}
+    // f[j] = -xs[i].first * xs[j + 1].second + f[i]
+    // y = kx + b
+    // f[i] 最小 => 即截距最小 => 上凸壳，斜率(<0且)越来越小
+    //     类似 y = 1/x
+
+    int hh = 0, tt = 0;
+    q[0] = 0;
+    for (int i = 1; i <= n; ++i) {
+        // 去除较小的斜率 o1 找目标 j
+        // while dy >= k * dx
+        while (hh < tt && (f[q[hh + 1]] - f[q[hh]]) <=
+                           -xs[i].first * (xs[q[hh + 1] + 1].second - xs[q[hh] + 1].second))
+            hh++;
+        int j = q[hh];
+        f[i] = f[j] + xs[i].first * xs[j + 1].second;
+        // while dy / dx <= dy / dx
+        while (hh < tt && (f[q[tt]] - f[q[tt - 1]]) * (xs[i + 1].second - xs[q[tt] + 1].second) <=
+                          (f[i] - f[q[tt]]) * (xs[q[tt] + 1].second - xs[q[tt - 1] + 1].second))
+            tt--;
+        q[++tt] = i;
+    }
+
+    cout << f[n] << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
