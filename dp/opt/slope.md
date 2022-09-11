@@ -130,9 +130,11 @@ $\text{CDQ}(l,r)$ 代表计算 $f_i,i\in [l,r]$。考虑 $\text{CDQ}(1,n)$：
 - [「JSOI2011」柠檬](https://www.luogu.com.cn/problem/P5504)
 - [「Codeforces 311B」Cats Transport](http://codeforces.com/problemset/problem/311/B)
 - [「NOI2007」货币兑换](https://loj.ac/problem/2353)
-- [「NOI2019」回家路线](https://loj.ac/problem/3156)
+- [「NOI2019」回家路线](https://loj.ac/problem/3156) => 【有点毒瘤 跳过等待更好的标准做法】
 - [「NOI2016」国王饮水记](https://uoj.ac/problem/223)
 - [「NOI2014」购票](https://uoj.ac/problem/7)
+
+### 一维
 
 > [!NOTE] **[AcWing 300. 任务安排1](https://www.acwing.com/problem/content/302/)**
 > 
@@ -711,7 +713,7 @@ int main() {
     // f[i] = min{f[j] + xs[i].first * xs[j + 1].second}
     // f[j] = -xs[i].first * xs[j + 1].second + f[i]
     // y = kx + b
-    // f[i] 最小 => 即截距最小 => 上凸壳，斜率(<0且)越来越小
+    // f[i] 最小 => 即截距最小 => 下凸壳，斜率(<0且)越来越大
     //     类似 y = 1/x
 
     int hh = 0, tt = 0;
@@ -735,6 +737,507 @@ int main() {
 
     return 0;
 }
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu P3195 [HNOI2008]玩具装箱](https://www.luogu.com.cn/problem/P3195)**
+> 
+> 题意: 
+> 
+> 有编号为 $1 \cdots n$ 的 $n$ 件玩具，第 $i$ 件玩具经过压缩后的一维长度为 $C_i$。
+> 
+> - 在同一个一维容器中的玩具编号是连续的。
+> 
+> - 如果将第 $i$ 件玩具到第 $j$ 个玩具放到一个容器中，那么容器的长度将为 $x=j-i+\sum\limits_{k=i}^{j}C_k$。
+> 
+> 制作容器的费用与容器的长度有关，如果容器长度为 $x$，其制作费用为 $(x-L)^2$。其中 $L$ 是一个常量。
+> 
+> 不关心容器的数目，他可以制作出任意长度的容器，甚至超过 $L$。但希望所有容器的总费用最小。求最小费用。
+
+> [!TIP] **思路**
+> 
+> 巨坑: 必须要写 `slope` 使用除法，否则乘法会因为数值溢出
+> 
+> 或者写 `__int128`
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+using PLL = pair<LL, LL>;
+const static int N = 5e4 + 10;
+
+LL n, L;
+LL c[N], s[N];
+
+int q[N];
+LL f[N];
+
+LL t(int v) { return s[v] + L + 1; }
+
+LL x(int v) { return t(v); }
+
+LL y(int v) { return f[v] + t(v) * t(v); }
+
+double slope(int a, int b) { return (y(b) - y(a)) / (x(b) - x(a)); }
+
+int main() {
+    cin >> n >> L;
+
+    for (int i = 1; i <= n; ++i)
+        cin >> c[i];
+
+    s[0] = 0;
+    for (int i = 1; i <= n; ++i)
+        s[i] = s[i - 1] + c[i] + 1;
+
+    memset(f, 0x3f, sizeof f);
+    f[0] = 0;
+
+    // f[i] = min{f[j] + (s[i] - s[j] - 1 - L)^2}
+    // f[i] = min{f[j] + (s[i] - (s[j] + L + 1))^2}
+    // 令 t(j) = s[j] + L + 1
+    // f[i] = f[j] + (s[i] - t(j))^2
+    // f[j] + t(j)^2 = 2*s[i]*t(j) + f[i] - s[i]^2
+    // f[i] 越小 => 截距越小 => s[i]是递增的
+    // 下凸壳 形似 y=x^2
+    int hh = 0, tt = 0;
+    q[0] = 0;
+
+    for (int i = 1; i <= n; ++i) {
+        while (hh < tt && slope(q[hh], q[hh + 1]) <= 2ll * s[i])
+            hh++;
+        int j = q[hh];
+        f[i] = f[j] + (s[i] - s[j] - 1 - L) * (s[i] - s[j] - 1 - L);
+        // while (hh < tt &&
+        //        (__int128)(y(q[tt]) - y(q[tt - 1])) * (x(i) - x(q[tt - 1])) >=
+        //            (__int128)(y(i) - y(q[tt - 1])) * (x(q[tt]) - x(q[tt - 1])))
+        while (hh < tt && slope(q[tt - 1], q[tt]) >= slope(i, q[tt - 1]))
+            tt--;
+        q[++tt] = i;
+    }
+    cout << f[n] << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu P3628 [APIO2010] 特别行动队](https://www.luogu.com.cn/problem/P3628)**
+> 
+> 题意: 
+> 
+> 有一支由 $n$ 名预备役士兵组成的部队，士兵从 $1$ 到 $n$ 编号，你要将他们拆分成若干特别行动队调入战场。出于默契的考虑，同一支特别行动队中队员的编号**应该连续**，即为形如 $(i, i + 1, \cdots i + k)$的序列。所有的队员都应该属于且仅属于一支特别行动队。
+> 
+> 编号为 $i$ 的士兵的初始战斗力为 $x_i$ ，一支特别行动队的初始战斗力 $X$ 为队内士兵初始战斗力之和，即 $X = x_i + x_{i+1} + \cdots + x_{i+k}$。
+> 
+> 对于一支初始战斗力为 $X$ 的特别行动队，其修正战斗力 $X'= aX^2+bX+c$，其中 $a,~b,~c$ 是已知的系数（$a < 0$）。 作为部队统帅，现在你要为这支部队进行编队，使得所有特别行动队的修正战斗力之和最大。试求出这个最大和。
+
+> [!TIP] **思路**
+> 
+> 二元方程转换即可，注意右侧只留一元的部分，其余全部丢左边
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const static int N = 1e6 + 10;
+
+LL n, a, b, c;
+LL s[N];
+
+int q[N];
+LL f[N];
+
+LL x(int i) { return s[i]; }
+
+LL y(int i) { return f[i] + a * s[i] * s[i]; }
+
+double slope(int a, int b) { return double(y(b) - y(a)) / (x(b) - x(a)); }
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> n >> a >> b >> c;
+    for (int i = 1; i <= n; ++i)
+        cin >> s[i], s[i] += s[i - 1];
+
+    // t = s[i] - s[j]
+    // f[i] = max{f[j] + a*t^2 + b*t + c}
+    // f[i] = f[j] + a*(s[i]^2-2*s[i]*s[j]+s[j]^2) + b*(s[i]-s[j]) + c
+    // f[i] = f[j] + a*s[i]^2 + b*s[i] - (b+2*a*s[i])*s[j] + a*s[j]^2 + c
+    // f[j] + a*s[j]^2 = (2*a*s[i]+b)*s[j] - (a*s[i]+b)*s[i] - c + f[i]
+    // 要求 f[i] 最大，则截距最大 => 又因a是负数 s[i]正数 => 斜率越来越小 (上凸)
+
+    memset(f, 0, sizeof f);
+
+    int hh = 0, tt = 0;
+    q[0] = 0;
+    for (int i = 1; i <= n; ++i) {
+        while (hh < tt && slope(q[hh], q[hh + 1]) >= 2ll * a * s[i] + b)
+            hh++;
+        int j = q[hh];
+        LL t = s[i] - s[j];
+        f[i] = f[j] + a * t * t + b * t + c;
+        while (hh < tt && slope(q[tt - 1], q[tt]) <= slope(q[tt - 1], i))
+            tt--;
+        q[++tt] = i;
+    }
+    cout << f[n] << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 二维
+
+> [!NOTE] **[Luogu P3648 [APIO2014] 序列分割](https://www.luogu.com.cn/problem/P3648)**
+> 
+> 题意: 
+> 
+> 一个关于长度为 $n$ 的非负整数序列。需要把序列分成 $k + 1$ 个非空的块。为了得到 $k + 1$ 块，你需要重复下面的操作 $k$ 次：
+> 
+> 选择一个有超过一个元素的块（初始时你只有一块，即整个序列）
+> 
+> 选择两个相邻元素把这个块从中间分开，得到两个非空的块。
+> 
+> 每次操作后你将获得那两个新产生的块的元素和的乘积的分数。你想要最大化最后的总得分。
+
+> [!TIP] **思路**
+> 
+> 重要推论: **答案与切的顺序无关**
+> 
+> 有了推论基础才能写出状态转移方程 $f[i][k] = max(f[j][k-1] + (s[i]-s[j]) * s[j])$
+> 
+> 这类题有可能会 **卡精度 卡常**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// ATTENTION: 重要推论
+
+// 1. slope return 1e18
+// 2. O2 优化 否则 10/11/12 TLE
+// 3. scanf + inline 否则还是 T
+
+using LL = long long;
+const static int N = 1e5 + 10, M = 210;
+
+int n, k;
+LL s[N];
+
+int q[N];
+LL f[N], g[N];
+int pre[N][M];
+
+inline LL x(int i) { return s[i]; }
+
+inline LL y(int i) {
+    return g[i] - s[i] * s[i];
+}  // ATTENTION g[i] instead of f[i]
+
+inline double slope(int a, int b) {
+    // 需要特判
+    if (x(b) == x(a))
+        return 1e18;  // 必须正无穷
+                      // 否则wa最后一个点【但是本地跑最后一个点可以过...】
+                      // 根据讨论区应该是卡精度了 建议 long double
+    return double(y(b) - y(a)) / (x(b) - x(a));
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    // cin >> n >> k;
+    scanf("%d%d", &n, &k);
+    s[0] = 0;
+    for (int i = 1; i <= n; ++i)
+        // cin >> s[i], s[i] += s[i - 1];
+        scanf("%lld", &s[i]), s[i] += s[i - 1];
+
+    // f[i][k] = max{f[j][k-1] + (s[i]-s[j]) * s[j]}
+    // 滚动数组压掉一维 => f[i] = f[j] + (s[i]-s[j])*s[j]
+    // f[j] - s[j]^2 = -s[i]*s[j] + f[i]
+    // f[i] 最大 => 截距最大 => s[i]递增(斜率递减) => 上凸
+
+    memset(f, 0, sizeof f), memset(g, 0, sizeof g);
+    memset(pre, -1, sizeof pre);
+
+    for (int _ = 1; _ <= k; ++_) {  // ATTENTION k次
+        int hh = 0, tt = 0;
+        q[0] = 0;
+        for (int i = 1; i <= n; ++i) {
+            while (hh < tt && slope(q[hh], q[hh + 1]) >= -s[i])
+                hh++;
+            int j = q[hh];
+            f[i] = g[j] + (s[i] - s[j]) * s[j];
+            pre[i][_] = j;  // ATTENTION
+            while (hh < tt && slope(q[tt - 1], q[tt]) <= slope(q[tt - 1], i))
+                tt--;
+            q[++tt] = i;
+        }
+        memcpy(g, f, sizeof f);
+    }
+    /*
+    cout << f[n] << endl;
+    for (int j = k, i = n; j; i = pre[i][j], --j)
+        cout << pre[i][j] << ' ';
+    cout << endl;
+    */
+    printf("%lld\n", f[n]);
+    for (int j = k, i = n; j; i = pre[i][j], --j)
+        printf("%d ", pre[i][j]);
+    printf("\n");
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 特殊公式推导
+
+> [!NOTE] **[Luogu P4360 [CEOI2004] 锯木厂选址](https://www.luogu.com.cn/problem/P4360)**
+> 
+> 题意: 
+> 
+> 从山顶上到山底下沿着一条直线种植了$n$棵老树。当地的政府决定把他们砍下来。为了不浪费任何一棵木材，树被砍倒后要运送到锯木厂。 
+> 
+> 木材只能朝山下运。山脚下有一个锯木厂。另外两个锯木厂将新修建在山路上。你必须决定在哪里修建这两个锯木厂，使得运输的费用总和最小。假定运输每公斤木材每米需要一分钱。 
+> 
+> 你的任务是编写一个程序，从输入文件中读入树的个数和他们的重量与位置，计算最小运输费用。
+
+> [!TIP] **思路**
+> 
+> 重点在于只开两个厂
+> 
+> - 枚举最高的工厂位置，则中间工厂的位置显然可以推导求最优 => 计算很麻烦，推翻
+> 
+> - 枚举中间工厂的位置，则左侧工厂的位置可以推导求最优 => 需使用 `全部运到山脚的总消耗` 去减优化的消耗
+> 
+> 重点在于对该推导过程进行斜率优化
+> 
+> **ATTENTION: 与标准斜率优化表达式不同, 必须通过两个值比较来推导 ==> 其实也可以转化为标准表达式, 【只是把其中一项 `d[j]*s[j]` 移动到左侧】**
+> 
+> TODO: **重复做 抽象出更具个人风格的流程**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const static int N = 2e4 + 10;
+
+int n;
+LL w[N], d[N];
+LL s[N];
+
+int q[N];
+
+double slope(int a, int b) {
+    return double(d[b] * s[b] - d[a] * s[a]) / (s[b] - s[a]);
+}
+
+int main() {
+    cin >> n;
+    for (int i = 1; i <= n; ++i)
+        cin >> w[i] >> d[i];
+
+    for (int i = n; i; --i)
+        d[i] += d[i + 1];
+    LL tot = 0;
+    for (int i = 1; i <= n; ++i)
+        s[i] = s[i - 1] + w[i], tot += d[i] * w[i];
+
+    // 正向计算显然非常不好算，考虑逆向，用所有树运下山的总费用，减去中间建厂的费用减少量
+    // s[j] 是正向的重量前缀和
+    // 【ATTENTION: 中间的厂作为 i ，最上面的作为 j 这样好转移】
+    // f[i] = min{tot - d[j]*s[j] - d[i]*(s[i]-s[j])}
+    //          tot - 最左侧的减少量 - 中间的减少量
+    // f[i] = -d[j]*s[j] - d[i]*s[i] + d[i]*s[j] + tot
+    // f[i] = (d[i]-d[j])*s[j] - d[i]*s[i] + tot
+    // f[i] 最小显然 （d[i]-d[j])*s[j] 最小
+    // 【ATTENTION: 与传统斜率优化不同】
+    //
+    // 另一思路:
+    // d[j]*s[j] = d[i]*s[j] - d[i]*s[i] + tot - f[i]
+    // 则 斜率 d[i]
+    // 也可以
+
+    int hh = 0, tt = 0;
+    q[0] = 0;
+    LL res = 2e9;
+    for (int i = 1; i <= n; ++i) {
+        // ATTENTION 对 >= d[i] 的推导
+        while (hh < tt && slope(q[hh], q[hh + 1]) >= d[i])
+            hh++;
+        int j = q[hh];
+        res = min(res, tot - d[j] * s[j] - d[i] * (s[i] - s[j]));
+        while (hh < tt && slope(q[tt - 1], q[tt]) <= slope(q[tt - 1], i))
+            tt--;
+        q[++tt] = i;
+    }
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 非单调栈维护
+
+> [!NOTE] **[Luogu P4027 [NOI2007] 货币兑换](https://www.luogu.com.cn/problem/P4027)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> TODO
+> 
+> splay / cdq
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu P2305 [NOI2014] 购票](https://www.luogu.com.cn/problem/P2305)**
+> 
+> 题意: 
+> 
+> 以 $1$ 为根共计 $n$ 个点的有根树，已知树边长。
+> 
+> 从 $v$ 前往 $1$ 的方法为：选择 $v$ 的一个祖先 $a$，支付购票的费用，乘坐交通工具到达 $a$。再选择城市 $a$ 的一个祖先 $b$，支付费用并到达 $b$。以此类推，直至到达 $1$。
+> 
+> 对于任意一个 $v$，我们会给出一个交通工具的距离限制 $l_v$。对于 $v$ 的祖先 A，只有当它们之间所有道路的总长度不超过 $l_v$  时，从 $v$ 才可以通过一次购票到达 A，否则不能通过一次购票到达。  
+> 
+> 对于每个 $v$，我们还会给出两个非负整数 $p_v,q_v$  作为票价参数。若城市 $v$ 到城市 A 所有道路的总长度为 $d$，那么从城市 $v$ 到城市 A 购买的票价为 $dp_v+q_v$。
+> 
+> 求用于购票的最少总资金
+
+> [!TIP] **思路**
+> 
+> 树上斜率优化
+> 
+> TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+
 ```
 
 ##### **Python**

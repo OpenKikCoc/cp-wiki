@@ -3376,6 +3376,111 @@ public:
 
 * * *
 
+> [!NOTE] **[Luogu P2501 [HAOI2006]数字序列](https://www.luogu.com.cn/problem/P2501)** [TAG]
+> 
+> 题意: 
+> 
+> 现在我们有一个长度为 $n$ 的整数序列 $a$。但是它太不好看了，于是我们希望把它变成一个单调严格上升的序列。但是不希望改变过多的数，也不希望改变的幅度太大。
+> 
+> 求最少需要改动多少个数，以及改动的绝对值和。
+
+> [!TIP] **思路**
+> 
+> 第一问通过数值映射求 LIS 变形即可
+> 
+> 第二问需要严格数学推导 **重点在推断出转移表达式 细节 => 随后前缀和优化即可**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const static int N = 4e4 + 10, INF = 0x3f3f3f3f;
+
+int n;
+LL a[N], b[N];
+int id[N];
+
+int h[N], e[N], ne[N], idx;
+void init() {
+    memset(h, -1, sizeof h);
+    idx = 0;
+}
+void add(int a, int b) { e[idx] = b, ne[idx] = h[a], h[a] = idx++; }
+
+LL g[N];  // 必须 LL 否则 WA
+
+int main() {
+    cin >> n;
+    for (int i = 1; i <= n; ++i)
+        cin >> a[i], b[i] = a[i] - i;
+    // ATTENTION: 必须有这个 否则全WA, 且 n 加了 1
+    b[0] = -INF, b[++n] = INF;
+
+    // Q1: LIS
+    vector<int> f;
+    for (int i = 1; i <= n; ++i)
+        if (f.empty() || f.back() <= b[i]) {  // ATTENTION: <=
+            f.push_back(b[i]);
+            id[i] = f.size();
+        } else {
+            // ATTENTION upper_bound instead of lower_bound WA
+            auto it = upper_bound(f.begin(), f.end(), b[i]);
+            *it = b[i];
+            id[i] = it - f.begin() + 1;
+        }
+    cout << n - f.size() << endl;
+
+    // Q2:
+    // 在 LIS
+    // 中每两个元素之间的其他所有元素，一定是前一段等于第一个元素，后一段等于第二个元素
+    init();
+    for (int i = 0; i <= n; ++i)  // start from 0
+        add(id[i], i);
+
+    memset(g, 0x3f, sizeof g);
+    g[0] = 0;
+    for (int i = 1; i <= n; ++i)
+        // ATTENTION: id[i] - 1 意味着从上升子序列的前面一个位置开始
+        for (int j = h[id[i] - 1]; ~j; j = ne[j]) {
+            int k = e[j];
+            if (k > i || b[k] > b[i])  // ATTENTION
+                continue;
+
+            static LL l[N], r[N];
+            for (int x = k; x <= i; ++x)
+                l[x] = (x > k ? l[x - 1] : 0) + abs(b[x] - b[k]);
+            for (int x = i; x >= k; --x)
+                r[x] = (x < i ? r[x + 1] : 0) + abs(b[x] - b[i]);
+
+            for (int x = k; x < i; ++x)
+                g[i] = min(g[i], g[k] + l[x] + r[x + 1]);
+        }
+    cout << g[n] << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 类 LIS 思想
 
 > [!NOTE] **[LeetCode 368. 最大整除子集](https://leetcode-cn.com/problems/largest-divisible-subset/)**

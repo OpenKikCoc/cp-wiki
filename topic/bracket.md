@@ -665,3 +665,93 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[AcWing 1153. 括号树](https://www.acwing.com/problem/content/description/1155/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 转化思维 注意细节
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const static int N = 5e5 + 10;
+
+int n;
+char s[N];
+int fa[N];
+
+vector<int> g[N];
+
+stack<int> st;
+// 考虑统计以每个结点作为末尾的合法子串的个数 t[i]，即合法的后缀子串
+// 这样最终答案 k[i] 就是当前结点到根结点所有 t[i] 的和
+LL k[N], t[N];
+
+void dfs(int u) {
+    int top = -1;
+    if (s[u] == '(') {
+        st.push(u);
+    } else {
+        if (!st.empty()) {
+            top = st.top();
+            t[u] = t[fa[top]] + 1;
+            st.pop();
+        }
+    }
+    
+    k[u] = k[fa[u]] + t[u]; // t[u]
+    
+    for (auto v : g[u])
+        dfs(v);
+    
+    if (s[u] == '(') {
+        st.pop();
+    } else {
+        if (top != -1)
+            st.push(top);
+    }
+}
+
+int main() {
+    cin >> n;
+    cin >> s + 1;
+    
+    for (int i = 2; i <= n; ++ i ) {
+        cin >> fa[i];
+        g[fa[i]].push_back(i);
+    }
+    
+    dfs(1);
+    
+    LL res = 0;
+    for (int i = 1; i <= n; ++ i )
+        res ^= (LL)i * k[i];
+    cout << res << endl;
+    
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

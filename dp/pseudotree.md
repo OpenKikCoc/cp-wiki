@@ -182,7 +182,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[AcWing 1080. 骑士](https://www.acwing.com/problem/content/1082/)**
+> [!NOTE] **[AcWing 1080. 骑士](https://www.acwing.com/problem/content/1082/)** [TAG]
 > 
 > 题意: 
 > 
@@ -200,7 +200,7 @@ int main() {
 > 
 >   **这样每个人都有且仅有一条出边【重要】**
 > 
->   只有跟节点可以成环 而环一定包含根节点
+>   只有根节点可以成环 而环一定包含根节点
 
 <details>
 <summary>详细代码</summary>
