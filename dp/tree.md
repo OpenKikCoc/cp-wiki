@@ -2727,6 +2727,113 @@ int main() {
 
 * * *
 
+> [!NOTE] **[Luogu P4516 [JSOI2018] 潜入行动](https://www.luogu.com.cn/problem/P4516)** [TAG]
+> 
+> 题意: 
+> 
+> 树的节点上放，可以监控**除了本节点**以外的其他相邻点
+> 
+> 求监控所有点的方案数
+
+> [!TIP] **思路**
+> 
+> 类似但有别于上一题 [AcWing 1077. 皇宫看守](https://www.acwing.com/problem/content/description/1079/)
+> 
+> **TODO: 思考细节**
+> 
+> 考虑分情况讨论
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const static int N = 1e5 + 10, M = 110, MOD = 1e9 + 7;
+
+int h[N], e[N << 1], ne[N << 1], idx;
+void init() {
+    memset(h, -1, sizeof h);
+    idx = 0;
+}
+void add(int a, int b) { e[idx] = b, ne[idx] = h[a], h[a] = idx++; }
+
+int n, k;
+
+int sz[N];
+// 以i为根共放了j个装置，其中i有没有放置，有没有被监听到 的所有方案数
+int f[N][M][2][2];  // 必须用 int 并在中间转LL
+void modadd(int& a, LL b) { a = (a % MOD + b % MOD) % MOD; }
+
+void dfs(int u, int fa) {
+    sz[u] = 1;
+    f[u][0][0][0] = f[u][1][1][0] = 1;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (j == fa)
+            continue;
+        dfs(j, u);
+
+        static int t[M][2][2];
+        memcpy(t, f[u], sizeof t), memset(f[u], 0, sizeof f[u]);
+        for (int x = 0; x <= min(sz[u], k); ++x)
+            for (int y = 0; y <= min(sz[j], k - x); ++y) {
+                // u 没被监听 => j 没放装置
+                modadd(f[u][x + y][0][0], (LL)t[x][0][0] * f[j][y][0][1]);
+                // u 没放但被监听 => 分情况
+                modadd(f[u][x + y][0][1],
+                       (LL)t[x][0][1] * ((LL)f[j][y][0][1] + f[j][y][1][1]) +
+                           (LL)t[x][0][0] * f[j][y][1][1]);
+                // u 没被监听但放了 => j 不能放装置
+                modadd(f[u][x + y][1][0],
+                       (LL)t[x][1][0] * (f[j][y][0][0] + f[j][y][0][1]));
+                // u 放了也被监听 => 分情况
+                modadd(f[u][x + y][1][1],
+                       (LL)t[x][1][0] * ((LL)f[j][y][1][0] + f[j][y][1][1]) +
+                           (LL)t[x][1][1] * ((LL)f[j][y][0][0] + f[j][y][0][1] +
+                                             f[j][y][1][0] + f[j][y][1][1]));
+            }
+
+        // sz 修改必须放最后
+        sz[u] += sz[j];
+    }
+}
+
+int main() {
+    init();
+
+    cin >> n >> k;
+    for (int i = 1; i < n; ++i) {
+        int a, b;
+        cin >> a >> b;
+        add(a, b), add(b, a);
+    }
+
+    dfs(1, -1);
+    cout << f[1][k][0][1] + f[1][k][1][1] << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[Codeforces Appleman and Tree](http://codeforces.com/problemset/problem/461/B)**
 > 
 > 题意: 
@@ -2807,6 +2914,107 @@ int main() {
     dfs(0, -1);
 
     cout << f[0][1] << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 进阶: 边/点 思维
+
+> [!NOTE] **[Luogu P3177 [HAOI2015] 树上染色](https://www.luogu.com.cn/problem/P3177)**
+> 
+> 题意: 
+> 
+> 有一棵点数为 $n$ 的树，树边有边权。给你一个在 $0 \sim n$ 之内的正整数 $k$ ，你要在这棵树中选择 $k$ 个点，将其染成黑色，并将其他 的 $n-k$ 个点染成白色。将所有点染色后，你会获得黑点两两之间的距离加上白点两两之间的距离的和的受益。问受益最大值是多少。
+
+> [!TIP] **思路**
+> 
+> 受益即为距离和
+> 
+> 转换思想: 求多个点对间的距离 => 求当前树边在多少点对路径上
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const static int N = 2010, M = N << 1;
+
+int h[N], e[M], w[M], ne[M], idx;
+void init() {
+    memset(h, -1, sizeof h);
+    idx = 0;
+}
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx++;
+}
+
+int n, k;
+
+int sz[N];
+LL f[N][N];  // 以i为根 黑色共有j个的受益总和
+
+void dfs(int u, int fa) {
+    sz[u] = 1;
+    // 当前点黑不黑都是0
+    f[u][0] = f[u][1] = 0;
+
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (j == fa)
+            continue;
+        dfs(j, u);
+        sz[u] += sz[j];
+
+        // 枚举u黑色数目
+        for (int x = min(k, sz[u]); x >= 0; --x)
+            // 枚举子树黑色数目 注意顺序case
+            for (int y = 0; y <= min(x, sz[j]); ++y)
+                // ATTENTION: when f[u][x - y] != -1
+                if (~f[u][x - y]) {
+                    // 从u指向j的边的贡献
+                    LL black = y * (k - y),
+                       white = (sz[j] - y) * ((n - sz[j]) - (k - y));
+                    // !!! w[i] 而不是 w[j] 写错了排查很久
+                    LL t = (black + white) * w[i];
+                    f[u][x] = max(f[u][x], f[u][x - y] + f[j][y] + t);
+                }
+    }
+}
+
+int main() {
+    init();
+
+    cin >> n >> k;
+    for (int i = 1; i < n; ++i) {
+        int a, b, c;
+        cin >> a >> b >> c;
+        add(a, b, c), add(b, a, c);
+    }
+
+    memset(f, -1, sizeof f);
+    dfs(1, -1);
+
+    cout << f[1][k] << endl;
 
     return 0;
 }

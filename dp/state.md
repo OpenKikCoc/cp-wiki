@@ -4531,3 +4531,297 @@ int main() {
 <br>
 
 * * *
+
+### 复杂状态定义
+
+> [!NOTE] **[Luogu P2157 [SDOI2009] 学校食堂](https://www.luogu.com.cn/problem/P2157)** [TAG]
+> 
+> 题意: 
+> 
+> $n$ 个人每人有属性值 $a[i]$ 和对后向的约束 $b[i]$
+> 
+> 顺序可调，但不能违背后向约束（即后面不能有多少个人排在当前人前面），同时消耗为相邻属性异或
+> 
+> 求最小总消耗
+
+> [!TIP] **思路**
+> 
+> 考虑当前位置，则既和前面的有关系也和后面的有关系。。。
+> 
+> 状压: **把当前候选人 $i$ 和其后 7 个人的吃饭状态压缩为 $j$，再加一维表示最后一个干饭的是谁**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 1010, M = 1 << 8, K = 18, D = 8, INF = 0x3f3f3f3f;
+
+int n, a[N], b[N];
+
+// 前i-1个人都打完了 第i以及后面7个人打状态为j 当前最后一个打饭的是i+k
+//  => k [-8, 7] 加个偏移量 D=8
+int f[N][M][K];
+
+void freshmin(int& a, int b) { a = min(a, b); }
+
+int cost(int x, int y) { return x ? a[x] ^ a[y] : 0; }
+
+int main() {
+    int T;
+    cin >> T;
+    while (T--) {
+        cin >> n;
+        for (int i = 1; i <= n; ++i)
+            cin >> a[i] >> b[i];
+
+        memset(f, 0x3f, sizeof f);
+        f[1][0][-1 + D] = 0;
+
+        for (int i = 1; i <= n; ++i)
+            for (int j = 0; j < M; ++j)
+                for (int k = -8; k <= 7; ++k) {
+                    if (f[i][j][k + D] >= INF / 2)
+                        continue;
+
+                    if (j & 1)
+                        // 第i个人打饭完成 可以直接转移
+                        freshmin(f[i + 1][j >> 1][k + D - 1], f[i][j][k + D]);
+                    else {
+                        int lim =
+                            INF;  // ATTENTION: 记录当前没有吃饭的人可以容忍的最后位置
+                        for (int x = 0; x <= 7; ++x)
+                            if (!(j >> x & 1)) {
+                                if (i + x > lim)
+                                    break;
+                                freshmin(lim, i + x + b[i + x]);
+                                freshmin(f[i][j | (1 << x)][x + D],
+                                         f[i][j][k + D] + cost(i + k, i + x));
+                            }
+                    }
+                }
+
+        int res = INF;
+        for (int k = -8; k <= 0; ++k)
+            res = min(res, f[n + 1][0][k + D]);
+        cout << res << endl;
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu P2167 [SDOI2009]Bill的挑战](https://www.luogu.com.cn/problem/P2167)** [TAG]
+> 
+> 题意: 
+> 
+> 给出 $N$ 个长度相同的字符串（由小写英文字母和 `?` 组成），$S_1,S_2,\dots,S_N$，求与这 $N$ 个串中的刚好 $K$ 个串匹配的字符串 $T$ 的个数，答案对 $1000003$ 取模。
+
+> [!TIP] **思路**
+> 
+> 由题意数据范围推测对 `所选取的串的编号` 进行状压
+> 
+> 显然需要数据预处理，随后递推计算即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 55, M = 1 << 15, MOD = 1e6 + 3;
+
+string s[N];
+int g[N][N];
+int f[N][M];
+
+void modadd(int& a, int b) { a = (a + b % MOD) % MOD; }
+
+int main() {
+    int T;
+    cin >> T;
+    while (T--) {
+        int n, k, m;
+        cin >> n >> k;
+        for (int i = 0; i < n; ++i)
+            cin >> s[i];
+        m = s[0].size();
+
+        // ATTENTION 状态设计
+        memset(g, 0, sizeof g);
+        for (int i = 0; i < m; ++i)
+            for (int j = 0; j < 26; ++j)
+                for (int x = 0; x < n; ++x)
+                    if (s[x][i] == '?' || s[x][i] == 'a' + j)
+                        g[i][j] |= 1 << x;
+
+        memset(f, 0, sizeof f);
+        f[0][(1 << n) - 1] = 1;  // 长度0 方案数1
+        for (int i = 0; i < m; ++i)
+            for (int j = 0; j < 1 << n; ++j)
+                if (f[i][j])
+                    for (int x = 0; x < 26; ++x)
+                        modadd(f[i + 1][j & g[i][x]], f[i][j]);
+        int res = 0;
+        for (int i = 0; i < 1 << n; ++i)
+            if (__builtin_popcount(i) == k)
+                modadd(res, f[m][i]);
+        cout << res << endl;
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu P2150 [NOI2015] 寿司晚宴](https://www.luogu.com.cn/problem/P2150)**
+> 
+> 题意: 
+> 
+> 有 $[2,n]$ 一共 $n−1$ 个数，两个人分别取子集 $S$ 和 $T$，要求不存在 $x∈S,y∈T$，使得 $gcd(x,y)!=1$
+> 
+> $2 <= n <= 500$
+
+> [!TIP] **思路**
+> 
+> TODO: 重复做
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// https://www.luogu.com.cn/blog/iamzxy/solution-p2150
+
+using LL = long long;
+const static int N = 510, M = (1 << 8) + 10;
+
+const int primes[8] = {2, 3, 5, 7, 11, 13, 17, 19};
+
+struct Node {
+    LL x, big, S;
+    bool operator<(const Node& t) const { return big < t.big; }
+    void init() {
+        LL t = x;
+        big = -1, S = 0;
+        for (int i = 0; i < 8; ++i) {
+            if (t % primes[i] == 0) {
+                S |= 1 << i;
+                while (t % primes[i] == 0)
+                    t /= primes[i];
+            }
+        }
+        // 唯一大质数 sqrt(500) > 20
+        if (t > 1)
+            big = t;
+    }
+} nums[N];
+
+LL n, p;
+void modadd(LL& a, LL b) { a = (a + b % p) % p; }
+
+LL f[M][M];
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> n >> p;
+    for (int i = 2; i <= n; ++i)
+        nums[i].x = i, nums[i].init();
+
+    // 把大质数相同的放在一起 则可以分成两大块
+    sort(nums + 2, nums + n + 1);
+
+    memset(f, 0, sizeof f);
+    f[0][0] = 1;
+
+    static LL f1[M][M], f2[M][M];
+    for (int i = 2; i <= n; ++i) {
+        // 如果都没有大质数或大质数不一样，就可以继承上一层合并的答案。（特判初始化）
+        if (i == 1 || nums[i].big ^ nums[i - 1].big || nums[i].big == -1)
+            memcpy(f1, f, sizeof f), memcpy(f2, f, sizeof f);
+
+        // 对第一维进行了压缩 所以必须逆序
+        for (int j = (1 << 8) - 1; j >= 0; --j)
+            for (int k = (1 << 8) - 1; k >= 0; --k)
+                if ((j & k) == 0) {
+                    int s = nums[i].S;
+                    // 集合
+                    if ((s & j) == 0)
+                        modadd(f1[j][k | s], f1[j][k]);
+                    if ((s & k) == 0)
+                        modadd(f2[j | s][k], f2[j][k]);
+                }
+
+        // 如果都没有大质数或大质数不一样（跟下一层比较），则可以合并答案（特判结束）
+        if (i == n || nums[i].big ^ nums[i + 1].big || nums[i].big == -1)
+            for (int j = 0; j <= (1 << 8) - 1; ++j)
+                for (int k = 0; k <= (1 << 8) - 1; ++k)
+                    if ((j & k) == 0)
+                        // 减去重复情况
+                        f[j][k] = (f1[j][k] + f2[j][k] - f[j][k] + p) % p;
+    }
+
+    LL res = 0;
+    for (int i = 0; i <= (1 << 8) - 1; ++i)
+        for (int j = 0; j <= (1 << 8) - 1; ++j)
+            if ((i & j) == 0)
+                modadd(res, f[i][j]);
+    cout << res << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
