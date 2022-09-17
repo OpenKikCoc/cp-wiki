@@ -1,3 +1,15 @@
+> [!NOTE] **注意**
+> 
+> 单调队列在实际应用中往往需要根据推导对形式进行转换，转换后的代码实现逻辑会与转换前有非常大的不同
+> 
+> 所以 **一定要梳理清楚形式转换和维护的逻辑**
+> 
+> 典型的代码实现与暴力实现差异极大的形如:
+> 
+> - 单调队列优化多重背包
+> 
+> - 推导转化单调推列维护 (比如 [Luogu P3089 [USACO13NOV]Pogo-Cow S(https://www.luogu.com.cn/problem/P3089))
+
 前置知识: [单调队列](ds/monotonous-queue.md) 及 [单调栈](ds/monotonous-stack.md) 部分。
 
 > [!NOTE] **例题[CF372C Watching Fireworks is Fun](http://codeforces.com/problemset/problem/372/C)**
@@ -637,6 +649,581 @@ public:
         return f[n];
     }
 };
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 单调队列 转化形式
+
+> [!NOTE] **[Luogu P3089 [USACO13NOV]Pogo-Cow S](https://www.luogu.com.cn/problem/P3089)**
+> 
+> 题意: 
+> 
+> $Betty$ 在一条直线的 $N(1\leq N\leq 1000)$ 个目标点上跳跃，目标点i在目标点 $x(i)$，得分为 $p(i)$。$Betty$ 可选择<strong>任意一个目标点上</strong>，<strong>只朝一个方向跳跃</strong>，且每次跳跃距离<strong>成不下降序列</strong>。
+> 
+> 每跳到一个目标点，$Betty$ 可以拿到该点的得分，求最大总得分。
+
+> [!TIP] **思路**
+> 
+> 推导和形式转换
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// https://www.luogu.com.cn/blog/gzw2005/luogup3089-usaco13novpogo-di-niu-pogo-cow
+
+using PII = pair<int, int>;
+const static int N = 1010, INF = 0x3f3f3f3f;
+
+#define x first
+#define s second
+
+int n;
+PII xs[N];
+
+int f[N][N];  // f[i][j] 表示当前位置 i 上一个位置 j 的最大得分
+
+int main() {
+    cin >> n;
+    for (int i = 1; i <= n; ++i)
+        cin >> xs[i].x >> xs[i].s;
+    // 按位置从左到右排序
+    sort(xs + 1, xs + n + 1);
+
+    // f[i][j] = max{f[j][k] + s[i]}
+    //  => f[i][j] = max{f[j][k]} + s[i]
+    // 【其中 i,j,k 的位置有约束，需满足  x(j) - x(k) <= x(i) - x(j)】
+    // 考虑: f[i-1][j] = max{f[j][k]} + s[i-1]
+    // 则有【注意: 非严格等于, 可以取到的范围比f[i-1][j]更大】:
+    //  => f[i][j] = max{f[i-1][j] - s[i-1] + s[i], 以及更大的一个部分}
+    // 为什么会范围更大?
+    //   => 因为 x(i) > x(i-1)，而上式对应 x(j) - x(k) <= x(i-1) - x(j)
+
+    int res = 0;
+
+    for (int j = 1; j <= n; ++j) {
+        f[j][j] = xs[j].s;  // 边界
+        int maxv = -INF;
+        for (int i = j + 1, k = j; i <= n; ++i) {
+            while (k >= 1 && xs[j].x - xs[k].x <= xs[i].x - xs[j].x)
+                maxv = max(maxv, f[j][k]), k--;
+            // ATTENTION 这种写法不需要再 -xs[i-1].s
+            f[i][j] = maxv + xs[i].s;
+            res = max(res, f[i][j]);
+        }
+        res = max(res, f[j][j]);
+    }
+
+    for (int j = n; j >= 1; --j) {
+        f[j][j] = xs[j].s;
+        int maxv = -INF;
+        for (int i = j - 1, k = j; i >= 1; --i) {
+            while (k <= n && xs[k].x - xs[j].x <= xs[j].x - xs[i].x)
+                maxv = max(maxv, f[j][k]), k++;
+            f[i][j] = maxv + xs[i].s;
+            res = max(res, f[i][j]);
+        }
+        res = max(res, f[j][j]);
+    }
+
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
+> [!NOTE] **[Luogu P5665 [CSP-S2019] 划分](https://www.luogu.com.cn/problem/P5665)** [TAG]
+> 
+> 题意: 
+> 
+> 长度为 $n$ 的序列分为任意段，要求每段的数值和都大于等于前面的一段，每段有其消耗为数值和的平方
+> 
+> 求最小总消耗
+
+> [!TIP] **思路**
+> 
+> 状态转移约束上类似上一题 [Luogu P3089 [USACO13NOV]Pogo-Cow S](https://www.luogu.com.cn/problem/P3089)
+> 
+> **较裸的状态转移**
+> 
+> 考虑到划分的段是递增的，设 $dp[i][j]$ 为划分到第 $i$ 个的前驱是 $j$，转移：
+> 
+> $$
+> dp[i][j]=dp[j][k]+(sum[i]-sum[j])^2
+> $$
+> 
+> 判一下递增，暴力转移时间复杂度 $O(n^3)$
+> 
+> **单调队列优化**
+> 
+> 可以固定 $j$，发现在移动 $i$ 的过程中，$k$ 也在移动，满足一个单调性
+> 
+> 故可以维护一个 $dp[j][k]$ 的最小值，时间复杂度 $O(n^2)$
+> 
+> 仍然不能通过本题的数据范围
+> 
+> **结合贪心优化**
+> 
+> 注意到：在合法的情况下，$dp[i][j]\leq dp[i][j-1]$
+> 
+> 所以最右边的前驱是最优的，然后我们不考虑更新，而考虑转移点（即对应位置 $i$ 对应的一段由哪一个位置 $j$ `pre[i]` 转移过来）
+> 
+> 可以维护一个单调队列
+> 
+> - 队头维护转移点，如果满足约束则尽量向右移动
+> 
+> - 队尾维护最值 $s[j] * 2 - s[pre[j]]$ **(注意推导细节)**
+> 
+> 时间复杂度 $O(n)$
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// 重要性质: 考虑最后的答案，最优解必然满足最后一段最小
+
+using LL = long long;
+const static int N = 4e7 + 10, M = 1e5 + 10, MOD = 1 << 30;
+
+int n, type;
+int a[N], b[N], p[M], l[M], r[M];
+
+LL s[N], f[N];     // 以i结尾的最优方案
+int q[N], pre[N];  // ATTENTION: pre同时记录以i结尾的最小段；与前述重要性质关联
+
+void print(__int128 x) {
+    if (x == 0)
+        return;
+    print(x / 10);
+    cout << int(x % 10);
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> n >> type;
+    if (type) {
+        int x, y, z, m;
+        cin >> x >> y >> z >> b[1] >> b[2] >> m;
+        for (int i = 1; i <= m; ++i)
+            cin >> p[i] >> l[i] >> r[i];
+        for (int i = 3; i <= n; ++i)
+            b[i] = ((LL)b[i - 1] * x + (LL)b[i - 2] * y + z) % MOD;
+        for (int i = 1; i <= m; ++i)
+            for (int j = p[i - 1] + 1; j <= p[i]; ++j) {
+                a[j] = (b[j] % (r[i] - l[i] + 1)) + l[i];
+                s[j] = s[j - 1] + a[j];
+            }
+    } else {
+        for (int i = 1; i <= n; ++i) {
+            cin >> a[i];
+            s[i] = s[i - 1] + a[i];
+        }
+    }
+
+    // ATTENTION 要非常注意此处我们仍然使用的是闭区间，但是预先加入 0 【一段可能的最左起始位置显然0】
+    // 以及 在后续 while 循环中需要保证至少两个数，所以是 < 而不是 <=
+    int hh = 0, tt = -1;
+    q[++tt] = 0;
+    for (int i = 1; i <= n; ++i) {
+        // ATTENTION hh < tt instead of hh <= tt
+        // 在满足区间和约束的情况下，如果可以往后走，就一直往后
+        // 对应 get(j) = s*s[j] - pre[s[j]] <= s[i]
+        while (hh < tt &&
+               s[q[hh + 1]] - s[pre[q[hh + 1]]] <= s[i] - s[q[hh + 1]])
+            hh++;
+        pre[i] = q[hh];     // i 位置本段左侧的转移点为 q[hh]
+        // 注意 维护的时候包含两部分值
+        // s[j] - s[pre[j]] + s[j] >= s[i] - s[pre[i]] + s[i]
+        // 为什么两边又加了一遍对应位置的 s 值？
+        // ==> pre[i] 为 max_j 的 s[i] - s[j] >= s[j] - s[pre[j]]
+        // ==> 即为 s[i] >= s[j] * 2 - s[pre[j]]
+        //  故 维护 s[j] * 2 - s[pre[j]] 的最值即可
+        // 对应 get(q[tt]) >= get(i)
+        while (hh < tt && s[q[tt]] - s[pre[q[tt]]] + s[q[tt]] >= s[i] - s[pre[i]] + s[i])
+            tt--;
+        q[++tt] = i;
+    }
+
+    __int128 res = 0;
+    for (int p = n; p; p = pre[p]) {
+        __int128 t = s[p] - s[pre[p]];
+        res += t * t;
+    }
+    print(res);
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+
+> [!NOTE] **[Luogu P3522 [POI2011]TEM-Temperature](https://www.luogu.com.cn/problem/P3522)** [TAG]
+> 
+> 题意: 
+> 
+> 对每一天的天气都给出上界和下界，求最长可能有多少个连续天的温度不下降
+
+> [!TIP] **思路**
+> 
+> 重点在于 **连续天**，连续则可以进一步思考一段合法的连续段有何性质
+> 
+> luogu 的题解描述非常有歧义
+> 
+> 应当是：一段合法连续段必须满足【**本连续段内: 任意位置作为末尾，该位置的上界一定要大于等于前面的所有位置的下界**】
+> 
+> 则单调队列维护下界的最大值 (思考) ，并在维护过程中记录 res 即可
+> 
+> **重要: 问题转化为单调队列的思想**
+> 
+> **TODO: 感觉单调栈也可以做？**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 1e6 + 10;
+
+int n;
+int l[N], r[N];
+
+int q[N];  // 递减的序列
+
+int main() {
+    cin >> n;
+
+    for (int i = 1; i <= n; ++i)
+        cin >> l[i] >> r[i];
+
+    int res = 0;
+    int hh = 0, tt = -1;
+    for (int i = 1; i <= n; ++i) {
+        while (hh <= tt && l[q[hh]] > r[i])
+            hh++;
+
+        while (hh <= tt && l[q[tt]] <= l[i])
+            tt--;
+        q[++tt] = i;
+
+        // cout << " hh = " << hh << " tt = " << tt << endl;
+        // cout << " q[tt] = " << q[tt] << " q[hh-1] = " << q[hh - 1] << endl;
+
+        // ATTENTION: 这里用 q[hh-1] 因为 q[hh-1] 是往左数第一个不符合条件的位置
+        // 细节 思考
+        res = max(res, q[tt] - q[hh - 1]);
+    }
+
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu P4544 [USACO10NOV]Buying Feed G](https://www.luogu.com.cn/problem/P4544)**
+> 
+> 题意: 
+> 
+> 见题目链接
+
+> [!TIP] **思路**
+> 
+> 列公式 => 拆分 => 变量和常量 => 单调队列维护变量最值
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using LL = long long;
+const static int N = 510, M = 10010;
+
+struct Node {
+    LL x, f, c;
+    bool operator<(const Node& t) { return x < t.x; }
+} xs[N];
+
+int k, e, n;
+
+LL f[N][M];  // 走过了前i个商店 当前拥有饲料j的最小花费
+int q[M];    // 注意是 M 不是 N, 因为单调队列存的是第二维
+
+LL get(int i, int k) {
+    return f[i - 1][k] + (xs[i].x - xs[i - 1].x) * k * k - xs[i].c * k;
+}
+
+int main() {
+    cin >> k >> e >> n;
+
+    for (int i = 1; i <= n; ++i)
+        cin >> xs[i].x >> xs[i].f >> xs[i].c;
+    sort(xs + 1, xs + n + 1);
+
+    // f[i][j] = min(f[i - 1][j],
+    // 				 f[i - 1][k] + k * k * (x[i] - x[i - 1]) + (j - k) * c[i])
+    // f[i][j] = min{
+    //	f[i - 1][k] + k * k * (x[i] - x[i - 1]) - k * c[i] + j * c[i] }
+    // 其中 k 显然有限制:  0<=j-k<=f[i]
+    // 				=> k <= j && k >= j-f[i]
+    // 重点在于在避免枚举的情况下求得对应的 k 和 f 值
+
+    memset(f, 0x3f, sizeof f);
+    f[0][0] = 0;
+
+    for (int i = 1; i <= n; ++i) {
+        int hh = 0, tt = -1;
+        for (int j = 0; j <= k; ++j) {
+            // 排除 k(q[hh]) 不合法的部分
+            while (hh <= tt && q[hh] < j - xs[i].f)
+                hh++;
+            while (hh <= tt && get(i, q[tt]) >= get(i, j))
+                tt--;
+            q[++tt] = j;
+            f[i][j] = get(i, q[hh]) + xs[i].c * j;
+        }
+    }
+    cout << f[n][k] + ((LL)e - xs[n].x) * k * k << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 单调性优化
+
+> [!NOTE] **[Luogu P1973 [NOI2011] NOI 嘉年华](https://www.luogu.com.cn/problem/P1973)** [TAG]
+> 
+> 题意: 
+> 
+> 给出 $n$ 个区间, 让你把这些区间分成两份, 允许丢弃, 两份区间不能有交
+> 
+> Q1: 让两份中分到区间数最小的一份, 尽量得到更多的区间
+> 
+> Q2: 在第 $∀i$ 个区间必须不丢弃的情况下的上一问答案
+
+> [!TIP] **思路**
+> 
+> 显然可以定义 `前 i 个时刻(已离散化)第一份选择了 j 个 此时第二份最多能选择多少个`
+> 
+> Q1 可以直接由上述状态维护计算得出
+> 
+> 考虑 Q2 需要想到**类似前后缀分解的思路**: 枚举中间一段必选(假定直接给第一份) 在此基础上再枚举前面和后面第一份各选了多少个
+> 
+> => 显然枚举复杂度 $O(n^4)$ 较高，**进一步考虑【左边选的越多，右边相应一定选的越少】利用单调性提前 break 降低真实复杂度**
+> 
+> 非常好的题 细节很多
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using PII = pair<int, int>;
+using LL = long long;
+const static int N = 410, INF = 0x3f3f3f3f;
+
+int n;
+int s[N], t[N];
+vector<int> xs;
+int get(int x) { return lower_bound(xs.begin(), xs.end(), x) - xs.begin() + 1; }
+
+int c[N][N];  // 统计在某个时间段内的活动有多少个
+
+// 前i个时刻(已离散化)第一份选择了j个 此时第二份最多能选择多少个
+int f[N][N];
+// 后i个时刻 第一份选择了j个 此时第二份最多能选择多少个
+int g[N][N];
+// 前面选到i 后面从j开始选 中间都给第一个时
+// 【二者在一起最少的那个】最多能选多少个
+int p[N][N];
+
+int main() {
+    cin >> n;
+
+    xs.clear();
+    for (int i = 0; i < n; ++i) {
+        cin >> s[i] >> t[i];
+        t[i] += s[i];
+        xs.push_back(s[i]), xs.push_back(t[i]);
+    }
+    sort(xs.begin(), xs.end());
+    xs.erase(unique(xs.begin(), xs.end()), xs.end());
+
+    int m = xs.size();
+
+    for (int i = 1; i <= m; ++i)
+        for (int j = i; j <= m; ++j) {
+            int l = xs[i - 1], r = xs[j - 1], cnt = 0;
+            for (int k = 0; k < n; ++k)
+                if (s[k] >= l && t[k] <= r)
+                    cnt++;
+            c[i][j] = cnt;
+        }
+
+    memset(f, 0xcf, sizeof f);  // -INF
+    f[1][0] = 0;                // ATTENTION 注意转移
+    for (int i = 1; i <= m; ++i)
+        for (int j = 0; j <= n; ++j)
+            // 枚举本段开始位置位置【最终形成的段不包含i处对应的时间点 细节】
+            for (int k = 1; k <= i; ++k) {
+                int x = c[k][i];
+                // 最后一段放到第一份
+                if (j >= x)
+                    f[i][j] = max(f[i][j], f[k][j - x]);
+                // 最后一段放到第二份
+                f[i][j] = max(f[i][j], f[k][j] + x);  // 注意状态转移方程
+            }
+
+    {
+        // Q1
+        int res = 0;
+        for (int i = 1; i <= n; ++i)
+            res = max(res, min(f[m][i], i));
+        cout << res << endl;
+    }
+
+    // Q2
+    // 要求中间某个必选，则可以按照这个必选的区间作为中间部分，分别求左右侧选取的不同情况
+    // 则 必然需要反向求后缀的 f 数组，假定命名其为 g
+
+    // 求g
+    memset(g, 0xcf, sizeof g);
+    g[m][0] = 0;  // 边界
+    for (int i = m; i >= 1; --i)
+        for (int j = 0; j <= n; ++j)
+            for (int k = i; k <= m; ++k) {
+                int x = c[i][k];
+                if (j >= x)
+                    g[i][j] = max(g[i][j], g[k][j - x]);
+                g[i][j] = max(g[i][j], g[k][j] + x);
+            }
+
+    // 求s
+    for (int i = 1; i <= m; ++i)
+        for (int j = i + 1; j <= m; ++j) {
+            // ATTENTION 只能在这里初始化，对于其他部分都应该是0
+            p[i][j] = -INF;
+            // 左侧第一个选x个 右侧第一个选y个
+            for (int x = 0; x <= n; ++x) {
+                // ATTENTION 左边选的越多 右边能选的越少
+                // 使用 break 排除一些方案【思考】
+                if (f[i][x] < 0)
+                    break;
+                for (int y = 0; y + x <= n; ++y) {
+                    if (g[j][y] < 0)
+                        break;
+                    // 第二个的 第一个的
+                    int t = min(f[i][x] + g[j][y], x + y + c[i][j]);
+                    // cout << " t = " << t << ' ';
+                    p[i][j] = max(p[i][j], t);
+                }
+            }
+        }
+
+    for (int x = 1; x <= n; ++x) {
+        int res = 0;
+        for (int i = 1; i <= get(s[x - 1]); ++i)
+            for (int j = get(t[x - 1]); j <= m; ++j) {
+                res = max(res, p[i][j]);
+            }
+
+        cout << res << endl;
+    }
+
+    return 0;
+}
 ```
 
 ##### **Python**
