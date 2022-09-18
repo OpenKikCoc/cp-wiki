@@ -3293,6 +3293,116 @@ class Solution:
 
 * * *
 
+> [!NOTE] **[Luogu P2569 [SCOI2010]股票交易](https://www.luogu.com.cn/problem/P2569)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 单调队列优化
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 2010;
+
+void freshmax(int& a, int b) { a = max(a, b); }
+
+int t, mp, w;
+int ap[N], bp[N], as[N], bs[N];
+
+// 第i天结束 拥有j个股票 可以赚到第最多钱数
+int f[N][N];
+int q[N];
+
+int main() {
+    cin >> t >> mp >> w;
+
+    memset(f, 0xcf, sizeof f);
+
+    for (int i = 1; i <= t; ++i) {
+        cin >> ap[i] >> bp[i] >> as[i] >> bs[i];
+
+        // 1. 不买不卖
+        for (int j = 0; j <= mp; ++j)
+            freshmax(f[i][j], f[i - 1][j]);
+
+        // 2. 凭空买
+        for (int j = 0; j <= as[i] && j <= mp; ++j)
+            freshmax(f[i][j], -1 * j * ap[i]);
+
+        if (i <= w)
+            continue;
+
+        // 3. 在之前的基础上买股票
+        // f[i][j] = max{f[i-w-1][k] - (j-k)*ap[i]}
+        // 其中 j-as[i] <= k < j 显然可以单调队列优化
+        {
+            int hh = 0, tt = -1;
+            for (int j = 0; j <= mp; ++j) {
+                while (hh <= tt && q[hh] < j - as[i])
+                    hh++;
+                if (hh <= tt) {
+                    int k = q[hh];
+                    freshmax(f[i][j], f[i - w - 1][k] - (j - k) * ap[i]);
+                }
+                while (hh <= tt && f[i - w - 1][q[tt]] + q[tt] * ap[i] <=
+                                       f[i - w - 1][j] + j * ap[i])
+
+                    tt--;
+                q[++tt] = j;
+            }
+        }
+
+        // 4. 在之前第基础上卖股票
+        // f[i][j] = max(f[i - w - 1][k] + (k-j)*bp[i])
+        // 其中 j < k <= j+bs[i]
+        {
+            int hh = 0, tt = -1;
+            for (int j = mp; j >= 0; --j) {
+                while (hh <= tt && q[hh] > j + bs[i])
+                    hh++;
+                if (hh <= tt) {
+                    int k = q[hh];
+                    freshmax(f[i][j], f[i - w - 1][k] + (k - j) * bp[i]);
+                }
+                while (hh <= tt && f[i - w - 1][q[tt]] + q[tt] * bp[i] <=
+                                       f[i - w - 1][j] + j * bp[i])
+                    tt--;
+                q[++tt] = j;
+            }
+        }
+    }
+
+    int res = 0;
+    for (int i = 0; i <= mp; ++i)
+        freshmax(res, f[t][i]);
+    cout << res << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 打家劫舍
 
 > [!NOTE] **[LeetCode 198. 打家劫舍](https://leetcode-cn.com/problems/house-robber/)**

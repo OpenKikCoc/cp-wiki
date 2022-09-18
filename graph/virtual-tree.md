@@ -235,3 +235,37 @@ void build() {
 - [「HEOI2014」大工程](https://darkbzoj.tk/problem/3611)
 - [CF613D Kingdom and its Cities](http://codeforces.com/contest/613/problem/D/)
 - [「HNOI2014」世界树](https://darkbzoj.tk/problem/3572)
+
+
+### TODO
+
+> [!NOTE] **[Luogu P3783 [SDOI2017]天才黑客](https://www.luogu.com.cn/problem/P3783)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

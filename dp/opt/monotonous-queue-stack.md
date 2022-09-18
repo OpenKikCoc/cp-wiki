@@ -664,6 +664,111 @@ public:
 
 * * *
 
+> [!NOTE] **[Luogu P4852 yyf hates choukapai](https://www.luogu.com.cn/problem/P4852)**
+> 
+> 题意: 
+> 
+> 在抽每张卡时欧气值都是固定的，第 $i$ 张卡的欧气值为 $a_i$ ，而在连抽时，欧气值等于第一张卡的欧气值。
+> 
+> “每次抽卡的欧气之和”指每次单抽的欧气之和加上每次连抽的欧气之和，一次连抽的欧气不加权，只计算一次
+> 
+> yyf想 $c$ 连抽（连续抽 $c$ 张卡） $n$ 次，单抽 $m$ 次，因为一直单抽太累，**yyf不想连续单抽超过 $d$ 次（可以连续单抽恰好 $d$ 次）**。
+> 
+> 共有 $c*n+m$ 张卡，抽卡的顺序不能改变，每张卡都必须且只能抽一次，只能改变哪几张卡连抽、哪几张卡单抽。那么yyf每次抽卡的欧气之和最多能达到多少，又如何实现呢？
+
+> [!TIP] **思路**
+> 
+> 代码实现形式发生转换
+> 
+> 注意维护队头和队尾的细节
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// ATTENTION 对于前面i张牌，一旦连抽的次数确定，则单抽次数确定
+
+const static int N = 200010, M = 41;
+
+int n, m, c, d, tot;
+
+int a[N], s[N];
+int f[N][M], pre[N][M];
+
+int q[N];
+
+int get(int k, int j) { return f[k][j - 1] + a[k + 1] - s[k + c]; }
+void print(int i, int j) {
+    if (!j)
+        return;
+    print(pre[i][j], j - 1);
+    cout << pre[i][j] + 1 << ' ';
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> n >> m >> c >> d;
+
+    tot = c * n + m;
+
+    for (int i = 1; i <= tot; ++i) {
+        cin >> a[i];
+        s[i] = s[i - 1] + a[i];
+    }
+
+    memset(f, 0xcf, sizeof f);
+    for (int i = 1; i <= d; ++i)
+        f[i][0] = s[i];
+    f[0][0] = 0;
+
+    // f[i][j] = max{f[k][j - 1] + a[k+1] + s[i] - s[k + c]}
+    // 其中 max(0,i-c-d) <= k <= i-c
+    // 显然先枚举第二维，滚动第一维
+    for (int j = 1; j <= n; ++j) {  // j = 0 时已被初始化
+        int hh = 0, tt = -1;
+
+        for (int i = j * c; i <= tot; ++i) {
+            while (hh <= tt && q[hh] < i - c - d)
+                hh++;
+            // ATTENTION 注意维护队尾的操作 放在取值之前
+            while (hh <= tt && get(q[tt], j) <= get(i - c, j))
+                tt--;
+            q[++tt] = i - c;
+            if (get(q[hh], j) + s[i] > f[i][j])
+                f[i][j] = get(q[hh], j) + s[i], pre[i][j] = q[hh];
+        }
+    }
+
+    cout << f[tot][n] << endl;
+    print(tot, n);
+    cout << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 单调队列 转化形式
 
 > [!NOTE] **[Luogu P3089 [USACO13NOV]Pogo-Cow S](https://www.luogu.com.cn/problem/P3089)**
@@ -1076,7 +1181,79 @@ int main() {
 
 * * *
 
-### 单调性优化
+### 决策单调性优化
+
+> TODO: https://www.luogu.com.cn/training/9352 Part 4.9 斜率优化动态规划
+
+> [!NOTE] **[Luogu P3515 [POI2011]Lightning Conductor](https://www.luogu.com.cn/problem/P3515)** TODO
+> 
+> 题意: 
+> 
+> 给定一个长度为 $n$ 的序列 $\{a_n\}$，对于每个 $i\in [1,n]$ ，求出一个最小的非负整数 $p$ ，使得 $\forall j\in[1,n]$，都有 $a_j\le a_i+p-\sqrt{|i-j|}$
+> 
+> $1 \le n \le 5\times 10^{5}$，$0 \le a_i \le 10^{9}$
+
+> [!TIP] **思路**
+> 
+> 意即任意两个元素之间都满足该不等式
+> 
+> 考虑顺序无关，直接找最小的和最大的
+> 
+> TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu P4767 [IOI2000]邮局](https://www.luogu.com.cn/problem/P4767)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 > [!NOTE] **[Luogu P1973 [NOI2011] NOI 嘉年华](https://www.luogu.com.cn/problem/P1973)** [TAG]
 > 
@@ -1224,6 +1401,68 @@ int main() {
 
     return 0;
 }
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu P3724 [AHOI2017/HNOI2017]大佬](https://www.luogu.com.cn/problem/P3724)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu P5574 [CmdOI2019]任务分配问题](https://www.luogu.com.cn/problem/P5574)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+
 ```
 
 ##### **Python**

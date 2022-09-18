@@ -2453,3 +2453,90 @@ public:
 <br>
 
 * * *
+
+### TODO 思想 结合其他知识
+
+> [!NOTE] **[Luogu P3294 [SCOI2016]背单词](https://www.luogu.com.cn/problem/P3294)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 100010, M = 600010;
+int n, tr[M][26], flag[M], idx_t;  // trie
+string str[N];
+int h[M], ptr[N], val[N], sz[M], idx_g;  // 链式前向星
+void insert(string str) {
+    int p = 0, c = str[0] - 'a';
+    for (int i = 0; i < (int)str.size(); i++, c = str[i] - 'a')
+        p = ((tr[p][c]) ? tr[p][c] : (tr[p][c] = ++idx_t));
+    flag[p] = true;  // 标记结尾
+}
+// 加边函数
+void add(int a, int b) { val[idx_g] = b, ptr[idx_g] = h[a], h[a] = idx_g++; }
+void update(int p, int top) {
+    // 如果 v 是结尾，加边
+    for (int i = 0; i < 26; i++)
+        if (flag[tr[p][i]])
+            add(top, tr[p][i]);
+    for (int i = 0; i < 26; i++)
+        if (flag[tr[p][i]])
+            update(tr[p][i], tr[p][i]);
+        else if (tr[p][i])
+            update(tr[p][i], top);
+}
+long long res = 0;
+void DFS(int u) {
+    // 计算子树大小
+    sz[u] = 1;
+    for (int i = h[u]; i != -1; i = ptr[i])
+        DFS(val[i]), sz[u] += sz[val[i]];
+    // 贪心计算答案
+    vector<int> temp;
+    for (int i = h[u]; i != -1; i = ptr[i])
+        temp.push_back(sz[val[i]]);
+    sort(temp.begin(), temp.end());
+    int delta = 1;  // 偏移量
+    for (int i = 0; i < (int)temp.size(); i++)
+        res += delta, delta += temp[i];
+}
+int main() {
+    cin >> n;
+    for (int i = 1; i <= n; i++)
+        cin >> str[i];
+    for (int i = 1; i <= n; i++)
+        reverse(str[i].begin(), str[i].end());  // 翻转
+    for (int i = 1; i <= n; i++)
+        insert(str[i]);  // 插入
+    memset(h, -1, sizeof h);
+    update(0, 0), DFS(0);
+    cout << res << endl;
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+

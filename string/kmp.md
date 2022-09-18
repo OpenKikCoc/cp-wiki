@@ -562,6 +562,101 @@ public:
 
 * * *
 
+### TODO
+
+> [!NOTE] **[Luogu P3435 [POI2006] OKR-Periods of Words](https://www.luogu.com.cn/problem/P3435)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu P2375 [NOI2014] 动物园](https://www.luogu.com.cn/problem/P2375)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Luogu P3426 [POI2005]SZA-Template](https://www.luogu.com.cn/problem/P3426)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 循环节
 
 > [!NOTE] **[LeetCode 459. 重复的子字符串](https://leetcode.cn/problems/repeated-substring-pattern/)**
@@ -800,7 +895,6 @@ int main() {
 <br>
 
 * * *
-
 
 ### 构造
 
