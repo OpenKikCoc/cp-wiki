@@ -57,7 +57,27 @@
 > }
 > ```
 
-
+> [!NOTE] **$Gosper's Hack$ 算法**
+>
+> 可以在 $O(1)$ 的时间复杂度内找到下一个大小为固定值的集合
+>
+> https://zhuanlan.zhihu.com/p/360512296
+>
+> ```cpp
+> void GospersHack(int k, int n) {
+>     int cur = (1 << k) - 1;
+>     int limit = 1 << n;
+>     while (cur < limit) {
+>         // do something
+> 
+>         // algorithm
+>         int lb = cur & -cur;
+>         int r = cur + lb;
+>         cur = ((r ^ cur) >> __builtin_ctz(lb) + 2) | r;
+>         // 或: cur = (((r ^ cur) >> 2) / lb) | r;
+>     }
+> }
+> ```
 
 
 ## 例题
@@ -725,6 +745,94 @@ public:
             res += words[t.back()];
         }
         // cout << " res.size() = " << res.size() << endl;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 2397. 被列覆盖的最多行数](https://leetcode.cn/problems/maximum-rows-covered-by-columns/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 比较简单的状压枚举 DP
+> 
+> 重点在于学习 $Gosper's Hack$ 算法 (可以在 $O(1)$ 的时间复杂度内找到下一个大小为固定值的集合)
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 显然状压
+    const static int N = 13, M = 1 << 12;
+    
+    int g[N];
+    int f[N][M];
+
+    vector<int> GospersHack(int k, int n) {
+        vector<int> xs;
+
+        int cur = (1 << k) - 1;
+        int limit = 1 << n;
+        while (cur < limit) {
+            // do something
+            xs.push_back(cur);
+
+            // algorithm
+            int lb = cur & -cur;
+            int r = cur + lb;
+            cur = ((r ^ cur) >> __builtin_ctz(lb) + 2) | r;
+            // 或: cur = (((r ^ cur) >> 2) / lb) | r;
+        }
+        return xs;
+    }
+    
+    int maximumRows(vector<vector<int>>& matrix, int numSelect) {
+        int n = matrix.size(), m = matrix[0].size();
+        
+        for (int i = 1; i <= n; ++ i ) {
+            int st = 0;
+            auto & line = matrix[i - 1];
+            for (int j = 0; j < m; ++ j )
+                if (line[j])
+                    st += 1 << j;
+            g[i] = st;
+        }
+        
+        vector<int> xs;
+        // for (int i = 0; i < 1 << m; ++ i )
+        //     if (__builtin_popcount(i) == numSelect)
+        //         xs.push_back(i);
+        xs = GospersHack(numSelect, m);
+
+        memset(f, 0, sizeof f);
+        for (int i = 1; i <= n; ++ i ) {
+            int st = g[i];
+            for (auto j : xs)
+                f[i][j] = f[i - 1][j] + ((st & j) == st ? 1 : 0);
+        }
+        int res = 0;
+        for (auto i : xs)
+            res = max(res, f[n][i]);
         return res;
     }
 };

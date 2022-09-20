@@ -662,3 +662,107 @@ public:
 <br>
 
 * * *
+
+### 方差
+
+> [!NOTE] **[LeetCode AutoX 2023 蚂蚁王国的蜂蜜](https://leetcode.cn/contest/autox2023/problems/8p6t8R/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 方差又等于 $平方的均值 - 均值的平方$
+> 
+> 故可以进一步简化计算过程
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 数学定理**
+
+```cpp
+class Solution {
+public:
+    vector<double> honeyQuotes(vector<vector<int>>& handle) {
+        double s = 0, t = 0, c = 0;
+        vector<double> res;
+        for (auto & h : handle) {
+            int type = h[0];
+            if (type == 1) {
+                int x = h[1];
+                s += x, t += x * x, c ++ ;
+            } else if (type == 2) {
+                int x = h[1];
+                s -= x, t -= x * x, c -- ;
+            } else if (type == 3) {
+                res.push_back(c ? s / c : -1);
+            } else {
+                res.push_back(c ? t / c - s / c * s / c : -1);
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 暴力**
+
+```cpp
+class Solution {
+public:
+    const static int N = 110;
+    
+    int c[N], s, t;
+    vector<double> honeyQuotes(vector<vector<int>>& handle) {
+        memset(c, 0, sizeof c);
+        s = 0, t = 0;
+        
+        vector<double> res;
+        for (auto & h : handle) {
+            int type = h[0];
+            if (type == 1) {
+                int p = h[1];
+                c[p] ++ ;
+                s += p, t ++ ;
+            } else if (type == 2) {
+                int p = h[1];
+                c[p] -- ;
+                s -= p, t -- ;
+            } else if (type == 3) {
+                if (t == 0)
+                    res.push_back(-1);
+                else
+                    res.push_back((double)s / t);
+            } else {
+                if (t == 0)
+                    res.push_back(-1);
+                else {
+                    double x = (double)s / t;
+                    double y = 0;
+                    for (int i = 0; i < N; ++ i )
+                        if (c[i]) {
+                            double v = (double)(i - x);
+                            y += v * v * c[i];
+                        }
+                    res.push_back(y / t);
+                }
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

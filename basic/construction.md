@@ -2027,3 +2027,69 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2396. 严格回文的数字](https://leetcode.cn/problems/strictly-palindromic-number/)**
+> 
+> 题意: 
+> 
+> 问某个数 $n$ 将其分别转化为 $2 ~ n-2$ 进制，是否都能满足回文
+
+> [!TIP] **思路**
+> 
+> 可以模拟，但思考推导知永远都是 $false$
+> 
+> 思维题
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 模拟**
+
+```cpp
+class Solution {
+public:
+    string get(int x, int d) {
+        if (!x)
+            return "0";
+        string ret;
+        while (x)
+            ret.push_back(x % d), x /= d;
+        return ret;
+    }
+    bool isStrictlyPalindromic(int n) {
+        for (int i = 2; i <= n - 2; ++ i ) {
+            string s = get(n, i);
+            int m = s.size();
+            for (int j = 0, k = m - 1; j < k; ++ j , -- k )
+                if (s[j] != s[k])
+                    return false;
+        }
+        return true;
+    }
+};
+```
+
+##### **C++ 思维**
+
+```cpp
+class Solution {
+public:
+    bool isStrictlyPalindromic(int n) {
+        return false;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

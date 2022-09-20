@@ -1336,6 +1336,135 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2398. 预算内的最多机器人数目](https://leetcode.cn/problems/maximum-number-of-robots-within-budget/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然有 二分 + 单调队列
+> 
+> 推理知可直接 双指针 + 单调队列 进一步优化时间复杂度
+> 
+> **非常好的综合题 考验对双指针的深入理解**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 二分**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 5e4 + 10;
+    
+    int n;
+    vector<int> ts, cs;
+    LL s[N], b;
+    
+    int q[N];
+    bool check(int k) {
+        int hh = 0, tt = -1;
+        for (int i = 1; i < k; ++ i ) {
+            while (hh <= tt && ts[q[tt] - 1] <= ts[i - 1])
+                tt -- ;
+            q[ ++ tt] = i;
+        }
+        
+        for (int i = k; i <= n; ++ i ) {
+            while (hh <= tt && q[hh] <= i - k)
+                hh ++ ;
+            while (hh <= tt && ts[q[tt] - 1] <= ts[i - 1])
+                tt -- ;
+            q[ ++ tt] = i;
+            
+            LL t = (LL)ts[q[hh] - 1] + (s[i] - s[i - k]) * k;
+            if (t <= b)
+                return true;
+        }
+        return false;
+    }
+    
+    int maximumRobots(vector<int>& chargeTimes, vector<int>& runningCosts, long long budget) {
+        this->ts = chargeTimes, this->cs = runningCosts;
+        this->n = ts.size(), this->b = budget;
+        s[0] = 0;
+        for (int i = 1; i <= n; ++ i )
+            s[i] = s[i - 1] + cs[i - 1];
+        
+        int l = 1, r = n;
+        while (l < r) {
+            int mid = l + r >> 1;
+            if (check(mid)) // 如果可以运行 mid 个
+                l = mid + 1;
+            else
+                r = mid;
+        }
+        if (check(l))
+            return l;
+        return l - 1;
+    }
+};
+```
+
+##### **C++ 双指针**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 5e4 + 10;
+    
+    int n;
+    vector<int> ts, cs;
+    
+    int q[N];
+
+    int maximumRobots(vector<int>& chargeTimes, vector<int>& runningCosts, long long budget) {
+        this->ts = chargeTimes, this->cs = runningCosts;
+        this->n = ts.size();
+        
+        LL s = 0;
+        int hh = 0, tt = -1;
+        int res = 0;
+        for (int l = 0, r = 0; r < n; ++ r ) {
+            // 1. 加入 r
+            s += cs[r];
+            //      维护区间最值
+            while (hh <= tt && ts[q[tt]] <= ts[r])
+                tt -- ;
+            q[ ++ tt] = r;
+
+            // 2. 收缩 l
+            //      收缩的同时更新区间最值
+            // ATTENTION 注意判断条件 细节
+            while (hh <= tt && ts[q[hh]] + (r - l + 1) * s > budget) {
+                if (l == q[hh])     // ATTENTION 思想
+                    hh ++ ;
+                s -= cs[l ++ ];
+            }
+            res = max(res, r - l + 1);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 推导进阶
 
 > [!NOTE] **[Luogu [USACO15OPEN]Trapped in the Haybales S](https://www.luogu.com.cn/problem/P3124)**

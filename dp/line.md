@@ -991,6 +991,107 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 出行的最少购票费用](https://leetcode.cn/contest/autox2023/problems/BjAFy9/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 注意状态定义和转移 并非需要前面的位置都连续被覆盖
+> 
+> 进而使用二分直接查找某固定位置
+> 
+> 进一步地：**注意到每种票所对应最终的二分结果都是随着 $i$ 单调不减的，所以可以使用多个「双指针」替代二分**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 二分**
+
+```cpp
+class Solution {
+public:
+    // 从贪心的角度看，必定存在一种最优方案，满足所有套票在某次飞行的当天过期
+    using LL = long long;
+    const static int N = 1e5 + 10;
+    
+    LL f[N];
+    
+    long long minCostToTravelOnDays(vector<int>& days, vector<vector<int>>& tickets) {
+        memset(f, 0x3f, sizeof f);
+        for (auto & t : tickets)
+            f[0] = min(f[0], (LL)t[1]);
+        
+        for (int i = 1; i < days.size(); ++ i ) {
+            int d = days[i];
+            for (auto & t : tickets) {
+                int x = d - t[0];
+                
+                // ATTENTION 细节
+                // 找到不能包含在本次套票内的最后一个位置 显然必须 <= x
+                int y = lower_bound(days.begin(), days.end(), x + 1) - days.begin() - 1;
+                if (y < 0)
+                    f[i] = min(f[i], 0ll + t[1]);
+                else
+                    f[i] = min(f[i], f[y] + t[1]);
+                // f[d] = min(f[d], g[d - max(0, d - t[0])] + t[1]);
+            }
+        }
+        
+        return f[days.size() - 1];
+    }
+};
+```
+
+##### **C++ 双指针**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 1e5 + 10;
+    
+    LL f[N];
+    
+    long long minCostToTravelOnDays(vector<int>& days, vector<vector<int>>& tickets) {
+        memset(f, 0x3f, sizeof f);
+        for (auto & t : tickets)
+            f[0] = min(f[0], (LL)t[1]);
+        
+        vector<int> last(tickets.size(), 0);
+        
+        for (int i = 1; i < days.size(); ++ i )
+            for (int j = 0; j < tickets.size(); ++ j ) {
+                auto & t = tickets[j];
+                int x = days[i] - t[0];
+                while (days[last[j]] <= x)
+                    last[j] ++ ;
+                
+                int y = last[j] - 1;
+                if (y < 0)
+                    f[i] = min(f[i], 0ll + t[1]);
+                else
+                    f[i] = min(f[i], f[y] + t[1]);
+            }
+        return f[days.size() - 1];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 复杂线性
 
 > [!NOTE] **[LeetCode 689. 三个无重叠子数组的最大和](https://leetcode-cn.com/problems/maximum-sum-of-3-non-overlapping-subarrays/)**
