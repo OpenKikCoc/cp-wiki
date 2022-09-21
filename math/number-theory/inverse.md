@@ -1,3 +1,8 @@
+> [!NOTE] **求解逆元的方式**
+> 
+> 如本章节所述，不仅有快速幂法，还有拓展欧几里得和线性计算方法
+
+
 本文介绍模意义下乘法运算的逆元（Modular Multiplicative Inverse），并介绍如何使用扩展欧几里德算法（Extended Euclidean algorithm）求解乘法逆元
 
 ## 逆元简介
@@ -367,6 +372,123 @@ public:
         if (idx >= nums.size())
             return -1;
         return (nums[idx] * mul + add) % mod;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 2400. 恰好移动 k 步到达某一位置的方法数目](https://leetcode.cn/problems/number-of-ways-to-reach-a-position-after-exactly-k-steps/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> DP 或组合数
+> 
+> **一种新的线形求逆元的方式**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ DP**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 1010, DIFF = 501, MOD = 1e9 + 7;
+    
+    // [-500, 1500] instead of [-1000, 2000]
+    LL f[N * 2], g[N * 2];
+    
+    int numberOfWays(int startPos, int endPos, int k) {
+        memset(f, 0, sizeof f);
+        f[startPos + DIFF] = 1;
+        
+        for (int _ = 0; _ < k; ++ _ ) {
+            memcpy(g, f, sizeof g);
+            for (int j = -500; j <= 1500; ++ j )
+                f[j + DIFF] = (g[j - 1 + DIFF] + g[j + DIFF + 1]) % MOD;
+        }
+        return f[endPos + DIFF];
+    }
+};
+```
+
+##### **C++ 组合数**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 1010, MOD = 1e9 + 7;
+
+    int f[N][N];
+
+    int numberOfWays(int startPos, int endPos, int k) {
+        int d = abs(startPos - endPos);
+        if ((d + k) % 2 || d > k)
+            return 0;
+        
+        for (int i = 0; i <= k; ++ i )
+            for (int j = 0; j <= i; ++ j )
+                if (!j)
+                    f[i][j] = 1;
+                else
+                    f[i][j] = (f[i - 1][j] + f[i - 1][j - 1]) % MOD;
+        // 假定向正方向走 a 步 反方向 k-a 步
+        // 则 a - (k - a) = d => a = (d + k) / 2
+        // C[k, (d + k) / 2]
+        return f[k][(d + k) / 2];
+    }
+};
+```
+
+##### **C++ 组合数 新的逆元求解方式**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 1010, MOD = 1e9 + 7;
+
+    LL f[N], g[N], v[N];
+
+    int C(int n, int m) {
+        if (m == 0)
+            return 1;
+        return f[n] * v[m] % MOD * v[n - m] % MOD;
+    }
+
+    int numberOfWays(int startPos, int endPos, int k) {
+        int d = abs(startPos - endPos);
+        if ((d + k) % 2 || d > k)
+            return 0;
+        
+        // 假定向正方向走 a 步 反方向 k-a 步
+        // 则 a - (k - a) = d => a = (d + k) / 2
+        // C[k, (d + k) / 2]
+        f[0] = g[0] = v[0] = 1;
+        f[1] = g[1] = v[1] = 1;
+        for (int i = 2; i < N; ++ i ) {
+            f[i] = f[i - 1] * i % MOD;
+            g[i] = MOD - (LL)MOD / i * g[MOD % i] % MOD;
+            v[i] = v[i - 1] * g[i] % MOD;
+        }
+        return C(k, (d + k) / 2);
     }
 };
 ```

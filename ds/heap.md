@@ -594,6 +594,8 @@ public:
 
 * * *
 
+### 双堆模拟 一般用于占用类问题
+
 > [!NOTE] **[LeetCode 1882. 使用服务器处理任务](https://leetcode-cn.com/problems/process-tasks-using-servers/)**
 > 
 > 题意: TODO
@@ -807,6 +809,120 @@ public:
     }
 };
 ```
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 2402. 会议室 III](https://leetcode.cn/problems/meeting-rooms-iii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 标准做法是双堆模拟
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 暴力**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 110;
+    
+    LL last[N], cnt[N]; // start end 比较大 要用 LL
+    
+    void init() {
+        memset(last, 0, sizeof last);
+        memset(cnt, 0, sizeof cnt);
+    }
+    
+    int mostBooked(int n, vector<vector<int>>& meetings) {
+        init();
+        sort(meetings.begin(), meetings.end());
+        
+        for (auto & m : meetings) {
+            int l = m[0], r = m[1];
+            int p = -1;
+            for (int i = 0; i < n; ++ i )
+                if (last[i] <= l) {
+                    p = i;
+                    break;
+                }
+            if (p == -1) {
+                for (int i = 0; i < n; ++ i )
+                    if (p == -1 || last[i] < last[p])
+                        p = i;
+                last[p] += r - l;
+            } else {
+                last[p] = r;
+            }
+            cnt[p] ++ ;
+        }
+        
+        int p = -1;
+        for (int i = 0; i < n; ++ i )
+            if (p == -1 || cnt[i] > cnt[p])
+                p = i;
+        return p;
+    }
+};
+```
+
+##### **C++ 双堆模拟**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    using PLI = pair<LL, int>;
+    const static int N = 110;
+
+    int cnt[N];
+
+    int mostBooked(int n, vector<vector<int>>& meetings) {
+        sort(meetings.begin(), meetings.end());
+        priority_queue<int, vector<int>, greater<>> idle;
+        priority_queue<PLI, vector<PLI>, greater<>> working;
+        
+        for (int i = 0; i < n; ++ i )
+            idle.push(i);
+        
+        for (auto & m : meetings) {
+            LL l = m[0], r = m[1], p = -1;
+            while (!working.empty() && working.top().first <= l)
+                idle.push(working.top().second), working.pop();
+            if (idle.empty()) {
+                auto [e, i] = working.top(); working.pop();
+                r = e + r - l;
+                p = i;
+            } else {
+                p = idle.top(); idle.pop();
+            }
+            cnt[p] ++ ;
+            working.push({r, p});
+        }
+        int p = -1;
+        for (int i = 0; i < n; ++ i )
+            if (p == -1 || cnt[i] > cnt[p])
+                p = i;
+        return p;
+    }
+};
+```
+
 ##### **Python**
 
 ```python
