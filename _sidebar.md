@@ -49,6 +49,7 @@
     * [倍增优化](dp/opt/binary-lifting.md)
     * [斜率优化](dp/opt/slope.md)
     * [四边形不等式优化](dp/opt/quadrangle.md)
+    * [数据结构优化](dp/opt/datastruct.md)
     * [状态设计优化](dp/opt/state.md)
   * [其它 DP 方法 / 优化](dp/misc.md)
 * [字符串](string/README.md)
