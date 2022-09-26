@@ -632,3 +632,100 @@ public:
 <br>
 
 * * *
+
+### trick 带权并查集维护连通性
+
+> [!NOTE] **[LeetCode 6191. 好路径的数目](https://leetcode.cn/problems/number-of-good-paths/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 容易想到按照节点权值排序，挨个加进去，并在加进去的时候遍历其邻边做并查集的合并
+> 
+> 问题在于：**每一个独立的并查集在做合并时，都需要一个 [val, cnt] 的映射，对映射做合并将会非常麻烦**
+> 
+> 1. 启发式合并 TODO
+> 
+> 2. **考虑每个并查集只维护当前集合内数值最大的节点有几个** 则只有在值相同时去做集合合并才会改变 $sz$
+> 
+> 非常非常 trick 的思维
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using PII = pair<int, int>;
+    const static int N = 3e4 + 10;
+    
+    int p[N], sz[N];
+    void init() {
+        for (int i = 0; i < N; ++ i )
+            p[i] = i, sz[i] = 1;
+    }
+    int find(int x) {
+        if (p[x] != x)
+            p[x] = find(p[x]);
+        return p[x];
+    }
+    
+    vector<int> g[N];
+    
+    int numberOfGoodPaths(vector<int>& vals, vector<vector<int>>& edges) {
+        int n = vals.size();
+        for (auto & e : edges)
+            g[e[0]].push_back(e[1]), g[e[1]].push_back(e[0]);
+        
+        init();
+        
+        vector<PII> xs;
+        for (int i = 0; i < n; ++ i )
+            xs.push_back({vals[i], i});
+        sort(xs.begin(), xs.end()); // 按权值排序
+        
+        int res = 0;
+        for (auto [x, i] : xs) {
+            int fi = find(i);
+            for (auto j : g[i]) {
+                int fj = find(j), y = vals[fj]; // ATTENTION 注意顺序 【 y 必须是对应的 fj 的值】
+                // 跳过已在同集合的
+                if (fj == fi)
+                    continue;
+                // 跳过较大的数值
+                if (y > x)
+                    continue;
+                
+                if (x == y) {
+                    // ATTENTION: 非常非常 trick
+                    // 并非所有合并的情况都要累加，当且仅当数值相等时才累加
+                    // 【思考 细节 为什么可以这样做而不需要在每个集合内部再维护一个 map】
+                    res += sz[fi] * sz[fj];
+                    sz[fi] += sz[fj];
+                }
+                // ATTENTION:
+                // 把小的节点值合并到大的节点值上
+                p[fj] = fi;
+            }
+        }
+        return res + n;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
