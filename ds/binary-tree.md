@@ -773,6 +773,114 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2415. 反转二叉树的奇数层](https://leetcode.cn/problems/reverse-odd-levels-of-binary-tree/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 直接用 queue 铁铁 heap MLE
+> 
+> 手写 queue 可过
+> 
+> 标准做法 DFS （类似 101 对称二叉树）
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    const static int N = 1e5 + 10;
+    
+    TreeNode * q[N], * g[N];
+    
+    TreeNode* reverseOddLevels(TreeNode* root) {
+        int hh = 0, tt = -1;
+        q[ ++ tt] = root;
+        int dep = 0;
+        while (hh <= tt) {
+            int cnt = tt - hh + 1;
+            int tot = 0;
+            for (int i = 0; i < cnt; ++ i ) {
+                auto & u = q[hh ++ ];
+                if (u->left)
+                    g[tot ++ ] = u->left;
+                if (u->right)
+                    g[tot ++ ] = u->right;
+            }
+            dep ++ ;
+            if (dep & 1) {
+                for (int i = 0, j = tot - 1; i < j; ++ i , -- j )
+                    swap(g[i]->val, g[j]->val);
+            }
+            hh = 0, tt = tot - 1;
+            memcpy(q, g, sizeof g);
+        }
+        return root;
+    }
+};
+```
+
+##### **C++ dfs**
+
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    // 要想到  101. 对称二叉树
+    void dfs(TreeNode * l, TreeNode * r, int dep) {
+        if (!l || !r)
+            return;
+        if (dep & 1)
+            swap(l->val, r->val);
+        dfs(l->left, r->right, dep + 1), dfs(l->right, r->left, dep + 1);
+    }
+
+    TreeNode* reverseOddLevels(TreeNode* root) {
+        dfs(root->left, root->right, 1);
+        return root;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ## TODO 其他序列
 
 

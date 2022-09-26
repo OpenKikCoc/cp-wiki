@@ -6277,3 +6277,63 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2412. 完成所有交易的初始最少钱数](https://leetcode.cn/problems/minimum-money-required-before-transactions/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 非常难直接想到的贪心。。
+> 
+> - 考虑最坏情况下，一定先做所有的亏本买卖 => 得到 sum
+> 
+> - 还有能买一个较大的 => 分情况讨论
+> 
+> TODO 重复做
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    
+    long long minimumMoney(vector<vector<int>>& transactions) {
+        LL sum = 0; // 亏钱的交易
+        for (auto & p : transactions) {
+            int a = p[0], b = p[1];
+            if (a > b)
+                sum += a - b;
+        }
+        
+        LL res = 0;
+        for (auto & p : transactions) {
+            int a = p[0], b = p[1];
+            if (a > b)
+                // ATTENTION 细节 思考
+                res = max(res, sum - (a - b) + a);
+            else
+                res = max(res, sum + a);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

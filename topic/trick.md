@@ -5537,6 +5537,192 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2411. 按位或最大的最小子数组长度](https://leetcode.cn/problems/smallest-subarrays-with-maximum-bitwise-or/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 想到的是二分答案法
+> 
+> 实际上，经过推导易知一定与右侧第一个 1 出现的位置有关，直接记录位置线性扫描即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 二分答案**
+
+```cpp
+class Solution {
+public:
+    const static int N = 1e5 + 10, M = 32;
+    
+    int f[N][M];
+    
+    int check(int l, int r) {
+        int st = 0;
+        for (int i = 0; i < M; ++ i )
+            if (f[l][i] - f[r + 1][i] > 0)
+                st += 1 << i;
+        // cout << "  l = " << l << " r = " << r << " st = " << st << endl;
+        return st;
+    }
+    
+    vector<int> smallestSubarrays(vector<int>& nums) {
+        memset(f, 0, sizeof f);
+        int n = nums.size();
+        for (int i = n; i >= 1; -- i ) {
+            int x = nums[i - 1];
+            for (int j = 0; j < M; ++ j )
+                if (x >> j & 1)
+                    f[i][j] = f[i + 1][j] + 1;
+                else
+                    f[i][j] = f[i + 1][j];
+        }
+        
+        vector<int> res;
+        for (int i = 1; i <= n; ++ i ) {
+            int st = 0;
+            for (int j = 0; j < M; ++ j )
+                if (f[i][j])
+                    st += 1 << j;
+            
+            int l = i, r = n;
+            while (l < r) {
+                int m = l + (r - l) / 2;
+                if (check(i, m) != st)
+                    l = m + 1;
+                else
+                    r = m;
+            }
+            // cout << " i = " << i << " l = " << l << " st = " << st << endl;
+            res.push_back(l - i + 1);
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 线性**
+
+```cpp
+class Solution {
+public:
+    const static int N = 32;
+
+    int p[N];
+
+    vector<int> smallestSubarrays(vector<int>& nums) {
+        int n = nums.size();
+        for (int i = 0; i < N; ++ i )
+            p[i] = n;
+        
+        vector<int> res(n);
+        for (int i = n - 1; i >= 0; -- i ) {
+            int x = nums[i], t = i;
+            for (int j = 0; j < N; ++ j )
+                if (x >> j & 1)
+                    p[j] = i;
+                else if (p[j] != n)
+                    t = max(t, p[j]);
+            res[i] = t - i + 1;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 销售出色区间](https://leetcode.cn/contest/hhrc2022/problems/0Wx4Pc/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> TODO 非常好的思维题
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 暴力 估好时间复杂度**
+
+```cpp
+class Solution {
+public:
+    const static int N = 1e4 + 10;
+    
+    int n;
+    int s[N];
+    
+    int longestESR(vector<int>& sales) {
+        n = sales.size();
+        memset(s, 0, sizeof s);
+        for (int i = 1; i <= n; ++ i )
+            s[i] = s[i - 1] + (sales[i - 1] > 8);
+        
+        for (int i = n; i >= 1; -- i )
+            for (int j = i; j <= n; ++ j ) {
+                int t = s[j] - s[j - i];
+                if (t > i - t)
+                    return i;
+            }
+        return 0;
+    }
+};
+```
+
+##### **C++ 思维题**
+
+```cpp
+class Solution {
+public:
+    int longestESR(vector<int>& sales) {
+        int n = sales.size();
+        int res = 0;
+        unordered_map<int, int> seen;
+        for (int i = 0, pre = 0; i < n; ++ i ) {
+            pre += (sales[i] > 8 ? 1 : -1);
+            // 只记录最左侧的
+            if (seen.count(pre) == 0)
+                seen[pre] = i;
+            
+            if (pre > 0)
+                res = i + 1;
+            else if (seen.count(pre - 1))   // TODO: 非常细节 思想
+                res = max(res, i - seen[pre - 1]);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 根据题意简化思维
 
 > [!NOTE] **[Codeforces C. Dima and Staircase](https://codeforces.com/problemset/problem/272/C)**

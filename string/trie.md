@@ -1,3 +1,7 @@
+> [!TIP]  **关于 LeetCode 使用 Trie 静态数组**
+> 
+> 最好把静态数组放全局，否则在 class 内非常容易 heap use MLE
+
 
 ## 代码实现
 
