@@ -575,6 +575,316 @@ int main() {
 }
 ```
 
+##### **C++ 指针版本**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int n, m;
+struct Node {
+    Node * s[2], * p;
+    int v;
+    int size, flag;
+    
+    void init(int _v, Node * _p) {
+        v = _v, p = _p;
+        size = 1;
+    }
+};
+Node * root = nullptr;
+
+void pushup(Node * u) {
+    u->size = (u->s[0] ? u->s[0]->size : 0) + (u->s[1] ? u->s[1]->size : 0) + 1;
+}
+void pushdown(Node * u) {
+    if (u->flag) {
+        swap(u->s[0], u->s[1]);
+        if (u->s[0])
+            u->s[0]->flag ^= 1;
+        if (u->s[1])
+            u->s[1]->flag ^= 1;
+        u->flag = 0;
+    }
+}
+
+void rotate(Node * x) {
+    Node * y = x->p, * z = y->p;
+    int k = y->s[1] == x;
+    if (z)
+        z->s[z->s[1] == y] = x;
+    x->p = z;
+    y->s[k] = x->s[k ^ 1];
+    if (x->s[k ^ 1])
+        x->s[k ^ 1]->p = y;
+    x->s[k ^ 1] = y, y->p = x;
+    pushup(y), pushup(x);
+}
+
+void splay(Node * x, Node * k) {
+    while (x->p != k) {
+        Node * y = x->p, * z = y->p;
+        if (z != k)
+            if ((y->s[1] == x) ^ (z->s[1] == y))
+                rotate(x);
+            else
+                rotate(y);
+        rotate(x);
+    }
+    if (!k)
+        root = x;
+}
+
+void insert(int v) {
+    Node * u = root, * p = nullptr;
+    while (u)
+        p = u, u = u->s[v > u->v];
+    u = new Node();
+    u->init(v, p);
+    if (p)
+        p->s[v > p->v] = u;
+    splay(u, nullptr);
+}
+
+Node * get_k(int k) {
+    Node * u = root;
+    for (;;) {
+        pushdown(u);
+        if ((u->s[0] ? u->s[0]->size : 0) >= k)
+            u = u->s[0];
+        else if ((u->s[0] ? u->s[0]->size : 0) + 1 == k)
+            return u;
+        else
+            k -= (u->s[0] ? u->s[0]->size : 0) + 1, u = u->s[1];
+    }
+    return nullptr; // this won't happen
+}
+
+void output(Node * u) {
+    pushdown(u);
+    if (u->s[0])
+        output(u->s[0]);
+    if (u->v >= 1 && u->v <= n)
+        cout << u->v << ' ';
+    if (u->s[1])
+        output(u->s[1]);
+}
+
+int main() {
+    cin >> n >> m;
+    
+    for (int i = 0; i <= n + 1; ++ i )
+        insert(i);
+    
+    while (m -- ) {
+        int l, r;
+        cin >> l >> r;
+        Node * lp = get_k(l), * rp = get_k(r + 2);
+        splay(lp, nullptr), splay(rp, lp);
+        rp->s[0]->flag ^= 1;
+    }
+    output(root);
+    return 0;
+}
+```
+
+##### **Go TLE v1**
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+/*
+type Node interface {
+	SetSon(Node, bool)
+	SetParent(Node)
+	// SetStoredObj(StoredObj)
+
+}
+*/
+
+type Node struct {
+	s          []*Node
+	p          *Node
+	v          int
+	size, flag int
+}
+
+func newNode(_v int, _p *Node) *Node {
+	return &Node{
+		s: make([]*Node, 2),
+		p: _p,
+		v: _v,
+	}
+}
+
+var root *Node
+
+var n, m int
+
+func pushup(u *Node) {
+	var lv, rv int
+	if u.s[0] != nil {
+		lv = u.s[0].size
+	}
+	if u.s[1] != nil {
+		rv = u.s[1].size
+	}
+	u.size = lv + rv + 1
+}
+func pushdown(u *Node) {
+	if u.flag != 0 {
+		u.s[0], u.s[1] = u.s[1], u.s[0]
+		if u.s[0] != nil {
+			u.s[0].flag ^= 1
+		}
+		if u.s[1] != nil {
+			u.s[1].flag ^= 1
+		}
+		u.flag = 0
+	}
+}
+
+func rotate(x *Node) {
+	y := x.p
+	z := y.p
+	var k int
+	if y.s[1] == x {
+		k = 1
+	} else {
+		k = 0
+	}
+	// k := (y.s[1] == x)
+	if z != nil {
+		if z.s[1] == y {
+			z.s[1] = x
+		} else {
+			z.s[0] = x
+		}
+		// z.s[z.s[1] == y] = x
+	}
+	x.p = z
+	y.s[k] = x.s[k^1]
+	if x.s[k^1] != nil {
+		x.s[k^1].p = y
+	}
+	x.s[k^1] = y
+	y.p = x
+	pushup(y)
+	pushup(x)
+}
+
+func splay(x, k *Node) {
+	for x.p != k {
+		y := x.p
+		z := y.p
+		if z != k {
+			if (y.s[1] == x) != (z.s[1] == y) {
+				rotate(x)
+			} else {
+				rotate(y)
+			}
+		}
+		rotate(x)
+	}
+	if k == nil {
+		root = x
+	}
+}
+
+func insert(v int) {
+	u := root
+	var p *Node
+	for u != nil {
+		p = u
+		if v > u.v {
+			u = u.s[1]
+		} else {
+			u = u.s[0]
+		}
+	}
+	u = newNode(v, p)
+	if p != nil {
+		if v > p.v {
+			p.s[1] = u
+		} else {
+			p.s[0] = u
+		}
+	}
+	splay(u, nil)
+}
+
+func get_k(k int) *Node {
+	u := root
+	for {
+		pushdown(u)
+		var lv int
+		if u.s[0] != nil {
+			lv = u.s[0].size
+		}
+
+		if lv >= k {
+			u = u.s[0]
+		} else if lv+1 == k {
+			return u
+		} else {
+			var lsz int
+			if u.s[0] != nil {
+				lsz = u.s[0].size
+			}
+			k -= lsz + 1
+			u = u.s[1]
+		}
+	}
+	return nil
+}
+
+func output(u *Node) {
+	pushdown(u)
+	if u.s[0] != nil {
+		output(u.s[0])
+	}
+	if u.v >= 1 && u.v <= n {
+		fmt.Printf("%d ", u.v)
+	}
+	if u.s[1] != nil {
+		output(u.s[1])
+	}
+}
+
+func main() {
+	fmt.Scan(&n, &m)
+
+	root = nil
+	for i := 0; i <= n+1; i++ {
+		insert(i)
+	}
+
+	for i := 0; i < m; i++ {
+		var l, r int
+		fmt.Scan(&l, &r)
+		lp := get_k(l)
+		rp := get_k(r + 2)
+		splay(lp, nil)
+		splay(rp, lp)
+		rp.s[0].flag ^= 1
+	}
+	output(root)
+	return
+}
+
+```
+
+
+##### **Go interface TODO**
+
+```go
+
+```
+
 ##### **Python**
 
 ```python
