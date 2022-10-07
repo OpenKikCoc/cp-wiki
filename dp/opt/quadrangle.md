@@ -3,8 +3,10 @@
 > 如果导函数递增、求最大值（[柠檬](https://www.lydsy.com/JudgeOnline/problem.php?id=4709)），或者导函数递减、求最小值，要用单调栈。
 > 
 > 如果导函数递增、求最小值（[诗人小G](https://www.luogu.com.cn/problem/P1912)），或者导函数递减、求最大值（[Lightning Conductor](https://www.cnblogs.com/flashhu/p/9488184.html)），要用单调队列。
-
-
+> 
+> ![quadrangle-1](../images/quadrangle-1.jpeg)
+> 
+> ![quadrangle-2](../images/quadrangle-2.jpeg)
 
 ## 区间类（2D1D）动态规划中的应用
 

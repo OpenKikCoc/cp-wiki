@@ -688,7 +688,7 @@ int main() {
 }
 ```
 
-##### **Go TLE v1**
+##### **Go 初版**
 
 ```go
 package main
@@ -879,9 +879,260 @@ func main() {
 ```
 
 
-##### **Go interface TODO**
+##### **Go interface**
 
 ```go
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+)
+
+type StoredObj interface {
+	String() string
+}
+
+// o1 > o2: 1
+// o1 = o2: 0
+// o1 < o2: -1
+type CmpFunc func(StoredObj, StoredObj) int
+
+type Node interface {
+	SetStoredObj(StoredObj)
+	GetStoredObj() StoredObj
+}
+
+type node struct {
+	s          []*node
+	p          *node
+	v          StoredObj
+	size, flag int
+}
+
+var _ Node = &node{}
+
+func newNode(v StoredObj, p *node) *node {
+	return &node{
+		s: make([]*node, 2),
+		p: p,
+		v: v,
+	}
+}
+
+func (n *node) SetStoredObj(obj StoredObj) {
+	if n == nil {
+		// TODO
+		return
+	}
+	n.v = obj
+}
+func (n *node) GetStoredObj() StoredObj {
+	if n == nil {
+		return nil
+	}
+	return n.v
+}
+
+var n, m int
+
+type splay struct {
+	root *node
+	cmp  CmpFunc
+}
+
+func newSplay() *splay {
+	return &splay{}
+}
+
+func (s *splay) pushUp(n *node) {
+	var lv, rv int
+	if n.s[0] != nil {
+		lv = n.s[0].size
+	}
+	if n.s[1] != nil {
+		rv = n.s[1].size
+	}
+	n.size = lv + rv + 1
+}
+
+func (s *splay) pushDown(n *node) {
+	if n == nil {
+		return
+	}
+	if n.flag != 0 {
+		n.s[0], n.s[1] = n.s[1], n.s[0]
+		if n.s[0] != nil {
+			n.s[0].flag ^= 1
+		}
+		if n.s[1] != nil {
+			n.s[1].flag ^= 1
+		}
+		n.flag = 0
+	}
+}
+
+func (s *splay) rotate(x *node) {
+	y := x.p
+	z := y.p
+	var k int
+	if y.s[1] == x {
+		k = 1
+	} else {
+		k = 0
+	}
+	// k := (y.s[1] == x)
+	if z != nil {
+		if z.s[1] == y {
+			z.s[1] = x
+		} else {
+			z.s[0] = x
+		}
+		// z.s[z.s[1] == y] = x
+	}
+	x.p = z
+	y.s[k] = x.s[k^1]
+	if x.s[k^1] != nil {
+		x.s[k^1].p = y
+	}
+	x.s[k^1] = y
+	y.p = x
+	s.pushUp(y)
+	s.pushUp(x)
+}
+
+func (s *splay) splay(x, k *node) {
+	for x.p != k {
+		y := x.p
+		z := y.p
+		if z != k {
+			if (y.s[1] == x) != (z.s[1] == y) {
+				s.rotate(x)
+			} else {
+				s.rotate(y)
+			}
+		}
+		s.rotate(x)
+	}
+	if k == nil {
+		s.root = x
+	}
+}
+
+func (s *splay) insert(v StoredObj) {
+	u := s.root
+	var p *node
+	for u != nil {
+		p = u
+		if s.cmp(v, u.v) == 1 {
+			u = u.s[1]
+		} else {
+			u = u.s[0]
+		}
+	}
+	u = newNode(v, p)
+	if p != nil {
+		if s.cmp(v, p.v) == 1 {
+			p.s[1] = u
+		} else {
+			p.s[0] = u
+		}
+	}
+	s.splay(u, nil)
+}
+
+func (s *splay) get_k(k int) *node {
+	u := s.root
+	for {
+		s.pushDown(u)
+		var lv int
+		if u.s[0] != nil {
+			lv = u.s[0].size
+		}
+
+		if lv >= k {
+			u = u.s[0]
+		} else if lv+1 == k {
+			return u
+		} else {
+			var lsz int
+			if u.s[0] != nil {
+				lsz = u.s[0].size
+			}
+			k -= lsz + 1
+			u = u.s[1]
+		}
+	}
+}
+
+func (s *splay) output(u *node) {
+	if u == nil {
+		return
+	}
+	s.pushDown(u)
+
+	s.output(u.s[0])
+	if s.cmp(u.v, makeObj(0)) == 1 && s.cmp(u.v, makeObj(n+1)) == -1 {
+		fmt.Printf("%s ", u.v)
+	}
+	s.output(u.s[1])
+}
+
+type obj struct {
+	v int
+}
+
+var _ StoredObj = &obj{}
+
+func makeObj(v int) StoredObj {
+	return &obj{v: v}
+}
+func (o *obj) String() string {
+	if o == nil {
+		return "0"
+	}
+	return strconv.Itoa(o.v)
+}
+
+func main() {
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
+	fmt.Sscanf(scanner.Text(), "%d %d", &n, &m)
+	// fmt.Scan(&n, &m)
+
+	// s := newSplay()
+	s := &splay{
+		cmp: func(so1, so2 StoredObj) int {
+			v1, v2 := so1.(*obj).v, so2.(*obj).v
+			if v1 > v2 {
+				return 1
+			}
+			if v1 < v2 {
+				return -1
+			}
+			return 0
+		},
+	}
+	for i := 0; i <= n+1; i++ {
+		s.insert(makeObj(i))
+	}
+
+	for i := 0; i < m; i++ {
+		var l, r int
+		scanner.Scan()
+		fmt.Sscanf(scanner.Text(), "%d %d", &l, &r)
+		// fmt.Scan(&l, &r)
+		lp := s.get_k(l)
+		rp := s.get_k(r + 2)
+		s.splay(lp, nil)
+		s.splay(rp, lp)
+		rp.s[0].flag ^= 1
+	}
+	s.output(s.root)
+	return
+}
 
 ```
 
