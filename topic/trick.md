@@ -5723,6 +5723,215 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2424. 最长上传前缀](https://leetcode.cn/problems/longest-uploaded-prefix/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然需要比较快速的判断某个前缀是否是 “上传满” 的
+> 
+> - 直观的想法 BIT 维护即可
+> 
+> - 实际上还可以 **维护缺失的所有数的集合 补全的时候判断能否后移**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ BIT**
+
+```cpp
+class LUPrefix {
+public:
+    const static int N = 1e5 + 10;
+    int tr[N];
+    int lowbit(int x) {
+        return x & -x;
+    }
+    void add(int x, int y) {
+        for (int i = x; i < N; i += lowbit(i))
+            tr[i] += y;
+    }
+    int sum(int x) {
+        int ret = 0;
+        for (int i = x; i; i -= lowbit(i))
+            ret += tr[i];
+        return ret;
+    }
+    
+    int n;
+    
+    LUPrefix(int n) {
+        this->n = n;
+        memset(tr, 0, sizeof tr);
+    }
+    
+    void upload(int video) {
+        add(video, 1);
+    }
+    
+    int longest() {
+        int l = 1, r = n + 1;
+        while (l < r) {
+            int m = l + (r - l) / 2;
+            if (sum(m) >= m)
+                l = m + 1;
+            else
+                r = m;
+        }
+        return l - 1;
+    }
+};
+
+/**
+ * Your LUPrefix object will be instantiated and called as such:
+ * LUPrefix* obj = new LUPrefix(n);
+ * obj->upload(video);
+ * int param_2 = obj->longest();
+ */
+```
+
+##### **C++ trick**
+
+```cpp
+class LUPrefix {
+public:
+    set<int> S;
+    int z;
+
+    LUPrefix(int n) {
+        z = 1;
+    }
+    
+    void upload(int video) {
+        S.insert(video);
+    }
+    
+    int longest() {
+        while (S.find(z) != S.end()) {
+            z ++ ;
+        }
+        return z - 1;
+    }
+};
+
+/**
+ * Your LUPrefix object will be instantiated and called as such:
+ * LUPrefix* obj = new LUPrefix(n);
+ * obj->upload(video);
+ * int param_2 = obj->longest();
+ */
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 2425. 所有数对的异或和](https://leetcode.cn/problems/bitwise-xor-of-all-pairings/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然可以按位统计，但梳理过程比较麻烦
+> 
+> 实际上，考虑: `res = nums3[0] ^ nums3[1] ... ` 再对 `nums[i]` 拆解可以发现
+> 
+> - nums1 的每个元素在 nums3 中出现 n2 次
+> 
+> - nums2 的每个元素在 nums3 中出现 n1 次
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 按位统计**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    
+    vector<int> get(vector<int> & t) {
+        vector<int> ret;
+        for (int i = 0; i < 32; ++ i ) {
+            int c = 0;
+            for (auto x : t)
+                if (x >> i & 1)
+                    c ++ ;
+            ret.push_back(c);
+        }
+        return ret;
+    }
+    int xorAllNums(vector<int>& nums1, vector<int>& nums2) {
+        int n1 = nums1.size(), n2 = nums2.size();
+        auto t1 = get(nums1);
+        auto t2 = get(nums2);
+        int res = 0;
+        for (int i = 0; i < 32; ++ i ) {
+            // x: 1, y: 0
+            LL x = (LL)t1[i] * (n2 - t2[i]) + (LL)(n1 - t1[i]) * t2[i];
+            LL y = (LL)t1[i] * t2[i] + (LL)(n1 - t1[i]) * (n2 - t2[i]);
+            x %= 2, y %= 2;
+            if (!x && !y) {
+                
+            } else if (x && y) {
+                res += 1 << i;
+            } else if (x) {
+                res += 1 << i;
+            } else if (y) {
+                
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ trick**
+
+```cpp
+class Solution {
+public:
+    // nums1 的每个元素在 nums3 中出现 n2 次
+    // nums2 的每个元素在 nums3 中出现 n1 次
+    int xorAllNums(vector<int>& nums1, vector<int>& nums2) {
+        int n1 = nums1.size(), n2 = nums2.size();
+        int res = 0;
+        if (n2 & 1)
+            for (auto x : nums1)
+                res ^= x;
+        if (n1 & 1)
+            for (auto x : nums2)
+                res ^= x;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 根据题意简化思维
 
 > [!NOTE] **[Codeforces C. Dima and Staircase](https://codeforces.com/problemset/problem/272/C)**
