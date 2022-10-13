@@ -1672,9 +1672,7 @@ class Solution:
         return res
 ```
 
-
-
-##### **Python II** 
+##### **Python II**
 
 ```python
 class Solution:
@@ -1703,8 +1701,6 @@ class Solution:
         return maxn
 
 ```
-
-
 
 <!-- tabs:end -->
 </details>

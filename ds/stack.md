@@ -673,6 +673,54 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 856. 括号的分数](https://leetcode.cn/problems/score-of-parentheses/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 容易想到在遇到左括号直接压栈，右括号则判断中间是否存在子串
+> 
+> trick 的点在于直接用左括号压栈时的数值代表这一对括号内部的串的总和
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int scoreOfParentheses(string s) {
+        int n = s.size();
+        stack<int> st;
+        st.push(0);
+        for (int i = 0, t = 1; i < n; ++ i )
+            if (s[i] == '(') {
+                st.push(0);
+            } else {
+                int t = st.top(); st.pop();
+                st.top() += max(2 * t, 1);
+            }
+        return st.top();
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 其他操作
 
 > [!NOTE] **[LeetCode 1190. 反转每对括号间的子串](https://leetcode-cn.com/problems/reverse-substrings-between-each-pair-of-parentheses/)** [TAG]

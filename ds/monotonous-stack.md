@@ -2049,3 +2049,138 @@ class Solution:
 <br>
 
 * * *
+
+### 单调栈辅助思想
+
+> [!NOTE] **[LeetCode 6202. 使用机器人打印字典序最小的字符串](https://leetcode.cn/problems/using-a-robot-to-print-the-lexicographically-smallest-string/)** [TAG]
+> 
+> 题意: 
+> 
+> 从左到右遍历 $s$，在允许用一个辅助栈的前提下，计算能得到的字典序最小的字符串
+
+> [!TIP] **思路**
+> 
+> 显然单调栈，重点在于理清什么时候弹出
+> 
+> 贪心地思考，为了让字典序最小，在遍历 $s$ 的过程中：
+> 
+> - 如果栈顶字符 ≤ 后续字符（未入栈）的最小值，那么应该出栈并加到答案末尾
+> 
+> - 否则应当继续遍历，取到比栈顶字符小的那个字符
+
+作者：endlesscheng
+链接：https://leetcode.cn/problems/using-a-robot-to-print-the-lexicographically-smallest-string/solution/tan-xin-zhan-by-endlesscheng-ldds/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 比赛时**
+
+```cpp
+class Solution {
+public:
+    const static int N = 1e5 + 10, M = 26;
+    
+    int c[M];  // 方便找后面的串中 最小的字符是谁 ==> 查询过程可以常量优化
+    
+    string robotWithString(string s) {
+        int n = s.size();
+        memset(c, 0, sizeof c);
+        for (auto x : s)
+            c[x - 'a'] ++ ;
+        
+        string res;
+        stack<char> st;
+        for (auto x : s) {
+            int p = -1;
+            for (int i = 0; i < M; ++ i )
+                if (c[i]) {
+                    p = i;
+                    break;
+                }
+            if (x - 'a' == p) {
+                res.push_back(x);
+                c[p] -- ;
+                
+                while (st.size()) {
+                    int t = -1;
+                    for (int i = 0; i < M; ++ i )
+                        if (c[i]) {
+                            t = i;
+                            break;
+                        }
+                    if (st.top() - 'a' <= t) {
+                        res.push_back(st.top()), st.pop();
+                    } else
+                        break;
+                }
+            } else {
+                st.push(x);
+                c[x - 'a'] -- ;
+            }
+            // cout << " after x = " << x << " res = " << res << endl;
+            // vzho fn 
+        }
+        while (st.size())
+            res.push_back(st.top()), st.pop();
+        return res;
+    }
+};
+```
+
+##### **C++ 标准**
+
+```cpp
+class Solution {
+public:
+    const static int N = 1e5 + 10, M = 26;
+    
+    int c[M];
+    
+    string robotWithString(string s) {
+        int n = s.size();
+        memset(c, 0, sizeof c);
+        for (auto x : s)
+            c[x - 'a'] ++ ;
+        
+        string res;
+        stack<char> st;
+        int p = 0;  // 优化查找 p 的过程，干掉一个 for 循环
+        for (auto x : s) {
+            st.push(x);
+            c[x - 'a'] -- ;
+            
+            // int p = -1;
+            // for (int i = 0; i < M; ++ i )
+            //     if (c[i]) {
+            //         p = i;
+            //         break;
+            //     }
+            while (p < M && c[p] == 0)
+                p ++ ;
+            
+            while (st.size() && st.top() - 'a' <= p)
+                res.push_back(st.top()), st.pop();
+        }
+        while (st.size())
+            res.push_back(st.top()), st.pop();
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

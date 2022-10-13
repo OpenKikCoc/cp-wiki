@@ -4111,68 +4111,6 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1606. 找到处理最多请求的服务器](https://leetcode-cn.com/problems/find-servers-that-handled-most-number-of-requests/)** [TAG]
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
->
-> 核心在**构造待选列表以降低复杂度** 。
->
-> 遍历每一个 `arrival` ， 数据范围较大不能每次遍历过程都模拟向后寻找。
->
-> 考虑使用优先队列维护每一个服务器的结束时间，在每一个 `arrival` 到来的处理过程中，先更新之前曾执行任务的服务器列表 `busy` ，如果比当前时间小则加入可用集合 `svr` 。处理结束后，所有 `busy` 中的服务器均在当前处于忙状态。若 `svr` 空则无可用服务器，否则按题意找下标服务器，从 `svr` 清除并加入 `busy` 。
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-class Solution {
-public:
-    vector<int> busiestServers(int k, vector<int>& arrival, vector<int>& load) {
-        int n = arrival.size(), mx = 0;
-        vector<int> cnt(n);
-        set<int> svr;
-        for (int i = 0; i < k; ++i) svr.insert(i);
-        priority_queue<pair<int, int>> busy;
-        for (int i = 0; i < n; ++i) {
-            int p = i % k, t = arrival[i], c = load[i];
-            while (!busy.empty() && busy.top().first * -1 <= t) {
-                svr.insert(busy.top().second);
-                busy.pop();
-            }
-            if (svr.empty()) continue;
-            auto it = svr.lower_bound(p);
-            if (it == svr.end()) it = svr.begin();
-            p = *it;
-            svr.erase(p);
-            busy.push({-t - c, p});
-            mx = max(mx, ++cnt[p]);
-        }
-        vector<int> res;
-        for (int i = 0; i < n; ++i)
-            if (cnt[i] == mx) res.push_back(i);
-        return res;
-    }
-};
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
 > [!NOTE] **[LeetCode 1834. 单线程 CPU](https://leetcode-cn.com/problems/single-threaded-cpu/)** [TAG]
 > 
 > 题意: TODO
@@ -4225,105 +4163,6 @@ public:
             time += t.pt;
         }
         return res;
-    }
-};
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[LeetCode 1942. 最小未被占据椅子的编号](https://leetcode-cn.com/problems/the-number-of-the-smallest-unoccupied-chair/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 维护堆即可 略
-> 
-> 注意 `当时间 i 为 st 时仍需弹出 used` ，或者直接加个 break 即可
-> 
-> **two-pointer trick**
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-class Solution {
-public:
-    using PII = pair<int, int>;
-    
-    int smallestChair(vector<vector<int>>& times, int targetFriend) {
-        int n = times.size();
-        int st = times[targetFriend][0];
-        sort(times.begin(), times.end());
-        
-        priority_queue<int, vector<int>, greater<int>> q;
-        for (int i = 0; i < n; ++ i )
-            q.push(i);
-        priority_queue<PII, vector<PII>, greater<PII>> used;
-        
-        for (int i = 0, j = 0; i <= st; ++ i ) {
-            while (used.size() && used.top().first <= i) {
-                int id = used.top().second;
-                used.pop();
-                q.push(id);
-            }
-            // ATTENTION
-            if (i == st)
-                break;
-            if (i == times[j][0]) {
-                int id = q.top(); q.pop();
-                used.push({times[j][1], id});
-                j ++ ;
-            }
-        }
-        return q.top();
-    }
-};
-```
-
-##### **C++ 直接扫完**
-
-或者直接扫完返回结果
-
-```cpp
-class Solution {
-public:
-    int smallestChair(vector<vector<int>>& times, int targetFriend) {
-        vector<vector<int>> v(100010);
-        vector<vector<int>> w(100010);
-        int n = times.size();
-        for (int i = 0; i < n; ++i) {
-            int x = times[i][0], y = times[i][1];
-            v[x].push_back(i);
-            w[y].push_back(i);
-        }
-        set<int> H;
-        for (int i = 0; i < n; ++i) H.insert(i);
-        vector<int> res(n);
-        for (int i = 1; i <= 100000; ++i) {
-            for (auto id : w[i]) {
-                H.insert(res[id]);
-            }
-            for (auto id : v[i]) {
-                res[id] = *H.begin();
-                H.erase(res[id]);
-            }
-        }
-        return res[targetFriend];
     }
 };
 ```
@@ -5444,6 +5283,7 @@ public:
 class Solution {
 public:
     int minMovesToMakePalindrome(string s) {
+        int n = s.size();
         // 记录下标
         vector<int> p[26];
         for (int i = 0; i < n; ++ i )
@@ -5455,12 +5295,12 @@ public:
         auto t = s; reverse(t.begin(), t.end());
         vector<int> ve(n);
         for (int i = 0; i < n; ++ i )
-            ve[i] = p[t[i] - 'a'][c[t[i] - 'a'] ++ ];
+            ve[i] = p[t[i] - 'a'][cnt[t[i] - 'a'] ++ ];
         
         int res = 0;
         for (int i = 0; i < n; ++ i )
             for (int j = 0; j < i; ++ j )
-                if (a[j] > a[i])
+                if (ve[j] > ve[i])
                     res ++ ;
         return res / 2; // ==> TODO
     }

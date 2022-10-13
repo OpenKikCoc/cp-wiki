@@ -4915,7 +4915,7 @@ public:
 >
 > 压掉一维：
 >
-> > 当 `f[i][j] = f[i - 1][j] + f[i - ][j] + f[i - 1][j + 1]` 的形式时 
+> > 当 `f[i][j] = f[i - 1][j] + f[i - 1][j] + f[i - 1][j + 1]` 的形式时 
 > > 
 > > 【形式可能略微有所变动，但基本是本维依赖上一维度，且依赖上一维度某个循环更新顺序】
 > > 
@@ -4930,7 +4930,7 @@ public:
 > > }
 > >     // === > 
 > > int t = 0;  // memo the f[i - 1][j - 1]
-> > for (int j = 0; j < longest; ++ j ) {
+> > for (int j = 0; j <= longest; ++ j ) {
 > >     int t_next = f[j];
 > >     f[j] = t + f[j] + f[j + 1];
 > >     t = t_next;
@@ -5198,82 +5198,6 @@ public:
         return res;
     }
 };
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[LeetCode 1467. 两个盒子中球的颜色数相同的概率](https://leetcode-cn.com/problems/probability-of-a-two-boxes-having-the-same-number-of-distinct-balls/)** [TAG]
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> dp + 组合数
-> 
-> [题解](https://leetcode-cn.com/problems/probability-of-a-two-boxes-having-the-same-number-of-distinct-balls/solution/cdong-tai-gui-hua-bi-sai-de-shi-hou-bei-fan-yi-ken/)
-> 
-> 重复做 todo
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-class Solution {
-public:
-    double getProbability(vector<int>& balls) {
-        // 颜色数和球的数量
-        const int k = balls.size();
-        const int n = accumulate(balls.begin(), balls.end(), 0) / 2;
-        // 预处理阶乘
-        vector<double> fact;
-        fact.push_back(1.0);
-        for (int i = 1; i <= 2 * n; ++i) { fact.push_back(fact[i - 1] * i); }
-        // 总的排列方法数
-        double total = fact[2 * n];
-        for (auto ball : balls) { total /= fact[ball]; }
-        // 动态规划
-        vector<vector<double>> dp(2 * n + 1, vector<double>(2 * k + 1, 0.0));
-        dp[0][k] = 1.0;
-        int num = 0;
-        for (int i = 0; i < k; ++i) {
-            vector<vector<double>> next(2 * n + 1,
-                                        vector<double>(2 * k + 1, 0.0));
-            for (int j = 0; j <= balls[i]; ++j) {
-                int trans = 0;
-                trans = j == 0 ? -1 : trans;
-                trans = j == balls[i] ? 1 : trans;
-                for (int front = 0; front <= 2 * n; ++front)
-                    for (int color = 0; color <= 2 * k; ++color) {
-                        if (dp[front][color] == 0) continue;
-                        double ways = dp[front][color];
-                        ways *= fact[front + j] / (fact[front] * fact[j]);
-                        ways *= fact[num - front + balls[i] - j] /
-                                (fact[num - front] * fact[balls[i] - j]);
-                        next[front + j][color + trans] += ways;
-                    }
-            }
-            swap(dp, next);
-            num += balls[i];
-        }
-        return dp[n][k] / total;
-    }
-};
-
-// mskadr
 ```
 
 ##### **Python**
