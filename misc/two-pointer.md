@@ -1981,6 +1981,109 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 6207. 统计定界子数组的数目](https://leetcode.cn/problems/count-subarrays-with-fixed-bounds/) [TAG]**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思维 要找准方向
+> 
+> 思维简化后可以直接双指针
+> 
+> TODO: 类似题目 [AtCoder ABC-247-E](https://atcoder.jp/contests/abc247/tasks/abc247_e) [CF E. Maximums and Minimums](https://codeforces.com/problemset/problem/1730/E)
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 初步**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    
+    vector<int> xs, ys, ns;
+    
+    long long countSubarrays(vector<int>& nums, int minK, int maxK) {
+        int n = nums.size();
+        for (int i = 0; i < n; ++ i ) {
+            if (nums[i] == minK)
+                xs.push_back(i);
+            if (nums[i] == maxK)
+                ys.push_back(i);
+            if (nums[i] < minK || nums[i] > maxK)
+                ns.push_back(i);
+        }
+        
+        LL res = 0;
+        for (int i = 0; i < n; ++ i ) {
+            if (nums[i] < minK || nums[i] > maxK)
+                continue;
+            auto it = lower_bound(ns.begin(), ns.end(), i);
+            int t = 0;
+            if (it == ns.begin())
+                t = -1;
+            else
+                t = *prev(it);
+            
+            int x, y;
+            it = upper_bound(xs.begin(), xs.end(), i);
+            if (it == xs.begin())
+                continue;
+            else
+                x = *prev(it);
+            it = upper_bound(ys.begin(), ys.end(), i);
+            if (it == ys.begin())
+                continue;
+            else
+                y = *prev(it);
+            if (x <= t || y <= t)
+                continue;
+            res = res + LL(min(x, y) - t);
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 双指针**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    
+    long long countSubarrays(vector<int>& nums, int minK, int maxK) {
+        LL res = 0;
+        for (int i = 0, x = -1, y = -1, z = -1; i < nums.size(); ++ i ) {
+            if (nums[i] == minK)
+                x = i;
+            if (nums[i] == maxK)
+                y = i;
+            if (nums[i] < minK || nums[i] > maxK)
+                z = i;
+            res += max(min(x, y) - z, 0);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 双指针区间维护
 
 > [!NOTE] **[Codeforces R2D2 and Droid Army](http://codeforces.com/problemset/problem/514/D)**

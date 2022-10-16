@@ -1036,3 +1036,101 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 6211. 创建价值相同的连通块](https://leetcode.cn/problems/create-components-with-same-value/) [TAG]**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然的有根据数据范围求解
+> 
+> 另外还有 dfs 内部的实现思维 => **反复思考细节**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 观察数据，1 <= nums[i] <= 50
+    // ===> 树总值最大为 1e6, 因子数 240, 考虑枚举每个联通块的价值【这个价值必须整除总值】
+    using LL = long long;
+    const static int N = 2e4 + 10, M = 4e4 + 10;
+    
+    int h[N], e[M], ne[M], idx;
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+    }
+    void add(int a, int b) {
+        e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    int n;
+    vector<int> ns;
+    
+    // 求以某个点为根的子树的价值和
+    int f[N];
+    void dfs_1(int u, int fa) {
+        f[u] = ns[u];
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (j == fa)
+                continue;
+            dfs_1(j, u);
+            f[u] += f[j];
+        }
+    }
+    
+    // 每块联通块值都为 k
+    bool dfs_2(int u, int fa, int k) {
+        int s = ns[u];
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (j == fa)
+                continue;
+            if (!dfs_2(j, u, k))
+                return false;
+            // ATTENTION 把这部分加在一起
+            if (f[j] % k)
+                s += f[j] % k;
+        }
+        // ATTENTION 思考 只有 <= k 才是合法的，否则说明这一坨一定无法合理分割
+        return s <= k;
+    }
+    
+    int componentValue(vector<int>& nums, vector<vector<int>>& edges) {
+        init();
+        this->ns = nums;
+        this->n = ns.size();
+        
+        for (auto & e : edges)
+            add(e[0], e[1]), add(e[1], e[0]);
+        
+        dfs_1(0, -1);
+        
+        // 枚举值
+        for (int i = 1; i <= f[0]; ++ i )
+            if (f[0] % i == 0 && dfs_2(0, -1, i))
+                return f[0] / i - 1;
+        return 0;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
