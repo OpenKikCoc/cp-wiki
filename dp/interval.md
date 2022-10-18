@@ -1292,7 +1292,7 @@ public:
     int countPalindromicSubsequences(string s) {
         int n = s.size(), MOD = 1e9 + 7;
         vector<vector<int>> f(n + 2, vector<int>(n + 2, 1));
-        for (int i = 1; i <= n; i ++ ) f[i][i] ++ ;
+        for (int i = 1; i <= n; i ++ ) f[i][i] ++ ;     // ATTENTION 算空串
         for (int len = 2; len <= n; len ++ ) {
             deque<int> q[4];
             for (int i = 1; i <= n; i ++ ) {
@@ -1302,8 +1302,9 @@ public:
                     for (int k = 0; k < 4; k ++ ) {
                         while (q[k].size() && q[k].front() < j) q[k].pop_front();
                         if (q[k].size()) {
-                            f[j][i] ++ ;
+                            f[j][i] ++ ;                // ATTENTION 长度为一的回文子序列
                             int l = q[k].front(), r = q[k].back();
+                            // ATTENTION 这样才能保证内部至少有两个元素
                             if (l < r)
                                 f[j][i] = (f[j][i] + f[l + 1][r - 1]) % MOD;
                         }
