@@ -2031,6 +2031,115 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 6216. 使数组相等的最小开销](https://leetcode.cn/problems/minimum-cost-to-make-array-equal/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思维题
+> 
+> - 数学：显然可以数学推导，枚举最终都变成哪个数，则左侧右侧变化量可以 `left` / `right` 维护
+> 
+> - 思维：把开销转化为次数，求中位数即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 数学**
+
+```cpp
+class Solution {
+public:
+    // 值域为 1e6, 最终答案一定在出现过的值中
+    using PII = pair<int, int>;
+    using LL = long long; 
+    
+    long long minCost(vector<int>& nums, vector<int>& cost) {
+        int n = nums.size();
+        vector<PII> xs;
+        for (int i = 0; i < n; ++ i )
+            xs.push_back({nums[i], cost[i]});
+        xs.push_back({0, 0});
+        sort(xs.begin(), xs.end());
+        
+        LL res = 1e18;
+        
+        LL sum = 0, right = 0;
+        // 每个都和 0 一样
+        {
+            int p = xs[0].first;   // p = 0;
+            for (int i = 1; i <= n; ++ i ) {
+                sum += (LL)(xs[i].first - p) * xs[i].second;
+                right += xs[i].second;
+            }
+            res = min(res, sum);
+        }
+        // 每个都和 xs[i].first 一样
+        LL left = 0 + xs[0].second; // 0
+        for (int i = 1; i <= n; ++ i ) {
+            LL d = xs[i].first - xs[i - 1].first;
+            sum += d * (left - right);
+            right -= xs[i].second;
+            left += xs[i].second;
+            
+            res = min(res, sum);
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 思维 中位数**
+
+```cpp
+class Solution {
+public:
+    using PII = pair<int, int>;
+    using LL = long long; 
+    
+    long long minCost(vector<int>& nums, vector<int>& cost) {
+        int n = nums.size();
+        vector<PII> xs;
+        for (int i = 0; i < n; ++ i )
+            xs.push_back({nums[i], cost[i]});
+        // xs.push_back({0, 0}); 本做法显然不需要填充 {0, 0}
+        sort(xs.begin(), xs.end());
+        
+        LL tot = 0; // 把消耗当作次数，先求总个数
+        for (int i = 0; i < n; ++ i )
+            tot += cost[i];
+        
+        LL sum = 0;
+        for (int i = 0; i < n; ++ i ) {
+            sum += xs[i].second;
+            if (sum > tot / 2) {
+                // 把所有数变成当前值
+                LL res = 0, p = xs[i].first;
+                for (int j = 0; j < n; ++ j )
+                    res += (LL)abs(xs[j].first - p) * xs[j].second;
+                return res;
+            }
+        }
+        return -1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 区间问题
 
 > [!NOTE] **[AcWing 803. 区间合并](https://www.acwing.com/problem/content/805/)**
@@ -6161,6 +6270,70 @@ public:
                 res = max(res, sum + a);
         }
         return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 6217. 使数组相似的最少操作次数](https://leetcode.cn/problems/minimum-number-of-operations-to-make-arrays-similar/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然可以按奇偶分组 组内贪心
+> 
+> 需要注意的是：把两组加起来再除 2，**因为可能会出现某次操作的一对数字奇偶性不同**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // ATTENTION 一定可以变相似
+    using LL = long long;
+    using PVI = pair<vector<int>, vector<int>>;
+    
+    PVI get(vector<int> & nums) {
+        vector<int> a, b;
+        for (auto x : nums)
+            if (x & 1)
+                a.push_back(x);
+            else
+                b.push_back(x);
+        sort(a.begin(), a.end());
+        sort(b.begin(), b.end());
+        return {a, b};
+    }
+    
+    LL calc(vector<int> & a, vector<int> & b) {
+        int n = a.size();
+        LL res = 0;
+        for (int i = 0; i < n; ++ i )
+            res += abs(a[i] - b[i]) / 2;
+        return res;
+    }
+    
+    long long makeSimilar(vector<int>& nums, vector<int>& target) {
+        auto [a1, b1] = get(nums);
+        auto [a2, b2] = get(target);
+        return (calc(a1, a2) + calc(b1, b2)) / 2;
     }
 };
 ```
