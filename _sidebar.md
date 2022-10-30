@@ -1,5 +1,6 @@
 * [LaTeX](latex.md)
 * [Papers](papers.md)
+* [Resources](resources.md)
 * [语言基础](lang/README.md)
   * [读入、输出优化](lang/io.md)
   * [STL 算法](lang/algorithm.md)
