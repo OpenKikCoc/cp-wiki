@@ -1054,3 +1054,161 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 6223. 移除子树后的二叉树高度](https://leetcode.cn/problems/height-of-binary-tree-after-subtree-removal-queries/)** [TAG]
+> 
+> 题意: 
+> 
+> 一串询问，问每次删除某个完整子树后的树高（每次询问后都会恢复原树）
+
+> [!TIP] **思路**
+> 
+> - 思维 考虑重链 => 考虑删除当前重链上的某个点之后 答案应当是多少 => 一定是从重链的非重子节点处获取所有可能答案
+> 
+> - 子树里的所有点是 DFS 序里的一个连续区间 => DFS 序 => 转变为删除连续区间后求全局最值的问题 【敏感度】
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 思维 重链**
+
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    const static int N = 1e5 + 10;
+    
+    int n;
+    int height[N];
+    int tr[N][2], son[N];
+    
+    int t[N];
+    
+    void dfs(TreeNode * u) {
+        if (!u)
+            return;
+        
+        n ++ ;
+        dfs(u->left), dfs(u->right);
+        
+        int x = u->val, l = 0, r = 0;
+        if (u->left)
+            tr[x][0] = u->left->val, l = height[u->left->val];
+        if (u->right)
+            tr[x][1] = u->right->val, r = height[u->right->val];
+        
+        if (l > r)
+            son[x] = 0;
+        else if (l < r)
+            son[x] = 1;
+        height[x] = max(l, r) + 1;
+    }
+    
+    vector<int> treeQueries(TreeNode* root, vector<int>& queries) {
+        memset(tr, 0, sizeof tr), memset(son, -1, sizeof son);
+        n = 0;
+        dfs(root);
+        
+        for (int i = 1; i <= n; ++ i )
+            t[i] = height[root->val];
+        
+        // 核心思想: 我们只需要关注改变某个点之后一定会影响全局的部分即可
+        // -> 对于有冗余备份的部分 其删除不影响全局 => 故只需要关心一条链 不需要 bfs
+        // 
+        // 对于该链上发生变化的节点 新值即为每个节点另一个方向的高度 + 当前深度
+        for (int u = root->val, path = 0, maxd = 0, k; u && son[u] != -1; u = tr[u][k] ) {
+            path ++ ;
+            // 【思维】对于当前位置处 如果删掉了 tr[u][k] 则新的高度为 tr[u][k^1] + path
+            k = son[u];
+            maxd = max(maxd, height[tr[u][k ^ 1]] + path);
+            t[tr[u][k]] = maxd;
+        }
+        
+        vector<int> res;
+        for (auto x : queries)
+            res.push_back(t[x] - 1);
+        return res;
+    }
+};
+```
+
+##### **C++ DFS 序**
+
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    const static int N = 1e5 + 10;
+    
+    int n, ts;
+    int l[N], r[N];
+    int d[N];
+    
+    void dfs(TreeNode * u, int dep) {
+        if (!u)
+            return;
+        
+        n ++ ;
+        int x = u->val;
+        
+        l[x] = ++ ts;
+        // ATTENTION 不是使用 x 而是使用 ts 来标记深度
+        // 方便后面前后缀分别统计
+        d[ts] = dep;
+        dfs(u->left, dep + 1), dfs(u->right, dep + 1);
+        r[x] = ts;
+    }
+    
+    int f[N], g[N];
+    
+    vector<int> treeQueries(TreeNode* root, vector<int>& queries) {
+        n = 0, ts = 0;
+        dfs(root, 0);
+        
+        memset(f, 0, sizeof f), memset(g, 0, sizeof g);
+        for (int i = 1; i <= n; ++ i )
+            f[i] = max(f[i - 1], d[i]);
+        for (int i = n; i >= 1; -- i )
+            g[i] = max(g[i + 1], d[i]);
+        
+        vector<int> res;
+        for (auto q : queries)
+            res.push_back(max(f[l[q] - 1], g[r[q] + 1]));
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
