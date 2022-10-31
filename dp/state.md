@@ -3451,6 +3451,38 @@ public:
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
+##### **C++ 标准**
+
+```cpp
+class Solution {
+public:
+    int closestCost(vector<int>& baseCosts, vector<int>& toppingCosts, int target) {
+        int res = INT_MAX;
+        int n = baseCosts.size(), m = toppingCosts.size();
+        for (int i = 0; i < n; ++ i ) {
+            // 尝试以 i 为基料
+            int s = baseCosts[i];
+
+            // 状压枚举基料的选择
+            int lim = pow(3, m);
+            for (int j = 0; j < lim; ++ j ) {
+                int t = s;
+                // 对应的 j 下每种配料的选择情况 (0/1/2)
+                for (int k = 0, p = 1; k < m; ++ k , p *= 3 ) {
+                    // ATTENTION 先获取前缀 再对三取模 来得到对应位置的值
+                    int prefix = j / p; // ATTENTION 除法
+                    int x = prefix % 3;
+                    t += toppingCosts[k] * x;
+                }
+                if (abs(t - target) < abs(res - target) || abs(t - target) == abs(res - target) && t < res)
+                    res = t;
+            }
+        }
+        return res;
+    }
+};
+```
+
 ##### **C++**
 
 ```cpp
@@ -3541,6 +3573,70 @@ public:
 <details>
 <summary>详细代码</summary>
 <!-- tabs:start -->
+
+##### **C++ 标准**
+
+```cpp
+class Solution {
+public:
+    // 3^5 = 81 * 3 = 243
+    const static int N = 1010, M = 250, MOD = 1e9 + 7;
+
+    int f[N][M];
+
+    int colorTheGrid(int m, int n) {
+        int lim = pow(3, m);
+        vector<int> valid;
+        for (int i = 0; i < lim; ++ i ) {
+            int last = -1;
+            bool flag = true;
+            for (int j = 0, p = 1; j < m; ++ j, p *= 3 ) {
+                int t = i / p % 3;
+                if (t == last) {
+                    flag = false;
+                    break;
+                }
+                last = t;
+            }
+            if (flag)
+                valid.push_back(i);
+        }
+
+        int sz = valid.size();
+        unordered_map<int, vector<int>> es;
+        for (int i = 0; i < sz; ++ i ) {
+            vector<int> e;
+            for (int j = 0; j < sz; ++ j ) {
+                bool flag = true;
+                for (int k = 0, p = 1; k < m; ++ k, p *= 3 ) {
+                    int t1 = valid[i] / p % 3, t2 = valid[j] / p % 3;
+                    if (t1 == t2) {
+                        flag = false;
+                        break;
+                    }
+                }
+                if (flag)
+                    e.push_back(valid[j]);
+            }
+            es[valid[i]] = e;
+        }
+
+        memset(f, 0, sizeof f);
+        for (auto x : valid)
+            f[1][x] = 1;
+        
+        for (int i = 2; i <= n; ++ i )
+            for (auto j : valid)
+                for (auto k : es[j])
+                    f[i][j] = (f[i][j] + f[i - 1][k]) % MOD;
+
+        int res = 0;
+        for (auto x : valid)
+            res = (res + f[n][x]) % MOD;
+        return res;
+    }
+};
+```
 
 ##### **C++**
 
@@ -3734,93 +3830,6 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1774. 最接近目标价格的甜点成本](https://leetcode-cn.com/problems/closest-dessert-cost/)** [TAG]
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 枚举小技巧: 四进制来表示三进制
-> 
-> 也可以转化为 01背包
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-class Solution {
-public:
-    int closestCost(vector<int>& a, vector<int>& b, int T) {
-        int res = INT_MAX;
-        int n = a.size(), m = b.size();
-        for (int i = 0; i < n; ++ i ) {
-            int s = a[i];
-            // 四进制来表示三进制
-            for (int j = 0; j < 1 << m * 2; ++ j ) {
-                int r = s;
-                bool flag = false;
-                for (int k = 0; k < m; ++ k ) {
-                    int t = j >> k * 2 & 3;
-                    if (t == 3) {
-                        flag = true;
-                        break;
-                    }
-                    r += b[k] * t;
-                }
-                if (flag) continue;
-                if (abs(r - T) < abs(res - T) || abs(r - T) == abs(res - T) && r < res)
-                    res = r;
-            }
-        }
-        return res;
-    }
-};
-```
-
-##### **C++ 背包**
-
-```cpp
-class Solution {
-public:
-    int closestCost(vector<int>& baseCosts, vector<int>& toppingCosts, int target) {
-        int tt = 20000;
-        vector<bool> f(tt + 1, false);
-        for (int x: baseCosts)
-            f[x] = true;
-        for (int x: toppingCosts)
-            for (int j = tt; j >= x; --j)
-                if (f[j - x])
-                    f[j] = true;
-        for (int x: toppingCosts)
-            for (int j = tt; j >= x; --j)
-                if (f[j - x])
-                    f[j] = true;
-        int ans = tt;
-        for (int i = 0; i <= tt; ++i)
-            if (f[i])
-                if (abs(i - target) < abs(ans - target))
-                    ans = i;
-        return ans;
-    }
-};
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
 > [!NOTE] **[LeetCode 2172. 数组的最大与和](https://leetcode-cn.com/problems/maximum-and-sum-of-array/)** [TAG]
 > 
 > 题意: TODO
@@ -3832,6 +3841,38 @@ public:
 <details>
 <summary>详细代码</summary>
 <!-- tabs:start -->
+
+##### **C++ 标准**
+
+```cpp
+class Solution {
+public:
+    // ATTENTION 并非考虑每一个篮子 而是考虑当前每一个数
+    // => 压缩篮子的状态
+    const static int N = 19, M = 2e4;   // 3^9 < 2e4
+
+    int f[N][M];    // 前i个放完后 所有篮子的【剩余可放】状态为 j 的最大与和
+
+    int maximumANDSum(vector<int>& nums, int numSlots) {
+        int n = nums.size(), m = numSlots;
+        memset(f, 0, sizeof f);
+
+        int lim = pow(3, m);
+        for (int i = 1; i <= n; ++ i )
+            for (int j = 0; j < lim; ++ j )
+                // 第 i 个数放到第 k 个篮子
+                for (int k = 1, p = 1; k <= m; ++ k , p *= 3 ) {
+                    int t = j / p % 3;
+                    if (t != 0) {   // 还可以放
+                        // ATTENTION j-p 意味着消耗掉当前篮子的一个空位
+                        f[i][j] = max(f[i][j], f[i - 1][j - p] + (k & nums[i - 1]));    // nums[i - 1]
+                    }
+                }
+        return f[n][lim - 1];
+    }
+};
+```
+
 
 ##### **C++**
 

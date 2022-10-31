@@ -145,6 +145,8 @@ $\text{CDQ}(l,r)$ 代表计算 $f_i,i\in [l,r]$。考虑 $\text{CDQ}(1,n)$：
 > 线性dp似乎就可以
 > 
 > **重要思想：分段对后续有影响的直接累加到本段计算**
+> 
+> $f_i = \min_{j=0}^{i-1}\{f_j + sumT_i * (sumC_i - sumC_j) + S * (sumC_n - sumC_j) \}$
 
 <details>
 <summary>详细代码</summary>
@@ -211,6 +213,20 @@ int main() {
 > 对于从前至后的每一个点 i ，找到它前方的某固定斜率的最低 j ，随着节点加入凸包形成的斜率逐步增加。
 > 
 > 单调队列维护凸包，同时因为斜率单调递增，可以从队头删除。
+> 
+> $f_i = \min_{j=0}^{i-1}\{f_j + sumT_i * (sumC_i - sumC_j) + S * (sumC_n - sumC_j) \}$
+> 
+> => $f_i = f_j + sumT_i * sumC_i - sumT_i * sumC_j + S * sumC_n - S * sumC_j$
+> 
+> => $f_j = (sumT_i + S) * sumC_j + f_i - sumT_i * sumC_i - S * sumC_n$
+> 
+> 令 $y = f_j$, $x = sumC_j$
+> 
+> => $y = (sumT_i + S) * x + f_i - sumT_i * sumC_i - S * sumC_n$
+> 
+> - 对于当前位置 $i$，**斜率固定**的情况下要使得**截距最小**，显然找到第一个大于 $sumT_i + S$ 的斜率即可
+> 
+> - 又因为 $sumT_i$ 伴随着 $i$ 递增，故可以直接**头部弹出不符合要求的部分，因为以后也用不到**
 
 <details>
 <summary>详细代码</summary>
@@ -285,6 +301,12 @@ int main() {
 > [!TIP] **思路**
 > 
 > 单调队列维护凸包；但因为斜率并非单调递增，所以需要二分查找 j 。
+> 
+> 同理得 $f_j = (sumT_i + S) * sumC_j + f_i - sumT_i * sumC_i - S * sumC_n$
+> 
+> - 对于当前位置 $i$，**斜率固定**的情况下要使得**截距最小**，显然找到第一个大于 $sumT_i + S$ 的斜率即可
+> 
+> - 又因为 $sumT_i$ 并不伴随着 $i$ 递增，故**不能从头部弹出任何节点**
 
 <details>
 <summary>详细代码</summary>
@@ -669,6 +691,16 @@ int main() {
 > - 细节: 注意 sorting 规则, 必须 `while`
 > 
 > - `long long`
+> 
+> 首先考虑排序预处理，最终得到 [w 递增, h 递减] 的序列
+> 
+> 进一步考虑最后一块并购了哪一段: $f[i] = min{f[j] + w[i] * h[j + 1]}$
+> 
+> => $f[j] = - w[i] * h[j + 1] + f[i]$
+> 
+> 要想 $f[i]$ 最小则截距最小，则需找到第一个大于 $-w[i]$ 的位置
+> 
+> 又因为 $w[i]$ 伴随 $i$ 增加，故每次从队头直接弹出不合法部分即可
 
 <details>
 <summary>详细代码</summary>
@@ -771,6 +803,16 @@ int main() {
 > 巨坑: 必须要写 `slope` 使用除法，否则乘法会因为数值溢出
 > 
 > 或者写 `__int128`
+> 
+> $f[i] = min{f[j] + (s[i] - s[j] - 1 - L)^2}$
+> 
+> => $f[i] = min{f[j] + (s[i] - (s[j] + L + 1))^2}$
+> 
+> 令 $t(j) = s[j] + L + 1$
+> 
+> => $f[i] = f[j] + (s[i] - t(j))^2$
+> 
+> => $f[j] + t(j)^2 = 2*s[i]*t(j) + f[i] - s[i]^2$
 
 <details>
 <summary>详细代码</summary>
@@ -867,6 +909,16 @@ int main() {
 > [!TIP] **思路**
 > 
 > 二元方程转换即可，注意右侧只留一元的部分，其余全部丢左边
+> 
+> 令 $t = s[i] - s[j]$
+> 
+> => $f[i] = max{f[j] + a*t^2 + b*t + c}$
+> 
+> => $f[i] = f[j] + a*(s[i]^2-2*s[i]*s[j]+s[j]^2) + b*(s[i]-s[j]) + c$
+> 
+> => $f[i] = f[j] + a*s[i]^2 + b*s[i] - (b+2*a*s[i])*s[j] + a*s[j]^2 + c$
+> 
+> => $f[j] + a*s[j]^2 = (2*a*s[i]+b)*s[j] - (a*s[i]+b)*s[i] - c + f[i]$
 
 <details>
 <summary>详细代码</summary>
@@ -963,6 +1015,12 @@ int main() {
 > 有了推论基础才能写出状态转移方程 $f[i][k] = max(f[j][k-1] + (s[i]-s[j]) * s[j])$
 > 
 > 这类题有可能会 **卡精度 卡常**
+> 
+> $f[i][k] = max{f[j][k-1] + (s[i]-s[j]) * s[j]}$
+> 
+> 滚动数组压掉一维 => $f[i] = f[j] + (s[i]-s[j])*s[j]$
+> 
+> $f[j] - s[j]^2 = -s[i]*s[j] + f[i]$
 
 <details>
 <summary>详细代码</summary>
