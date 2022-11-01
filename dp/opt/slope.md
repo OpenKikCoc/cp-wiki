@@ -486,11 +486,66 @@ int main() {
 > 
 > - 本题是 `固定一个点求限定条件下斜率的最值`
 > 
-> **也是单调栈的思想**
+> **也是 斜率优化by单调栈 的思想**
+> 
+> > 用路程时间图把所有车的路程时间曲线都画出来（相交代表相遇即追上，追上之后因为是跟慢车行驶，所以后车的曲线到交点就不用延伸出去了）。然后很容易看出这个路程时间图的曲线都是凸的
 
 <details>
 <summary>详细代码</summary>
 <!-- tabs:start -->
+
+##### **C++ 标准**
+
+```cpp
+class Solution {
+public:
+    using PII = pair<int, int>;
+    const static int N = 1e5 + 10;
+    
+    PII cs[N];
+    int inline x(int i) {
+        return cs[i].first;     // p_i
+    }
+    int inline y(int i) {
+        return cs[i].second;    // v_i
+    }
+    double slope(int a, int b) {
+        return double(y(a) - y(b)) / (x(a) - x(b));
+    }
+
+    int q[N];
+
+    vector<double> getCollisionTimes(vector<vector<int>>& cars) {
+        int n = cars.size();
+        for (int i = 0; i < n; ++ i )
+            cs[i] = {cars[i][0], cars[i][1]};
+        
+        // x轴为时间 y轴为距离 速度为斜率 => 错误
+        // 考虑相遇时间为【距离差 / 速度差】
+        //
+        // x轴为距离p(遍历时有序) y轴为速度v
+        //  时间为 (p_j - p_i) / (v_i - v_j) 要求最小
+        //  => (v_j / v_i) / (p_j - p_i) 最小
+        // 则对于当前点来说一定是求右边某个点与它的斜率最小（相遇时间最小）
+        //  => 下凸壳
+        vector<double> res(n, -1);
+        int hh = 0, tt = -1;    // hh 实际上没有用到 => 可以换成栈
+        for (int i = n - 1; i >= 0; -- i ) {
+            // 移除所有(从右向左射线)斜率比当前更小的
+            while (hh < tt && slope(q[tt - 1], q[tt]) <= slope(q[tt], i))
+                tt -- ;
+            // 如果栈非空
+            if (hh <= tt) {
+                int j = q[tt];
+                if (cs[j].second < cs[i].second)
+                    res[i] = (double)(cs[j].first - cs[i].first) / (cs[i].second - cs[j].second);
+            }
+            q[ ++ tt] = i;
+        }
+        return res;
+    }
+};
+```
 
 ##### **C++**
 
