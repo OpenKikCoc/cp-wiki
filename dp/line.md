@@ -3867,7 +3867,7 @@ class Solution:
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++**
+##### **C++ 1**
 
 ```cpp
 class Solution {
@@ -3894,6 +3894,35 @@ public:
                 int v1 = *it1, v2 = *it2;
                 res.push_back(min(id - v2, v1 - id));
             }
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 2**
+
+```cpp
+class Solution {
+public:
+    vector<int> shortestDistanceColor(vector<int>& colors, vector<vector<int>>& queries) {
+        vector<int> c[3];
+        int n = colors.size();
+        for (int i = 0; i < n; ++ i )
+            c[colors[i] - 1].push_back(i);
+        
+        vector<int> res;
+        for (auto & q : queries) {
+            int x = q[0], y = q[1];
+            int t = INT_MAX;
+
+            auto & cy = c[y - 1];
+            auto it = lower_bound(cy.begin(), cy.end(), x);
+            if (it != cy.end())
+                t = min(t, *it - x);
+            if (it != cy.begin())
+                t = min(t, x - *prev(it));
+            res.push_back(t == INT_MAX ? -1 : t);
         }
         return res;
     }

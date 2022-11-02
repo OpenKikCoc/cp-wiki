@@ -206,6 +206,12 @@ void tarjan(int u) {
             if (low[j] >= dfn[u]) ++ cnt;
         } else low[u] = min(low[u], dfn[j]);
     }
+    // ATTENTION
+    // 这里统计 cnt 时意义有所不同，计算的是移除当前节点后能形成多少个联通块
+    // 
+    // 在常规判断割点的逻辑中，应当这样使用：
+    // if (u != root && cnt > 1)
+    //    is_cut[u] = true;
     if (u != root) ++ cnt;
     ans = max(ans, cnt);
 }

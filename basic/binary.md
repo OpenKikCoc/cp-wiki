@@ -603,7 +603,7 @@ class Solution:
 
 > [!TIP] **思路**
 > 
-> 
+> 重点在于 **正确性证明**
 
 <details>
 <summary>详细代码</summary>
@@ -656,6 +656,72 @@ class Solution:
             else:
                 r = m 
         return l       
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1901. 寻找峰值 II](https://leetcode.cn/problems/find-a-peak-element-ii)**
+> 
+> 题意: 
+> 
+> 保证相邻元素都不相等的矩阵，求任意一个峰值（大于所有相邻的元素）
+
+> [!TIP] **思路**
+> 
+> 重点仍然在于 **正确性推导**
+> 
+> 对每一行考虑其最大值所在的列（实际上通过二分），则需要关注该列相邻两行的值的关系
+> 
+> - 如果相邻行更大，则峰值一定出现在相邻行所在的区间
+> 
+> - 如果相邻行更小，则峰值一定出现在当前行所在区间
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 510;
+
+    int p[N];   // 记录每一行最大值的下标 [如果有多个最大值呢]
+
+    vector<int> findPeakGrid(vector<vector<int>>& mat) {
+        int n = mat.size(), m = mat[0].size();
+        for (int i = 0; i < n; ++ i ) {
+            int t = 0;
+            for (int j = 0; j < m; ++ j )
+                if (mat[i][j] > mat[i][t])
+                    t = j;
+            p[i] = t;
+        }
+
+        int l = 0, r = n - 1;
+        while (l < r) {
+            int m = l + (r - l) / 2;
+            int t = p[m];
+            if (mat[m][t] < mat[m + 1][t])  // ATTENTION 找相同列比较
+                l = m + 1;
+            else
+                r = m;
+        }
+        return {l, p[l]};
+    }
+};
+```
+
+##### **Python**
+
+```python
+
 ```
 
 <!-- tabs:end -->
@@ -2375,6 +2441,71 @@ public:
                 l = m;
         }
         return l;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1231. 分享巧克力](https://leetcode.cn/problems/divide-chocolate)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 二分答案
+> 
+> 注意 `for-loop` 校验过程中如满足条件需要提前 break (直接 `return false` 的话仍然需要在 return 之前判断 c 的值，略有点麻烦)
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int n, k;
+    vector<int> ss;
+
+    bool check(int m) {
+        int c = 0;
+        for (int i = 0; i < n; ++ i ) {
+            int j = i + 1, t = ss[i];
+            while (j < n && t < m)
+                t += ss[j ++ ];
+            if (t < m)
+                break;
+            c ++ ;
+            i = j - 1;
+        }
+        return c >= k + 1;
+    }
+
+    int maximizeSweetness(vector<int>& sweetness, int k) {
+        this->ss = sweetness;
+        this->n = ss.size(), this->k = k;
+        int l = 0, r = 1e9 + 10;
+        while (l < r) {
+            int m = l + (r - l) / 2;
+            if (check(m))
+                l = m + 1;
+            else
+                r = m;
+        }
+        return l - 1;
     }
 };
 ```

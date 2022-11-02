@@ -310,7 +310,84 @@ public:
 ##### **C++ ODT**
 
 ```cpp
+class RangeModule {
+public:
+    struct Node_t {
+        int l, r;
+        mutable int v;
+        inline bool operator<(const Node_t & o) const {
+            return l < o.l;
+        }
+    };
+    set<Node_t> odt;
 
+    auto split(int x) {
+        auto it = odt.lower_bound({x, 0, 0});
+        if (it != odt.end() && it->l == x)
+            return it;
+        // 否则 x 一定被前面一段包含
+        it -- ;
+        auto [l, r, v] = *it;
+        // sth ...
+
+        odt.erase(it);
+        odt.insert({l, x - 1, v});
+        return odt.insert({x, r, v}).first;   // 返回迭代器
+    }
+    void merge(set<Node_t>:: iterator it) {
+        if (it == odt.end() || it == odt.begin())
+            return;
+        auto lit = prev(it);
+        auto [ll, lr, lv] = *lit;
+        auto [rl, rr, rv] = *it;
+        if (lv == rv) {
+            odt.erase(lit), odt.erase(it), odt.insert({ll, rr, lv});
+            // sth ...
+        }
+    }
+    void assign(int l, int r, int v) {
+        auto itr = split(r + 1), itl = split(l);    // 顺序不能颠倒
+        // sth ...
+
+        odt.erase(itl, itr);
+        odt.insert({l, r, v});
+
+        merge(odt.lower_bound({l, 0, 0})), merge(itr);
+    }
+
+    const static int INF = 0x3f3f3f3f;
+
+    RangeModule() {
+        odt.insert({-INF, INF, 0});
+    }
+    
+    void addRange(int left, int right) {
+        assign(left, right - 1, 1);
+    }
+    
+    bool queryRange(int left, int right) {
+        auto it = odt.upper_bound({left, 0, 0});
+        if (it == odt.begin())
+            return false;
+        it -- ; // 包含 left 的一定在前一段
+        auto [l, r, v] = *it;
+        if (!v || r < right - 1)
+            return false;
+        return true;
+    }
+    
+    void removeRange(int left, int right) {
+        assign(left, right - 1, 0);
+    }
+};
+
+/**
+ * Your RangeModule object will be instantiated and called as such:
+ * RangeModule* obj = new RangeModule();
+ * obj->addRange(left,right);
+ * bool param_2 = obj->queryRange(left,right);
+ * obj->removeRange(left,right);
+ */
 ```
 
 ##### **Python**
