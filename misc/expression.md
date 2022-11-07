@@ -457,6 +457,7 @@ class Solution {
 public:
     stack<int> num;
     stack<char> op;
+
     void eval() {
         auto b = num.top(); num.pop();
         auto a = num.top(); num.pop();
@@ -467,29 +468,38 @@ public:
         num.push(r);
     }
 
-    int calculate(string s) {
-        for (int i = 0; i < s.size(); ++i) {
+    int calculate(string rs) {
+        string s;
+        for (auto c: rs)
+            if (c != ' ')   // 过滤空格 方便直接 s[i - 1] 去特判
+                s += c;
+
+        for (int i = 0; i < s.size(); ++ i ) {
             auto c = s[i];
-            if (c == ' ') continue;
             if (isdigit(c)) {
                 int x = 0, j = i;
                 while (j < s.size() && isdigit(s[j])) x = x * 10 + (s[j ++ ] - '0');
                 i = j - 1;
                 num.push(x);
-            } else if (c == '(') op.push(c);
+            } else if (c == '(')
+                op.push(c);
             else if (c == ')') {
-                while (op.top() != '(') eval();
+                while (op.top() != '(') eval(num, op);
                 op.pop();
             } else {
-                while (!op.empty() && op.top() != '(') eval();
                 // 2021 leetcode更新数据
                 // -2+ 1
                 // 如果当前栈空 压入操作符前先加入0
-                if (num.empty()) num.push(0);
+                //
+                // 2022 更新数据
+                // "1-(     -2)" 需要对前面的位置特判
+                if (!i || s[i - 1] == '(' || s[i - 1] == '+' || s[i - 1] == '-')  // 特殊处理符号和正号
+                    num.push(0);
+                while (op.size() && op.top() != '(') eval(num, op);
                 op.push(c);
             }
         }
-        while (op.size()) eval();
+        while (op.size()) eval(num, op);
         return num.top();
     }
 };

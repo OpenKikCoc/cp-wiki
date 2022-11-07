@@ -759,7 +759,7 @@ class Solution:
 class Solution {
 public:
 
-    struct Cmp {
+    struct Cmp {    // ATTENTION
         bool operator() (ListNode* a, ListNode* b) {
             return a->val > b->val;
         }
