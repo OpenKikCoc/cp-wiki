@@ -312,6 +312,190 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 924. 尽量减少恶意软件的传播](https://leetcode.cn/problems/minimize-malware-spread/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然直接构建联通块 找一下只包含一个病毒节点的联通块大小即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 310;
+
+    int p[N], sz[N];
+    void init() {
+        for (int i = 0; i < N; ++ i )
+            p[i] = i, sz[i] = 1;
+    }
+    int find(int x) {
+        if (p[x] != x)
+            p[x] = find(p[x]);
+        return p[x];
+    }
+
+    int ct[N];
+
+    int minMalwareSpread(vector<vector<int>>& graph, vector<int>& initial) {
+        init();
+        {
+            memset(ct, 0, sizeof ct);
+            for (auto x : initial)
+                ct[x] ++ ;
+        }
+
+        int n = graph.size();
+        for (int i = 0; i < n; ++ i )
+            for (int j = i + 1; j < n; ++ j )
+                if (graph[i][j]) {
+                    int pa = find(i), pb = find(j);
+                    if (pa != pb)
+                        p[pa] = pb, sz[pb] += sz[pa], ct[pb] += ct[pa];
+                }
+        
+        int tot = 0;
+        for (int i = 0; i < n; ++ i )
+            if (find(i) == i) {
+                if (ct[i])
+                    tot += sz[i];
+            }
+                    
+        int res = INT_MAX, val = INT_MAX;
+        for (auto x : initial) {
+            int pa = find(x), t;
+            if (ct[pa] == 1) {
+                t = tot - sz[pa];
+            } else {
+                t = tot;
+            }
+            if (t < val || t == val && x < res)
+                res = x, val = t;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 928. 尽量减少恶意软件的传播 II](https://leetcode.cn/problems/minimize-malware-spread-ii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 相比上题 本题要求移除的节点会同时移除所有关联的边
+> 
+> 直观看是并查集的删除操作 实际上可以在一开始建立联通块时就无视所有的感染点
+> 
+> 随后统计每个联通块直连的感染点的数量
+> 
+> 因为不需要关心最后感染的总数【重要 否则很难不加入感染点到联通块】 在遍历感染点时记录【可以少感染多少点】即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 考虑并查集不好删除 采取后续加入的方法
+    const static int N = 310;
+
+    int p[N], sz[N];
+    void init() {
+        for (int i = 0; i < N; ++ i )
+            p[i] = i, sz[i] = 1;
+    }
+    int find(int x) {
+        if (p[x] != x)
+            p[x] = find(p[x]);
+        return p[x];
+    }
+
+    int minMalwareSpread(vector<vector<int>>& graph, vector<int>& initial) {
+        init();
+
+        unordered_set<int> S;
+        for (auto x : initial)
+            S.insert(x);
+
+        // 先建立没有感染点的干净的集合
+        int n = graph.size();
+        for (int i = 0; i < n; ++ i )
+            for (int j = i + 1; j < n; ++ j ) {
+                if (S.count(i) || S.count(j))
+                    continue;
+                if (!graph[i][j])
+                    continue;
+                int pa = find(i), pb = find(j);
+                if (pa != pb)
+                    p[pa] = pb, sz[pb] += sz[pa];
+            }
+        
+        vector<int> xs;                 // 找到所有干净的集合
+        unordered_map<int, unordered_set<int>> cnt;    // 统计该集合所连接的病毒点数量
+        for (int i = 0; i < n; ++ i )
+            if (!S.count(i) && find(i) == i)
+                xs.push_back(i);
+
+        for (auto x : S)
+            for (int i = 0; i < n; ++ i )
+                if (!S.count(i) && graph[x][i])
+                    cnt[find(i)].insert(x);
+        
+        // ATTENTION 其实不需要知道最终有多少个节点感染
+        // 只要知道某个点移除可以减少多少个节点感染即可 故不需要再把感染点合并进去
+
+        int res = INT_MAX, val = -1;
+        for (auto x : initial) {
+            int t = 1;  // 可以减少的感染点量
+            for (auto y : xs)
+                if (cnt[y].size() == 1 && cnt[y].count(x)) {  // 当前点会导致 y 集合感染
+                    t += sz[y];
+                }
+            if (t > val || t == val && x < res)
+                res = x, val = t;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 离线并查集
 
 > [!NOTE] **[LeetCode 1697. 检查边长度限制的路径是否存在](https://leetcode-cn.com/problems/checking-existence-of-edge-length-limited-paths/)** [TAG]

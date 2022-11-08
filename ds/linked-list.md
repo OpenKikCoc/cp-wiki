@@ -2767,6 +2767,83 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 708. 循环有序列表的插入](https://leetcode.cn/problems/insert-into-a-sorted-circular-linked-list/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 细节 找前后区间 while判断条件
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    Node* next;
+
+    Node() {}
+
+    Node(int _val) {
+        val = _val;
+        next = NULL;
+    }
+
+    Node(int _val, Node* _next) {
+        val = _val;
+        next = _next;
+    }
+};
+*/
+
+class Solution {
+public:
+    Node* insert(Node* head, int insertVal) {
+        auto node = new Node(insertVal);
+        if (!head) {
+            node->next = node;
+            return node;
+        }
+        auto pre = head, cur = head->next, max = head;
+        do {
+            if (pre->val <= insertVal && cur->val >= insertVal) {
+                // 插入到这里就可以
+                pre->next = node, node->next = cur;
+                return head;
+            }
+            // 顺便找 max 
+            if (pre->val >= max->val)
+                max = pre;
+            pre = cur, cur = cur->next;
+        } while (pre != head);  // ATTENTION 判断条件为 head
+
+        // 没有出现夹在中间的情况 需要放在 max 后
+        node->next = max->next, max->next = node;
+        return head;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 结合递归
 
 > [!NOTE] **[LeetCode 430. 扁平化多级双向链表](https://leetcode-cn.com/problems/flatten-a-multilevel-doubly-linked-list/)**
