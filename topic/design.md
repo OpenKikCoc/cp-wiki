@@ -2631,6 +2631,67 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 489. 扫地机器人](https://leetcode.cn/problems/robot-room-cleaner/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+/**
+ * // This is the robot's control interface.
+ * // You should not implement it, or speculate about its implementation
+ * class Robot {
+ *   public:
+ *     // Returns true if the cell in front is open and robot moves into the cell.
+ *     // Returns false if the cell in front is blocked and robot stays in the current cell.
+ *     bool move();
+ *
+ *     // Robot will stay in the same cell after calling turnLeft/turnRight.
+ *     // Each turn will be 90 degrees.
+ *     void turnLeft();
+ *     void turnRight();
+ *
+ *     // Clean the current cell.
+ *     void clean();
+ * };
+ */
+
+class Solution {
+public:
+    void cleanRoom(Robot& robot) {
+        for (int i = 0; i < 1e6; ++ i ) {
+            robot.clean();
+            int x = rand() % 4;
+            while (x -- )
+                robot.turnLeft();
+            robot.move();
+        }
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 系统设计
 
 > [!NOTE] **[LeetCode 355. 设计推特](https://leetcode-cn.com/problems/design-twitter/)**

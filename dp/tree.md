@@ -2727,6 +2727,79 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 968. 监控二叉树](https://leetcode.cn/problems/binary-tree-cameras)**
+> 
+> 题意: 同 [AcWing 323. 战略游戏](https://www.acwing.com/problem/content/description/325/)
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    using TIII = tuple<int, int, int>;
+
+    unordered_map<TreeNode*, TIII> hash;
+
+    void dfs(TreeNode * u) {
+        int a = 0, b = 1e9, c = 1;
+        int s = 0;
+        for (auto x : {u->left, u->right})
+            if (x) {
+                dfs(x);
+                auto [aa, bb, cc] = hash[x];
+                a += min(bb, cc);
+                c += min({aa, bb, cc});
+                s += min(bb, cc);
+            }
+        
+        for (auto x : {u->left, u->right})
+            if (x) {
+                auto [aa, bb, cc] = hash[x];
+                b = min(b, s - min(bb, cc) + cc);
+            }
+        hash[u] = {a, b, c};
+    }
+
+    int minCameraCover(TreeNode* root) {
+        dfs(root);
+        auto [a, b, c] = hash[root];
+        return min(b, c);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[Luogu P4516 [JSOI2018] 潜入行动](https://www.luogu.com.cn/problem/P4516)** [TAG]
 > 
 > 题意: 

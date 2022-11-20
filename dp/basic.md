@@ -4132,6 +4132,149 @@ class Solution:
 
 * * *
 
+> [!NOTE] **[LeetCode 727. 最小窗口子序列](https://leetcode.cn/problems/minimum-window-subsequence/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 记录方案 实现思维
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 2e4 + 10, M = 110;
+
+    bool f[N][M];
+    bool st[N][M];
+
+    string minWindow(string s1, string s2) {
+        int n = s1.size(), m = s2.size();
+        for (int i = 0; i <= n; ++ i )
+            f[i][0] = true;
+        
+        string res;
+        for (int i = 1; i <= n; ++ i ) {
+            for (int j = 1; j <= m; ++ j ) {
+                if (s1[i - 1] == s2[j - 1]) {
+                    f[i][j] = f[i - 1][j - 1], st[i][j] = true;
+                } else {
+                    f[i][j] = f[i - 1][j];
+                }
+            }
+            if (f[i][m]) {
+                int x = i, y = m;
+                for ( ; y; ) {
+                    if (st[x][y])
+                        x -- , y -- ;
+                    else
+                        x -- ;
+                }
+                string t = s1.substr(x, i - x);
+                if (res.empty() || t.size() < res.size())
+                    res = t;
+                // 注意 求的需要是最短的一个
+                // return s1.substr(x, i - x);
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1092. 最短公共超序列](https://leetcode.cn/problems/shortest-common-supersequence/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> LCS 同时记录方案
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using PII = pair<int, int>;
+
+    const static int N = 1010;
+
+    int f[N][N], pre[N][N];
+
+    string shortestCommonSupersequence(string str1, string str2) {
+        int n = str1.size(), m = str2.size();
+
+        for (int i = 1; i <= n; ++ i )
+            pre[i][0] = 1;
+        for (int i = 1; i <= m; ++ i )
+            pre[0][i] = 2;
+        for (int i = 1; i <= n; ++ i )
+            for (int j = 1; j <= m; ++ j ) {
+                if (str1[i - 1] == str2[j - 1])
+                    f[i][j] = f[i - 1][j - 1] + 1, pre[i][j] = 0;
+                else {
+                    if (f[i - 1][j] > f[i][j - 1])
+                        f[i][j] = f[i - 1][j], pre[i][j] = 1;
+                    else
+                        f[i][j] = f[i][j - 1], pre[i][j] = 2;
+                }
+            }
+        
+        string res;
+        for (int i = n, j = m; i || j; ) {
+            if (pre[i][j] == 0) {
+                res.push_back(str1[i - 1]);
+                i -- , j -- ;
+            } else if (pre[i][j] == 1) {
+                res.push_back(str1[i - 1]);
+                i -- ;
+            } else {
+                res.push_back(str2[j - 1]);
+                j -- ;
+            }
+        }
+        reverse(res.begin(), res.end());
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[Codeforces Gargari and Permutations](http://codeforces.com/problemset/problem/463/D)** [TAG]
 > 
 > 题意: 

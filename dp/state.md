@@ -1422,6 +1422,89 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 351. 安卓系统手势解锁](https://leetcode.cn/problems/android-unlock-patterns/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 快速标记非法情况的细节
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 10;
+
+    int g[N][N];
+    void init() {
+        g[0][2] = g[2][0] = 1;
+        g[3][5] = g[5][3] = 4;
+        g[6][8] = g[8][6] = 7;
+        g[0][6] = g[6][0] = 3;
+        g[1][7] = g[7][1] = 4;
+        g[2][8] = g[8][2] = 5;
+        g[0][8] = g[8][0] = 4;
+        g[2][6] = g[6][2] = 4;
+    }
+
+    int f[N][1 << N][N];   // 当前 画了 i 个, 状态是 j, 最后位置为 k
+    // ATTENTION 注意状态j中1的数量并不等于i，因为它有可能越过其他点
+
+    bool hasempty(int st, int a, int b) {
+        int x = g[a][b];
+        if (!x) // ATTENTION
+            return false;
+        return (st >> x & 1) == 0;
+    }
+
+    int numberOfPatterns(int m, int n) {
+        init();
+        memset(f, 0, sizeof f);
+        for (int i = 0; i < 9; ++ i )
+            f[1][1 << i][i] = 1;
+        for (int i = 2; i <= n; ++ i )
+            for (int j = 0; j < 1 << 9; ++ j )
+                for (int k = 0; k < 9; ++ k )
+                    if (j >> k & 1) {
+                        // 上一个点为 x
+                        for (int x = 0; x < 9; ++ x ) {
+                            if (!(j >> x & 1) || x == k)
+                                continue;
+                            if (hasempty(j, x, k))
+                                continue;
+                            f[i][j][k] += f[i - 1][j ^ 1 << k][x];
+                        }
+                    }
+
+        int res = 0;
+        for (int i = m; i <= n; ++ i )
+            for (int j = 0; j < 1 << 9; ++ j )
+                for (int k = 0; k < 9; ++ k )
+                    res += f[i][j][k];
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[LeetCode 1655. 分配重复整数](https://leetcode-cn.com/problems/distribute-repeating-integers/)**
 > 
 > 题意: TODO

@@ -1901,6 +1901,100 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 505. 迷宫 II](https://leetcode.cn/problems/the-maze-ii/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> TODO 解决最后一个 case TLE
+> 
+> 更有充分的正确性证明的代码？
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 110, INF = 0x3f3f3f3f;
+
+    struct Node {
+        int x, y, r, d;
+        bool operator< (const Node & t) const { // ATTENTION 第二个const不可少
+            return d < t.d;
+        }
+    };
+
+    vector<vector<int>> g;
+    int n, m;
+
+    int d[N][N][4];
+    int dx[4] = {-1, 1, 0, 0}, dy[4] = {0, 0, -1, 1};
+
+    bool willStop(int x, int y, int r) {
+        int nx = x + dx[r], ny = y + dy[r];
+        if (nx < 0 || nx >= n || ny < 0 || ny >= m || g[nx][ny])
+            return true;
+        return false;
+    }
+
+    int shortestDistance(vector<vector<int>>& maze, vector<int>& start, vector<int>& destination) {
+        this->g = maze;
+        n = maze.size(), m = maze[0].size();
+        int sx = start[0], sy = start[1];
+        int ex = destination[0], ey = destination[1];
+
+        memset(d, 0x3f, sizeof d);
+        priority_queue<Node> pq;
+        for (int i = 0; i < 4; ++ i ) {
+            d[sx][sy][i] = 0;
+            pq.push({sx, sy, i, 0});
+        }
+            
+        while (pq.size()) {
+            auto u = pq.top(); pq.pop();
+            bool canChange = willStop(u.x, u.y, u.r); // 能否转弯
+            for (int i = 0; i < 4; ++ i ) {
+                if (i != u.r && !canChange)
+                    continue;
+                int nx = u.x + dx[i], ny = u.y + dy[i];
+                if (nx < 0 || nx >= n || ny < 0 || ny >= m)
+                    continue;
+                if (maze[nx][ny] == 1)
+                    continue;
+                if (d[nx][ny][i] > u.d + 1) {
+                    d[nx][ny][i] = u.d + 1;
+                    pq.push({nx, ny, i, u.d + 1});
+                }
+            }
+        }
+
+        int res = INF;
+        for (int i = 0; i < 4; ++ i )
+            if (willStop(ex, ey, i))
+                res = min(res, d[ex][ey][i]);
+        return res >= INF / 2 ? -1 : res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### bellmanford
 
 > [!NOTE] **[AcWing 853. 有边数限制的最短路](https://www.acwing.com/problem/content/855/)**

@@ -2291,6 +2291,58 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 254. 因子的组合](https://leetcode.cn/problems/factor-combinations/)** [TAG]
+> 
+> 题意: 
+> 
+> 接收一个整数 n 并返回该整数所有的因子组合
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // l 代表因子的起始数，保证因子的有序性可以做到天然的去重
+    vector<vector<int> > dfs(int n, int l) {
+        vector<vector<int> > res;
+        for (int i = l; i * i <= n; ++i) {
+            if (n % i == 0) {
+                res.push_back({n / i, i});
+                for (auto v : dfs(n / i, i)) {
+                    v.push_back(i);
+                    res.push_back(v);
+                }
+            }
+        }
+        return res;
+    }
+    vector<vector<int>> getFactors(int n) {
+        return dfs(n, 2);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### dfs 回溯
 
 > [!NOTE] **[LeetCode 51. N 皇后](https://leetcode-cn.com/problems/n-queens/)**

@@ -1425,6 +1425,113 @@ class Solution:
 
 * * *
 
+> [!NOTE] **[LeetCode 269. 火星词典](https://leetcode.cn/problems/alien-dictionary)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 拓扑排序即可 注意特殊 case
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 26, M = 700;
+
+    int h[N], e[M], ne[M], idx;
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+    }
+    void add(int a, int b) {
+        e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+
+    int d[N], q[M];
+    string topo() {
+        int hh = 0, tt = -1;
+        for (int i = 0; i < 26; ++ i )
+            cout << " i = " << i << " d = " << d[i] << endl;
+        for (int i = 0; i < 26; ++ i )
+            if (!d[i])
+                q[ ++ tt] = i;
+        for (int i = 0; i <= tt; ++ i )
+            cout << char('a' + q[i]) << ' ';
+        cout << endl;
+        while (hh <= tt) {
+            int t = q[hh ++ ];
+            for (int i = h[t]; ~i; i = ne[i]) {
+                int j = e[i];
+                if ( -- d[j] == 0)
+                    q[ ++ tt] = j;
+            }
+        }
+        if (tt != 26 - 1)
+            return "";
+
+        string res;
+        for (int i = 0; i <= tt; ++ i )
+            if (st[q[i]])
+                res.push_back('a' + q[i]);
+        return res;
+    }
+
+    bool g[N][N], st[N];
+
+    string alienOrder(vector<string>& words) {
+        int n = words.size();
+        memset(g, 0, sizeof g);
+        for (int i = 0; i < n; ++ i )
+            for (int j = i + 1; j < n; ++ j ) {
+                auto a = words[i], b = words[j];
+                bool flag = false;  // ATTENTION
+                for (int k = 0; k < a.size() && k < b.size(); ++ k )
+                    if (a[k] != b[k]) {
+                        flag = true;
+                        g[a[k] - 'a'][b[k] - 'a'] = true;
+                        break;
+                    }
+                // ["abc","ab"]
+                if (!flag) {
+                    if (a.size() > b.size())
+                        return "";
+                }
+            }
+        for (auto & x : words)
+            for (auto & y : x)
+                st[y - 'a'] = true;
+        
+        init();
+        memset(d, 0, sizeof d);
+        for (int i = 0; i < N; ++ i )
+            for (int j = 0; j < N; ++ j )
+                if (g[i][j])
+                    add(i, j), d[j] ++ ;
+
+        return topo();
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 拓扑排序方案数（可重集排序问题）
 
 > [!NOTE] **[LeetCode 1916. 统计为蚁群构筑房间的不同顺序](https://leetcode-cn.com/problems/count-ways-to-build-rooms-in-an-ant-colony/)**

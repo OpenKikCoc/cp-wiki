@@ -1336,6 +1336,92 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 1168. 水资源分配优化](https://leetcode.cn/problems/optimize-water-distribution-in-a-village)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 虚拟源点 建图
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    struct Edge {
+        int a, b, w;
+        bool operator< (const Edge & t) const {
+            return w < t.w;
+        }
+    }edges[30010];
+    int idx;
+    void add(int a, int b, int c) {
+        edges[idx ++ ] = {a, b, c};
+    }
+    
+    int p[10010];
+    int find(int x) {
+        if (p[x] != x) p[x] = find(p[x]);
+        return p[x];
+    }
+    
+    int n;
+    
+    void init() {
+        for (int i = 0; i <= n; ++ i )
+            p[i] = i;
+        idx = 0;
+    }
+    
+    int kruskal() {
+        sort(edges, edges + idx);
+        
+        int res = 0, cnt = 0;
+        for (int i = 0; i < idx; ++ i ) {
+            auto [a, b, w] = edges[i];
+            a = find(a), b = find(b);
+            if (a != b) {
+                p[a] = b;
+                res += w;
+                cnt ++ ;
+            }
+        }
+        // if (cnt < n - 1) return -1;
+        return res;
+    }
+    
+    int minCostToSupplyWater(int n, vector<int>& wells, vector<vector<int>>& pipes) {
+        this->n = n;
+        init();
+        
+        for (int i = 1; i <= n; ++ i )
+            add(0, i, wells[i - 1]);
+        for (auto & pi : pipes)
+            add(pi[0], pi[1], pi[2]), add(pi[1], pi[0], pi[2]);
+        
+        return kruskal();
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 曼哈顿最小生成树
 
 > [!TIP] **有 $nlogn$ 算法, 参见 poj 3241**

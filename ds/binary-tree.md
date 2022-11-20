@@ -881,6 +881,67 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 366. 寻找二叉树的叶子节点](https://leetcode.cn/problems/find-leaves-of-binary-tree/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 实现 trick
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    vector<vector<int>> res;
+
+    int dfs(TreeNode * u) {
+        if (!u)
+            return -1;          // ATTENTION
+        int l = dfs(u->left), r = dfs(u->right);
+        int d = max(l, r) + 1;
+        if (d >= res.size())    // ATTENTION
+            res.push_back({});
+        res[d].push_back(u->val);
+        return d;
+    }
+
+    vector<vector<int>> findLeaves(TreeNode* root) {
+        dfs(root);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ## TODO 其他序列
 
 
