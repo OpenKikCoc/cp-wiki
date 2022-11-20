@@ -335,6 +335,77 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 886. 可能的二分法](https://leetcode.cn/problems/possible-bipartition/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 1e4 + 10, M = N << 1;
+
+    int h[N], e[M], ne[M], idx;
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+    }
+    void add(int a, int b) {
+        e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+
+    int color[N];
+    bool dfs(int u, int c) {
+        color[u] = c;
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (!color[j]) {
+                if (!dfs(j, 3 - c))
+                    return false;
+            } else if (color[j] == c)
+                return false;
+        }
+        return true;
+    }
+
+    bool possibleBipartition(int n, vector<vector<int>>& dislikes) {
+        init();
+        for (auto & d : dislikes)
+            add(d[0], d[1]), add(d[1], d[0]);
+        
+        memset(color, 0, sizeof color);
+        for (int i = 1; i <= n; ++ i )
+            if (!color[i]) {
+                if (!dfs(i, 1))
+                    return false;
+            }
+        return true;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[LeetCode 785. 判断二分图](https://leetcode-cn.com/problems/is-graph-bipartite/)**
 > 
 > 题意: TODO
