@@ -23,3 +23,9 @@
 [interview-science](https://interview-science.org)
 
 [techinterviewhandbook](https://www.techinterviewhandbook.org/)
+
+[csdiy.wiki](https://csdiy.wiki)
+
+## Others
+
+[byted.icu](http://byted.icu)
