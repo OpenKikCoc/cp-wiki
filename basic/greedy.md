@@ -326,6 +326,65 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 995. K 连续位的最小翻转次数](https://leetcode.cn/problems/minimum-number-of-k-consecutive-bit-flips/)**
+> 
+> 题意: 
+> 
+> 同 [Luogu [USACO07MAR]Face The Right Way G](https://www.luogu.com.cn/problem/P2882)
+
+> [!TIP] **思路**
+> 
+> 思维
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 1e5 + 10;
+
+    int f[N];
+
+    int minKBitFlips(vector<int>& nums, int k) {
+        int n = nums.size();
+        // s 维护会影响到当前 i 的翻转数
+        int s = 0, res = 0;
+        for (int i = 0; i + k <= n; ++ i ) {
+            if (((nums[i] + s) & 1) == 0)
+                f[i] = 1, res ++ ;
+            s += f[i];
+            if (i - k + 1 >= 0)
+                s -= f[i - k + 1];
+        }
+
+        for (int i = n - k + 1; i < n; ++ i ) {
+            if (((nums[i] + s) & 1) == 0)
+                return -1;
+            if (i - k + 1 >= 0)
+                s -= f[i - k + 1];
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[LeetCode 1363. 形成三的最大倍数](https://leetcode-cn.com/problems/largest-multiple-of-three/)**
 > 
 > 题意: 

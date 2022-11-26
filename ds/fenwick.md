@@ -1198,6 +1198,82 @@ public:
  */
 ```
 
+##### **Go**
+
+```go
+const N int = 1e6 + 10
+
+type Fenwick interface {
+	Add(int, int)
+	Sum(int) int
+}
+
+type fenwick struct {
+	items []int
+}
+
+func New() Fenwick {
+	return &fenwick{
+		items: make([]int, N),
+	}
+}
+
+func lowbit(x int) int {
+	return x & -x
+}
+
+func (f *fenwick) Add(x, v int) {
+	for i := x; i < N; i += lowbit(i) {
+		f.items[i] += v
+	}
+}
+
+func (f *fenwick) Sum(x int) int {
+	ret := 0
+	for i := x; i != 0; i -= lowbit(i) {
+		ret += f.items[i]
+	}
+	return ret
+}
+
+type SeatManager struct {
+	f Fenwick
+	n int
+}
+
+func Constructor(n int) SeatManager {
+	return SeatManager{
+		f: New(),
+		n: n,
+	}
+}
+
+func (this *SeatManager) Reserve() int {
+	l, r := 1, this.n
+	for l < r {
+		m := (l + r) >> 1
+		if this.f.Sum(m) >= m {
+			l = m + 1
+		} else {
+			r = m
+		}
+	}
+	this.f.Add(l, 1)
+	return l
+}
+
+func (this *SeatManager) Unreserve(seatNumber int) {
+	this.f.Add(seatNumber, -1)
+}
+
+/**
+ * Your SeatManager object will be instantiated and called as such:
+ * obj := Constructor(n);
+ * param_1 := obj.Reserve();
+ * obj.Unreserve(seatNumber);
+ */
+```
+
 ##### **Python**
 
 ```python

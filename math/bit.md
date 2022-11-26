@@ -1691,19 +1691,22 @@ class Solution:
 ```cpp
 class Solution {
 public:
+    using LL = long long;
     vector<int> singleNumber(vector<int>& nums) {
-        int len = nums.size();
-        int t = 0;
-        for (int i = 0; i < len; ++ i ) t ^= nums[i];
-        int mask = t & (-t);
-        vector<int> ans(2, 0);
-        for (int i = 0; i < len; ++ i ) {
-            if ((nums[i] & mask) == 0)
-                ans[0] ^= nums[i];
+        LL x = 0;
+        for (auto y : nums)
+            x ^= y;
+        // 2022 test case: [1,1,0,-2147483648]
+        // 会导致 -x 溢出
+        int t = x & -x;
+        
+        vector<int> res(2);
+        for (auto y : nums)
+            if (y & t)
+                res[0] ^= y;
             else
-                ans[1] ^= nums[i];
-        }
-        return ans;
+                res[1] ^= y;
+        return res;
     }
 };
 ```
