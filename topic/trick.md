@@ -716,11 +716,11 @@ public:
                         flag = false;
                         break;
                     }
-                    if (flag) {
-                        res += to_string(x);
-                        for (auto c: name[x]) cnt[c] -- ;
-                    }
-                    else break;
+                if (flag) {
+                    res += to_string(x);
+                    for (auto c: name[x]) cnt[c] -- ;
+                }
+                else break;
             }
         }
         sort(res.begin(), res.end());
