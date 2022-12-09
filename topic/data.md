@@ -931,7 +931,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 6043. 统计包含每个点的矩形数目](https://leetcode.cn/problems/count-number-of-rectangles-containing-each-point/)**
+> [!NOTE] **[LeetCode 2250. 统计包含每个点的矩形数目](https://leetcode.cn/problems/count-number-of-rectangles-containing-each-point/)**
 > 
 > 题意: TODO
 
@@ -1037,7 +1037,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 6211. 创建价值相同的连通块](https://leetcode.cn/problems/create-components-with-same-value/) [TAG]**
+> [!NOTE] **[LeetCode 2440. 创建价值相同的连通块](https://leetcode.cn/problems/create-components-with-same-value/) [TAG]**
 > 
 > 题意: TODO
 

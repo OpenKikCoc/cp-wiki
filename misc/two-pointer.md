@@ -2260,6 +2260,63 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 1574. 删除最短的子数组使剩余数组有序](https://leetcode.cn/problems/shortest-subarray-to-be-removed-to-make-array-sorted/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 需要注意题意：**删除一个子数组 子数组指一段连续的子序列**
+> 
+> 考虑从后面找到最长不上升序列，随后 **双指针**
+> 
+> - 右指针在后缀里移动, 每次固定左指针, 右指针往后试探到符合条件的位置
+> 
+> - 然后中间就是要删除的长度, 取最小值就是答案
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int findLengthOfShortestSubarray(vector<int>& arr) {
+        int n = arr.size();
+        int R = n - 1;
+        for (int i = n - 1; i >= 0; --i)
+            if (i == n - 1 || arr[i] <= arr[i + 1])
+                R = i;
+            else
+                break;
+        int res = R;
+        for (int i = 0, j = R; i < R; ++i) {
+            if (!i || arr[i] >= arr[i - 1]) {
+                while (j < n && arr[j] < arr[i]) ++j;
+                res = min(res, j - i - 1);
+            } else
+                break;
+        }
+        return max(res, 0);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 优雅的双指针实现
 
 > [!NOTE] **[LeetCode 2332. 坐上公交的最晚时间](https://leetcode.cn/problems/the-latest-time-to-catch-a-bus/) [TAG]**

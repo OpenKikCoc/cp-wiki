@@ -2781,63 +2781,6 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1574. 删除最短的子数组使剩余数组有序]()** [TAG]
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 需要注意题意：**删除一个子数组 子数组指一段连续的子序列**
-> 
-> 考虑从后面找到最长不上升序列，随后 **双指针**
-> 
-> - 右指针在后缀里移动, 每次固定左指针, 右指针往后试探到符合条件的位置
-> 
-> - 然后中间就是要删除的长度, 取最小值就是答案
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-class Solution {
-public:
-    int findLengthOfShortestSubarray(vector<int>& arr) {
-        int n = arr.size();
-        int R = n - 1;
-        for (int i = n - 1; i >= 0; --i)
-            if (i == n - 1 || arr[i] <= arr[i + 1])
-                R = i;
-            else
-                break;
-        int res = R;
-        for (int i = 0, j = R; i < R; ++i) {
-            if (!i || arr[i] >= arr[i - 1]) {
-                while (j < n && arr[j] < arr[i]) ++j;
-                res = min(res, j - i - 1);
-            } else
-                break;
-        }
-        return max(res, 0);
-    }
-};
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
 > [!NOTE] **[LeetCode 1585. 检查字符串是否可以通过排序子字符串得到另一个字符串](https://leetcode-cn.com/problems/check-if-string-is-transformable-with-substring-sort-operations/)**
 > 
 > 题意: TODO
@@ -2998,7 +2941,7 @@ public:
 
 ##### **C++ 追加并查集判连通性**
 
-```c++
+```cpp
 class Solution {
 public:
     // 如果一个点只有一个儿子 则可以缩点
@@ -5495,7 +5438,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 6157. 二进制字符串重新安排顺序需要的时间](https://leetcode.cn/problems/time-needed-to-rearrange-a-binary-string/)**
+> [!NOTE] **[LeetCode 2380. 二进制字符串重新安排顺序需要的时间](https://leetcode.cn/problems/time-needed-to-rearrange-a-binary-string/)**
 > 
 > 题意: TODO
 
@@ -6376,7 +6319,7 @@ class Solution:
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++**
+##### **C++ 1**
 
 ```cpp
 class Solution {
@@ -6393,7 +6336,7 @@ public:
 };
 ```
 
-##### **C++**
+##### **C++ 2**
 
 ```cpp
 class Solution {
@@ -6655,6 +6598,8 @@ public:
 > bfs 需要注意的是使用map记录优化
 > 
 > 建图跑最短路也可以 n^2
+> 
+> **【非常重要的 BFS 拓展思维: 只有第一次拓展的时候才有效 后续都是无效的】**
 
 <details>
 <summary>详细代码</summary>
@@ -6870,6 +6815,8 @@ public:
 > [!TIP] **思路**
 > 
 > 经典边界思路
+> 
+> > 也可以记录每个字符的左右边界 进而转化为区间合并问题 [trick]
 
 <details>
 <summary>详细代码</summary>
