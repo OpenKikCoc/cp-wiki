@@ -359,5 +359,6 @@
   * [预处理](topic/prepare.md)
   * [根据数据范围求解](topic/data.md)
   * [trick](topic/trick.md)
+  * [置换环](topic/dloop.md)
   * [hash](topic/hash.md)
   * [design](topic/design.md)

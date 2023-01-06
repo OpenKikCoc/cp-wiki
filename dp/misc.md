@@ -461,6 +461,98 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 2478. 完美分割的方案数](https://leetcode.cn/problems/number-of-beautiful-partitions/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 容易想到：根据是否为质数对整个字符串的下标进行标记，进而得到哪些位置可以作为 “起始点”
+> 
+> 状态方程易推导 $f[i][k] = \sum{f[j][k - 1]}, (1<=j<=i-minLength)$
+> 
+> 显然暴力不可取，考虑最外层枚举 $k$ 内层使用前缀和优化，并使用双指针维护最右侧的可选起点即可
+> 
+> **非常经典的双指针优化**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 最多可以拆成 500 个
+    // minLength 作为双指针约束
+    using LL = long long;
+    const static int N = 1010, M = 510, MOD = 1e9 + 7;
+    
+    unordered_set<char> primes = {'2', '3', '5', '7'};
+    
+    bool st[N];
+    LL f[N][M];
+    
+    int beautifulPartitions(string s, int k, int minLength) {
+        int n = s.size();
+        memset(st, 0, sizeof st);
+        for (int i = 1; i <= n; ++ i )
+            if (primes.count(s[i - 1]))
+                st[i] = true;
+        
+        // 第一个必须是 prime，最后一个必须不是
+        if (!st[1] || st[n])
+            return 0;
+        
+        vector<int> xs; // 记录合法的起始点位，最多 500 个
+        for (int i = 1; i <= n; ++ i )
+            if (st[i] && !st[i - 1])
+                xs.push_back(i);
+        xs.push_back(n + 1);            // 哨兵
+        
+        int m = xs.size();
+        if (k >= m)
+            return 0;
+        
+        memset(f, 0, sizeof f);
+        f[0][0] = 1;
+        
+        for (int _k = 1; _k <= k; _k ++ ) {
+            LL t = 0;
+            for (int i = 1, j = 1; i <= m; ++ i ) {
+                int r = xs[i - 1];
+                while (j <= m && xs[j - 1] <= r - minLength) {
+                    t = (t + f[xs[j - 1] - 1][_k - 1]) % MOD;
+                    j ++ ;
+                }
+                f[r - 1][_k] = t;
+            }
+        }
+        // for (int i = 1; i <= n; ++ i ) {
+        //     for (int j = 1; j <= m; ++ j )
+        //         cout << f[i][j] << ' ';
+        //     cout << endl;
+        // }
+        
+        return f[n][k];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 转化模型
 
 > [!NOTE] **[LeetCode 2321. 拼接数组的最大分数](https://leetcode.cn/problems/maximum-score-of-spliced-array/)**

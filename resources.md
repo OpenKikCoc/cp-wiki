@@ -26,6 +26,8 @@
 
 [csdiy.wiki](https://csdiy.wiki)
 
+[coolor.co](https://coolors.co)
+
 ## Others
 
 [byted.icu](http://byted.icu)

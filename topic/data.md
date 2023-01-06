@@ -1134,3 +1134,77 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 6272. 好分区的数目](https://leetcode.cn/problems/number-of-great-partitions/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 题意范围显然无法直接写 01 背包
+> 
+> 想到 **容斥** 的基础上逆向计算
+> 
+> 加快速度
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 题目要求: 子数组和为 [k, sum - k]
+    // 容斥 考虑: 所有选择方案，减去当前和 [0, k - 1] + [sum - k + 1, sum]
+    using LL = long long;
+    const static int N = 1010, MOD = 1e9 + 7;
+    
+    LL qpow(LL a, LL b) {
+        LL ret = 1;
+        while (b) {
+            if (b & 1)
+                ret = ret * a % MOD;
+            a = a * a % MOD;
+            b >>= 1;
+        }
+        return ret;
+    }
+    
+    LL f[N];
+    
+    int countPartitions(vector<int>& nums, int k) {
+        LL s = 0;
+        for (auto x : nums)
+            s += (LL)x;
+        if (s < 2 * k)
+            return 0;
+        
+        memset(f, 0, sizeof f);
+        f[0] = 1;
+        for (auto x : nums)
+            for (int i = N - 1; i >= 0 && i >= x; -- i )
+                f[i] = (f[i] + f[i - x]) % MOD;
+        
+        LL res = 0;
+        for (int i = 0; i < k; ++ i )
+            res = (res + f[i]) % MOD;
+        
+        return (qpow(2, nums.size()) - res * 2ll % MOD + MOD) % MOD;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
