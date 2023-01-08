@@ -1277,3 +1277,187 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 1930. 长度为 3 的不同回文子序列](https://leetcode-cn.com/problems/unique-length-3-palindromic-subsequences/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 注意 l & r 避免数值溢出
+> 
+> 另有 trick 的思想和解法: set 可以用数组标记替代
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int countPalindromicSubsequence(string s) {
+        int n = s.size();
+        vector<vector<int>> sum(n + 1, vector<int>(26));
+        
+        for (int i = 1; i <= n; ++ i ) {
+            int v = s[i - 1] - 'a';
+            for (int j = 0; j < 26; ++ j )
+                if (j == v)
+                    sum[i][j] = sum[i - 1][j] + 1;
+                else
+                    sum[i][j] = sum[i - 1][j];
+        }
+        
+        unordered_set<string> S;
+        for (int i = 2; i < n; ++ i ) {
+            int v = s[i - 1] - 'a';
+            for (int j = 0; j < 26; ++ j ) {
+                int l = sum[i - 1][j], r = sum[n][j] - sum[i][j];
+                if (l && r) {   // ATTENTION && 而不是 *
+                    string t;
+                    t.push_back('a' + j);
+                    t.push_back('a' + v);
+                    t.push_back('a' + j);
+                    S.insert(t);
+                }
+            }
+        }
+        return S.size();
+    }
+};
+```
+
+##### **C++ trick**
+
+```cpp
+class Solution {
+public:
+    int countPalindromicSubsequence(string s) {
+        int n = s.size();
+        vector<int> u(26), v(26);
+        for (int i = 0; i < n; ++i)
+            u[s[i]-'a'] ++;
+        vector<vector<int>> f(26, vector<int>(26));
+        for (int i = 0; i < n; ++i) {
+            u[s[i]-'a'] --;
+            for (int c = 0; c < 26; ++c)
+                if (u[c] && v[c]) f[s[i]-'a'][c] = 1;
+            v[s[i]-'a'] ++;
+        }
+        int res = 0;
+        for (int a = 0; a < 26; ++a)
+            for (int b = 0; b < 26; ++b)
+                res += f[a][b];
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 2484. 统计回文子序列数目](https://leetcode.cn/problems/count-palindromic-subsequences/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> `长度为 3 的不同回文子序列` 标准前后缀分解
+> 
+> 枚举中间位置，并遍历左右侧的可能值（100 个）即可
+>
+> 注意直接求解时求的是当前位置结尾的数量，要加上前面的以修订为前缀和
+> 
+> **加快速度**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 长度为 5 则可能性有 1000 种
+    const static int N = 1e4 + 10, M = 100, MOD = 1e9 + 7;
+    using LL = long long;
+    
+    int c[10];
+    LL l[N][M], r[N][M];
+    
+    int countPalindromes(string s) {
+        {
+            memset(l, 0, sizeof l);
+            memset(r, 0, sizeof r);
+        }
+        
+        int n = s.size();
+        
+        // l
+        {
+            memset(c, 0, sizeof c);
+            for (int i = 0; i < n; ++ i ) {
+                int t = s[i] - '0';
+                for (int j = 0; j < 10; ++ j )
+                    l[i][j * 10 + t] = (l[i][j * 10 + t] + c[j]) % MOD;
+                c[t] ++ ;
+                
+                if (i) {
+                    for (int j = 0; j < M; ++ j )
+                        l[i][j] = (l[i][j] + l[i - 1][j]) % MOD;
+                }
+            }
+        }
+        // r
+        {
+            memset(c, 0, sizeof c);
+            for (int i = n - 1; i >= 0; -- i ) {
+                int t = s[i] - '0';
+                for (int j = 0; j < 10; ++ j )
+                    r[i][j * 10 + t] = (r[i][j * 10 + t] + c[j]) % MOD;
+                c[t] ++ ;
+                
+                if (i < n - 1) {
+                    for (int j = 0; j < M; ++ j )
+                        r[i][j] = (r[i][j] + r[i + 1][j]) % MOD;
+                }
+            }
+        }
+        
+        LL res = 0;
+        for (int i = 2; i < n - 2; ++ i ) {
+            int t = s[i] - '0';
+            int last = res;
+            for (int j = 0; j < M; ++ j )
+                res = (res + l[i - 1][j] * r[i + 1][j] % MOD) % MOD;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
