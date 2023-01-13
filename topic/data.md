@@ -1208,3 +1208,122 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2493. 将节点分成尽可能多的组](https://leetcode.cn/problems/divide-nodes-into-the-maximum-number-of-groups/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 数据范围 $n <= 500$
+>
+> 显然可以按联通性分组，单组内枚举起点求合法的最大值，多分组间累加即可
+> 
+> **加快速度**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 数据范围 n <= 500
+    // 尝试遍历起点，检查是否能遍历所有节点且距离符合要求
+    // ==> 对于有多个联通分量的情况 不同分量之间需要累加
+    
+    const static int N = 510, M = 2e4 + 10, INF = 0x3f3f3f3f;
+    
+    int h[N], e[M], ne[M], idx;
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+    }
+    void add(int a, int b) {
+        e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    int id[N];
+    vector<int> xs[N];
+    void dfs(int u, int pa, int t) {
+        id[u] = t;
+        xs[t].push_back(u);
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (j == pa)
+                continue;
+            if (!id[j])
+                dfs(j, u, t);
+        }
+    }
+    
+    int q[N], from[N], d[N];
+    
+    int check(int u, int i) {
+        memset(d, 0x3f, sizeof d);
+        memset(from, -1, sizeof from);
+        int hh = 0, tt = -1;
+        d[u] = 0, q[ ++ tt] = u;
+        
+        while (hh <= tt) {
+            int t = q[hh ++ ];
+            for (int i = h[t]; ~i; i = ne[i]) {
+                int j = e[i];
+                if (d[j] >= INF / 2)
+                    d[j] = d[t] + 1, q[ ++ tt] = j;
+                else if (abs(d[j] - d[t]) != 1) {
+                    return -1;
+                }
+            }
+        }
+        
+        int maxd = -1;
+        for (auto x : xs[i])
+            maxd = max(maxd, d[x] + 1);
+        return maxd;
+    }
+    
+    int magnificentSets(int n, vector<vector<int>>& edges) {
+        init();
+        for (auto & e : edges)
+            add(e[0], e[1]), add(e[1], e[0]);
+        
+        memset(id, 0, sizeof id);
+        for (int i = 0; i <= n; ++ i )
+            xs[i].clear();
+        for (int i = 1; i <= n; ++ i )
+            if (!id[i])
+                dfs(i, -1, i);
+        
+        int res = 0;
+        for (int i = 1; i <= n; ++ i )
+            if (id[i] == i) {
+                int v = -1;
+                // 从起点开始 找到可行的距离最远的方案
+                for (auto x : xs[i])
+                    v = max(v, check(x, i));
+                
+                if (v == -1)
+                    return -1;
+                res += v;
+            }
+        
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

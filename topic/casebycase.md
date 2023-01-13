@@ -621,3 +621,218 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2499. 让数组不相等的最小总代价](https://leetcode.cn/problems/minimum-total-cost-to-make-arrays-unequal/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **非常好的分情况讨论题 需要严格的思维推导**
+> 
+> 假定: $x = nums1[i] = nums2[i]$
+> 
+> 1. x 的众数的次数 <= 需要调整的数字总数 / 2
+> 
+>    - 如果总数是偶数 内部两两匹配即可【思考 为什么直接两两匹配就行? 考虑每一个至少交换一次 而两两匹配恰好满足】
+> 
+>    - 如果总数是奇数 【ATTENTION】
+>         
+>      则出现的数字种数至少为 3 ==> 意味着必然有一种方式使得其中一个位置与 nums1[0] 交换剩下的两两匹配 【抽屉原理】
+> 
+> 2. x 的众数的次数 > 需要调整的数字总数 / 2
+> 
+>    两两匹配后多出的众数需要与借助其他（非需要调整的）位置交换
+> 
+>    在这些不需要调整的位置中 找到 nums1&nums2 都不为众数的 交换累加即可
+> 
+>    直到把所有多出的次数都交换完
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 分情况讨论
+    // x = nums1[i] = nums2[i]
+    // 1. x 的众数的次数 <= 需要调整的数字总数 / 2
+    //     1.1 如果总数是偶数 内部两两匹配即可【思考 为什么直接两两匹配就行? 考虑每一个至少交换一次 而两两匹配恰好满足】
+    //     1.2 如果总数是奇数 【ATTENTION】
+    //         则出现的数字种数至少为 3 ==> 意味着必然有一种方式使得其中一个位置与 nums1[0] 交换剩下的两两匹配 【抽屉原理】
+    // 2. x 的众数的次数 > 需要调整的数字总数 / 2
+    //     两两匹配后多出的众数需要与借助其他（非需要调整的）位置交换
+    //     在这些不需要调整的位置中 找到 nums1&nums2 都不为种数的 交换累加即可
+    //     直到把所有多出的次数都交换完
+    
+    using LL = long long;
+    const static int N = 1e5 + 10;
+    
+    int c[N];
+    
+    long long minimumTotalCost(vector<int>& nums1, vector<int>& nums2) {
+        int n = nums1.size();
+        
+        memset(c, 0, sizeof c);
+        int cnt = 0, mode = 0, mode_cnt = 0;
+        LL res = 0;
+        for (int i = 0; i < n; ++ i )
+            if (nums1[i] == nums2[i]) {
+                int x = nums1[i];
+                cnt ++ ;            // 需要调整的位置 ++
+                c[x] ++ ;           // 出现的数量 ++
+                if (c[x] > mode_cnt)
+                    // 更新众数及众数出现的数量
+                    mode = x, mode_cnt = c[x];
+                
+                // 必不可少的代价
+                res += i;
+            }
+        
+        // 计算除了内部两两消化之外，还需借助其他位置的数量
+        // 如果众数数量未过半，则 t <= 0 可以直接跳过后续计算流程
+        int t = mode_cnt - (cnt - mode_cnt);
+        for (int i = 0; i < n && t > 0; ++ i )
+            // 合法的可借助的位置
+            if (nums1[i] != nums2[i]) {
+                if (nums1[i] != mode && nums2[i] != mode) {
+                    res += i;
+                    t -- ;
+                }
+            }
+        
+        // 如果还有未处理的
+        if (t > 0)
+            return -1;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 2508. 添加边使所有节点度数都为偶数](https://leetcode.cn/problems/add-edges-to-make-degrees-of-all-nodes-even/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典分情况讨论
+> 
+> 需要理清楚 加快速度
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 思考:
+    // +0 => 原图已经都是偶数
+    // +1 => 原图恰好两个奇数, 且加完无重边
+    // +2 => 4个度数分配 [1, 1, 1, 1] or [1, 1, 2]
+    const static int N = 1e5 + 10;
+    
+    unordered_set<int> es[N];
+    int d[N];
+    
+    bool has_edge(int a, int b) {
+        return es[a].find(b) != es[a].end();
+    }
+    
+    bool isPossible(int n, vector<vector<int>>& edges) {
+        for (auto & e : edges)
+            es[e[0]].insert(e[1]), es[e[1]].insert(e[0]), d[e[0]] ++ , d[e[1]] ++ ;
+        
+        vector<int> xs;
+        for (int i = 1; i <= n; ++ i )
+            if (d[i] & 1)
+                xs.push_back(i);
+        
+        // +0
+        {
+            if (xs.empty())
+                return true;
+        }
+        
+        // +1
+        {
+            if (xs.size() == 2) {
+                // 只要没有重边即可
+                if (!has_edge(xs[0], xs[1]))
+                    return true;
+                // ATTENTION ==> 有重边则只要有个其他偶数边即可
+                // 此时 has_edge 一定为 true，则需要让这两个点与其他点相连 且连接的点不应该出现在二者并集中
+                for (int i = 1; i <= n; ++ i ) {
+                    if (i == xs[0] || i == xs[1])
+                        continue;
+                    if (has_edge(xs[0], i) || has_edge(xs[1], i))
+                        continue;
+                    return true;
+                }
+            }
+        }
+        
+        // +2
+        {
+            if (xs.size() == 4) {
+                /*
+                for (int i = 0; i < 4; ++ i )
+                    for (int j = i + 1; j < 4; ++ j ) {
+                        int a = xs[i], b = xs[j], c = -1, d = -1;
+                        for (int k = 0; k < 4; ++ k )
+                            if (k != i && k != j) {
+                                if (c == -1)
+                                    c = xs[k];
+                                else
+                                    d = xs[k];
+                            }
+                        
+                        if (!has_edge(a, b) && !has_edge(c, d)) {
+                            return true;
+                        }
+                    }
+                */
+                // 枚举过程可以优化
+                int a = xs[0], b = xs[1], c = xs[2], d = xs[3];
+                if (!has_edge(a, b) && !has_edge(c, d) ||
+                    !has_edge(a, c) && !has_edge(b, d) ||
+                    !has_edge(a, d) && !has_edge(b, c))
+                    return true;
+            }
+        }
+        
+        return false;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

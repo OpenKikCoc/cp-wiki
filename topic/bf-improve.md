@@ -520,3 +520,88 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode [2488. 统计中位数为 K 的子数组](https://leetcode.cn/problems/count-subarrays-with-median-k/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 非常经典的暴力优化
+>
+> 直接 枚举长度 & 起始端点 显然会 TLE
+> 
+> 考虑原题要求可以等价转化为：
+> 
+> - **某固定位置的左侧的 `bigger - smaller` 的数量与右侧 `smaller - bigger` 的数量【相等或仅大一个】**
+> 
+> 则 **枚举左侧起始位置并计算得 `bigger - smaller`，并累加右侧相应值的计数数量即可**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // ATTENTION: nums 中的整数 互不相同
+    // 子数组是数组中的一个连续部分
+    const static int N = 1e5 + 10;
+    
+    unordered_map<int, int> hash, rh;
+    
+    int l[N], r[N];
+    
+    int countSubarrays(vector<int>& nums, int k) {
+        int n = nums.size();
+        {
+            for (int i = 0; i < n; ++ i )
+                hash[nums[i]] = i;
+        }
+        {
+            if (!hash.count(k))
+                return 0;
+        }
+        int p = hash[k];
+        {
+            for (int i = p - 1, t = 0; i >= 0; -- i ) {
+                l[i] = l[i + 1] + (nums[i] < k);
+            }
+            for (int i = p + 1; i < n; ++ i ) {
+                r[i] = r[i - 1] + (nums[i] < k);
+            }
+            // ATTENTION 计算数量差值的计数 (smaller - bigger)
+            for (int i = p; i < n; ++ i ) {
+                int x = r[i], y = i - p - r[i];
+                rh[r[i] - y] ++ ;
+            }
+        }
+        
+        
+        int res = 0;
+        // 枚举左侧起始点 累加右侧差值的计数
+        for (int i = 0; i <= p; ++ i ) {
+            int x = (p - i) - l[i], y = x - l[i];   // 大于k的数量为x, (bigger - smaller)的数量为y
+            
+            int last = res;
+            res += rh[y] + rh[y - 1];
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

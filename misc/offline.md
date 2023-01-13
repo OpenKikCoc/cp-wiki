@@ -201,3 +201,93 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2503. 矩阵查询可获得的最大分数](https://leetcode.cn/problems/maximum-number-of-points-from-grid-queries/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典离线做法
+> 
+> bfs 也可以换成并查集 略
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 本质就是按照值域最大值不断扩展联通块(bfs)
+    // 求相应的值域最大值下 联通块的大小即可
+    // ==> 显然是离线算法
+    using PII = pair<int, int>;
+    const static int N = 1010, M = 100010;
+    
+    int n, m;
+    
+    int st[M];
+    
+    int dx[4] = {-1, 0, 0, 1}, dy[4] = {0, -1, 1, 0};
+    int getID(int x, int y) {
+        return x * m + y;
+    }
+    PII getXY(int id) {
+        return {id / m, id % m};
+    }
+    
+    vector<int> maxPoints(vector<vector<int>>& grid, vector<int>& queries) {
+        n = grid.size(), m = grid[0].size();
+        
+        vector<PII> xs;
+        for (int i = 0; i < queries.size(); ++ i )
+            xs.push_back({queries[i], i});
+        sort(xs.begin(), xs.end());
+        
+        vector<int> res(queries.size(), -1);
+        
+        // 拓展时需要用堆
+        priority_queue<PII, vector<PII>, greater<PII>> pq;
+        pq.push({grid[0][0], 0});
+        st[0] = true;
+        
+        int cnt = 0;
+        for (auto [cap, i] : xs) {
+            while (pq.size() && pq.top().first < cap) {
+                auto [v, id] = pq.top(); pq.pop();
+                auto [x, y] = getXY(id);
+                cnt ++ ;
+                for (int i = 0; i < 4; ++ i ) {
+                    int nx = x + dx[i], ny = y + dy[i];
+                    if (nx < 0 || nx >= n || ny < 0 || ny >= m)
+                        continue;
+                    int nid = getID(nx, ny);
+                    if (st[nid])
+                        continue;
+                    
+                    st[nid] = true;
+                    pq.push({grid[nx][ny], nid});
+                }
+            }
+            res[i] = cnt;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

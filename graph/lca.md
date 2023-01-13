@@ -1707,3 +1707,112 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2509. 查询树中环的长度](https://leetcode.cn/problems/cycle-length-queries-in-a-tree/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 略 trick【**深入理解 LCA**】
+> 
+> - 最初的做法需要分情况讨论
+>
+> - 实际上有更为简单的做法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ trick**
+
+```cpp
+class Solution {
+public:
+    vector<int> cycleLengthQueries(int n, vector<vector<int>>& queries) {
+        vector<int> res;
+        for (auto & q : queries) {
+            int a = q[0], b = q[1];
+            int t = 0;
+            while (a != b) {    // ATTENTION 判断条件
+                if (a > b)
+                    a /= 2, t ++ ;
+                else
+                    b /= 2, t ++ ;
+            }
+            res.push_back(t + 1);
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 麻烦做法**
+
+```cpp
+class Solution {
+public:
+    // n = 30 不可能真的建树
+    // 考虑其为满二叉树，且编号具有对应关系，容易找到 lca (最多 30 层)
+    
+    vector<int> get(int x) {
+        vector<int> ret;
+        while (x > 1) {
+            ret.push_back(x);
+            x /= 2;
+        }
+        ret.push_back(1);
+        reverse(ret.begin(), ret.end());
+        return ret;
+    }
+    
+    vector<int> cycleLengthQueries(int n, vector<vector<int>>& queries) {
+        vector<int> res;
+        for (auto & q : queries) {
+            int a = q[0], b = q[1];
+            auto as = get(a);
+            auto bs = get(b);
+            // 在相同分支 则环大小为距离差+1
+            bool flag = false;
+            for (auto & x : as)
+                if (x == b)
+                    flag = true;
+            for (auto & x : bs)
+                if (x == a)
+                    flag = true;
+            
+            int t = 0;
+            if (flag) {
+                t = as.size() - bs.size();
+                if (t < 0)
+                    t = -t;
+            } else {
+                t = as.size() + bs.size() - 2;
+                int p = 0;
+                for (int i = 0; i < as.size() && i < bs.size(); ++ i )
+                    if (as[i] != bs[i])
+                        break;
+                    else
+                        p = i;
+                t -= p * 2;     // ATTENTION
+            }
+            
+            res.push_back(t + 1);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

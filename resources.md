@@ -18,6 +18,10 @@
 
 > https://github.com/Wei-Xia/most-frequent-technology-english-words
 
+[English-level-up-tips](https://github.com/byoungd/English-level-up-tips)
+
+[interview-english](https://github.com/Interview-Science/interview-english)
+
 ## Misc
 
 [interview-science](https://interview-science.org)
@@ -27,6 +31,14 @@
 [csdiy.wiki](https://csdiy.wiki)
 
 [coolor.co](https://coolors.co)
+
+## Web IDE
+
+https://www.hackerrank.com/
+
+https://codesignal.com/
+
+https://codingcompetitions.withgoogle.com/kickstart
 
 ## Others
 
