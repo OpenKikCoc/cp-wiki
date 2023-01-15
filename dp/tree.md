@@ -2545,7 +2545,105 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 6294. 最大价值和与最小价值和的差值](https://leetcode.cn/problems/difference-between-maximum-and-minimum-price-sum/)**
+> 
+> 题意: TODO
 
+> [!TIP] **思路**
+> 
+> 标准换根 dp
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 求 每一个点为根时的 最大路径与最小路径
+    // 因为价值都是正数 显然最小路径就是根节点本身 求最大路径要 dp
+    using LL = long long;
+    const static int N = 1e5 + 10, M = 2e5 + 10;
+    
+    int h[N], e[M], ne[M], idx;
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+    }
+    void add(int a, int b) {
+        e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    vector<int> p;
+    LL d1[N], d2[N], up[N];
+    int p1[N];
+    
+    void dfs_d(int u, int fa) {
+        d1[u] = d2[u] = 0;
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (j == fa)
+                continue;
+            dfs_d(j, u);
+            int v = d1[j];
+            if (v > d1[u]) {
+                d2[u] = d1[u], d1[u] = v;
+                p1[u] = j;
+            } else if (v > d2[u])
+                d2[u] = v;
+        }
+        
+        d1[u] += p[u], d2[u] += p[u];
+    }
+    void dfs_u(int u, int fa) {
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (j == fa)
+                continue;
+            
+            if (p1[u] == j)
+                up[j] = max(up[u], d2[u]) + p[j];
+            else
+                up[j] = max(up[u], d1[u]) + p[j];
+            
+            dfs_u(j, u);
+        }
+    }
+    
+    long long maxOutput(int n, vector<vector<int>>& edges, vector<int>& price) {
+        init();
+        for (auto & e : edges)
+            add(e[0], e[1]), add(e[1], e[0]);
+        
+        this->p = price;
+        memset(p1, -1, sizeof p1);
+        
+        dfs_d(0, -1);
+        dfs_u(0, -1);
+        
+        LL res = 0;
+        for (int i = 0; i < n; ++ i )
+            res = max(res, max(d1[i], up[i]) - p[i]);
+        
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 ### 进阶：树DP状态设计
 

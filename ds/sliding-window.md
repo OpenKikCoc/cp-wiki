@@ -1323,6 +1323,99 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 6293. 统计好子数组的数目](https://leetcode.cn/problems/count-the-number-of-good-subarrays/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 标准滑动窗口
+> 
+> 推导知随着右端点右移，维护相应左端点的可行区间即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 对于每一个固定的右端点 r，左端点一定是最左侧开始的连续区间
+    // 随着右端点右移，左端点相应的右移
+    // 可以维护一个【第一个不满足的左端点】的位置 中间的所有的都不够 k 对
+    
+    using LL = long long;
+    
+    LL tot = 0;
+    unordered_map<int, int> hash;
+    
+    void add(int x) {
+        int has = hash[x];
+        tot += has;
+        hash[x] ++ ;
+    }
+    void sub(int x) {
+        hash[x] -- ;
+        int has = hash[x];
+        tot -= has;
+    }
+    
+    long long countGood(vector<int>& nums, int k) {
+        LL res = 0;
+        int n = nums.size();
+        for (int r = 0, l = 0; r < n; ++ r ) {
+            add(nums[r]);
+            while (l < r && tot >= k)
+                sub(nums[l ++ ]);
+            if (tot < k)
+                res += l;
+        }
+        
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+class Solution:
+    def countGood(self, nums: List[int], k: int) -> int:
+        self.sumn = 0
+        myHash = collections.defaultdict(int)
+        
+        def add(x):
+            num = myHash[x]
+            self.sumn  += num
+            myHash[x] += 1
+            
+        def remove(x):
+            myHash[x] -= 1
+            num = myHash[x]
+            self.sumn  -= num
+        
+        res = 0
+        n = len(nums)
+        l = 0
+        for r in range(0, n):
+            add(nums[r])
+            while l < r and self.sumn  >= k:
+                remove(nums[l])
+                l += 1
+            if self.sumn  < k:
+                res += l
+        return res
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 类似单调队列的优化实践
 
 > [!NOTE] **[Codeforces Sereja ans Anagrams](http://codeforces.com/problemset/problem/367/B)**
