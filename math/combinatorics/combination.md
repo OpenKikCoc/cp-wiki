@@ -1756,3 +1756,79 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2514. 统计同位异构字符串数目](https://leetcode.cn/problems/count-anagrams/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 标准 可重集排列问题
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 1e5 + 10, MOD = 1e9 + 7;
+    
+    LL f[N], g[N];
+    LL qmi(int a, int k) {
+        LL ret = 1;
+        while (k) {
+            if (k & 1)
+                ret = (LL)ret * a % MOD;
+            a = (LL)a * a % MOD;
+            k >>= 1;
+        }
+        return ret;
+    }
+    void init() {
+        f[0] = g[0] = 1;
+        for (int i = 1; i < N; ++ i ) {
+            f[i] = f[i - 1] * (LL)i % MOD;
+            g[i] = g[i - 1] * qmi(i, MOD - 2) % MOD;
+        }
+    }
+    
+    LL get(string & s) {
+        unordered_map<char, int> hash;
+        for (auto c : s)
+            hash[c] ++ ;
+        
+        LL ret = f[s.size()] % MOD;
+        for (auto [k, v] : hash)
+            ret = ret * g[v] % MOD;
+        return ret;
+    }
+    
+    int countAnagrams(string s) {
+        init();
+        
+        stringstream ss(s);
+        string t;
+        LL res = 1;
+        while (ss >> t)
+            res = (res * get(t)) % MOD;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

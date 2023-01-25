@@ -2523,6 +2523,70 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2513. 最小化两个数组中的最大值](https://leetcode.cn/problems/minimize-the-maximum-of-two-arrays/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 二分即可
+> 
+> **重点是理清楚二分校验逻辑**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 本质是容斥
+    // 假定答案为 n 则 n 以内不能给 n1 的有 x1 个，不能给 n2 的有 x2 个，两个都不能的有 x3 个
+    // 则可以用的数量为  个
+    
+    using LL = long long;
+    
+    LL d1, d2, lcm, u1, u2;
+    
+    bool check(LL m) {
+        LL x1 = m / d1, x2 = m / d2, x3 = m / lcm;
+        x1 -= x3, x2 -= x3;
+        m -= x1 + x2 + x3;
+        return m >= max(0ll, u2 - x1) + max(0ll, u1 - x2);
+    }
+    
+    int minimizeSet(int divisor1, int divisor2, int uniqueCnt1, int uniqueCnt2) {
+        this->d1 = divisor1, this->d2 = divisor2, this->u1 = uniqueCnt1, this->u2 = uniqueCnt2;
+        this->lcm = d1 / __gcd(d1, d2) * d2;
+        
+        LL l = 0ll, r = (LL)1e12;
+        while (l < r) {
+            LL m = l + (r - l) / 2;
+            if (check(m))
+                r = m;
+            else
+                l = m + 1;
+        }
+        return l;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 二分套二分
 
 > [!NOTE] **[LeetCode 2040. 两个有序数组的第 K 小乘积](https://leetcode-cn.com/problems/kth-smallest-product-of-two-sorted-arrays/)** [TAG]

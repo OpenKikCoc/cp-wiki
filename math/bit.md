@@ -1522,6 +1522,49 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2527. 查询数组 Xor 美丽值](https://leetcode.cn/problems/find-xor-beauty-of-array/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 首先题目中 $i,j$ 具有很强的对称性，而 $i,j$ 互换不改变式子的取值，因此，在 $i,j$ 不相等的情况下，`((nums[i] | nums[j]) & nums[k])` 取值会和 `((nums[j] | nums[i]) & nums[k])` 一致，而相等的两个数异或值为 $0$，因此对于所有的三元组而言 $i,j$ 不同的项会相互之间抵消
+>
+> 只需要考虑 $i=j$ 的情况，此时 `((nums[i] | nums[j]) & nums[k]) = nums[i] & nums[k]`，$i,k$ 又具有了对称性，`nums[i] & nums[k]` 与 `nums[k] & nums[i]` 也发生了抵消，只需要考虑 $i=k$ 的情形
+>
+> 最终只需要考虑中数组中所有数的异或和即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int xorBeauty(vector<int>& nums) {
+        int res = 0;
+        for (auto x : nums)
+            res ^= x;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 经典位划分
 
 > [!NOTE] **[LeetCode 136. 只出现一次的数字](https://leetcode-cn.com/problems/single-number/)**
