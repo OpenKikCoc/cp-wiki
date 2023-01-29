@@ -4404,6 +4404,74 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2542. 最大子序列的分数](https://leetcode.cn/problems/maximum-subsequence-score/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典题
+> 
+> 贪心 + 堆维护
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    using PII = pair<int, int>;
+    
+    long long maxScore(vector<int>& nums1, vector<int>& nums2, int k) {
+        int n = nums1.size();
+        vector<PII> xs;
+        for (int i = 0; i < n; ++ i )
+            xs.push_back({nums2[i], nums1[i]});
+        sort(xs.begin(), xs.end());
+        
+        LL res = 0;
+        
+        priority_queue<int, vector<int>, greater<int>> heap;
+        LL s = 0;
+        for (int i = n - k + 1; i <= n; ++ i )
+            heap.push(xs[i - 1].second), s += xs[i - 1].second;
+        res = max(res, s * xs[n - k + 1 - 1].first);
+        
+        for (int i = n - k; i >= 1; -- i ) {
+            LL minv = xs[i - 1].first;
+            {
+                heap.push(xs[i - 1].second);
+                s += xs[i - 1].second;
+            }
+            {
+                int t = heap.top(); heap.pop();
+                s -= t;
+            }
+            res = max(res, s * minv);
+        }
+        
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 贪心 堆 负数转正数思想 TODO
 
 

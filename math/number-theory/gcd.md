@@ -1678,6 +1678,49 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2543. 判断一个点是否可以到达](https://leetcode.cn/problems/check-if-point-is-reachable/) [TAG]**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 结论：$(1,1)$ 能走到 $(x,y)$，当且仅当 $x$ 和 $y$ 的最大公因数是 $2$ 的若干次方。
+> 
+> 更易理解地：前两种操作不改变横纵坐标的最大公约数，后两种操作可以使得最大公约数乘以 $2$。因此我们最终点的横纵坐标的最大公约数是 $2$ 的幂次。
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    bool isReachable(int targetX, int targetY) {
+        while (targetX % 2 == 0)
+            targetX /= 2;
+        while (targetY % 2 == 0)
+            targetY /= 2;
+        
+        return __gcd(targetX, targetY) == 1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 进阶
 
 > [!NOTE] **[AcWing 200. Hankson的趣味题](https://www.acwing.com/problem/content/202/)** [TAG]
