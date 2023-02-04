@@ -836,3 +836,94 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2546. 执行逐位运算使字符串相等](https://leetcode.cn/problems/apply-bitwise-operations-to-make-strings-equal/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 结论：
+> 
+> - 1 可以把另一个 0 变成 1，或把另一个 1 变成 0
+>
+> - 如果存在 1，则无法彻底消除 1
+>
+> 进一步简化：**两个字符串要么都有 1，要么都没有 1**
+> 
+> 关键在于，如何得到简化结论？考虑什么情况下会失败：
+>
+> - 如果 s 存在 1，则如果 target 没有 1 必定失败
+>
+> - 如果 s 不存在 1，则如果 target 有 1 必定失败
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 0, 0 => 0, 0
+    // 0, 1 => 1, 1
+    // 1, 0 => 1, 1
+    // 1, 1 => 1, 0 | 0, 1
+    
+    // 结论：1 可以把另一个 0 变成 1，或把另一个 1 变成 0
+    //      但是无法彻底消除 1
+    
+    bool hasC(string & s, char c) {
+        for (auto t : s)
+            if (t == c)
+                return true;
+        return false;
+    }
+    
+    bool makeStringsEqual(string s, string target) {
+        bool f = hasC(s, '1');
+        for (int i = 0; i < s.size(); ++ i )
+            if (s[i] != target[i]) {
+                // 如果有 1 则可以转换，不管是哪一个 1
+                if (!f)
+                    return false;
+            }
+        // 无法彻底消除 1
+        if (f && !hasC(target, '1'))
+            return false;
+        return true;
+    }
+};
+```
+
+##### **C++ 简化**
+
+```cpp
+class Solution {
+public:
+    bool hasC(string & s, char c) {
+        for (auto t : s)
+            if (t == c)
+                return true;
+        return false;
+    }
+
+    bool makeStringsEqual(string s, string target) {
+        return hasC(s, '1') == hasC(target, '1');
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

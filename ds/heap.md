@@ -1097,19 +1097,6 @@ public:
 
 * * *
 
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
 > [!NOTE] **[LeetCode 2532. 过桥的时间](https://leetcode.cn/problems/time-to-cross-a-bridge/)** [TAG]
 > 
 > 题意: TODO

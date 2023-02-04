@@ -553,6 +553,78 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2547. 拆分数组的最小代价](https://leetcode.cn/problems/minimum-cost-to-split-an-array/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典 & 简单预处理时的优化
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 仅出现一次的数字将会被移除
+    // 1000 数据范围接受预处理
+    using LL = long long;
+    const static int N = 1010;
+    
+    int t[N][N];
+    int f[N];    // 以 i 为结尾的最小代价  ATTENTION [不关心之前分了多少段 显然一维即可]
+    
+    int minCost(vector<int>& nums, int k) {
+        int n = nums.size();
+        // i, j 区间内的 trimmed 值, 需要优化
+        for (int i = 1; i <= n; ++ i ) {
+            static int c[N];
+            memset(c, 0, sizeof c);
+            int x = 0;
+            for (int j = i, one = 0; j <= n; ++ j ) {
+                int v = nums[j - 1];
+                
+                c[v] ++ ;
+                if (c[v] == 1)
+                    one ++ ;
+                else if (c[v] == 2)
+                    one -- , x += 2;
+                
+                if (c[v] > 2)
+                    x ++ ;
+                
+                t[i][j] = x;
+            }
+        }
+        
+        
+        memset(f, 0x3f, sizeof f);
+        f[0] = 0;
+        for (int i = 1; i <= n; ++ i )
+            for (int j = 0; j < i; ++ j )
+                f[i] = min(f[i], f[j] + t[j + 1][i] + k);
+        return f[n];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 转化模型
 
 > [!NOTE] **[LeetCode 2321. 拼接数组的最大分数](https://leetcode.cn/problems/maximum-score-of-spliced-array/)**
