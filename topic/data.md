@@ -1327,3 +1327,199 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2552. 统计上升四元组](https://leetcode.cn/problems/count-increasing-quadruplets/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思想上与 [LeetCode 2242. 节点序列的最大得分](https://leetcode.cn/problems/maximum-score-of-a-node-sequence/) 类似，都是勇于暴力枚举中间两个点即可
+>
+> 1. $4e3$ 的数据范围可以接受 $O(n^2)$ 预处理后暴力计算，需要注意的是：
+>
+> - 状态定义与边界处理
+>
+> - 二维数组放在 class 里会 stack overflow
+>
+> - 二维数组直接开 LL 会 TLE
+>
+> 2. 显然可以 BIT 维护，同时可以通过改变遍历顺序进一步减少开销
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 二维前缀和预处理**
+
+```cpp
+// 二维数组放 class 内部会 stack overflow
+using LL = long long;
+const static int N = 4010;
+
+// LL l[N][N], r[N][N];    // 左侧较小的 右侧较大的
+int l[N][N], r[N][N];    // 【ATTENTION】 int 超时
+
+class Solution {
+public:
+    long long countQuadruplets(vector<int>& nums) {
+        memset(l, 0, sizeof l);
+        memset(r, 0, sizeof r);
+        int n = nums.size();
+
+        {
+            for (int i = 1; i <= n; ++ i ) {
+                int x = nums[i - 1];
+                memcpy(l[i], l[i - 1], sizeof l[i]);
+                for (int j = x + 1; j < N; ++ j )   // ATTENTION j=x+1 细节
+                    l[i][j] ++ ;
+            }
+        }
+        {
+            for (int i = n; i >= 1; -- i ) {
+                int x = nums[i - 1];
+                memcpy(r[i], r[i + 1], sizeof r[i]);
+                for (int j = x - 1; j >= 0; -- j )
+                    r[i][j] ++ ;
+            }
+        }
+
+        LL res = 0;
+        // j
+        for (int i = 1; i <= n; ++ i ) {
+            int x = nums[i - 1];
+            // k
+            for (int j = i + 1; j <= n; ++ j ) {
+                int y = nums[j - 1];
+                if (x > y) {
+                    // 左侧要比 y 小, 右侧要比 x 大
+                    // ATTENTION 细节 【数组下标数值】
+                    int left = l[i][y], right = r[j][x];
+                    res += (LL)left * right;
+                }
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ BIT**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 4010;
+
+    int a[N], b[N]; // l, r
+    int lowbit(int x) {
+        return x & -x;
+    }
+    void add(int tr[], int x, int c) {
+        for (int i = x; i < N; i += lowbit(i))
+            tr[i] += c;
+    }
+    int sum(int tr[], int x) {
+        int ret = 0;
+        for (int i = x; i; i -= lowbit(i))
+            ret += tr[i];
+        return ret;
+    }
+
+    long long countQuadruplets(vector<int>& nums) {
+        int n = nums.size();
+
+        // 初始化右侧的都存在
+        for (int i = 1; i <= n; ++ i )
+            add(b, nums[i - 1], 1);
+
+        LL res = 0;
+        // j
+        for (int i = 1; i <= n; ++ i ) {
+            int x = nums[i - 1];
+            // 移除当前位置作为右侧的可能
+            add(b, x, -1);
+            // 拷贝至 c 并在随后的过程动态修改
+            static int c[N];
+            memcpy(c, b, sizeof c);
+            // k
+            for (int j = i + 1; j <= n; ++ j ) {
+                int y = nums[j - 1];
+                add(c, y, -1);
+                if (x > y) {
+                    // 左侧要比 y 小, 右侧要比 x 大
+                    // ATTENTION 细节 【数组下标数值】
+                    int left = sum(a, y - 1), right = sum(c, N - 1) - sum(c, x);
+                    res += (LL)left * right;
+                }
+            }
+            add(a, x, 1);
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ BIT 优化**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 4010;
+
+    int a[N], b[N]; // l, r
+    int lowbit(int x) {
+        return x & -x;
+    }
+    void add(int tr[], int x, int c) {
+        for (int i = x; i < N; i += lowbit(i))
+            tr[i] += c;
+    }
+    int sum(int tr[], int x) {
+        int ret = 0;
+        for (int i = x; i; i -= lowbit(i))
+            ret += tr[i];
+        return ret;
+    }
+
+    long long countQuadruplets(vector<int>& nums) {
+        int n = nums.size();
+
+        LL res = 0;
+        // j
+        for (int i = 1; i <= n; ++ i ) {
+            int x = nums[i - 1];
+            // 逆序扫描同时维护 b
+            memset(b, 0, sizeof b);
+            // k
+            for (int j = n; j > i; -- j ) {
+                int y = nums[j - 1];
+                if (x > y) {
+                    // 左侧要比 y 小, 右侧要比 x 大
+                    // ATTENTION 细节 【数组下标数值】
+                    int left = sum(a, y - 1), right = sum(b, N - 1) - sum(b, x);
+                    res += (LL)left * right;
+                }
+                add(b, y, 1);
+            }
+            add(a, x, 1);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

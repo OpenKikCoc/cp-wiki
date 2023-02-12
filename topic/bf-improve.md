@@ -521,7 +521,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode [2488. 统计中位数为 K 的子数组](https://leetcode.cn/problems/count-subarrays-with-median-k/)** [TAG]
+> [!NOTE] **[LeetCode 2488. 统计中位数为 K 的子数组](https://leetcode.cn/problems/count-subarrays-with-median-k/)** [TAG]
 > 
 > 题意: TODO
 
@@ -589,6 +589,81 @@ public:
             res += rh[y] + rh[y - 1];
         }
         return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 2551. 将珠子放入背包中](https://leetcode.cn/problems/put-marbles-in-bags/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然问题可以转化为在连续区间内选择 $k-1$ 个分割点，从而将裸的 `二维 DP` 简化为 `一维问题`
+> 
+> 进而 直接选择 `最大 & 最小` 的分割点即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 1e5 + 10;
+    // 把原数组拆成 k 段(非空)，每段有其代价(两段点和)
+    // 求最大、最小代价差值
+    // ==> 转换 对于 [1, n] 
+    // 在 [1, n-1] 选择 k-1 个分隔点(左闭)，每个点的收益是 当前分隔点的值+右侧点的值
+    // 则放堆里挑个最大的就行 O(n)
+    
+    int x[N];
+    
+    long long putMarbles(vector<int>& weights, int k) {
+        int n = weights.size();
+        if (n == k)
+            return 0;
+        
+        memset(x, 0, sizeof x);
+        // 分隔点位置
+        for (int i = 1; i < n; ++ i )
+            x[i] += weights[i - 1] + weights[i];
+
+        LL maxv = 0, minv = 0;  // or weights[0] + weights[n - 1]
+        {
+            // 大顶堆
+            priority_queue<LL> p;
+            for (int i = 1; i < n; ++ i )
+                p.push(x[i]);
+            for (int i = 0; i < k - 1; ++ i ) {
+                maxv += p.top(); p.pop();
+            }
+        }
+        {
+            priority_queue<LL, vector<LL>, greater<LL>> p;
+            for (int i = 1; i < n; ++ i )
+                p.push(x[i]);
+            for (int i = 0; i < k - 1; ++ i ) {
+                minv += p.top(); p.pop();
+            }
+        }
+        return maxv - minv;
     }
 };
 ```
