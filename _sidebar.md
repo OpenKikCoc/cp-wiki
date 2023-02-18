@@ -273,6 +273,7 @@
     * [强连通分量](graph/scc.md)
     * [双连通分量](graph/bcc.md)
     * [割点和桥](graph/cut.md)
+    * [无向图必经点/边](graph/essential-point-edge.md)
     * [圆方树](graph/block-forest.md)
   * [2-SAT](graph/2-sat.md)
   * [欧拉图](graph/euler.md)

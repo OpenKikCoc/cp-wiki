@@ -1423,6 +1423,95 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2561. 重排水果](https://leetcode.cn/problems/rearranging-fruits/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 较显然的，可以预处理各自多出的部分，并两两匹配【代价较小的与另一个的代价较大的匹配】
+> 
+> 【同时可以借助其他代价较小的元素，间接交换两个元素】
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 非常重要的是，当我们理出来两边各自需要把哪些东西挪出去、以及挪出去具体多少个之后
+    // 交换未必只发生在这些多出的元素之间，可以有其他元素参与进来(交换2次) ==> 增加交换次数 减少总开销
+    using LL = long long;
+    using PII = pair<int, int>;
+    const static int N = 1e5 + 10;
+    
+    long long minCost(vector<int>& basket1, vector<int>& basket2) {
+        unordered_map<int, int> h0, h1, h2;
+        {
+            for (auto & x : basket1)
+                h1[x] ++ , h0[x] ++ ;
+            for (auto & x : basket2)
+                h2[x] ++ , h0[x] ++ ;
+            for (auto & [k, v] : h0)
+                if (v & 1)
+                    return -1;
+        }
+        
+        // 同一侧的最小值 能把对侧、自己侧的两个最大值低成本的交换过来
+        int minv = 2e9;
+        for (auto & [k, v] : h1)
+            minv = min(minv, k);
+        for (auto & [k, v] : h2)
+            minv = min(minv, k);
+        
+        vector<PII> x1, x2;
+        for (auto & [k, v] : h1)
+            if (v > h0[k] / 2)
+                x1.push_back({k, v - h0[k] / 2});
+        sort(x1.begin(), x1.end()); // ATTENTION
+        // reverse(x1.begin(), x1.end());           // 【ATTENTION】 移除这个就能过
+        for (auto & [k, v] : h2)
+            if (v > h0[k] / 2)
+                x2.push_back({k, v - h0[k] / 2});
+        sort(x2.begin(), x2.end()); // ATTENTION
+        reverse(x2.begin(), x2.end());
+        
+        LL res = 0;
+        int n = x1.size(), m = x2.size();
+        for (int i = 0, j = 0; i < n && j < m; ) {
+            int cnt = min(x1[i].second, x2[j].second);
+            LL cost = min(x1[i].first, x2[j].first);
+            if (cost > minv * 2)
+                cost = minv * 2;
+            res += cost * cnt;
+            x1[i].second -= cnt, x2[j].second -= cnt;
+            if (x1[i].second == 0)
+                i ++ ;
+            if (x2[j].second == 0)
+                j ++ ;
+        }
+        
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 排序不等式
 
 > [!NOTE] **[AcWing 1395. 产品处理](https://www.acwing.com/problem/content/1397/)**
