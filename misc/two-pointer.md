@@ -2317,6 +2317,73 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2565. 最少得分子序列](https://leetcode.cn/problems/subsequence-with-the-minimum-score/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然可以双指针 优先保留前面的
+> 
+> 在此基础上 从尾部开始逐步增加要保留的字符 并收缩前面
+> 
+> 过程中维护并统计即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // ATTENTION 优雅实现
+    
+    int minimumScore(string s, string t) {
+        int n = s.size(), m = t.size();
+        
+        vector<int> p;  // 记录 s[i] 能够匹配到的 t 的长度 (不是位置)
+        for (int i = 0, j = 0; i < n; ++ i ) {
+            if (j < m && s[i] == t[j])
+                j ++ ;
+            p.push_back(j);
+        }
+        // 考虑只保留前面 移除后面所有的得分
+        int res = m - p[n - 1];
+        
+        // 后缀下一个【需要匹配】的【位置】
+        for (int i = s.size() - 1, j = m - 1, x = 0; i >= 0; -- i ) {
+            // 如果能逆序匹配，则移动指针
+            if (j >= 0 && s[i] == t[j])
+                j -- , x ++ ;
+            
+            // 当前 i 被作为后缀使用，则中间删除的段的得分:
+            //     总长度 - 后缀长度 - 前缀长度
+            // 注意需要 max(0, ...)  ==> 原因 s比较丰富 匹配可能会有冗余
+            int y = 0;
+            if (i)
+                y = p[i - 1];
+            res = min(res, max(0, m - x - y));  // 注意 需要 max(0, ...)
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 优雅的双指针实现
 
 > [!NOTE] **[LeetCode 2332. 坐上公交的最晚时间](https://leetcode.cn/problems/the-latest-time-to-catch-a-bus/) [TAG]**

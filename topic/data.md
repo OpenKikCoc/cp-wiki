@@ -1523,3 +1523,100 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2572. 无平方子集计数](https://leetcode.cn/problems/count-the-number-of-square-free-subsets/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 容易想到枚举质因子出现的情况 **重点在于想到按顺序枚举数字来实现去重**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 较显然的，需要根据数据范围找思路
+    //      对于 30 以内的值域，最终的集合的因子必然满足下列质数因子至多出现一次
+    //          [2, 3, 5, 7, 11, 13, 17, 19, 23, 29] ==> 只有10个
+    // 显然可以枚举最终的集合的情况 (2^10)
+    // 问题在于，因为最终结果顺序无关，【如何避免重复计数】？
+    //
+    // -> 最外层增加一个维度 按照数值域顺序枚举
+    using LL = long long;
+    const static int N = 1100, M = 31, K = 10, MOD = 1e9 + 7;
+    
+    int p[K] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29};
+    int valid(int x) {
+        int ori = x;
+        int y = 0;
+        for (int i = 0; i < K; ++ i ) {
+            if (x % p[i] == 0) {
+                int c = 0;
+                while (x % p[i] == 0)
+                    x /= p[i], c ++ ;
+                if (c > 1)
+                    return -1;
+                y |= 1 << i;
+            }
+        }
+        return y;
+    }
+    
+    int c[M], st[M];
+    LL f[N];
+    
+    int squareFreeSubsets(vector<int>& nums) {
+        memset(c, 0, sizeof c), memset(st, 0, sizeof st);
+        for (auto x : nums)
+            c[x] ++ ;
+        for (int i = 1; i <= 30; ++ i )
+            st[i] = valid(i);
+        
+        int TOP = 1 << K;
+        f[0] = 1;
+        for (int i = 2; i <= 30; ++ i ) {
+            if (st[i] == -1)
+                continue;
+            
+            // 枚举当前使用 i 的情况下，最终集合的情况
+            int x = st[i], y = (TOP - 1) ^ x;
+            // ATTENTION 枚举对应补集的子集
+            for (int j = y; ; j = (j - 1) & y) {    // 不能写 j = y; [j]; j = (j - 1) & y   => 因为 0 也需要考虑
+                f[x | j] = (f[x | j] + f[j] * c[i] % MOD) % MOD;
+                if (j == 0)
+                    break;
+            }
+        }
+        
+        LL a = 1, b = 0;
+        {
+            for (int i = 0; i < c[1]; ++ i )
+                a = (a << 1) % MOD;
+        }
+        {
+            for (int i = 0; i < TOP; ++ i )
+                b = (b + f[i]) % MOD;
+        }
+        return (a * b % MOD - 1 + MOD) % MOD;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

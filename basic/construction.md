@@ -1495,6 +1495,73 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 2573. 找出对应 LCP 矩阵的字符串](https://leetcode.cn/problems/find-the-string-with-lcp/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思维 构造
+> 
+> **重复做**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    string findTheString(vector<vector<int>>& lcp) {
+        int i = 0, n = lcp.size();
+        string s(n, 0);
+        for (char c = 'a'; c <= 'z'; ++ c ) {
+            while (i < n && s[i])
+                i ++ ;
+            if (i == n) // 构造结束
+                break;
+            // 考虑填充第 i 个位置，以及相应的有 lcp 的所有位置（都与 i 相同）
+            for (int j = i; j < n; ++ j )
+                if (lcp[i][j])
+                    s[j] = c;
+        }
+        for (int j = i; j < n; ++ j )
+            if (s[j] == 0)  // 未填充完
+                return "";
+        
+        for (int i = n - 1; i >= 0; -- i )
+            for (int j = n - 1; j >= 0; -- j ) {
+                int actual_lcp = 0;
+                if (s[i] != s[j])
+                    actual_lcp = 0;
+                else if (i == n - 1 || j == n - 1)
+                    actual_lcp = 1;
+                else
+                    actual_lcp = lcp[i + 1][j + 1] + 1;
+                
+                if (actual_lcp != lcp[i][j])
+                    return "";
+            }
+        return s;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 回文数构造
 
 > [!NOTE] **[LeetCode 906. 超级回文数](https://leetcode.cn/problems/super-palindromes/)**

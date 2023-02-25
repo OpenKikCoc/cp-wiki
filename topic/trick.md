@@ -5785,6 +5785,56 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2568. 最小无法得到的或值](https://leetcode.cn/problems/minimum-impossible-or/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思维很 trick
+> 
+> 反向思考：何时能够得到所有的异或值? => 所有的 2 的幂次都出现过就行
+> 
+> 那么只要看哪个没出现过 就是答案
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int minImpossibleOR(vector<int>& nums) {
+        for (int i = 0; i < 32; ++ i ) {
+            bool f = false;
+            for (auto x : nums)
+                if (x == (1 << i)) {
+                    f = true;
+                    break;
+                }
+            if (!f)
+                return 1 << i;
+        }
+        return -1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 根据题意简化思维
 
 > [!NOTE] **[Codeforces C. Dima and Staircase](https://codeforces.com/problemset/problem/272/C)**
