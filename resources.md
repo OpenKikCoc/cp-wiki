@@ -8,6 +8,8 @@
 
 [leetcode-problems-rating](https://zerotrac.github.io/leetcode_problem_rating/#/)
 
+[OEIS](https://oeis.org)
+
 ## English
 
 [Chinese Programmer Wrong Pronunciation](https://cpwp.netlify.app)
