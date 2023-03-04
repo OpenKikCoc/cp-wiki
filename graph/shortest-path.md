@@ -1995,6 +1995,100 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2577. 在网格图中访问一个格子的最少时间](https://leetcode.cn/problems/minimum-time-to-visit-a-cell-in-a-grid/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 特殊逻辑的 dijkstra 即可
+> 
+> **重点在于对题意特征的简化，并得到结论：先排除无解; 再分析 $mod2$ 的特征**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 显然 需要按格子的值的顺序排序（思考 应该可以排序后使用并查集维护联通性质）
+    // 唯一麻烦的点在于 【不能停留在格子上】
+    //   考虑如果点周围有合法点，则可以来回两次移动（不太好维护 直接换成一个队列存储可行位置？）==> 【ATTENTION dijkstra】
+    //
+    // 思考：啥时候无解？当且仅当第一步没法走的时候无解 否则其他情况都可以来回踱步来最终走到目的地
+    // 思考：来回踱步有啥特征？对于每一个位置 处于它的时刻 mod2 总是不变的
+    //      => 具体来说，对于 [x, y]
+    //          x + y 的奇偶性相关
+    
+    using PII = pair<int, int>;
+    using TIII = tuple<int, int, int>;
+    
+    int dx[4] = {-1, 0, 0, 1}, dy[4] = {0, -1, 1, 0};
+    
+    vector<vector<int>> g;
+    int n, m;
+    
+    vector<vector<int>> st;
+    
+    int minimumTime(vector<vector<int>>& grid) {
+        if (grid[1][0] > 1 && grid[0][1] > 1)
+            return -1;
+        // 后续能够保证一定有解
+        
+        this->g = grid, this->n = g.size(), this->m = g[0].size();
+        // 预处理一下 每个位置所要求的时间
+        for (int i = 0; i < n; ++ i )
+            for (int j = 0; j < m; ++ j )
+                if (((i + j) & 1) ^ (g[i][j] & 1)) {    // ATTENTION &1 别写岔了
+                    g[i][j] ++ ;
+                }
+        
+        // 考虑 bfs 存储已经到达的位置和到达该位置的最早时间
+        st = vector<vector<int>>(n, vector<int>(m, 1e9));
+        
+        priority_queue<TIII, vector<TIII>, greater<TIII>> q;
+        q.push({0, 0, 0});
+        while (!q.empty()) {
+            auto [t, x, y] = q.top(); q.pop();
+            if (st[x][y] <= 1e8)
+                continue;
+            st[x][y] = t;
+            
+            for (int i = 0; i < 4; ++ i ) {
+                int nx = x + dx[i], ny = y + dy[i];
+                if (nx < 0 || nx >= n || ny < 0 || ny >= m)
+                    continue;
+                
+                // 如果这个点现在到不了 也可以提前加入但是要追加时间
+                int nt = max(t + 1, g[nx][ny]);
+                // if (nt > st[nx][ny])
+                //     continue;
+                
+                q.push({nt, nx, ny});
+            }
+        }
+        
+        return st[n - 1][m - 1];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### bellmanford
 
 > [!NOTE] **[AcWing 853. 有边数限制的最短路](https://www.acwing.com/problem/content/855/)**
