@@ -2645,6 +2645,99 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2581. 统计可能的树根数目](https://leetcode.cn/problems/count-number-of-possible-root-nodes/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然经典树换根 DP
+> 
+> 需要加快速度
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 数据范围 1e5 显然不能枚举哪些 guesses 为 true
+    // 换个思路：
+    //      考虑枚举根节点，则题意要求转化为【以某个节点为根的情况下 能满足 guesses 猜测 >= k 的情况】
+    // 显然树dp + 换根
+    
+    const static int N = 1e5 + 10, M = 2e5 + 10;
+    int h[N], e[M], ne[M], idx;
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+    }
+    void add(int a, int b) {
+        e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    int n, k;
+    unordered_set<int> gs[N];
+    int f[N], g[N];
+    
+    void dfs_d(int u, int pa) {
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (j == pa)
+                continue;
+            dfs_d(j, u);
+            f[u] += f[j] + (gs[u].find(j) != gs[u].end());    // 如果 u 是 j 的父节点是一个已有的猜测
+        }
+    }
+    void dfs_u(int u, int pa) {
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (j == pa)
+                continue;
+            int other = f[u] - f[j] - (gs[u].find(j) != gs[u].end());   // ATTENTION 理清思路：需要计算这一部分
+            g[j] = g[u] + (gs[j].find(u) != gs[j].end()) + other;       // 如果 j 是 u 的父节点是一个已有的猜测
+            dfs_u(j, u);
+        }
+    }
+    
+    int rootCount(vector<vector<int>>& edges, vector<vector<int>>& guesses, int k) {
+        init();
+        for (auto & e : edges)
+            add(e[0], e[1]), add(e[1], e[0]);
+        
+        this->n = edges.size() + 1, this->k = k;
+        for (auto & g : guesses)
+            gs[g[0]].insert(g[1]);
+        
+        memset(f, 0, sizeof f), memset(g, 0, sizeof g);
+        dfs_d(0, -1);
+        dfs_u(0, -1);
+        
+        int res = 0;
+        for (int i = 0; i < n; ++ i )
+            if (f[i] + g[i] >= k)
+                res ++ ;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 进阶：树DP状态设计
 
 > [!NOTE] **[AcWing 323. 战略游戏](https://www.acwing.com/problem/content/description/325/)**
