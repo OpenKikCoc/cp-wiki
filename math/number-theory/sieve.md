@@ -1073,6 +1073,139 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 2584. 分割数组使乘积互质](https://leetcode.cn/problems/split-the-array-to-make-coprime-products/) [TAG]**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然的 题意可以转化为求最左侧分界点使得其左右没有 `除了 1 之外的公共质因子`
+> 
+> 素数筛后对原数组分解即可
+>
+> 一种可行解为记录每个质因子出现的左右区间 按区间切即可
+> 
+> - 注意 1 的特判
+> 
+> - 注意对原数组分解素数时的优化 `x 为质数直接 break`
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+ public:
+     // 显然不能直接裸着乘，考虑 1e6 数字进行质因数分解 最多有 78499
+     //               【ATTENTION】 但是 不同的质因数最多只有 
+     using PII = pair<int, int>;
+     const static int N = 1e6 + 10, M = 1e5;
+     
+     int primes[M], cnt;
+     bool st[N];
+     void init() {
+         cnt = 0;
+         memset(st, 0, sizeof st);
+         for (int i = 2; i < N; ++ i ) {
+             if (!st[i])
+                 primes[cnt ++ ] = i;
+             for (int j = 0; primes[j] <= (N - 1) / i; ++ j ) {
+                 st[primes[j] * i] = true;
+                 if (i % primes[j] == 0)
+                     break;
+             }
+         }
+     }
+     
+     int l[N], r[N];
+     
+     int findValidSplit(vector<int>& nums) {
+         if (nums.size() <= 1)   // ATTENTION 特判
+             return -1;
+         
+         init();
+         
+         // unordered_map<int, int> l, r;   // TLE
+         memset(l, -1, sizeof l), memset(r, -1, sizeof r);
+         int n = nums.size();
+         for (int i = 0; i < n; ++ i ) {
+             int x = nums[i];
+             for (int j = 0; j < cnt && primes[j] <= x; ++ j ) {
+                 {
+                     // 优化
+                     if (!st[x]) {
+                         if (l[x] == -1)
+                             l[x] = i;
+                         r[x] = i;
+                         break;
+                     }
+                 }
+                 
+                 
+                 if (x % primes[j] == 0) {
+                     int y = primes[j];
+                     {
+                         if (l[y] == -1)   // ATTENTION 要使用 primes[j] 而非 j
+                             l[y] = i;
+                         r[y] = i;
+                     }
+                     while (x % y == 0)
+                         x /= y;
+                 }
+             }
+             if (x > 1) { // 1 不统计
+                 if (l[x] == -1)
+                     l[x] = i;
+                 r[x] = i;
+             }
+         }
+         
+         // 直接枚举位置显然会超时，考虑【区间分组】思想
+         
+         vector<PII> xs;
+         for (int i = 0; i < N; ++ i )
+             if (l[i] != -1)
+                 xs.push_back({l[i], r[i]});
+         sort(xs.begin(), xs.end()); // sort by l
+         
+         int st = -1, ed = -1;
+         vector<PII> ys;
+         for (auto & s : xs)
+             if (ed < s.first) {
+                 if (ed != -1)
+                     ys.push_back({st, ed});
+                 st = s.first, ed = s.second;
+             } else
+                 ed = max(ed, s.second);
+         if (st != -1)
+             ys.push_back({st, ed});
+         
+         if (ys.empty())         // 全是 1 的情况
+             return 0;
+         if (ys[0].first != 0)   // 前面一段是 1 的情况
+             return 0;
+         if (ys[0].second != n - 1)
+             return ys[0].second;
+         return -1;
+     }
+ };
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 区间筛
 
 > [!NOTE] **[AcWing 196. 质数距离](https://www.acwing.com/problem/content/198/)** [TAG]

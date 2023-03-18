@@ -3521,6 +3521,64 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 2585. 获得分数的方法数](https://leetcode.cn/problems/number-of-ways-to-earn-points/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 标准多重背包 求方案数
+> 
+> 可以进一步前缀和优化 实现略
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+ public:
+     // 显然是个多重背包问题
+     using LL = long long;
+     const static int N = 55, M = 1010, MOD = 1e9 + 7;
+     
+     LL f[M], g[M]; // f[i] 恰好获取 i 分的方法数
+     int q[M];
+     
+     int waysToReachTarget(int target, vector<vector<int>>& types) {
+         memset(f, 0, sizeof f);
+         int n = types.size(), m = target;
+         
+         f[0] = 1;
+         
+         for (int i = 0; i < n; ++ i ) {
+             int c = types[i][0], w = types[i][1];
+             memset(g, 0, sizeof g);
+             for (int j = 0; j <= m; ++ j )  // 体积为 i
+                 for (int k = 0; k <= c && k * w <= j; ++ k )   // 选择用多少个
+                     g[j] = (g[j] + f[j - k * w]) % MOD;
+             memcpy(f, g, sizeof g);
+         }
+         return f[m];
+     }
+ };
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 泛化物品的背包问题
 
 > [!NOTE] **[LeetCode 956. 最高的广告牌](https://leetcode.cn/problems/tallest-billboard/)**
