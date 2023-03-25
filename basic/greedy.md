@@ -3108,6 +3108,82 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2589. 完成所有任务的最少时间](https://leetcode.cn/problems/minimum-time-to-complete-all-tasks/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+>
+> 经典区间问题：每个区间内需要至少某些个点被覆盖，求满足所有区间的情况下的最小覆盖点数和
+> 
+> 相比 [LeetCode 757. 设置交集大小至少为2](https://leetcode-cn.com/problems/set-intersection-size-at-least-two/) 每个区间内要选的数量不一
+>
+> TODO 进阶：[LCP 32. 批量处理任务](https://leetcode.cn/problems/t3fKg1/)
+> 
+> > 题解区有 `差分约束` / `线段树` 等做法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 区间问题
+    //      先按右端点升序排序 相同情况下再按左端点降序排序
+    
+    const static int N = 2010;
+    
+    int st[N];
+    
+    int findMinimumTime(vector<vector<int>>& tasks) {
+        sort(tasks.begin(), tasks.end(), [](vector<int> & a, vector<int> & b) {
+            if (a[1] == b[1])
+                return a[0] > b[0];
+            return a[1] < b[1];
+        });
+        
+        memset(st, 0, sizeof st);
+        
+        for (auto & t : tasks) {
+            int l = t[0], r = t[1];
+            
+            int x = t[2];
+            for (int i = l; i <= r; ++ i )
+                if (st[i])
+                    x -- ;
+            
+            for (int i = r; i >= l && x > 0; -- i )
+                if (!st[i]) {
+                    st[i] = 1;
+                    x -- ;
+                }
+        }
+        
+        int res = 0;
+        for (int i = 0; i < N; ++ i )
+            if (st[i])
+                res ++ ;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[LeetCode 1229. 安排会议日程](https://leetcode-cn.com/problems/meeting-scheduler/)**
 > 
 > 题意: TODO
