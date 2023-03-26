@@ -24,6 +24,12 @@
 
 [interview-english](https://github.com/Interview-Science/interview-english)
 
+## Quant
+
+Heard on the Street: Quantitative Questions from Wall Street Job Interviews
+
+A Practical Guide to Quantitive Finance Interviews
+
 ## Misc
 
 [interview-science](https://interview-science.org)
@@ -31,6 +37,8 @@
 [techinterviewhandbook](https://www.techinterviewhandbook.org/)
 
 [csdiy.wiki](https://csdiy.wiki)
+
+[excalidraw.com](https://excalidraw.com)
 
 [coolor.co](https://coolors.co)
 
