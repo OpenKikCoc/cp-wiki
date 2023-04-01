@@ -2738,6 +2738,124 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2603. 收集树中金币](https://leetcode.cn/problems/collect-coins-in-a-tree/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> TODO more details
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 【可以选择从任意一个节点出发】
+    // 对题意做等价转换：
+    //      - 收集所有的金币：一颗最小子树 访问子树可以在扩展两个节点距离的情况下收集所有金币
+    //      - 需要返回原点：子树的最长路走一次 其他路径都要走两次
+    // 考虑枚举树根 则容易得到对应的子树【】 也就能得到相应的开销
+    // ATTENTION 距离为 2 意味着可以在每一个点向下暴力枚举 => ?
+    const static int N = 3e4 + 10, M = 6e4 + 10;
+    
+    int h[N], e[M], ne[M], idx;
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+    }
+    void add(int a, int b) {
+        e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    vector<int> cs;
+    int n;
+    
+    // ATTENTION 难点在于想到状态定义：【定义距离恰好为1的情况的路程】
+    int f[N], f1[N], f2[N];     // 以 i 为根的子树，收集 [所有金币/距离恰好为1的金币/距离2或以上的金币] 的路程
+    int g[N], g1[N], g2[N];     // 向上的路程
+    
+    void dfs_d(int u, int pa) {
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (j == pa)
+                continue;
+            
+            dfs_d(j, u);
+            
+            // j 需要走过去再回来
+            f[u] += f[j] + (f2[j] > 0 ? 2 : 0);
+            
+            // 距离恰好为 1 的情况下统计
+            f1[u] += cs[j];
+            
+            // 2 个或者以上的情况下统计
+            f2[u] += f1[j] + f2[j];
+        }
+    }
+    
+    void dfs_u(int u, int pa) {
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (j == pa)
+                continue;
+            
+            // 以 j 为根向上:
+            //          上面的部分                +      兄弟节点的部分
+            g[j] = (g[u] + (g2[u] > 0 ? 2 : 0)) + (f[u] - f[j] - (f2[j] > 0 ? 2 : 0));
+            
+            // 距离恰好为 1 的情况下:
+            //          上面的部分            +   兄弟节点的部分?
+            g1[j] = (pa != -1 ? cs[pa] : 0) + (f1[u] - cs[j]);
+            
+            // 距离大于等于 2 的情况下
+            //          上面的部分  + 其他兄弟节点?
+            g2[j] = g1[u] + g2[u] + (f2[u] - (f1[j] + f2[j]));
+            
+            dfs_u(j, u);
+        }
+    }
+    
+    int collectTheCoins(vector<int>& coins, vector<vector<int>>& edges) {
+        this->cs = coins;
+        this->n = cs.size();
+        
+        init();
+        for (auto & e : edges)
+            add(e[0], e[1]), add(e[1], e[0]);
+        
+        // cleanup
+        memset(f, 0, sizeof f);
+        memset(g, 0, sizeof g);
+        
+        dfs_d(0, -1);
+        dfs_u(0, -1);
+
+        int res = 2e9;
+        for (int i = 0; i < n; ++ i )
+            res = min(res, f[i] + g[i] + (g2[i] > 0 ? g[i] + 2 : 0));
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 进阶：树DP状态设计
 
 > [!NOTE] **[AcWing 323. 战略游戏](https://www.acwing.com/problem/content/description/325/)**
