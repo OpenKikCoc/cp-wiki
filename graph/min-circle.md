@@ -252,3 +252,129 @@ int main() {
 <br>
 
 * * *
+
+## 习题
+
+> [!NOTE] **[LeetCode 2607. 图中的最短环](https://leetcode.cn/problems/shortest-cycle-in-a-graph/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 无向图最小环模版 边长为一的特例
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 无向图最小环模版题
+    // 1. 删边 + bfs(dijkstra在边长为1的特例)
+    // 2. 枚举点 + bfs(dijkstra在边长为1的特例)
+    using PII = pair<int, int>;     // dis, u
+    const static int N = 1010, M = N << 1, INF = 0x3f3f3f3f;
+    
+    int h[N], e[M], ne[M], idx;
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+    }
+    void add(int a, int b) {
+        e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    // 删去 i-j 边后，假定 i->j dis 为 len 则最小环为 len+1
+    // 枚举边 再跑 dijkstra 即可
+    int work1(int n) {
+        int res = INF;
+        for (int i = 0; i < n; ++ i )
+            for (int x = h[i]; ~x; x = ne[x]) {
+                int j = e[x];
+                // 枚举 i-j 边，删除此边
+                static int d[N], st[N];
+                memset(d, 0x3f, sizeof d), memset(st, 0, sizeof st);
+                priority_queue<PII, vector<PII>, greater<PII>> q;
+                q.push({0, i}); d[i] = 0;
+                while (q.size()) {
+                    auto [dis, u] = q.top(); q.pop();
+                    if (st[u])
+                        continue;
+                    st[u] = 1;
+                    for (int y = h[u]; ~y; y = ne[y]) {
+                        int v = e[y];
+                        if (u == i && v == j)   // 跳过被删除的边
+                            continue;
+                        if (d[v] > d[u] + 1) {
+                            d[v] = d[u] + 1;
+                            q.push({d[v], v});
+                        }
+                    }
+                }
+                res = min(res, d[j] + 1);
+            }
+        return res > INF / 2 ? -1 : res;
+    }
+    
+    // 枚举起点，如果有发现能够重复到达某个点 v 则为两个相逢路径的和
+    // “如果发现存在路径 1→2→3→5 和 路径 1→2→4→5 (1 和 5 之间并不存在环) 的情况无需排除，因为从 2 开始能找到更短的、合法的环路”
+    // TODO: revisit this
+    int work2(int n) {
+        int res = INF;
+        for (int i = 0; i < n; ++ i ) {
+            static int d[N], st[N];
+            memset(d, 0x3f, sizeof d), memset(st, 0, sizeof st);
+            priority_queue<PII, vector<PII>, greater<PII>> q;
+            q.push({0, i}), d[i] = 0;
+            
+            static int mark[N]; // 记录是否访问过，如果访问过是从哪里来
+            memset(mark, -1, sizeof mark);
+            mark[i] = 0;
+            
+            while (q.size()) {
+                auto [dis, u] = q.top(); q.pop();
+                if (st[u])
+                    continue;
+                st[u] = true;
+                for (int y = h[u]; ~y; y = ne[y]) {
+                    int v = e[y];
+                    // 第一次访问
+                    if (d[v] > INF / 2) {
+                        d[v] = d[u] + 1;
+                        q.push({d[v], v});
+                        mark[v] = u;
+                    } else if (v != mark[u]) {  // ATTENTION 是 v != mark[u]
+                        res = min(res, d[u] + d[v] + 1);
+                    }
+                }
+            }
+        }
+        return res > INF / 2 ? -1 : res;
+    }
+    
+    int findShortestCycle(int n, vector<vector<int>>& edges) {
+        init();
+        for (auto & e : edges)
+            add(e[0], e[1]), add(e[1], e[0]);
+        
+        // return work1(n);
+        return work2(n);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

@@ -1721,6 +1721,68 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2607. 使子数组元素和相等](https://leetcode.cn/problems/make-k-subarray-sums-equal/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典结论：对于一个长度为 n 的环，如果环上所有间隔为 k 的元素都要相等，那么环上所有间隔为 gcd(n, k) 的元素都要相等
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 经典结论：对于一个长度为 n 的环，如果环上所有间隔为 k 的元素都要相等，那么环上所有间隔为 gcd(n, k) 的元素都要相等
+    
+    using LL = long long;
+    
+    LL get(vector<int> & a) {
+        int n = a.size();
+        if (n <= 1)
+            return 0;
+        
+        sort(a.begin(), a.end());
+        LL x = a[n / 2], res = 0;
+        for (auto y : a)
+            res += abs(y - x);
+        return res;
+    }
+    
+    long long makeSubKSumEqual(vector<int>& arr, int k) {
+        int n = arr.size();
+        int d = __gcd(n, k);
+        // 如果刚好可以划分为整数个周期 则直接算
+        vector<int> t[d];
+        for (int i = 0; i < n; ++ i )
+            t[i % d].push_back(arr[i]);
+
+        LL res = 0;
+        for (int i = 0; i < d; ++ i )
+            res += get(t[i]);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 进阶
 
 > [!NOTE] **[AcWing 200. Hankson的趣味题](https://www.acwing.com/problem/content/202/)** [TAG]
