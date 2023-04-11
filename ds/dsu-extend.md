@@ -1290,6 +1290,149 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 2076. 处理含限制条件的好友请求](https://leetcode-cn.com/problems/process-restricted-friend-requests/)** [TAG]
+> 
+> 题意: 并非**反集**的一道题
+
+> [!TIP] **思路**
+> 
+> 一开始以为是反集
+> 
+> 实际上，并不满足以下两个条件的第二个条件：
+> 
+> - 一个人的朋友的朋友是朋友
+> - 一个人的敌人的敌人是朋友
+> 
+> 显然只能并查集模拟，考虑模拟时**启发式**选择基准
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 标准set**
+
+```cpp
+class Solution {
+public:
+    // 并查集与反集
+    const static int N = 1010;
+    
+    int p[N];
+    void init() {
+        for (int i = 0; i < N; ++ i )
+            p[i] = i;
+    }
+    int find(int x) {
+        if (p[x] != x)
+            p[x] = find(p[x]);
+        return p[x];
+    }
+    
+    vector<bool> friendRequests(int n, vector<vector<int>>& restrictions, vector<vector<int>>& requests) {
+        init();
+        // 为什么不是使用反集？因为未必合并敌人
+        // for (auto & r : restrictions) {   => WA
+        //     int a = r[0], b = r[1];
+        //     p[find(a + n)] = find(b);
+        //     p[find(b + n)] = find(a);
+        // }
+        vector<unordered_set<int>> friends(n), enemies(n);
+        for (int i = 0; i < n; ++ i )
+            friends[i].insert(i);
+        for (auto & r : restrictions)
+            enemies[r[0]].insert(r[1]), enemies[r[1]].insert(r[0]);
+
+        vector<bool> res;
+        for (auto & r : requests) {
+            int a = r[0], b = r[1];
+            int x = find(a), y = find(b);
+            if (x == y)
+                res.push_back(true);
+            else {
+                bool flag = true;
+                if (friends[x].size() > friends[y].size())
+                    swap(x, y);
+                for (auto v : friends[x])
+                    if (enemies[y].count(v)) {
+                        flag = false;
+                        break;
+                    }
+                if (flag) {
+                    enemies[y].insert(enemies[x].begin(), enemies[x].end());
+                    friends[y].insert(friends[x].begin(), friends[x].end());
+                    p[x] = y;
+                    res.push_back(true);
+                } else
+                    res.push_back(false);
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ bitset优化**
+
+```cpp
+class Solution {
+public:
+    // 并查集与反集
+    const static int N = 1010;
+    
+    int p[N];
+    void init() {
+        for (int i = 0; i < N; ++ i )
+            p[i] = i;
+    }
+    int find(int x) {
+        if (p[x] != x)
+            p[x] = find(p[x]);
+        return p[x];
+    }
+    
+    vector<bool> friendRequests(int n, vector<vector<int>>& restrictions, vector<vector<int>>& requests) {
+        init();
+        vector<bitset<N>> friends(n), enemies(n);
+        for (int i = 0; i < n; ++ i )
+            friends[i][i] = 1;
+        for (auto & r : restrictions)
+            enemies[r[0]][r[1]] = enemies[r[1]][r[0]] = 1;
+
+        vector<bool> res;
+        for (auto & r : requests) {
+            int a = r[0], b = r[1];
+            int x = find(a), y = find(b);
+            if (x == y)
+                res.push_back(true);
+            else {
+                if ((friends[x] & enemies[y]).any())
+                    res.push_back(false);
+                else {
+                    friends[y] |= friends[x];
+                    enemies[y] |= enemies[x];
+                    p[x] = y;
+                    res.push_back(true);
+                }
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 并查集与图
 
 > [!NOTE] **[AcWing 837. 连通块中点的数量](https://www.acwing.com/problem/content/839/)**
