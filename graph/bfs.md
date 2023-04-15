@@ -1466,6 +1466,317 @@ public:
 
 * * *
 
+### 在线 BFS
+
+> [!NOTE] **[LeetCode 2612. 最少翻转操作数](https://leetcode.cn/problems/minimum-reverse-operations/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 较显然的是 BFS 思路；关键的就是左右边界的公式推导
+> 
+> - 显然有会 TLE 的暴力做法
+> 
+> - 【在线 BFS】在此基础上，注意到需要关注的位置都是没有走过的位置，且这些位置位于一个连续区间内，显然可以 set 维护 “未走过的位置” 的列表避免重复遍历从而降低复杂度
+> 
+> - 更进一步的：涉及到一段连续区间内找到 “下一个未走过的位置” 可以直接并查集维护
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 暴力 TLE**
+
+```cpp
+class Solution {
+public:
+    // 长度为 n 只有 p 处为 1
+    //  每次只能翻转长度为 k 的连续子序列 => 从原坐标 u -> v 的 v 有限制 (在某个范围内【不能超过 xx】且不能被 banned)
+    // => 这题最关键的就是左右边界的公式推导
+    
+    const static int N = 1e5 + 10, INF = 0x3f3f3f3f;
+    
+    int d[N];
+    bool b[N];
+    
+    vector<int> minReverseOperations(int n, int p, vector<int>& banned, int k) {
+        memset(d, 0x3f, sizeof d);
+        memset(b, 0, sizeof b);
+        for (auto x : banned)
+            b[x] = true;
+        
+        queue<int> q;
+        q.push(p); d[p] = 0;
+        while (q.size()) {      // 约束它一直往右走 -> wrong, 会有 p 在最左侧的情况
+            int u = q.front(); q.pop();
+            
+            if (k & 1) {
+                // 枚举中心位置
+                //  =< x
+                // for (int i = max(u + 1, k / 2); i + k / 2 < n && (i - k / 2 <= u); ++ i ) {
+                for (int i = max(u - k / 2, k / 2); i + k / 2 < n && (i - k / 2 <= u); ++ i ) {
+                    int v = i + (i - u);
+                    if (b[v])
+                        continue;
+                    if (d[v] > d[u] + 1) {
+                        d[v] = d[u] + 1;
+                        q.push(v);
+                    }
+                }
+            } else {
+                // 枚举中心靠左位置
+                for (int i = max(u - k / 2, k / 2 - 1); i + k / 2 < n && (i - k / 2 + 1 <= u); ++ i ) {
+                    int v = i + (i - u + 1);
+                    if (b[v])
+                        continue;
+                    if (d[v] > d[u] + 1) {
+                        d[v] = d[u] + 1;
+                        q.push(v);
+                    }
+                }
+            }
+        }
+        
+        vector<int> res(n, -1);
+        for (int i = 0; i < n; ++ i )
+            if (d[i] < INF / 2)
+                res[i] = d[i];
+        return res;
+    }
+};
+```
+
+##### **C++ set 维护**
+
+```cpp
+class Solution {
+public:
+    // 长度为 n 只有 p 处为 1
+    //  每次只能翻转长度为 k 的连续子序列 => 从原坐标 u -> v 的 v 有限制 (在某个范围内【不能超过 xx】且不能被 banned)
+    // => 这题最关键的就是左右边界的公式推导
+    
+    // => 伴随着区间的滑动 翻转后所有的位置组成了一个公差为 2 的等差数列
+    // 考虑:
+    //  1. 区间最多影响到的元素为 [i - k + 1, i + k - 1]
+    //  2. 考虑左边界 0: L=0,R=k-1       对应的翻转位置是 0+(k-1)-i=k-i-1        小于这个的位置都没法到
+    //  3. 考虑右边界 n-1: L=n-k,R=n-1   对应的翻转位置是 (n-k)+(n-1)-i=2n-k-i-1 大于这个的位置都没法到
+    // => [max(i-k+1,k-i-1), min(i+k-1, 2n-k-i-1)]
+    
+    const static int N = 1e5 + 10, INF = 0x3f3f3f3f;
+    
+    int d[N];
+    
+    vector<int> minReverseOperations(int n, int p, vector<int>& banned, int k) {
+        set<int> S[2];
+        {
+            for (int i = 0; i < n; ++ i )
+                S[i % 2].insert(i);
+            for (auto x : banned)
+                S[x % 2].erase(x);
+        }
+        
+        memset(d, 0x3f, sizeof d);
+        queue<int> q;
+        {
+            q.push(p);
+            d[p] = 0; S[p % 2].erase(p);
+        }
+        while (!q.empty()) {
+            int i = q.front(); q.pop();
+            int L = i < k ? (k - 1) - i : i - (k - 1);
+            int R = i + k - 1 < n ? i + (k - 1) : n + n - k - 1 - i;
+
+            auto & s = S[L % 2];
+
+            //  ATTENTION for-loop 写法
+            for (auto it = s.lower_bound(L); it != s.end() && *it <= R; it = s.erase(it)) {
+                d[*it] = d[i] + 1;
+                q.push(*it);
+            }
+        }
+        
+        vector<int> res(n, -1);
+        for (int i = 0; i < n; ++ i )
+            if (d[i] < INF / 2)
+                res[i] = d[i];
+        return res;
+    }
+};
+```
+
+##### **C++ DSU**
+
+```cpp
+class Solution {
+public:
+    // 长度为 n 只有 p 处为 1
+    //  每次只能翻转长度为 k 的连续子序列 => 从原坐标 u -> v 的 v 有限制 (在某个范围内【不能超过 xx】且不能被 banned)
+    // => 这题最关键的就是左右边界的公式推导
+    
+    // => 伴随着区间的滑动 翻转后所有的位置组成了一个公差为 2 的等差数列
+    // 考虑:
+    //  1. 区间最多影响到的元素为 [i - k + 1, i + k - 1]
+    //  2. 考虑左边界 0: L=0,R=k-1       对应的翻转位置是 0+(k-1)-i=k-i-1        小于这个的位置都没法到
+    //  3. 考虑右边界 n-1: L=n-k,R=n-1   对应的翻转位置是 (n-k)+(n-1)-i=2n-k-i-1 大于这个的位置都没法到
+    // => [max(i-k+1,k-i-1), min(i+k-1, 2n-k-i-1)]
+    //
+    // => 进阶: 直接使用并查集跳过区间
+    
+    const static int N = 1e5 + 10, INF = 0x3f3f3f3f;
+    
+    int pa[N];
+    void init() {
+        for (int i = 0; i < N; ++ i )
+            pa[i] = i;
+    }
+    int find(int x) {
+        if (pa[x] != x)
+            pa[x] = find(pa[x]);
+        return pa[x];
+    }
+    
+    int d[N];
+    
+    vector<int> minReverseOperations(int n, int p, vector<int>& banned, int k) {
+        init();
+        for (auto x : banned)   // ATTENTION 同奇偶 所以是2 => 跳过被 ban 的节点
+            pa[x] = x + 2;
+        pa[p] = p + 2;          // ATTENTION 同奇偶 所以是2
+        
+        memset(d, 0x3f, sizeof d);
+        queue<int> q;
+        {
+            q.push(p);
+            d[p] = 0;
+        }
+        while (!q.empty()) {
+            int i = q.front(); q.pop();
+            int L = i < k ? (k - 1) - i : i - (k - 1);
+            int R = i + k - 1 < n ? i + (k - 1) : n + n - k - 1 - i;
+
+            for (int t = find(L); t <= R; t = find(t)) {    // ATTENTION 细节
+                d[t] = d[i] + 1;
+                pa[t] = t + 2;     // ATTENTION 同奇偶 所以是2
+                q.push(t);
+            }
+        }
+        
+        vector<int> res(n, -1);
+        for (int i = 0; i < n; ++ i )
+            if (d[i] < INF / 2)
+                res[i] = d[i];
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 2617. 网格图中最少访问的格子数](https://leetcode.cn/problems/minimum-number-of-visited-cells-in-a-grid/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典在线 BFS
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 1e5 + 10, INF = 0x3f3f3f3f;
+    
+    int n, m;
+    vector<vector<int>> g;
+    
+    vector<set<int>> r, c;  // 行 列
+    
+    int d[N], q[N * 2];
+    
+    int minimumVisitedCells(vector<vector<int>>& grid) {
+        this->g = grid;
+        this->n = g.size(), this->m = g[0].size();
+        r.resize(n), c.resize(m);
+        
+        for (int i = 0; i < n; ++ i )
+            for (int j = 0; j < m; ++ j ) {
+                int t = i * m + j;
+                r[i].insert(t), c[j].insert(t);
+            }
+        
+        memset(d, 0x3f, sizeof d);
+        d[0] = 0;
+        r[0].erase(0), c[0].erase(0);
+        
+        int hh = 0, tt = -1;
+        q[ ++ tt] = 0;
+        
+        while (hh <= tt) {
+            int u = q[hh ++ ];
+            int x = u / m, y = u % m, v = g[x][y];
+            {
+                auto & s = r[x];
+                for (auto it = s.lower_bound(x * m + y + 1); it != s.end() && *it <= x * m + y + v; it = s.erase(it)) {
+                    int t = *it;
+                    d[t] = d[u] + 1;
+                    q[ ++ tt] = t;
+                    
+                    c[t % m].erase(t);
+                }
+            }
+            {
+                auto & s = c[y];
+                for (auto it = s.lower_bound(x * m + y + 1); it != s.end() && *it <= (x + v) * m + y; it = s.erase(it)) {
+                    int t = *it;
+                    d[t] = d[u] + 1;
+                    q[ ++ tt] = t;
+                    
+                    r[t / m].erase(t);
+                }
+            }
+        }
+        
+        // for (int i = 0; i < n; ++ i ) {
+        //     for (int j = 0; j < m; ++ j )
+        //         cout << d[i * m + j] << ' ';
+        //     cout << endl;
+        // }
+        
+        return d[n * m - 1] < INF / 2 ? d[n * m - 1] + 1: -1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### USACO Training 杂项
 
 > [!NOTE] **[AcWing 1355. 母亲的牛奶](https://www.acwing.com/problem/content/1357/)**

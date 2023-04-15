@@ -691,7 +691,7 @@ public:
 > 
 > - 显然有会 TLE 的暴力做法
 > 
-> - 在此基础上，注意到需要关注的位置都是没有走过的位置，且这些位置位于一个连续区间内，显然可以 set 维护 “未走过的位置” 的列表避免重复遍历从而降低复杂度
+> - 【在线 BFS】在此基础上，注意到需要关注的位置都是没有走过的位置，且这些位置位于一个连续区间内，显然可以 set 维护 “未走过的位置” 的列表避免重复遍历从而降低复杂度
 > 
 > - 更进一步的：涉及到一段连续区间内找到 “下一个未走过的位置” 可以直接并查集维护
 
@@ -880,6 +880,99 @@ public:
             if (d[i] < INF / 2)
                 res[i] = d[i];
         return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 2617. 网格图中最少访问的格子数](https://leetcode.cn/problems/minimum-number-of-visited-cells-in-a-grid/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典在线 BFS
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 1e5 + 10, INF = 0x3f3f3f3f;
+    
+    int n, m;
+    vector<vector<int>> g;
+    
+    vector<set<int>> r, c;  // 行 列
+    
+    int d[N], q[N * 2];
+    
+    int minimumVisitedCells(vector<vector<int>>& grid) {
+        this->g = grid;
+        this->n = g.size(), this->m = g[0].size();
+        r.resize(n), c.resize(m);
+        
+        for (int i = 0; i < n; ++ i )
+            for (int j = 0; j < m; ++ j ) {
+                int t = i * m + j;
+                r[i].insert(t), c[j].insert(t);
+            }
+        
+        memset(d, 0x3f, sizeof d);
+        d[0] = 0;
+        r[0].erase(0), c[0].erase(0);
+        
+        int hh = 0, tt = -1;
+        q[ ++ tt] = 0;
+        
+        while (hh <= tt) {
+            int u = q[hh ++ ];
+            int x = u / m, y = u % m, v = g[x][y];
+            {
+                auto & s = r[x];
+                for (auto it = s.lower_bound(x * m + y + 1); it != s.end() && *it <= x * m + y + v; it = s.erase(it)) {
+                    int t = *it;
+                    d[t] = d[u] + 1;
+                    q[ ++ tt] = t;
+                    
+                    c[t % m].erase(t);
+                }
+            }
+            {
+                auto & s = c[y];
+                for (auto it = s.lower_bound(x * m + y + 1); it != s.end() && *it <= (x + v) * m + y; it = s.erase(it)) {
+                    int t = *it;
+                    d[t] = d[u] + 1;
+                    q[ ++ tt] = t;
+                    
+                    r[t / m].erase(t);
+                }
+            }
+        }
+        
+        // for (int i = 0; i < n; ++ i ) {
+        //     for (int j = 0; j < m; ++ j )
+        //         cout << d[i * m + j] << ' ';
+        //     cout << endl;
+        // }
+        
+        return d[n * m - 1] < INF / 2 ? d[n * m - 1] + 1: -1;
     }
 };
 ```
