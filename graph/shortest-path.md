@@ -4255,7 +4255,77 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 2642. 设计可以求最短路径的图类](https://leetcode.cn/problems/design-graph-with-shortest-path-calculator/)**
+> 
+> 题意: TODO
 
+> [!TIP] **思路**
+> 
+> 标准的 floyd 思想：每次增加一条边，求任意点间的最短路
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Graph {
+public:
+    const static int N = 110, M = 2e4 + 10, INF = 0x3f3f3f3f; // 有向图
+    
+    int n;
+    int d[N][N];
+    
+    Graph(int n, vector<vector<int>>& edges) {
+        this->n = n;
+        memset(d, 0x3f, sizeof d);
+        for (int i = 0; i < n; ++ i )
+            d[i][i] = 0;
+        for (auto & e : edges)
+            d[e[0]][e[1]] = e[2];
+        for (int k = 0; k < n; ++ k )
+            for (int i = 0; i < n; ++ i )
+                for (int j = 0; j < n; ++ j )
+                    d[i][j] = min(d[i][j], d[i][k] + d[k][j]);
+    }
+    
+    void addEdge(vector<int> edge) {
+        int a = edge[0], b = edge[1], c = edge[2];
+        if (d[a][b] <= c)
+            return;
+        // floyd 标准的 dp 思想
+        d[a][b] = c;
+        for (int i = 0; i < n; ++ i )
+            for (int j = 0; j < n; ++ j )
+                d[i][j] = min(d[i][j], d[i][a] + d[a][b] + d[b][j]);
+    }
+    
+    int shortestPath(int node1, int node2) {
+        return d[node1][node2] < INF / 2 ? d[node1][node2] : -1;
+    }
+};
+
+/**
+ * Your Graph object will be instantiated and called as such:
+ * Graph* obj = new Graph(n, edges);
+ * obj->addEdge(edge);
+ * int param_2 = obj->shortestPath(node1,node2);
+ */
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 ### 拆点最短路 -> TODO 放到graph子章节
 

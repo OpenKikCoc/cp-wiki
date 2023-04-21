@@ -547,3 +547,84 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode LCCUP-2023-Spring 3. 最强祝福力场](https://leetcode.cn/contest/season/2023-spring/problems/xepqZ5/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 标准做法显然是扫描线 => TODO
+> 
+> 数据范围比较小（矩形数量很少）显然可以离散化之后直接二维前缀和求解
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 扫描线 TODO**
+
+```cpp
+
+```
+
+##### **C++ 离散化二维前缀和**
+
+```cpp
+class Solution {
+public:
+    // 矩形数量不超过 100 => 都可以暴力做了
+    // 考虑：如果 side 长度为奇数怎么半？直接全部 * 2
+    using LL = long long;
+    const static int N = 1010;
+    
+    int find(vector<LL> & s, LL x) {
+        return lower_bound(s.begin(), s.end(), x) - s.begin() + 1;
+    }
+    
+    int g[N][N];
+    
+    int fieldOfGreatestBlessing(vector<vector<int>>& forceField) {
+        vector<LL> xs, ys;
+        for (auto & f : forceField) {
+            LL x = 2ll * f[0], y = 2ll * f[1], w = 2ll * f[2];
+            xs.push_back(x - w / 2), xs.push_back(x + w / 2);
+            ys.push_back(y - w / 2), ys.push_back(y + w / 2);
+        }
+        sort(xs.begin(), xs.end()); xs.erase(unique(xs.begin(), xs.end()), xs.end());
+        sort(ys.begin(), ys.end()); ys.erase(unique(ys.begin(), ys.end()), ys.end());
+        
+        memset(g, 0, sizeof g);
+        for (auto & f : forceField) {
+            LL x = 2ll * f[0], y = 2ll * f[1], w = 2ll * f[2];
+            LL u = find(xs, x - w / 2), d = find(xs, x + w / 2);
+            LL l = find(ys, y - w / 2), r = find(ys, y + w / 2);
+            g[u][l] ++ , g[u][r + 1] -- , g[d + 1][l] -- , g[d + 1][r + 1] ++ ;
+        }
+        
+        int n = xs.size(), m = ys.size();
+        for (int i = 1; i <= n; ++ i )
+            for (int j = 1; j <= m; ++ j )
+                g[i][j] += g[i][j - 1] + g[i - 1][j] - g[i - 1][j - 1];
+        
+        int res = 0;
+        for (int i = 1; i <= n; ++ i )
+            for (int j = 1; j <= m; ++ j )
+                res = max(res, g[i][j]);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
