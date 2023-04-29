@@ -1135,7 +1135,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 6272. 好分区的数目](https://leetcode.cn/problems/number-of-great-partitions/)**
+> [!NOTE] **[LeetCode 2518. 好分区的数目](https://leetcode.cn/problems/number-of-great-partitions/)**
 > 
 > 题意: TODO
 

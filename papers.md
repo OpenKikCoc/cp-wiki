@@ -1,3 +1,3 @@
 # Papers
 
-[github.com/BinacsLee/blog](https://github.com/BinacsLee/blog)
+[github.com/binacs/blog](https://github.com/binacs/blog)

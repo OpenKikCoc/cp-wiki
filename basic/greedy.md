@@ -2179,7 +2179,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 6216. 使数组相等的最小开销](https://leetcode.cn/problems/minimum-cost-to-make-array-equal/)**
+> [!NOTE] **[LeetCode 2448. 使数组相等的最小开销](https://leetcode.cn/problems/minimum-cost-to-make-array-equal/)**
 > 
 > 题意: TODO
 

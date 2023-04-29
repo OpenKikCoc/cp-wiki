@@ -316,7 +316,6 @@
   * [反演变换](geometry/inverse.md)
   * [计算几何杂项](geometry/misc.md)
 * [杂项](misc/README.md)
-  * [杂项简介](misc/index.md)
   * [一个萝卜一个坑](misc/one-radish-one-pit.md)
   * [离散化](misc/discrete.md)
   * [双指针](misc/two-pointer.md)

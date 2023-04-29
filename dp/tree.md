@@ -3419,7 +3419,7 @@ int main() {
 
 ### 思维转化
 
-> [!NOTE] **[LeetCode 6223. 移除子树后的二叉树高度](https://leetcode.cn/problems/height-of-binary-tree-after-subtree-removal-queries/)** [TAG]
+> [!NOTE] **[LeetCode 2458. 移除子树后的二叉树高度](https://leetcode.cn/problems/height-of-binary-tree-after-subtree-removal-queries/)** [TAG]
 > 
 > 题意: 
 > 

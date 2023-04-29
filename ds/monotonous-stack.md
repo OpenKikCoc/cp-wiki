@@ -1357,7 +1357,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 6080. 使数组按非递减顺序排列](https://leetcode.cn/problems/steps-to-make-array-non-decreasing/)** [TAG]
+> [!NOTE] **[LeetCode 2289. 使数组按非递减顺序排列](https://leetcode.cn/problems/steps-to-make-array-non-decreasing/)** [TAG]
 > 
 > 题意: TODO
 
@@ -2067,11 +2067,6 @@ class Solution:
 > - 如果栈顶字符 ≤ 后续字符（未入栈）的最小值，那么应该出栈并加到答案末尾
 > 
 > - 否则应当继续遍历，取到比栈顶字符小的那个字符
-
-作者：endlesscheng
-链接：https://leetcode.cn/problems/using-a-robot-to-print-the-lexicographically-smallest-string/solution/tan-xin-zhan-by-endlesscheng-ldds/
-来源：力扣（LeetCode）
-著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 
 <details>
 <summary>详细代码</summary>

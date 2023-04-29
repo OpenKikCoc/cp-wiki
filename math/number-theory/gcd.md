@@ -1783,6 +1783,74 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2654. 使数组所有元素变成 1 的最少操作次数](https://leetcode.cn/problems/minimum-number-of-operations-to-make-all-array-elements-equal-to-1/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 理解 gcd 思想
+> 
+> 【由于只能操作相邻的数，所以 1 必然是一个连续数组的 GCD】
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int minOperations(vector<int>& nums) {
+        int n = nums.size();
+        
+        // 如果整个数组的 gcd 都不为 1 则永远无法转成全 1
+        int c = 0;
+        {
+            int g = 0;
+            for (int i = 0; i < n; ++ i )
+                g = __gcd(g, nums[i]), c += nums[i] == 1;
+            if (g != 1)     // => if (g > 1)
+                return -1;
+        }
+        
+        // 如果原数组存在 1
+        if (c)
+            return n - c;
+        
+        // 数组不存在 1 需要构造 1
+        // 【考虑 gcd 性质，一定是一个连续区间操作之后形成了一个 1】 => 深刻理解 gcd 性质
+        // 枚举区间
+        int minx = n;
+        for (int i = 0; i < n; ++ i ) {
+            int t = 0, g = 0;
+            for (int j = i; j < n && g != 1; ++ j )
+                g = __gcd(g, nums[j]), t ++ ;
+            if (g == 1) {
+                // 执行 t-1 次来构造出一个 1
+                minx = min(minx, t - 1);
+            }
+        }
+        
+        return minx + n - 1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 进阶
 
 > [!NOTE] **[AcWing 200. Hankson的趣味题](https://www.acwing.com/problem/content/202/)** [TAG]

@@ -435,7 +435,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[2246. 相邻字符不同的最长路径](https://leetcode.cn/problems/longest-path-with-different-adjacent-characters/)**
+> [!NOTE] **[LeetCode 2246. 相邻字符不同的最长路径](https://leetcode.cn/problems/longest-path-with-different-adjacent-characters/)**
 >
 > 题意: TODO
 
@@ -449,7 +449,7 @@ int main() {
 
 ##### **C++**
 
-```c++
+```cpp
 class Solution {
 public:
     const static int N = 1e5 + 10, M = N << 1;

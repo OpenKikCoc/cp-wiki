@@ -1,6 +1,6 @@
 > [!NOTE] **支持删边的链式前向星**
 >
-> ```c++
+> ```cpp
 > // TODO: 严格的数据验证
 > const static int N = 1e5 + 10, M = N << 1;
 > 
