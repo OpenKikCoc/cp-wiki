@@ -1681,6 +1681,8 @@ int main() {
 > 题意: TODO
 
 > [!TIP] **思路**
+> 
+> 【动态维护区间状态】
 >
 > 考虑：
 >
@@ -1907,6 +1909,90 @@ public:
                         break;
                     }
                 }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 6404. 将数组清空](https://leetcode.cn/problems/make-array-empty/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 标准【动态维护区间状态】
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 单点修改(修改成inf) 区间查询 => 感觉并不是
+    // 考虑重要条件【元素 互不相同】则显然可以按照大小排序 随后计算并更新新的起始位置
+    
+    using LL = long long;
+    using PII = pair<int, int>;
+    const static int N = 1e5 + 10;
+    
+    int tr[N];  // 记录每个位置对应的原始元素是否已经被移除 注意下标偏移
+    void init() {
+        memset(tr, 0, sizeof tr);
+    }
+    int lowbit(int x) {
+        return x & -x;
+    }
+    void add(int x, int y) {
+        for (int i = x; i < N; i += lowbit(i))
+            tr[i] += y;
+    }
+    int sum(int x) {
+        int ret = 0;
+        for (int i = x; i; i -= lowbit(i))
+            ret += tr[i];
+        return ret;
+    }
+    
+    long long countOperationsToEmptyArray(vector<int>& nums) {
+        int n = nums.size();
+        vector<PII> xs;
+        for (int i = 0; i < n; ++ i )
+            xs.push_back({nums[i], i});
+        sort(xs.begin(), xs.end()); // nums 互不相同
+        // 则 现在一定是按照下面的顺序移除所有元素
+        init();
+        int x = 0;
+        LL res = 0;
+        for (int i = 0; i < n; ++ i ) {
+            auto [_, y] = xs[i];
+            // 下标为 y, 本次操作之前位置在 x
+            if (x <= y) {
+                // 向后移动
+                int w = (y - x) - (sum(y + 1) - sum(x));                    // [x, y] 闭区间
+                res += w + 1;
+            } else {
+                int w = (n - x + y) - (sum(N - 1) - sum(x) + sum(y + 1));   // 排除 [x, y] 区间
+                res += w + 1;
+            }
+            add(y + 1, 1);
+            x = y;
+        }
         return res;
     }
 };

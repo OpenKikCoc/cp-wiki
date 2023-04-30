@@ -4330,7 +4330,8 @@ int main() {
 
         // 从前往后检查
         bool fail = false;
-        for (int i = j; i <= n; ++i) {
+        int i;
+        for (i = j; i <= n; ++i) {
             if (i > 2 && str[i] == str[i - 2]) {
                 fail = true;
                 break;
@@ -4342,8 +4343,9 @@ int main() {
         }
         if (fail)
             // why? 这样方便下次直接从更前面修改
-            for (int i = j + 1; i <= n; ++i)
-                str[i] = 'a' + p - 1;
+            // 【ATTENTION】注意修改的起始位置是 i+1
+            for (int k = i + 1; k <= n; ++k)
+                str[k] = 'a' + p - 1;
         else {
             flag = true;
             break;
@@ -4372,6 +4374,117 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 6344. 字典序最小的美丽字符串 ](https://leetcode.cn/problems/lexicographically-smallest-beautiful-string/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 贪心思维构造
+> 
+> 【如果当前位置不可修改 直接向前继续而不是一直呆在当前】
+> 
+> 只能说和前面的 [Codeforces No to Palindromes!](http://codeforces.com/problemset/problem/464/A) 一毛一样... 但做法又不同(CF数据范围更小)
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 有个重要条件: s 已经是一个美丽字符串了
+    // 不包含长度为2的任何回文子字符串
+    
+    string smallestBeautifulString(string s, int k) {
+        int n = s.size(), p = -1;
+        for (int i = n - 1; i >= 0 && p == -1; -- i ) {
+            // s[i] = 'a' + ((s[i] - 'a' + 1) % k); => WA
+            
+            // ATTENTION 如果一个位置不能被成功修改【应该往前走尝试改前面的 而不是一直呆在这个位置...】
+            for (int j = s[i] + 1; j < 'a' + k && p == -1; ++ j ) {     // 比s[i]大的前k个
+                if (i && j == s[i - 1] || i > 1 && j == s[i - 2])
+                    continue;
+                s[i] = j;
+                p = i;
+            }
+        }
+        // 存在一种情况 zzzz 这样加完之后需要再填充一个 显然不合法
+        if (p == -1)
+            return "";
+        
+        for (int i = p + 1; i < n; ++ i )
+            for (int j = 'a'; j < 'a' + k; ++ j ) {          // 前k个
+                if (i && j == s[i - 1] || i > 1 && j == s[i - 2])
+                    continue;
+                s[i] = j;
+                break;
+            }
+              
+        return s;
+    }
+};
+```
+
+##### **C++ CF做法TLE**
+
+```cpp
+class Solution {
+public:
+    // CF 做法
+    string smallestBeautifulString(string s, int k) {
+        int n = s.size();
+        for (;;) {
+            int p = -1;
+            for (int i = n - 1; i >= 0; -- i ) {
+                s[i] = 'a' + ((s[i] - 'a' + 1) % k);
+                
+                // = 'a' 的情况需要继续往前面操作
+                if (s[i] != 'a') {
+                    p = i;
+                    break;
+                }
+            }
+            if (p == -1)
+                return "";
+            
+            bool fail = false;
+            int i;
+            for (i = p; i < n; ++ i ) {
+                if (i > 0 && s[i] == s[i - 1])
+                    fail = true;
+                if (i > 1 && s[i] == s[i - 2])
+                    fail = true;
+                if (fail)
+                    break;
+            }
+            if (fail) {
+                // 方便下次直接从更前面修改
+                for (int j = i + 1; j < n; ++ j )
+                    s[j] = 'a' + k - 1;
+                continue;
+            }
+            return s;
+        }
+        return "";
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 ### STL 简化模拟
 
