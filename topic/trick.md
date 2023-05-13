@@ -5835,6 +5835,66 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2673. 使二叉树所有路径值相等的最小代价](https://leetcode.cn/problems/make-costs-of-paths-equal-in-a-binary-tree/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思考与转化 【对于一个以某个节点为根的子树，其排除根节点之后的左右子树的和应彼此相同】
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 题意: 满二叉树 求使得所有叶子结点路径和相同的最少操作次数
+    //
+    // 有一个较直观的想法是直接让每一层的节点值都相同，但这显然不是最优（思考 有可能不同的）
+    // 考虑【修改一个非叶子结点相当于直接修改一段连续区间】则题意可以转化为：
+    //  => 已知一个值可能不同的连续数组，每次可以修改特定的区间使其+1，求让所有数组相同的最小操作次数
+    //  => INSTEAD 【对于一个以某个节点为根的子树，其排除根节点之后的左右子树的和应彼此相同】
+    using LL = long long;
+    
+    int n, res;
+    vector<int> c;
+    
+    LL dfs(int u) {
+        int l = u * 2, r = u * 2 + 1;
+        if (l > n)
+            return c[u - 1];
+        
+        LL a = dfs(l), b = dfs(r);
+        res += max(a, b) - min(a, b);   // 补齐该子树
+        return max(a, b) + c[u - 1];
+    }
+    
+    int minIncrements(int n, vector<int>& cost) {
+        this->n = n, this->c = cost;
+        res = 0;
+        dfs(1);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 根据题意简化思维
 
 > [!NOTE] **[Codeforces C. Dima and Staircase](https://codeforces.com/problemset/problem/272/C)**

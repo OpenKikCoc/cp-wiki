@@ -4666,6 +4666,59 @@ public:
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
+##### **C++ 标准**
+
+```cpp
+class Solution {
+public:
+    vector<int> recoverArray(int n, vector<int>& sums) {
+        // 1. 考虑先转为非负数再做
+        int BIAS = 0;
+        for (auto x : sums)
+            BIAS = min(BIAS, x);
+        BIAS = -BIAS;           // ATTENTION
+        
+        multiset<int> S;
+        for (auto x : sums)
+            S.insert(x + BIAS);
+        
+        vector<int> t;
+        S.erase(S.begin());     // 去除空集
+        t.push_back(*S.begin());
+
+        for (int i = 1; i < n; ++ i ) {
+            // 枚举已经挑出来的所有的组合情况
+            for (int j = 1; j < 1 << i; ++ j )
+                if (j >> (i - 1) & 1) {     // 只关心包含了第 i 个的
+                    int s = 0;
+                    for (int k = 0; k < i; ++ k )
+                        if (j >> k & 1)
+                            s += t[k];
+                    S.erase(S.find(s));
+                }
+            t.push_back(*S.begin());
+        }
+
+        // 根据一个可行集合 t 构造原始版本的答案
+        for (int i = 0; i < 1 << n; ++ i ) {
+            int s = 0;
+            for (int j = 0; j < n; ++ j )
+                if (i >> j & 1)
+                    s += t[j];
+            
+            if (s == BIAS) {
+                // ATTENTION 这一部分转为负数即可【思维 理解】
+                for (int j = 0; j < n; ++ j )
+                    if (i >> j & 1)
+                        t[j] = -t[j];
+                break;
+            }
+        }
+        return t;
+    }
+};
+```
+
 ##### **C++**
 
 ```cpp

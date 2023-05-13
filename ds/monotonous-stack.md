@@ -2052,7 +2052,7 @@ class Solution:
 
 ### 单调栈辅助思想
 
-> [!NOTE] **[LeetCode 6202. 使用机器人打印字典序最小的字符串](https://leetcode.cn/problems/using-a-robot-to-print-the-lexicographically-smallest-string/)** [TAG]
+> [!NOTE] **[LeetCode 2434. 使用机器人打印字典序最小的字符串](https://leetcode.cn/problems/using-a-robot-to-print-the-lexicographically-smallest-string/)** [TAG]
 > 
 > 题意: 
 > 
