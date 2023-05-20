@@ -989,3 +989,70 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2681. 英雄的力量](https://leetcode.cn/problems/power-of-heroes/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 非常经典的暴力优化 $O(n^2)=>O(n)$
+> 
+> 思考细节推导
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 1e5 + 10, MOD = 1e9 + 7;
+
+    LL f[N];
+
+    int sumOfPower(vector<int>& nums) {
+        f[0] = 1;
+        for (int i = 1; i < N; ++ i )
+            f[i] = f[i - 1] * 2 % MOD;
+        sort(nums.begin(), nums.end());
+
+        LL res = 0, s = 0;
+        int n = nums.size();
+        for (int i = 0; i < n; ++ i ) {
+            LL x = nums[i]; // 作为最大值
+
+            // 把 j=i 的情况单独拎出来 方便后面的循环化简
+            res = (res + x * x % MOD * x % MOD) % MOD;
+
+            x = x * x % MOD;
+
+            // LL s = 0;
+            // for (int j = 0; j < i; ++ j ) {
+            //     LL t = f[i - j - 1], y = nums[j];
+            //     s = (s + y * t % MOD) % MOD;
+            // }
+            if (i)
+                s = (s * 2 % MOD + nums[i - 1]) % MOD;
+            res = (res + x * s % MOD) % MOD;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

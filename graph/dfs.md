@@ -1500,6 +1500,82 @@ class Solution:
 
 * * *
 
+> [!NOTE] **[LeetCode 2685. 统计完全连通分量的数量](https://leetcode.cn/problems/count-the-number-of-complete-components/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 简单的经典问题：
+> 
+> 本质是在 DFS 时求点数与边数
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 55, M = 5010;
+    
+    int h[N], e[M], ne[M], idx;
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+    }
+    void add(int a, int b) {
+        e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    bool st[N];
+    int cn, ce;
+    void dfs(int u) {
+        cn ++ ;
+        st[u] = true;
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i];
+            ce ++ ;
+            if (st[j])
+                continue;
+            dfs(j);
+        }
+    }
+    
+    int countCompleteComponents(int n, vector<vector<int>>& edges) {
+        init();
+        for (auto & e : edges)
+            add(e[0], e[1]), add(e[1], e[0]);
+        
+        int res = 0;
+        memset(st, 0, sizeof st);
+        for (int i = 0; i < n; ++ i )
+            if (!st[i]) {
+                cn = 0, ce = 0;
+                dfs(i);
+                if (cn * (cn - 1) == ce)
+                    res ++ ;
+            }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 进阶
 
 > [!NOTE] **[LeetCode 749. 隔离病毒](https://leetcode-cn.com/problems/contain-virus/)**
