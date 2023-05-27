@@ -2089,6 +2089,117 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2699. 修改图中的边权](https://leetcode.cn/problems/modify-graph-edge-weights/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 理解细节
+> 
+> TODO: 反复做
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 100 个点，最多 1e4 边
+    // 思考：修改负权边只会让最短距离变小，如果原图最短距离已经很小显然无解
+    // 【联通图 则一定有办法】
+    using PII = pair<int, int>;
+    const static int N = 110, INF = 0x3f3f3f3f;
+
+    int n, s, t;
+    vector<vector<PII>> es;
+
+    vector<vector<int>> modifiedGraphEdges(int n, vector<vector<int>>& edges, int source, int destination, int target) {
+        this->n = n, this->s = source, this->t = destination;
+        // 预处理边 记录对应的 idx
+        this->es = vector<vector<PII>>(n);
+        for (int i = 0; i < edges.size(); ++ i ) {
+            auto & e = edges[i];
+            int a = e[0], b = e[1];
+            es[a].push_back({b, i}), es[b].push_back({a, i});
+        }
+
+        static int d[2][N];
+        memset(d, 0x3f, sizeof d);
+        d[0][s] = d[1][s] = 0;
+        static bool st[N];
+        int diff;
+
+        auto dijkstra = [&](int k) {
+            memset(st, 0, sizeof st);
+            for (;;) {
+                // 朴素 dijkstra
+                // 找到当前最短路的点 并更新其邻居的距离
+                int x = -1;
+                for (int i = 0; i < n; ++ i )
+                    if (!st[i] && (x < 0 || d[k][i] < d[k][x]))
+                        x = i;
+                if (x == t)
+                    break;
+                st[x] = true;
+                for (auto [y, idx] : es[x]) {
+                    int w = edges[idx][2];
+                    if (w == -1)
+                        w = 1;  // -1 改成 1
+                    
+                    // 如果是第二次 dijkstra
+                    if (k == 1 && edges[idx][2] == -1) {
+                        // 则在第二次修改 w
+                        // 【理解细节】
+                        //  对于一个可修改的边，假定将其修改为 W 那么 s->x->y->t 由三部分组成
+                        //      1. s->x 的最短路     => d[1][x]
+                        //      2. x->y             => W
+                        //      3. y->t 的最短路     => d[0][t] - d[0][y]
+                        // 【ATTENTION】这个式子只有当前路径会是最短路时才会成立
+                        //      但【不在最短路上也不会对最短路产生影响】故可以非常简单的不做判断
+                        //      在此前提下，如果要让三部分的和为 target，则新边长即为下式：
+                        int tw = diff + d[0][y] - d[1][x];
+                        if (tw > w)
+                            edges[idx][2] = w = tw;  // ATTENTION
+                    }
+                    d[k][y] = min(d[k][y], d[k][x] + w);
+                }
+            }
+        };
+
+        dijkstra(0);
+        if (d[0][t] > target)   // -1 全改 1 时最短路也超长
+            return {};
+        diff = target - d[0][t];
+
+        dijkstra(1);
+        if (d[1][t] < target)   // ATTENTION 最短路最长也就这样了
+            return {};
+        
+        for (auto & e : edges)
+            if (e[2] == -1)
+                e[2] = 1;
+        return edges;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### bellmanford
 
 > [!NOTE] **[AcWing 853. 有边数限制的最短路](https://www.acwing.com/problem/content/855/)**
