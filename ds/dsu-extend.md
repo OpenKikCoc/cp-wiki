@@ -3082,6 +3082,208 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2709. 最大公约数遍历](https://leetcode.cn/problems/greatest-common-divisor-traversal/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 要习惯标准写法里 “逆向由素数倒推关联倍数” 的思维
+> 
+> 避免重复初始化
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **标准 避免重复初始化 C++**
+
+```cpp
+const static int N = 1e5 + 10;
+
+static bool inited;
+vector<int> d[N];
+void init() {
+    for (int i = 2; i < N; ++ i)
+        for (int j = i; j < N; j += i)
+            d[j].push_back(i);
+}
+
+class Solution {
+public:
+    int pa[N + N];
+    int find(int x) {
+        if (pa[x] != x)
+            pa[x] = find(pa[x]);
+        return pa[x];
+    }
+
+    bool canTraverseAllPairs(vector<int>& nums) {
+        if (!inited) {
+            inited = true;
+            init();
+        }
+
+        for (int i = 0; i < N + N; ++ i )
+            pa[i] = i;
+        
+        int n = nums.size();
+        for (int i = 0; i < n; ++ i )
+            for (auto j : d[nums[i]]) {
+                int a = find(i), b = find(N + j);
+                if (a != b) // 注意方向
+                    pa[a] = b;
+            }
+        
+        for (int i = 1; i < n; ++ i )
+            if (find(i) != find(i - 1)) // 用下标
+                return false;
+        return true;
+    }
+};
+```
+
+##### **标准 C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 1e5 + 10;
+    
+    vector<int> d[N];
+    void init() {
+        for (int i = 2; i < N; ++ i )
+            for (int j = i; j < N; j += i)
+                d[j].push_back(i);
+    }
+    
+    int pa[N + N];
+    int find(int x) {
+        if (pa[x] != x)
+            pa[x] = find(pa[x]);
+        return pa[x];
+    }
+    
+    bool canTraverseAllPairs(vector<int>& nums) {
+        init();
+        
+        for (int i = 0; i < N + N; ++ i )   // 素数映射到偏移后的坐标
+            pa[i] = i;
+        
+        int n = nums.size();
+        for (int i = 0; i < n; ++ i )
+            for (auto j : d[nums[i]]) {
+                // ATTENTION 合并坐标与素数
+                int a = find(i), b = find(N + j);
+                if (a != b)
+                    pa[a] = b;
+            }
+        
+        // 最终 所有的元素都应当在一个集合里
+        for (int i = 1; i < n; ++ i )
+            if (find(i) != find(i - 1))
+                return false;
+        return true;
+    }
+};
+```
+
+##### **个人习惯的写法 C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 1e5 + 10;
+    
+    int primes[N], cnt;
+    bool st[N];
+    void init() {
+        memset(st, 0, sizeof st);
+        cnt = 0;
+        for (int i = 2; i < N; ++ i ) {
+            if (!st[i])
+                primes[cnt ++ ] = i;
+            for (int j = 0; primes[j] <= (N - 1) / i; ++ j ) {
+                st[primes[j] * i] = true;
+                if (i % primes[j] == 0)
+                    break;
+            }
+        }
+    }
+    
+    int pa[N], sz[N];
+    int find(int x) {
+        if (pa[x] != x)
+            pa[x] = find(pa[x]);
+        return pa[x];
+    }
+    
+    bool canTraverseAllPairs(vector<int>& nums) {
+        {
+            // [1] => true
+            if (nums.size() == 1)
+                return true;
+            // 只有大于 1 个数的情况 才会 false
+            for (auto x : nums)
+                if (x == 1)
+                    return false;
+        }
+        
+        init();
+        
+        for (int i = 0; i < cnt; ++ i )
+            pa[i] = i, sz[i] = 1;
+        
+        unordered_set<int> S;
+        
+        for (auto x : nums) {
+            vector<int> xs;
+            for (int i = 0; i < cnt && primes[i] <= x / primes[i]; ++ i ) {
+                int p = primes[i];
+                if (x % p == 0) {
+                    xs.push_back(p), S.insert(p);
+                    while (x % p == 0)
+                        x /= p;
+                }
+            }
+            if (x > 1)
+                xs.push_back(x), S.insert(x);
+            
+            for (int i = 1; i < xs.size(); ++ i ) {
+                int a = find(xs[i - 1]), b = find(xs[i]);
+                if (a != b) {
+                    pa[a] = b;
+                    sz[b] += sz[a];
+                }
+            }
+            sz[find(xs[0])] ++ ;
+        }
+        
+        for (int i = 0; i < cnt; ++ i ) {
+            int p = primes[i];
+            if (sz[find(p)] - S.size() == nums.size()) {
+                // cout << " p = " << p << " sz = " << sz[find(p)] << endl;
+                return true;
+            }
+        }
+        return false;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 并查集的抽象进阶
 
 > [!NOTE] **[AcWing 1417. 塑造区域](https://www.acwing.com/problem/content/1419/)**
