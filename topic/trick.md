@@ -5895,6 +5895,69 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2718. 查询后矩阵的和](https://leetcode.cn/problems/sum-of-matrix-after-queries/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 标准逆序处理思路 略
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 思考：显然不能暴力操作
+    // 考虑：类似疯狂的馒头的思路，既然正序后面会覆盖前面的，那么逆序则【已经填充过的不会再变】
+    // => 问题变为：逆序填充，每次填充时判断能填充多少个空位，则 sum += 空位数 * val
+    using LL = long long;
+    const static int N = 1e4 + 10;
+    
+    bool r[N], c[N];
+    
+    long long matrixSumQueries(int n, vector<vector<int>>& queries) {
+        LL res = 0;
+        memset(r, 0, sizeof r), memset(c, 0, sizeof c);
+        int x = 0, y = 0;   // r_cnt, c_cnt
+        
+        for (int i = queries.size() - 1; i >= 0; -- i ) {
+            int t = queries[i][0], idx = queries[i][1], v = queries[i][2];
+            if (t == 0) {
+                // 行
+                if (r[idx])
+                    continue;
+                r[idx] = true, x ++ ;
+                res += (LL)(n - y) * v;
+            } else {
+                if (c[idx])
+                    continue;
+                c[idx] = true, y ++ ;
+                res += (LL)(n - x) * v;
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 根据题意简化思维
 
 > [!NOTE] **[Codeforces C. Dima and Staircase](https://codeforces.com/problemset/problem/272/C)**

@@ -1620,6 +1620,126 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2719. 统计整数数目](https://leetcode.cn/problems/count-of-integers/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 标准数位 dp
+> 
+> 还得写个高精度减法（也可以直接枚举下 num1 是否是一个合法方案）
+> 
+> 加快速度
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 30, M = 500, MOD = 1e9 + 7;
+    
+    LL f[N][M]; // 共计 i 个长度的数字，总和不超过 j 的方案数
+    void init() {
+        memset(f, 0, sizeof f);
+        for (int i = 0; i < N; ++ i )
+            f[i][0] = 1;
+        for (int i = 1; i < N; ++ i ) {
+            for (int j = 1; j < M; ++ j )
+                for (int k = 0; k < 10; ++ k )  // 最后一位的数值
+                    if (j - k >= 0)
+                        f[i][j] = (f[i][j] + f[i - 1][j - k]) % MOD;
+        }
+        for (int i = 0; i < N; ++ i )
+            for (int j = 1; j < M; ++ j )
+                f[i][j] = (f[i][j] + f[i][j - 1]) % MOD;
+        
+        // for (int i = 0; i < 5; ++ i ) {
+        //     for (int j = 0; j <= 15; ++ j )
+        //         cout << f[i][j] << ' ';
+        //     cout << endl;
+        // }
+    }
+    
+    LL get(string s, int mx) {
+        int n = s.size();
+        LL res = 0;
+        for (int i = 0; i < s.size(); ++ i ) {
+            int x = s[i] - '0';
+            for (int j = 0; j < x; ++ j )
+                if (mx - j >= 0)
+                    res = (res + f[n - i - 1][mx - j]);
+            mx -= x;
+            if (mx < 0)
+                break;
+            if (i == n - 1)
+                res = (res + 1) % MOD;
+        }
+        return res;
+    }
+    
+    string sub_one(string s) {
+        vector<int> xs;
+        for (auto c : s)
+            xs.push_back(c - '0');
+        reverse(xs.begin(), xs.end());
+        
+        bool has_sub = false;
+        
+        vector<int> res;
+        for (int i = 0, t = 0; i < xs.size(); ++ i ) {
+            t = xs[i] - t;
+            if (!has_sub)
+                t -= 1, has_sub = true;
+            res.push_back((t + 10) % 10);
+            if (t < 0)
+                t = 1;
+            else
+                t = 0;
+        }
+        while (res.size() > 1 && res.back() == 0)
+            res.pop_back();
+        reverse(res.begin(), res.end());
+        
+        string ns;
+        for (auto x : res)
+            ns.push_back('0' + x);
+        // cout << " origin = " << s << " got ns = " << ns << endl;
+        return ns;
+    }
+    
+    int count(string num1, string num2, int min_sum, int max_sum) {
+        init();
+        
+        LL t1 = (get(num2, max_sum) - get(num2, min_sum - 1) + MOD) % MOD;
+        {
+            num1 = sub_one(num1);
+        }
+        LL t2 = (get(num1, max_sum) - get(num1, min_sum - 1) + MOD) % MOD;
+        // cout << " t1 = " << t1 << " t2 = " << t2 << endl;
+        return (t1 - t2 + MOD) % MOD;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### TODO 汇总
 
 #### 拓展 n以内所有数字 每个数字在各个数位出现多少次
