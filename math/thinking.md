@@ -2640,3 +2640,64 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2731. 移动机器人](https://leetcode.cn/problems/movement-of-robots/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 标准的前缀和暴力优化 统计计数
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static LL MOD = 1e9 + 7;
+    
+    int sumDistance(vector<int>& nums, string s, int d) {
+        int n = nums.size();
+        vector<LL> xs;
+        for (int i = 0; i < n; ++ i ) {
+            LL x = nums[i];
+            if (s[i] == 'L')
+                x -= d;
+            else
+                x += d;
+            xs.push_back(x);
+        }
+        sort(xs.begin(), xs.end());
+        
+        LL res = 0, sum = 0;
+        for (int i = 0; i < n; ++ i ) {
+            LL x = xs[i];
+            
+            // 前面有 i 个: x * i - s
+            LL t = (x * i % MOD - sum % MOD + MOD) % MOD;
+            res = (res + t) % MOD;
+            sum = (sum + x) % MOD;
+        }
+        
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

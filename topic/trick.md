@@ -6385,6 +6385,81 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2732. 找到矩阵中的好子集](https://leetcode.cn/problems/find-a-good-subset-of-the-matrix/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 简单推理：找到两个可行行即可
+> 
+> >  证明较复杂：列数至少是六才会出现 k=4 可行但 k=2 不可行的情况
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 行数比较多 列数很少(5)
+    //  有一个比较trick的想法是 显然选的越多条件越苛刻 => 如果能找到只选两行能满足要求的即可
+    //  => 找两行，这两行的所有列不都为1
+    //  => 每一行转变为一个数字
+    
+    const static int N = 35;
+    
+    vector<int> xs[N];
+    
+    vector<int> goodSubsetofBinaryMatrix(vector<vector<int>>& grid) {
+        for (int i = 0; i < N; ++ i )
+            xs[i].clear();
+        
+        int n = grid.size(), m = grid[0].size();
+        for (int i = 0; i < n; ++ i ) {
+            int x = 0;
+            for (int j = 0; j < m; ++ j )
+                if (grid[i][j])
+                    x |= 1 << j;
+            xs[x].push_back(i);
+        }
+        // 如果有全 0 的直接返回
+        if (xs[0].size())
+            return {xs[0][0]};
+        // 否则需要凑两个
+        for (int i = 0; i < 1 << m; ++ i ) {
+            if (xs[i].empty())
+                continue;
+            int st = ((1 << m) - 1) ^ i;
+            for (int j = st; j; j = (j - 1) & st) {
+                if (xs[j].empty())
+                    continue;
+                int a = xs[i][0], b = xs[j][0];
+                if (a > b)
+                    swap(a, b);
+                return {a, b};
+            }
+        }
+        return {};
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 动态统计计数题
 
 > [!NOTE] **[LeetCode 1224. 最大相等频率](https://leetcode-cn.com/problems/maximum-equal-frequency/)** [TAG]
