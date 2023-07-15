@@ -1092,6 +1092,77 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2746. 字符串连接删减字母](https://leetcode.cn/problems/decremental-string-concatenation/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // ATTENTION: 题意的重要条件是 “对于 words 里的单词必须按顺序连接”
+    //  则对于前 i 个字符串，第 i 个一定位于首部或者尾部【这就保证解空间很小】
+    // 一开始自己理解成可以任意两个串连接了
+    
+    const static int N = 1010, M = 26, INF = 0x3f3f3f3f;
+    
+    int f[N][M][M]; // 所有前 i 个串连在一起，起始字母 j 结束字母 k 的最小长度
+    
+    int minimizeConcatenatedLength(vector<string>& words) {
+        memset(f, 0x3f, sizeof f);
+        
+        int n = words.size();
+        f[1][words[0][0] - 'a'][words[0].back() - 'a'] = words[0].size();
+        
+        for (int i = 2; i <= n; ++ i ) {
+            auto & w = words[i - 1];
+            int a = w[0] - 'a', b = w.back() - 'a', len = w.size();
+            // 枚举上一个的状态
+            for (int j = 0; j < M; ++ j )
+                for (int k = 0; k < M; ++ k )
+                    if (f[i - 1][j][k] < INF / 2) { // 上一个合法
+                        // 接在前面
+                        {
+                            f[i][a][k] = min(f[i][a][k], f[i - 1][j][k] + len - (b == j));
+                        }
+                        // 接在后面
+                        {
+                            f[i][j][b] = min(f[i][j][b], f[i - 1][j][k] + len - (a == k));
+                        }
+                    }
+        }
+        
+        int res = INF;
+        for (int i = 0; i < M; ++ i )
+            for (int j = 0; j < M; ++ j )
+                res = min(res, f[n][i][j]);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 复杂线性
 
 > [!NOTE] **[LeetCode 689. 三个无重叠子数组的最大和](https://leetcode-cn.com/problems/maximum-sum-of-3-non-overlapping-subarrays/)**

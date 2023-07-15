@@ -1503,6 +1503,127 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2736. 最大和查询](https://leetcode.cn/problems/maximum-sum-queries/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典：BIT 处理二维偏序问题
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 一个经验性的思路是离线处理 从大到小动态维护并求值
+    using TIII = tuple<int, int, int>;
+    const static int N = 2e5 + 10;
+    
+    vector<int> ys;
+    int find(int y) {
+        return lower_bound(ys.begin(), ys.end(), y) - ys.begin();
+    }
+    
+    // ATTENTION 二维偏序问题常通过离线 BIT 来做
+    int w[N], tr[N];
+    int lowbit(int x) {
+        return x & -x;
+    }
+    void modify(int x, int y) {
+        w[x] = y;
+        for (int i = x; i < N; i += lowbit(i))
+            tr[i] = max(tr[i], y);
+    }
+    int query(int l, int r) {
+        int res = 0;
+        for (; l <= r;) {
+            res = max(res, w[r]);
+            for ( -- r ; r >= l + lowbit(r); r -= lowbit(r))
+                res = max(res, tr[r]);
+        }
+        return res;
+    }
+    
+    vector<int> maximumSumQueries(vector<int>& nums1, vector<int>& nums2, vector<vector<int>>& queries) {
+        int n = nums1.size(), m = queries.size();
+        vector<TIII> xs, qs;
+        {
+            for (int i = 0; i < n; ++ i )
+                xs.push_back({nums1[i], nums2[i], i});
+            sort(xs.begin(), xs.end());
+            reverse(xs.begin(), xs.end());
+        }
+        {
+            for (int i = 0; i < m; ++ i )
+                qs.push_back({queries[i][0], queries[i][1], i});
+            sort(qs.begin(), qs.end());
+            reverse(qs.begin(), qs.end());
+        }
+        {
+            // init ys
+            ys.clear();
+            for (int i = 0; i < n; ++ i )
+                ys.push_back(nums2[i]);
+            for (int i = 0; i < m; ++ i )
+                ys.push_back(queries[i][1]);
+            sort(ys.begin(), ys.end());
+            ys.erase(unique(ys.begin(), ys.end()), ys.end());
+        }
+        
+        vector<int> res(m, -1);
+        for (int i = 0, j = 0; i < m; ++ i ) {
+            auto [a, b, idx] = qs[i];
+            // cout << " a = " << a << " b = " << b << " idx = " << idx << endl;
+            while (j < n) {
+                auto [x, y, z] = xs[j];
+                if (x < a)
+                    break;
+                
+                // 维护不同的 y 情况下，区间最大值
+                if (w[find(y) + 1] < x + y) {
+                    // ATTENTION 存在 y 重复的情况，需要取最大值
+                    modify(find(y) + 1, x + y);
+                }
+                // cout << "  ... add x " << x << ' ' << y << ' ' << z << " s = " << x + y << endl;
+                j ++ ;
+            }
+            // ATTENTION 需要实时查询，因为伴随着遍历 b 可能反而变大
+            int t = query(find(b) + 1, N - 1);
+            // cout << "  query got t = " << t << " all = " << query(1, N - 1) << endl;
+            if (t > 0) {
+                // ATTENTION 需要区分【存在与否】 因为如果 t=0 则意味着不存在
+                // WA case:
+                // [31]
+                // [17]
+                // [[1,79]]
+                res[idx] = t;
+            }
+        }
+        
+        // cout << endl;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 综合应用
 
 > [!NOTE] **[LeetCode 2179. 统计数组中好三元组数目](https://leetcode-cn.com/problems/count-good-triplets-in-an-array/)**

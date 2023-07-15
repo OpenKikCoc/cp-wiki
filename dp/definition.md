@@ -1165,3 +1165,54 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2742. 给墙壁刷油漆](https://leetcode.cn/problems/painting-the-walls/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 要想到dp 状态定义与转移
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // Case: ans=55
+    // [26,53,10,24,25,20,63,51]
+    // [1,1,1,1,2,2,2,1]
+    
+    const static int N = 510, INF = 0x3f3f3f3f;
+    
+    int f[N];
+    
+    int paintWalls(vector<int>& cost, vector<int>& time) {
+        int n = cost.size();
+        memset(f, 0x3f, sizeof f);
+        
+        f[0] = 0;
+        for (int i = 0; i < n; ++ i )
+            for (int j = n; j >= 0; -- j )
+                f[j] = min(f[j], f[max(j - time[i] - 1, 0)] + cost[i]);
+        return f[n];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

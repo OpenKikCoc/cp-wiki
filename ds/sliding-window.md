@@ -1416,6 +1416,78 @@ class Solution:
 
 * * *
 
+> [!NOTE] **[LeetCode 2747. 统计没有收到请求的服务器数目](https://leetcode.cn/problems/count-zero-request-servers/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 标准滑动窗口思路
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using PII = pair<int, int>;
+    
+    int sum;
+    unordered_map<int, int> h;
+    void add(int x) {
+        h[x] ++ ;
+        if (h[x] == 1)
+            sum ++ ;
+    }
+    void sub(int x) {
+        h[x] -- ;
+        if (h[x] == 0)
+            sum -- ;
+    }
+    
+    vector<int> countServers(int n, vector<vector<int>>& logs, int x, vector<int>& queries) {
+        sort(logs.begin(), logs.end(), [](const vector<int> & a, const vector<int> & b) {
+            return a[1] < b[1];     // 按时间排序
+        });
+        vector<PII> qs;
+        for (int i = 0; i < queries.size(); ++ i )
+            qs.push_back({queries[i], i});
+        sort(qs.begin(), qs.end()); // 按时间排序
+        
+        int sz = logs.size(), m = qs.size();
+        vector<int> res(m);
+        
+        sum = 0; h.clear();
+        for (int i = 0, l = 0, r = 0; i < m; ++ i ) {
+            auto [t, idx] = qs[i];
+            while (r < sz && logs[r][1] <= t)
+                add(logs[r ++ ][0]);
+            while (l < r && logs[l][1] < t - x)
+                sub(logs[l ++ ][0]);
+            res[idx] = n - sum;
+        }
+        
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 类似单调队列的优化实践
 
 > [!NOTE] **[Codeforces Sereja ans Anagrams](http://codeforces.com/problemset/problem/367/B)**

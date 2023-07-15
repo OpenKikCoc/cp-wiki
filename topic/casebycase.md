@@ -927,3 +927,75 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2749. 得到整数零需要执行的最少操作数](https://leetcode.cn/problems/minimum-operations-to-make-the-integer-zero/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 分情况讨论
+> 
+> 可以看下题解区其他解法 TODO
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    
+    int makeTheIntegerZero(int num1, int num2) {
+        LL x = num1, y = num2;
+        for (int i = 1; i < 100; ++ i ) {
+            LL t = x - y * i;
+            if (t < 0)
+                continue;       // ATTENTION 如果已经是负数肯定不能再减了
+            
+            // cout << " i = " << i << " t = " << t << endl;
+            int x = i;
+            if (t & 1)
+                x -- , t -- ;
+            
+            int c = 0;
+            for (int i = 0; i < 64; ++ i )  // ATTENTION 不止 32 位需要关注
+                if (t >> i & 1)
+                    c ++ ;
+            
+            // for (int i = 63; i >= 0; -- i )
+            //     if (t >> i & 1)
+            //         cout << '1';
+            //     else
+            //         cout << '0';
+            // cout << endl;
+            
+            // ATTENTION 过滤条件
+            if (c && x == 0)
+                continue;
+            if (c == 0 && x)
+                continue;
+            
+            if (c <= x)
+                return i;
+        }
+        return -1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

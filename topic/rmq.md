@@ -456,3 +456,110 @@ class Solution:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2735. 收集巧克力](https://leetcode.cn/problems/collecting-chocolates/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然可以 rmq
+> 
+> 更优：根据性质 线性维护
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ RMQ**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    // 考虑 每个位置的价格是固定的，则对于任意一个类型其在不同位置的价格已知
+    
+    // f[i]: 转 i 次的情况下，收集所有的最小成本
+    //  则对于特定的 i，每个的物品都价格都是一定区域内的最小值
+    const static int N = 1010, M = 11;
+    
+    int n;
+    LL f[N][M];
+    LL query(int l, int r) {
+        int len = r - l + 1;
+        int k = log(len) / log(2);
+        return min(f[l][k], f[r - (1 << k) + 1][k]);
+    }
+    
+    long long minCost(vector<int>& nums, int x) {
+        int n = nums.size();
+        memset(f, 0, sizeof f);
+        for (int j = 0; j < M; ++ j )
+            for (int i = 1; i + (1 << j) - 1 <= n; ++ i )
+                if (!j)
+                    f[i][j] = nums[i - 1];
+                else
+                    f[i][j] = min(f[i][j - 1], f[i + (1 << j - 1)][j - 1]);
+        
+        LL res = 1e16;
+        for (int i = 0; i < n; ++ i ) {
+            LL sum = LL(x) * i;
+            // cout << " init: i = " << i << " sum = " << sum << endl;
+            for (int j = 0; j < n; ++ j ) {
+                int l = j - i, r = j;
+                LL t = 0;
+                if (l >= 0) {
+                    t = query(l + 1, r + 1);
+                } else {
+                    t = min(query((l + n) % n + 1, n), query(1, r + 1));
+                }
+                // cout << " j = " << j << " t = " << t << endl;
+                sum += t;
+            }
+            // cout << " final: i = " << i << " sum = " << sum << endl;
+            res = min(res, sum);
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 最优**
+
+```cpp
+class Solution {
+public:
+    // 更优的办法: 考虑到伴随着操作次数的增加，每个类型所能触及的最小值【不断变小】
+    //  => 维护该最小值即可 更进一步降低复杂度
+
+    using LL = long long;
+
+    long long minCost(vector<int>& nums, int x) {
+        int n = nums.size();
+        vector<int> f = nums;
+        LL res = 1e16;
+        for (int i = 0; i < n; ++ i ) {
+            for (int j = 0; j < n; ++ j )
+                f[j] = min(f[j], nums[(j + i) % n]);
+            LL t = 0;
+            for (auto v : f)
+                t += v;
+            res = min(res, 1ll * x * i + t);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

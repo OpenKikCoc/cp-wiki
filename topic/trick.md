@@ -5958,6 +5958,60 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2745. 构造最长的新字符串](https://leetcode.cn/problems/construct-the-longest-new-string/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 分析 思维
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // AB 左边只能用 BB/AB 右边只能用 AA/AB
+    // 只能是 BBABAA BBABAA...
+    //       ABAABB ABAABB...
+    //       AABBAB AABBAB...
+    //    AABB AABB...
+    // AABB[AB]AABBAA
+    // BB[AB]AABBAA
+    int longestString(int x, int y, int z) {
+        if (x == y) {
+            return (x + y + z) * 2;
+        } else {
+            if (x > y) {
+                int t = min(x, y + 1);
+                return (t + y + z) * 2;
+            } else {
+                int t = min(y, x + 1);
+                return (x + t + z) * 2;
+            }
+        }
+        return -1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 根据题意简化思维
 
 > [!NOTE] **[Codeforces C. Dima and Staircase](https://codeforces.com/problemset/problem/272/C)**
