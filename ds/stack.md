@@ -721,6 +721,101 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2751. 机器人碰撞](https://leetcode.cn/problems/robot-collisions/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然是栈 细节在于分情况讨论
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 一般这种都是用 栈
+    using PII = pair<int, int>;
+    const static int N = 1e5 + 10;
+    
+    vector<int> survivedRobotsHealths(vector<int>& positions, vector<int>& healths, string directions) {
+        int n = positions.size();
+        vector<PII> xs;
+        for (int i = 0; i < n; ++ i )
+            xs.push_back({positions[i], i});
+        sort(xs.begin(), xs.end());
+        
+        stack<int> st;
+        for (int i = 0; i < n; ++ i ) {
+            auto [p, idx] = xs[i];
+            if (directions[idx] == 'R') {
+                st.push(idx);
+                // cout << " ... continue i = " << i << " p = " << p << " idx = " << idx << " sz " << st.size() << endl;
+                continue;
+            }
+            
+            // now we got L, only care about R
+            while (st.size()) {
+                auto t_idx = st.top();
+                
+                // break 条件
+                if (directions[t_idx] != 'R')
+                    break;
+                if (healths[t_idx] > healths[idx]) {
+                    healths[idx] = 0;   // 特殊处理
+                    healths[t_idx] -- ;
+                    break;
+                }
+                if (healths[t_idx] == healths[idx]) {
+                    healths[idx] = 0;   // 特殊处理
+                    st.pop();
+                    break;
+                }
+                
+                // 否则可以一直往下
+                // h[t_idx] < h[idx]
+                st.pop();
+                healths[idx] -- ;
+            }
+            if (healths[idx])
+                st.push(idx);
+            // cout << " ... i = " << i << " p = " << p << " idx = " << idx << " sz " << st.size() << endl;
+        }
+        // cout << endl;
+        
+        vector<int> res;
+        {
+            vector<PII> t;
+            while (st.size()) {
+                int x = st.top(); st.pop();
+                t.push_back({x, healths[x]});
+            }
+            sort(t.begin(), t.end());
+            for (auto [x, h] : t)
+                res.push_back(h);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 其他操作
 
 > [!NOTE] **[LeetCode 1190. 反转每对括号间的子串](https://leetcode-cn.com/problems/reverse-substrings-between-each-pair-of-parentheses/)** [TAG]
