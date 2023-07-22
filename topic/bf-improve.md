@@ -1056,3 +1056,79 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2763. 所有子数组中不平衡数字之和](https://leetcode.cn/problems/sum-of-imbalance-numbers-of-all-subarrays/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然是经典的暴力优化 边遍历边维护计数值
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 1e3 显然最多 n^2logn
+    //  枚举左右端点 枚举右端点过程中【维护计数值】
+
+    int sumImbalanceNumbers(vector<int>& nums) {
+        int n = nums.size(), res = 0;
+        for (int i = 0; i < n; ++ i ) {
+            map<int, int> h;
+            int t = 0;
+            for (int j = i; j < n; ++ j ) {
+                int x = nums[j];
+                // 已存在的情况 计数值没有任何变化
+                if (h[x]) {
+                    res += t;
+                    continue;
+                }
+
+                // 不存在的情况 会新增一个数值
+                //  此时
+                //  - [-1, +1] 减少一个
+                //  - [-1,  _] 不变
+                //  - [ _, +1] 不变
+                //  - [ _,  _] 根据左右侧有没有判断是否会增加   // ATTENTION 如果都有要-1
+
+                h[x] ++ ;   // 方便后续查找迭代器
+
+                if (h.count(x - 1) && h.count(x + 1))       // ATTENTION h[x-1] 会直接创建 default 值
+                    t -- ;
+                else if (!h.count(x - 1) && !h.count(x + 1)) {
+                    int l = 0, r = 0;
+                    if (h.lower_bound(x) != h.begin())      // x 左侧存在其他值
+                        l = 1;
+                    if (h.upper_bound(x) != h.end())        // x 右侧存在其他值
+                        r = 1;
+                    
+                    t += l + r - (l && r ? 1 : 0);          // 如果左右都存在，则还要-1
+                } // else do nothing
+
+                h[x] ++ ;
+                res += t;
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

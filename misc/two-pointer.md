@@ -2384,6 +2384,69 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2762. 不间断子数组](https://leetcode.cn/problems/continuous-subarrays/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然是双指针 要更快想到
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 1e5 数据范围显然不能 n^2
+    // 考虑 每个位置作为右端点，左端点都有哪些选择
+    //  => 可以 sliding window【要能更快地想到】
+    using LL = long long;
+    using PLI = pair<LL, int>;
+    const static int N = 1e5 + 10;
+    
+    int q[N];
+    multiset<PLI> S;
+    bool valid() {
+        if (S.size() <= 1)
+            return true;
+        auto minv = (*S.begin()).first;
+        auto maxv = (*S.rbegin()).first;
+        return maxv <= minv + 2;
+    }
+    
+    long long continuousSubarrays(vector<int>& nums) {
+        int n = nums.size();
+        LL res = 0;
+        for (int l = 0, r = 0; r < n; ++ r ) {
+            S.insert({nums[r], r});    // ATTENTION 考虑到升序排序
+            while (l < r && !valid()) {
+                S.erase(S.find({nums[l], l}));
+                l ++ ;
+            }
+            res += (r - l) + 1;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 优雅的双指针实现
 
 > [!NOTE] **[LeetCode 2332. 坐上公交的最晚时间](https://leetcode.cn/problems/the-latest-time-to-catch-a-bus/) [TAG]**
