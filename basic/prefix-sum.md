@@ -1729,6 +1729,68 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 2772. 使数组中的所有元素都等于零](https://leetcode.cn/problems/apply-operations-to-make-all-array-elements-equal-to-zero/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 差分思想 加快速度
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 差分应用
+    const static int N = 1e5 + 10;
+    
+    int d[N];
+    
+    bool checkArray(vector<int>& nums, int k) {
+        memset(d, 0, sizeof d);
+        int n = nums.size();
+        d[1] = nums[0];
+        for (int i = 2; i <= n; ++ i )
+            d[i] = nums[i - 1] - nums[i - 2];
+        
+        for (int i = 1; i + k - 1 <= n; ++ i ) {
+            int x = d[i];
+            if (x < 0)
+                return false;
+            if (x == 0)
+                continue;
+            d[i] -= x, d[i + k] += x;
+        }
+        // 后面的必须完全一样
+        unordered_set<int> S;
+        for (int i = n - k + 1; i <= n; ++ i ) {
+            // cout << " i = " << i << " d[i] = " << d[i] << endl;
+            S.insert(d[i]);
+        }
+        
+        return S.size() == 1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 差分思想 比如用map / 区间 / trick
 
 > [!NOTE] **[LeetCode 731. 我的日程安排表 II](https://leetcode-cn.com/problems/my-calendar-ii/)**

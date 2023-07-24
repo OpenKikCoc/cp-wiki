@@ -2447,6 +2447,128 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2781. 最长合法子字符串的长度](https://leetcode.cn/problems/length-of-the-longest-valid-substring/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然有字符串hash + 标记位置的思路
+> 
+> 另有巧妙的 **双指针思路**
+> 
+> > 如果长度不止 10 要考虑结合 AC自动机
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ hash + 标记**
+
+```cpp
+class Solution {
+public:
+    // 根据题目数据: forbidden 中每个元素长度不超过 10
+    //  考虑字符串hash
+    // 以及 求合法的恶书
+    
+    using ULL = unsigned long long;
+    const static int N = 1e5 + 10, P = 131;
+    
+    unordered_set<ULL> hash;
+    
+    ULL parse(string & s) {
+        ULL h = 0;
+        for (auto x : s)
+            h = h * P + x;
+        return h;
+    }
+    
+    ULL h[N], p[N];
+    
+    ULL get(int l, int r) {
+        return h[r] - h[l - 1] * p[r - l + 1];
+    }
+    
+    int longestValidSubstring(string word, vector<string>& forbidden) {
+        hash.clear();
+        for (auto & w : forbidden)
+             hash.insert(parse(w));
+        
+        int n = word.size();
+        h[0] = 0, p[0] = 1;
+        for (int i = 1; i <= n; ++ i ) {
+            h[i] = h[i - 1] * P + word[i - 1];
+            p[i] = p[i - 1] * P;
+        }
+        
+        int res = 0, x = -1;
+        for (int i = 1; i <= n; ++ i ) {
+            int maxd;
+            if (x == -1)
+                maxd = i;
+            else
+                maxd = i - x;   // 不能用到上次探测到的起点
+            
+            for (int j = 1; j <= 10 && j <= i; ++ j ) {
+                ULL t = get(i - j + 1, i);
+                if (hash.count(t)) {
+                    // maxd = j - 1;
+                    maxd = min(maxd, j - 1);    // ATTENTION: 需要取最小值
+                    // x = i - j + 1;
+                    x = max(x, i - j + 1);      // ATTENTION: 需要取最大值
+                    break;
+                }
+            }
+            // 往左侧最多可以延伸 i 的长度
+            res = max(res, maxd);
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 精巧双指针**
+
+```cpp
+class Solution {
+public:
+    int longestValidSubstring(string word, vector<string>& forbidden) {
+        vector<unordered_set<string>> s(11);
+        for (auto & f : forbidden)
+            s[f.size()].insert(f);
+
+        int n = word.size(), res = 0;
+        for (int l = 0, r = 0; r < n; ++ r ) {
+            // 检查当前位置最多可以延伸到哪里
+            bool flag = true;
+            for (int w = 1; w <= min(10, r - l + 1); ++ w )
+                if (s[w].count(word.substr(r - w + 1, w))) {
+                    flag = false;
+                    l = r - w + 2;  // r - w + 1 不行
+                    break;
+                }
+            if (flag)
+                res = max(res, r - l + 1);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 优雅的双指针实现
 
 > [!NOTE] **[LeetCode 2332. 坐上公交的最晚时间](https://leetcode.cn/problems/the-latest-time-to-catch-a-bus/) [TAG]**

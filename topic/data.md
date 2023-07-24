@@ -1620,3 +1620,78 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2768. 黑格子的数目](https://leetcode.cn/problems/number-of-black-blocks/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然要从 coordinates
+> 
+> 一种思路是枚举方块 需要注意细节的去重操作 代码略
+> 
+> 另一种是计算对哪些方块产生影响 全局统计即可 更好写
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 换个思路 计算当前点对哪些方格产生影响
+    using LL = long long;
+    using PII = pair<int, int>;
+    
+    vector<long long> countBlackBlocks(int m, int n, vector<vector<int>>& coordinates) {
+        map<PII, int> h;  // 某个右下角的方格 有多少个黑点
+        for (auto & cs : coordinates) {
+            int x = cs[0], y = cs[1];
+            {
+                // 当前在左上角
+                if (x < m - 1 && y < n - 1)
+                    h[{x + 1, y + 1}] ++ ;
+            }
+            {
+                // 当前在左下角
+                if (x && y < n - 1)
+                    h[{x, y + 1}] ++ ;
+            }
+            {
+                // 右上角
+                if (x < m - 1 && y)
+                    h[{x + 1, y}] ++ ;
+            }
+            {
+                // 右下角
+                if (x && y)
+                    h[{x, y}] ++ ;
+            }
+        }
+        
+        vector<LL> res(5);
+        for (auto & [k, v] : h)
+            res[v] ++ ;
+        
+        LL sum = 1ll * (m - 1) * (n - 1);
+        res[0] = sum - res[1] - res[2] - res[3] - res[4];
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
