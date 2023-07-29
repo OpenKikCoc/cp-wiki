@@ -1132,3 +1132,89 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2791. 树中可以形成回文的路径数](https://leetcode.cn/problems/count-paths-that-can-form-a-palindrome-in-a-tree/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典的暴力优化思路
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 关键点：可以重新排列
+    // 则 只需要关心两个点之间的不同字符的奇偶性即可
+    //
+    // 又因为 1e5 数据范围显然不能两两枚举
+    // 考虑直接统计从根到某个节点的所有字符的奇偶状态 并全局计数
+    // 最后遍历节点即可
+    using LL = long long;
+    const static int N = 1e5 + 10, M = N;
+    
+    int h[N], e[M], w[M], ne[M], idx;
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+    }
+    void add(int a, int b, int c) {
+        e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    unordered_map<int, int> count;
+    int st[N];
+    void dfs(int u, int s) {
+        st[u] = s;
+        count[s] ++ ;
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i];
+            int t = w[i];
+            dfs(j, s ^ (1 << t));
+        }
+    }
+    
+    long long countPalindromePaths(vector<int>& parent, string s) {
+        init();
+        int n = parent.size();
+        for (int i = 1; i < n; ++ i )
+            add(parent[i], i, s[i] - 'a');
+        
+        count.clear();
+        memset(st, 0, sizeof st);
+        dfs(0, 0);
+        
+        LL res = 0;
+        for (int i = 0; i < n; ++ i ) {
+            int a = st[i];
+            // 奇偶性相同的情况 要排除自身
+            res = res + ((LL)count[a] - 1);
+            // 奇偶性不同的情况
+            for (int j = 0; j < 26; ++ j ) {
+                int b = a ^ (1 << j);
+                res = res + (LL)count[b];
+            }
+        }
+        return res / 2;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

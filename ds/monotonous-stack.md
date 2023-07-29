@@ -1435,6 +1435,68 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2789. 合并后数组中的最大元素](https://leetcode.cn/problems/largest-element-in-an-array-after-merge-operations/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 单调栈思想 略有变形
+> 
+> 题解区有一次遍历的统计思想 略
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 考虑单调栈 记录总和与当前的最大值
+    using LL = long long;
+    using PLI = pair<LL, int>;
+    
+    const static int N = 1e5 + 10;
+    
+    PLI stk[N];
+    int top;
+    
+    long long maxArrayValue(vector<int>& nums) {
+        int n = nums.size();
+        top = 0;
+        
+        for (int i = n - 1; i >= 0; -- i ) {
+            stk[top ++ ] = {nums[i], nums[i]};
+            while (top >= 2 && stk[top - 1].second <= stk[top - 2].first) {
+                stk[top - 2].first += stk[top - 1].first;
+                stk[top - 2].second = max(stk[top - 2].second, stk[top - 1].second);
+                top -- ;
+            }
+        }
+        
+        LL res = 0;
+        for (int i = 0; i < top; ++ i )
+            res = max(res, stk[i].first);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 删数类问题
 
 > [!NOTE] **[Luogu 删数问题](https://www.luogu.com.cn/problem/P1106)**
