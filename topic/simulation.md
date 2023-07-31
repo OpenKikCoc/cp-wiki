@@ -3407,6 +3407,77 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2800. 包含三个字符串的最短字符串](https://leetcode.cn/problems/shortest-string-that-contains-three-strings/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 优雅实现
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int check(string & a, string & b) {
+        int n = a.size(), m = b.size();
+        for (int i = min(n, m); i > 0; -- i ) {
+            if (a.substr(n - i, i) == b.substr(0, i))
+                return i;
+        }
+        return 0;
+    }
+
+    string get(string a, string b, string c) {
+        string t = a;
+        if (t.find(b) == string::npos) {
+            t += b.substr(check(t, b));
+        }
+        if (t.find(c) == string::npos) {
+            t += c.substr(check(t, c));
+        }
+        return t;
+    }
+
+    string minimumString(string a, string b, string c) {
+        vector<string> ss = {a, b, c};
+
+        string res;
+
+        // 生成所有顺序
+        for (int i = 0; i < 3; ++ i )
+            for (int j = 0; j < 3; ++ j )
+                for (int k = 0; k < 3; ++ k ) {
+                    if (i == j || i == k || j == k)
+                        continue;
+                    
+                    string t = get(ss[i], ss[j], ss[k]);
+                    if (res.empty() || t.size() < res.size() || (t.size() == res.size() && t < res))
+                        res = t;
+                }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 丑数
 
 > [!NOTE] **[LeetCode 263. 丑数](https://leetcode-cn.com/problems/ugly-number/)**
