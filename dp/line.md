@@ -310,6 +310,19 @@ class Solution:
             minv = min(nums[i], min(nums[i] * mx, nums[i] * mn))
             res = max(maxv, res)
         return res
+      
+# f 表示用当前数的最大值，g 表示用当前数的最小值      
+class Solution:
+    def maxProduct(self, nums: List[int]) -> int:
+        n = len(nums)
+        f = [float('-inf')] * n
+        g = [float('inf')] * n
+        f[0] = nums[0]
+        g[0] = nums[0]
+        for i in range(1, n):
+            f[i] = max(f[i - 1] * nums[i], g[i - 1] * nums[i], nums[i])
+            g[i] = min(f[i - 1] * nums[i], g[i - 1] * nums[i], nums[i])
+        return max(max(f), max(g))
 ```
 
 <!-- tabs:end -->
