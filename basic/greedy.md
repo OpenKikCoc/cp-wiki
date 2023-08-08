@@ -1725,6 +1725,96 @@ if __name__ == '__main__':
 
 * * *
 
+> [!NOTE] **[LeetCode 2809. 使数组和小于等于 x 的最少时间](https://leetcode.cn/problems/minimum-time-to-make-array-sum-at-most-x/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典排序不等式
+> 
+> 贪心思维 推导过程 理解
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 考虑: 最多在每个位置都set 0一次，如果这种情况下还不行那就永远不可能了
+    //   又因为 操作次数与总和值并非 正/负相关 所以无法二分答案
+    // 考虑 贪心     => 推测同一个位置只会执行一次
+    //
+    // 分析: 第 i 个位置的元素，在第 j 次操作时，总和减少的值为 nums1[i] + nums2[j] * j
+    //
+    // ATTENTION: 思考 【贪心的理论依据】
+    // 假设我们已经确定要对第 a1, a2, ..., at 个元素进行操作，那么我们可以确定的“收益”就是 nums1[a1] + nums1[a2] + ... + nums1[at]。
+    // 接下来要确定的就是操作元素的顺序，使得最终的“收益”最大。我们没有确定的收益就是 x * nums2[i]，显然应该把更大的 x 分给更大的 nums2[i]。
+    // 也就是说，一定是按 nums2[i] 从小到大的顺序操作元素。
+    //
+    // ATTENTION: 基于排序不等式的选择型dp，特点是当子集唯一确定时，操作顺序被唯一确定
+    
+    // ATTENTION 关注数据范围 1e3
+    using PII = pair<int, int>;
+    const static int N = 1010;
+    int f[N][N];    // [排序后] 只考虑前 i 个元素，其中 i 是第 j 个删除的情况下   能够减少的总量
+    
+    int minimumTime(vector<int>& nums1, vector<int>& nums2, int x) {
+        int n = nums1.size();
+        
+        vector<PII> xs;
+        for (int i = 0; i < n; ++ i )
+            xs.push_back({nums2[i], nums1[i]});
+        sort(xs.begin(), xs.end());
+        
+        // 转而求最大减值
+        memset(f, 0xcf, sizeof f);
+        f[0][0] = 0;
+        // 前 i 个元素里，选了 j 个
+        for (int i = 1; i <= n; ++ i )
+            for (int j = 0; j <= i; ++ j ) {
+                // 不选 i
+                f[i][j] = f[i - 1][j];
+                // 选 i
+                if (j) {
+                    // ATTENTION 思考 为什么可以直接当做第 j 个被选的去做处理？因为排序了
+                    int t = xs[i - 1].second + j * xs[i - 1].first;
+                    f[i][j] = max(f[i][j], f[i - 1][j - 1] + t);
+                }
+            }
+        
+        int s1 = 0, s2 = 0;
+        for (auto x : nums1)
+            s1 += x;
+        for (auto x : nums2)
+            s2 += x;
+        // 枚举次数
+        for (int i = 0; i <= n; ++ i ) {
+            int t = s1 + s2 * i - f[n][i];
+            if (t <= x)
+                return i;
+        }
+        
+        return -1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 ### 绝对值不等式
 
