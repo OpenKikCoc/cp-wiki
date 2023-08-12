@@ -6830,3 +6830,81 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2813. 子序列最大优雅度](https://leetcode.cn/problems/maximum-elegance-of-a-k-length-subsequence/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+>
+> **贪心 反悔思维**
+>
+> 按照利润从大到小排序。先把前 $k$ 个项目选上。
+>
+> 考虑选第 $k+1$ 个项目，为了选它，我们必须从前 $k$ 个项目中移除一个项目。
+>
+> 由于已经按照利润从大到小排序，选这个项目不会让 $\textit{total\_profit}$ 变大，所以我们重点考虑能否让 $\textit{distinct\_categories}$ 变大。
+>
+> >   为什么 k 个之后每次出现类别不重复的都要进行移除，而不是判断 res 确认增大后再移除？
+> >
+> >   => 只有挑不重复的类别才有可能让答案变大，相同的类别中最左边的利润最大，不同的类别只考虑第一次出现的话也是最左边的利润最大，所以每次遇到的第一个不同的类别就是最好的
+> >
+> >   **思考**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    
+    long long findMaximumElegance(vector<vector<int>>& items, int k) {
+        // 单纯按 profit 排序
+        sort(items.begin(), items.end(), [](const vector<int> & a, const vector<int> & b) {
+            return a[0] > b[0];
+        });
+
+        LL res = 0, tot_profit = 0;
+        unordered_set<int> vis;
+        // 考虑已经排过序 可以直接使用 stack 记录重复类别的 [可替换值] 【必须是此前出现过的】
+        stack<int> duplicate;
+
+        for (int i = 0; i < items.size(); ++ i ) {
+            int profit = items[i][0], category = items[i][1];
+            if (i < k) {
+                // 对于前 k 个直接累加
+                tot_profit += profit;
+                if (!vis.insert(category).second)
+                    // 出现过的类别
+                    duplicate.push(profit);
+            } else if (!duplicate.empty() && vis.insert(category).second) {
+                // 只有此前有过重复类别 且当前是新类别【有可能是的 distinct_categories 增加的情况】
+
+                // 选择一个重复处出现过的类别中 价值最小的替换
+                tot_profit += profit - duplicate.top();
+                duplicate.pop();
+            }
+            res = max(res, tot_profit + (LL)vis.size() * (LL)vis.size());
+        }
+
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
