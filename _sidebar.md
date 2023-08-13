@@ -2,6 +2,7 @@
 * [Papers](papers.md)
 * [Resources](resources.md)
 * [语言基础](lang/README.md)
+  * [计算复杂度](lang/complex.md)
   * [读入、输出优化](lang/io.md)
   * [STL 算法](lang/algorithm.md)
   * [bitset](lang/bitset.md)
