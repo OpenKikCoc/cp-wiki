@@ -1461,3 +1461,147 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2818. 操作使得分最大](https://leetcode.cn/problems/apply-operations-to-maximize-score/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典的前后缀分解 结合素数筛和快速幂
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+using LL = long long;
+const static int N = 1e5 + 10, MOD = 1e9 + 7;
+static bool f = false;
+
+int primes[N], cnt;
+bool st[N];
+
+void init() {
+    if (f)
+        return;
+    f = true;
+    
+    memset(st, 0, sizeof st);
+    cnt = 0;
+    for (int i = 2; i < N; ++ i ) {
+        if (!st[i])
+            primes[cnt ++ ] = i;
+        for (int j = 0; primes[j] <= (N - 1) / i; ++ j ) {
+            st[primes[j] * i] = true;
+            if (i % primes[j] == 0)
+                break;
+        }
+    }
+}
+
+class Solution {
+public:
+    // 某个位置可以被多次选 只要其被包含在不同的子数组中 且是最靠左的位置（单调栈）
+    //  则 考虑每一个位置的元素可以作为发挥作用的元素 其左右端点可以延伸到多远 => 对应有多少个区间可用
+    //  最后排序 依次取用区间即可
+    
+    using PIL = pair<int, LL>;
+    
+    int ps[N];
+    int n;
+    
+    int l[N], r[N];
+    
+    LL qmi(LL a, LL b) {
+        LL ret = 1;
+        while (b) {
+            if (b & 1)
+                ret = ret * a % MOD;
+            a = a * a % MOD;
+            b >>= 1;
+        }
+        return ret;
+    }
+    
+    int maximumScore(vector<int>& nums, int k) {
+        init();
+        this->n = nums.size();
+        
+        for (int i = 0; i < n; ++ i ) {
+            int t = 0, x = nums[i];
+            for (int j = 0; primes[j] <= x; ++ j )
+                if (x % primes[j] == 0) {
+                    t ++ ;
+                    while (x % primes[j] == 0)
+                        x /= primes[j];
+                }
+                    
+            ps[i] = t;
+        }
+        
+        {
+            // 向左最多延伸到哪里 默认显然是到 -1
+            for (int i = 0; i < n; ++ i )
+                l[i] = -1;
+            
+            stack<int> stk;
+            for (int i = n - 1; i >= 0; -- i ) {
+                int x = ps[i];
+                while (stk.size() && ps[stk.top()] <= x) {
+                    l[stk.top()] = i;
+                    stk.pop();
+                }
+                stk.push(i);
+            }
+        }
+        {
+            // 向右
+            for (int i = 0; i < n; ++ i )
+                r[i] = n;
+            
+            stack<int> stk;
+            for (int i = 0; i < n; ++ i ) {
+                int x = ps[i];
+                while (stk.size() && ps[stk.top()] < x) {   // 必须要大于 才能发挥作用
+                    r[stk.top()] = i;
+                    stk.pop();
+                }
+                stk.push(i);
+            }
+        }
+        
+        priority_queue<PIL> q;
+        for (int i = 0; i < n; ++ i ) {
+            LL x = i - l[i], y = r[i] - i;
+            q.push({nums[i], x * y});
+        }
+        
+        LL res = 1, tot = k;
+        for (; tot && q.size();) {
+            auto [k, v] = q.top(); q.pop();
+            LL cost = min(v, tot);
+            tot -= cost;
+            
+            res = (res * qmi(k, cost)) % MOD;
+        }
+        
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
