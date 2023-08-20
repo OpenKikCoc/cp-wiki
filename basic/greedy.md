@@ -6809,13 +6809,78 @@ public:
 ##### **C++ 贪心**
 
 ```cpp
-
+class Solution {
+public:
+    int maxJump(vector<int>& stones) {
+        int res = stones[1] - stones[0];
+        for (int i = 2; i < stones.size(); ++ i )
+            res = max(res, stones[i] - stones[i - 2]);
+        return res;
+    }
+};
 ```
 
 ##### **C++ 二分**
 
 ```cpp
+class Solution {
+public:
+    const static int N = 1e5 + 10;
+    
+    vector<int> sts;
+    int n;
+    
+    bool st[N];
+    
+    bool check(int m) {
+        memset(st, 0, sizeof st);
+        
+        {
+            for (int i = 0, j = 0; i < n && j < n; ) {
+                while (j < n && sts[j] - sts[i] <= m)
+                    j ++ ;
+                // j - 1 是可以到达的最远的点
+                if (j - 1 == i)
+                    return false;
+                if (j == n)
+                    break;
+                i = j - 1;
+                st[i] = true;   // 使用石头
+            }
+        }
 
+        {
+            for (int i = 0, j = 0; i < n && j < n; ) {
+                while (j < n && sts[j] - sts[i] <= m)
+                    j ++ ;
+                {
+                    int t = j - 1;
+                    while (st[t])
+                        t -- ;
+                    if (t <= i)
+                        return false;
+                    i = t;
+                    st[i] = true;
+                }
+            }
+        }
+        return true;
+    }
+    
+    int maxJump(vector<int>& stones) {
+        this->sts = stones, this->n = sts.size();
+        
+        int l = 0, r = 1e9;
+        while (l < r) {
+            int m = l + (r - l) / 2;
+            if (check(m))
+                r = m;
+            else
+                l = m + 1;
+        }
+        return l;
+    }
+};
 ```
 
 ##### **Python**

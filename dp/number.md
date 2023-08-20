@@ -2124,3 +2124,118 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 8013. 范围中美丽整数的数目](https://leetcode.cn/problems/number-of-beautiful-integers-in-the-range/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 注意数值计算的细节
+> 
+> 加快速度
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+using LL = long long;
+const static int N = 11, M = 21, B = 10;
+
+class Solution {
+public:
+    // 思考: 较显然的是使用数位 dp, 问题在于如何定义?
+    //    剩下长度为 w 的任意数字, 最高位为 i, 当前奇数偶数数目差值为 j, 对 K 取模得到结果为 k 的所有方案
+    // 从第 i 个计算前面的 mod 比较难 考虑从前向后递推
+    
+    // 不会超过 11 位数字
+    
+    int f[N][N][M][M];  // 避免手动初始化
+    
+    int K;
+    
+    void init() {
+        memset(f, 0, sizeof f);
+        f[0][0][0 + B][0] = 1;
+        for (int w = 0; w < N - 1; ++ w ) {
+            int pow_v = (LL)pow(10, w) % K;
+            for (int i = 0; i < 10; ++ i )
+                for (int j = -10; j <= 10; ++ j )
+                    for (int k = 0; k < K; ++ k ) {
+                        // 枚举下一位数字(左侧的数字)
+                        for (int x = 0; x < 10; ++ x ) {
+                            int next_j = j + (x & 1 ? 1 : -1);
+                            int next_k = (k + x * pow_v) % K;
+                            
+                            if (next_j + B < 0 || next_j + B >= M)
+                                continue;
+                            f[w + 1][x][next_j + B][next_k] += f[w][i][j + B][k];
+                        }
+                    }
+        }
+    }
+    
+    int get(int x) {
+        if (x == 0)
+            return 0;
+        
+        string s = to_string(x);
+        int n = s.size();
+        
+        int res = 0;
+        
+        for (int w = 1; w < n; ++ w )
+            for (int i = 1; i < 10; ++ i )      // ATTENTION 去除前导 0
+                res += f[w][i][0 + B][0];       // ATTENTION 记得+B
+        
+        int mod = 0, diff = 0;
+        for (int i = 0; i < n; ++ i ) {
+            int x = s[i] - '0';
+            
+            for (int y = 0 + (i == 0); y < x; ++ y ) {
+                int w = n - i;
+                // 计算得到 需要的 j 和 k
+                //          need_k + mod*10 % k == K => WRONG
+                int j = -diff, k = (K - mod) % K;
+                
+                // cout << "   inner " << " i = " << i << " mod = " << mod << " diff = " << diff  << " y = " << y << " w = " << w << " j = " << j + B << " k = " << k << " add " << f[w][y][j + B][k] << endl;
+                res += f[w][y][j + B][k];
+            }
+            
+            mod = (mod + x * (int)pow(10, n - i - 1) % K) % K;   // ATTENTION 思考计算细节 不要算错了
+            if (x & 1)
+                diff ++ ;
+            else
+                diff -- ;
+            
+            if (i == n - 1) {
+                if (diff == 0 && mod == 0)
+                    res ++ ;
+            }
+        }
+        return res;
+    }
+    
+    int numberOfBeautifulIntegers(int low, int high, int k) {
+        this->K = k;    // 必须在 init 之前
+        init();
+        return get(high) - get(low - 1);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
