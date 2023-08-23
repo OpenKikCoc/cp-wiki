@@ -1218,3 +1218,36 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2831. 找出最长等值子数组](https://leetcode.cn/problems/find-the-longest-equal-subarray/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典暴力优化
+> 
+> 按数值对下标分类 随后同向双指针
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
