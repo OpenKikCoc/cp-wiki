@@ -2048,7 +2048,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 6404. 将数组清空](https://leetcode.cn/problems/make-array-empty/)**
+> [!NOTE] **[LeetCode 2659. 将数组清空](https://leetcode.cn/problems/make-array-empty/)**
 > 
 > 题意: TODO
 

@@ -238,7 +238,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 6159. 删除操作后的最大子段和](https://leetcode.cn/problems/maximum-segment-sum-after-removals/)**
+> [!NOTE] **[LeetCode 2382. 删除操作后的最大子段和](https://leetcode.cn/problems/maximum-segment-sum-after-removals/)**
 > 
 > 题意: TODO
 
@@ -1035,7 +1035,7 @@ public:
 
 ### trick 带权并查集维护连通性
 
-> [!NOTE] **[LeetCode 6191. 好路径的数目](https://leetcode.cn/problems/number-of-good-paths/)** [TAG]
+> [!NOTE] **[LeetCode 2421. 好路径的数目](https://leetcode.cn/problems/number-of-good-paths/)** [TAG]
 > 
 > 题意: TODO
 

@@ -1581,7 +1581,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 6115. 统计理想数组的数目](https://leetcode.cn/problems/count-the-number-of-ideal-arrays/) [TAG]**
+> [!NOTE] **[LeetCode 2338. 统计理想数组的数目](https://leetcode.cn/problems/count-the-number-of-ideal-arrays/) [TAG]**
 > 
 > 题意: TODO
 

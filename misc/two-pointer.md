@@ -1981,7 +1981,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 6207. 统计定界子数组的数目](https://leetcode.cn/problems/count-subarrays-with-fixed-bounds/) [TAG]**
+> [!NOTE] **[LeetCode 2444. 统计定界子数组的数目](https://leetcode.cn/problems/count-subarrays-with-fixed-bounds/) [TAG]**
 > 
 > 题意: TODO
 

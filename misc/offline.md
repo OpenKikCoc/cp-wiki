@@ -70,7 +70,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 6227. 下一个更大元素 IV](https://leetcode.cn/problems/next-greater-element-iv/)**
+> [!NOTE] **[LeetCode 2454. 下一个更大元素 IV](https://leetcode.cn/problems/next-greater-element-iv/)**
 > 
 > 题意: TODO
 

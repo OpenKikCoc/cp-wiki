@@ -4445,7 +4445,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 6344. 字典序最小的美丽字符串 ](https://leetcode.cn/problems/lexicographically-smallest-beautiful-string/)** [TAG]
+> [!NOTE] **[LeetCode 2663. 字典序最小的美丽字符串 ](https://leetcode.cn/problems/lexicographically-smallest-beautiful-string/)** [TAG]
 > 
 > 题意: TODO
 
@@ -5982,7 +5982,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 6111. 螺旋矩阵 IV](https://leetcode.cn/problems/spiral-matrix-iv/)**
+> [!NOTE] **[LeetCode 2326. 螺旋矩阵 IV](https://leetcode.cn/problems/spiral-matrix-iv/)**
 > 
 > 题意: TODO
 

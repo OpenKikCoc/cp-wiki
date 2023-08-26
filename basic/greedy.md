@@ -6722,7 +6722,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 6217. 使数组相似的最少操作次数](https://leetcode.cn/problems/minimum-number-of-operations-to-make-arrays-similar/)**
+> [!NOTE] **[LeetCode 2449. 使数组相似的最少操作次数](https://leetcode.cn/problems/minimum-number-of-operations-to-make-arrays-similar/)**
 > 
 > 题意: TODO
 

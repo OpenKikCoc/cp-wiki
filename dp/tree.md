@@ -2545,7 +2545,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 6294. 最大价值和与最小价值和的差值](https://leetcode.cn/problems/difference-between-maximum-and-minimum-price-sum/)**
+> [!NOTE] **[LeetCode 2538. 最大价值和与最小价值和的差值](https://leetcode.cn/problems/difference-between-maximum-and-minimum-price-sum/)**
 > 
 > 题意: TODO
 

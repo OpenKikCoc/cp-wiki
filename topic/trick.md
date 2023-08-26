@@ -2035,7 +2035,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 6114. 移动片段得到字符串](https://leetcode.cn/problems/move-pieces-to-obtain-a-string/)**
+> [!NOTE] **[LeetCode 2337. 移动片段得到字符串](https://leetcode.cn/problems/move-pieces-to-obtain-a-string/)**
 > 
 > 题意: 
 > 

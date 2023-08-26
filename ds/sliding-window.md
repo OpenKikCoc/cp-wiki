@@ -1323,7 +1323,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 6293. 统计好子数组的数目](https://leetcode.cn/problems/count-the-number-of-good-subarrays/)**
+> [!NOTE] **[LeetCode 2537. 统计好子数组的数目](https://leetcode.cn/problems/count-the-number-of-good-subarrays/)**
 > 
 > 题意: TODO
 
