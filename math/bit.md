@@ -1411,6 +1411,90 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2835. 使子序列的和等于目标的最少操作次数](https://leetcode.cn/problems/minimum-operations-to-form-subsequence-with-target-sum/) [TAG]**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思维
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 思考: 从输入入手
+    // - 它包含 非负 整数，且全部为 2 的幂 => 二进制不会有多个1
+    // - 个数不超过 1k
+    //
+    // 可以尽着原数组选择 剩下不够的就尝试拆分其他数
+    // => 拆分 意味着只能用原数的一部分值 其他情况下都要尽量求和
+    // 【ATTENTION】 
+    // 重要思想: 前面的某个部分一定可以和后面的拆分后组合 
+    // - 如果一系列 2 的幂次的和大于等于另一个 2 的幂次，且前面系列的每个数都小于这个幂次，那么前面部分的子序列一定能表示这个幂次
+    
+    using LL = long long;
+    const static int N = 40;
+    
+    int c[N];
+    
+    int minOperations(vector<int>& nums, int target) {
+        {
+            LL s = 0;
+            for (auto x : nums)
+                s += x;
+            if (s < target)
+                return -1;
+        }
+        
+        memset(c, 0, sizeof c);
+        for (auto x : nums)
+            for (int i = 0; i < 31; ++ i )
+                if (x >> i & 1) {
+                    c[i] ++ ;
+                    break;
+                }
+        // 所有输入都已经分类统计在 c 数组内
+        
+        LL res = 0, sum = 0;
+        for (int i = 0; i < 31; ++ i ) {
+            sum += (LL)c[i] * (1 << i);
+            if (!(target >> i & 1))
+                continue;
+            
+            sum -= 1 << i;
+            
+            if (sum < 0)
+                for (int j = i + 1; j < 31; ++ j )
+                    if (c[j]) {     // 一定可以找到
+                        res += j - i;
+                        c[j] -- , sum += 1 << j;
+                        break;
+                    }
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 思想
 
 > [!NOTE] **[LeetCode 201. 数字范围按位与](https://leetcode-cn.com/problems/bitwise-and-of-numbers-range/)**

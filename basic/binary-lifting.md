@@ -267,3 +267,80 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2836. 在传球游戏中最大化函数值](https://leetcode.cn/problems/maximize-value-of-function-in-a-ball-passing-game/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 标准倍增
+> 
+> 数据范围敏感度 要能想到使用倍增
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+using LL = long long;
+const static int N = 1e5 + 10, M = 35;
+
+// 倍增预处理
+// 每个节点的 i 的第 2^j 个祖先节点，以及从 i 到第 2^j 祖先的节点编号之和 (不包含第 2^j 的祖先)
+// [放在 class 外防止 TLE]
+int f[N][M];
+LL g[N][M];    
+
+class Solution {
+public:
+    vector<int> r;
+    int n;
+
+    long long getMaxFunctionValue(vector<int>& receiver, long long k) {
+        this->r = receiver;
+        this->n = r.size();
+        
+        k ++ ;  // ATTENTION: 恰好传 k 次
+        
+        {
+            // 标准倍增
+            for (int j = 0; j < M; ++ j )
+                for (int i = 0; i < n; ++ i )
+                    if (j == 0) {
+                        f[i][0] = r[i], g[i][0] = i;
+                    } else {
+                        f[i][j] = f[f[i][j - 1]][j - 1];
+                        g[i][j] = g[i][j - 1] + g[f[i][j - 1]][j - 1];
+                    }
+        }
+            
+        LL res = 0;
+        for (int i = 0; i < n; ++ i ) {
+            LL t = 0;
+            for (int j = M - 1, p = i; j >= 0; -- j )
+                if (k >> j & 1) {
+                    t += g[p][j];
+                    p = f[p][j];
+                }
+            res = max(res, t);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
