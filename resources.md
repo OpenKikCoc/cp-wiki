@@ -53,3 +53,5 @@ https://codingcompetitions.withgoogle.com/kickstart
 ## Others
 
 [byted.icu](http://byted.icu)
+
+Structured Thinking
