@@ -1236,7 +1236,41 @@ public:
 ##### **C++**
 
 ```cpp
-
+class Solution {
+public:
+    // 考虑 直接遍历+枚举右端点 or 二分答案都不可行
+    //
+    // 思考 按照值分类记录下标  双指针维护
+    const static int N = 1e5 + 10;
+    
+    vector<int> xss[N];
+    
+    int get(int x, int k) {
+        auto & xs = xss[x];
+        int n = xs.size(), ret = 0;
+        for (int i = 0, j = 0, del = 0; j < n; ++ j ) {
+            if (j)
+                del += xs[j] - xs[j - 1] - 1;
+            while (del > k && i < j) {
+                i ++ ;
+                del -= xs[i] - xs[i - 1] - 1;
+            }
+            ret = max(ret, j - i + 1);
+        }
+        return ret;
+    }
+    
+    int longestEqualSubarray(vector<int>& nums, int k) {
+        int n = nums.size();
+        for (int i = 0; i < n; ++ i )
+            xss[nums[i]].push_back(i);
+        
+        int res = 0;
+        for (int i = 1; i <= n; ++ i )
+            res = max(res, get(i, k));
+        return res;
+    }
+};
 ```
 
 ##### **Python**
