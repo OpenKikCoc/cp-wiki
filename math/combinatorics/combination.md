@@ -1665,7 +1665,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode TODO. 统计一个字符串的 k 子序列美丽值最大的数目](https://leetcode.cn/problems/count-k-subsequences-of-a-string-with-maximum-beauty/)**
+> [!NOTE] **[LeetCode 2842. 统计一个字符串的 k 子序列美丽值最大的数目](https://leetcode.cn/problems/count-k-subsequences-of-a-string-with-maximum-beauty/)**
 > 
 > 题意: TODO
 

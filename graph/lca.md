@@ -1919,3 +1919,116 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2846. 边权重均等查询](https://leetcode.cn/problems/minimum-edge-weight-equilibrium-queries-in-a-tree/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典LCA 结合数据范围
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+const static int N = 1e4 + 10, M = 2e4 + 10, K = 27;
+
+int n, m;
+int h[N], e[M], w[M], ne[M], idx;
+int depth[N], fa[N][16], cnt[N][K];
+int q[N];
+
+void init() {
+    memset(h, -1, sizeof h);
+    idx = 0;
+}
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+void bfs(int root) {
+    memset(depth, 0x3f, sizeof depth);
+    depth[0] = 0, depth[root] = 1;  // ATTENTION 0 node
+    int hh = 0, tt = 0;
+    q[0] = root;
+    
+    memset(cnt, 0, sizeof cnt);
+    
+    while (hh <= tt) {
+        int t = q[hh ++ ];
+        for (int i = h[t]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (depth[j] > depth[t] + 1) {
+                depth[j] = depth[t] + 1;
+                q[ ++ tt] = j;
+                
+                fa[j][0] = t;
+                for (int k = 1; k <= 15; ++ k )
+                    fa[j][k] = fa[fa[j][k - 1]][k - 1];
+                
+                // Special
+                for (int k = 1; k <= 26; ++ k )
+                    cnt[j][k] = cnt[t][k] + (k == w[i]);
+            }
+        }
+    }
+}
+
+int lca(int a, int b) {
+    if (depth[a] < depth[b])
+        swap(a, b);
+    for (int k = 15; k >= 0; -- k )
+        if (depth[fa[a][k]] >= depth[b])
+            a = fa[a][k];
+    if (a == b)
+        return a;
+    for (int k = 15; k >= 0; -- k )
+        if (fa[a][k] != fa[b][k])
+            a = fa[a][k], b = fa[b][k];
+    return fa[a][0];
+}
+
+class Solution {
+public:
+    // ATTENTION 1 <= w_i <= 26 数据范围较小 可以直接按照多维处理
+    
+    vector<int> minOperationsQueries(int n, vector<vector<int>>& edges, vector<vector<int>>& queries) {
+        init();
+        for (auto & e : edges) {
+            int a = e[0] + 1, b = e[1] + 1, c = e[2];
+            add(a, b, c), add(b, a, c);
+        }
+        bfs(1);
+        
+        vector<int> res;
+        for (auto & q : queries) {
+            int a = q[0] + 1, b = q[1] + 1;
+            int p = lca(a, b);
+            
+            
+            int mx = 0;
+            for (int k = 1; k <= 26; ++ k )
+                mx = max(mx, cnt[a][k] + cnt[b][k] - cnt[p][k] * 2);
+            res.push_back(depth[a] + depth[b] - depth[p] * 2 - mx);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

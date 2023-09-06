@@ -1536,6 +1536,63 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 2845. 统计趣味子数组的数目](https://leetcode.cn/problems/count-of-interesting-subarrays/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 前缀和思想 结合取模
+> 
+> 注意思考细节
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 1e5 + 10;
+    
+    vector<int> ns;
+    int n;
+    
+    long long countInterestingSubarrays(vector<int>& nums, int modulo, int k) {
+        this->ns = nums, this->n = ns.size();
+        
+        unordered_map<int, int> h;
+        h[0] = 1;
+        
+        LL res = 0;
+        for (int i = 1, s = 0; i <= n; ++ i ) {
+            if (nums[i - 1] % modulo == k)
+                s = (s + 1) % modulo;
+            
+            // s - tar = k (mod)
+            res += h[(s - k + modulo) % modulo];
+            h[s] ++ ;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
 
 ### 差分
 
