@@ -676,3 +676,116 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2851. 字符串转换](https://leetcode.cn/problems/string-transformation/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 矩阵快速幂应用 结合KMP
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+using LL = long long;
+const static int MOD = 1e9 + 7;
+
+// ------------------------------ Matrix Related ------------------------------
+struct Matrix {
+    int n, m;
+    LL A[2][2];
+    Matrix(int n, int m) : n(n), m(m) {
+        memset(A, 0, sizeof A);
+    }
+};
+
+Matrix operator*(Matrix & a, Matrix & b) {
+    Matrix c(a.n, b.m);
+    for (int i = 0; i < a.n; ++ i )
+        for (int j = 0; j < b.m; ++ j )
+            for (int k = 0; k < a.m; ++ k )
+                c.A[i][j] = (c.A[i][j] + a.A[i][k] * b.A[k][j] % MOD) % MOD;
+    return c;
+}
+
+Matrix power(Matrix & a, LL b) {
+    Matrix y(a.n, a.m);
+    for (int i = 0; i < y.n; ++ i )
+        y.A[i][i] = 1;
+    while (b) {
+        if (b & 1)
+            y = y * a;
+        a = a * a;
+        b >>= 1;
+    }
+    return y;
+}
+
+// ------------------------------ KMP Related ------------------------------
+vector<int> get_next(string p, int m) {
+    vector<int> nxt(m + 1);
+    for (int i = 2, j = 0; i <= m; i ++ ) {
+        while (j && p[i] != p[j + 1])
+            j = nxt[j];
+        if (p[i] == p[j + 1])
+            j ++ ;
+        nxt[i] = j;
+    }
+    return nxt;
+}
+
+int find_indexes(string text, string pattern) {
+    int n = text.size(), m = pattern.size();
+    string s = ' ' + text, p = ' ' + pattern;
+    auto nxt = get_next(p, m);
+    
+    int count = 0;
+    for (int i = 1, j = 0; i <= n; ++ i ) {
+        auto c = text[i];
+        while (j && s[i] != p[j + 1])
+            j = nxt[j];
+        if (s[i] == p[j + 1])
+            j ++ ;
+        if (j == m) {
+            count ++ ;
+            j = nxt[j];
+        }
+    }
+    return count;
+}
+
+class Solution {
+public:
+    // 矩阵推导: https://leetcode.cn/problems/string-transformation/solutions/2435348/kmp-ju-zhen-kuai-su-mi-you-hua-dp-by-end-vypf/
+    
+    int numberOfWays(string s, string t, long long k) {
+        int n = s.size();
+        // [ATTENTION] text 需要去掉 s 的最后一个字符
+        int c = find_indexes(s + s.substr(0, n - 1), t);
+        Matrix m = Matrix(2, 2);
+        m.A[0][0] = c - 1, m.A[0][1] = c;
+        m.A[1][0] = n - c, m.A[1][1] = n - 1 - c;
+        
+        m = power(m, k);
+        return m.A[0][s != t];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

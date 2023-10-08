@@ -5057,3 +5057,79 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2850. 将石头分散到网格图的最少移动次数](https://leetcode.cn/problems/minimum-moves-to-spread-stones-over-grid/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 状压 重点在于**状态定义**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 3*3 的图是固定的，就极大降低了复杂度，且保证有解
+    const static int N = 10, M = 1 << N;
+    
+    int d[N][N];
+    int f[M];
+    
+    int minimumMoves(vector<vector<int>>& grid) {
+        // 考虑枚举: 每一个格子从另一个位置搬过来一个方块，方案是否合法，合法的话记录开销
+        // 如何表示状态: 全排列 => no 因为可能是一对多
+        // 
+        // [ATTENTION] 分别记录缺少的位置 ls 与多出的位置 rs（重要：后者多出几个就作为几个位置）
+        // 则 ls.size() == rs.size() 随后即是一个匹配问题 => 状压
+        
+        vector<int> ls, rs;
+        memset(d, 0, sizeof d);
+        for (int i = 0; i < 9; ++ i ) {
+            int x1 = i / 3, y1 = i % 3;
+            for (int j = 0; j < 9; ++ j ) {
+                int x2 = j / 3, y2 = j % 3;
+                d[i][j] = abs(x1 - x2) + abs(y1 - y2);
+            }
+            if (grid[x1][y1] == 0)
+                ls.push_back(i);
+            if (grid[x1][y1] > 1)
+                for (int j = 0; j < grid[x1][y1] - 1; ++ j )    // ATTENTION
+                    rs.push_back(i);
+        }
+        
+        int n = ls.size();          // ls.size() == rs.size()
+        memset(f, 0x3f, sizeof f);  // +inf
+        f[0] = 0;
+        for (int i = 1; i < 1 << n; ++ i ) {
+            int tot = __builtin_popcount(i);
+            int a = ls[tot - 1];
+            for (int j = 0; j < n; ++ j )
+                if (i >> j & 1) {
+                    int b = rs[j];
+                    f[i] = min(f[i], f[i ^ (1 << j)] + d[a][b]);
+                }
+        }
+        
+        return f[(1 << n) - 1];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
