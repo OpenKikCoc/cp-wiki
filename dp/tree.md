@@ -2856,6 +2856,96 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2858. 可以到达每一个节点的最少边反转次数](https://leetcode.cn/problems/minimum-edge-reversals-so-every-node-is-reachable/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 将方向抽象为边权即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 显然是树形DP 考虑状态设计与转移
+    const static int N = 1e5 + 10, M = 2e5 + 10;
+    
+    int h[N], e[M], w[M], ne[M], idx;
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+    }
+    void add(int a, int b, int c) {
+        e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    int f[N], g[N];
+    
+    void dfs_d(int u, int fa) {
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (j == fa)
+                continue;
+            dfs_d(j, u);
+            f[u] += f[j] + (w[i] == 1);
+        }
+    }
+    void dfs_u(int u, int fa) {
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (j == fa)
+                continue;
+            //    向上的部分 + 本条边        +  父节点的其他子树
+            g[j] = g[u] + (w[i ^ 1] == 1) + (f[u] - f[j] - (w[i] == 1));
+            dfs_u(j, u);
+        }
+    }
+    
+    vector<int> minEdgeReversals(int n, vector<vector<int>>& edges) {
+        init();
+        
+        for (auto & e : edges) {
+            int a = e[0], b = e[1];
+            add(a, b, 0);
+            add(b, a, 1);   // ATTENTION 反转的边代价计为 1 则后续 DP 时即为统计某节点为根向外 1 的边的数量
+        }
+        
+        memset(f, 0, sizeof f);
+        memset(g, 0, sizeof g);
+        dfs_d(0, -1);
+        dfs_u(0, -1);
+        
+        // for (int i = 0; i < n; ++ i )
+        //     cout << " i = " << i << ' ' << f[i] << ' ' << g[i] << endl;
+        // cout << endl;
+        
+        vector<int> res;
+        for (int i = 0; i < n; ++ i )
+            res.push_back(f[i] + g[i]);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 进阶：树DP状态设计
 
 > [!NOTE] **[AcWing 323. 战略游戏](https://www.acwing.com/problem/content/description/325/)**

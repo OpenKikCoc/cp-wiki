@@ -59,3 +59,138 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2860. 让所有学生保持开心的分组方法数](https://leetcode.cn/problems/happy-students/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 有点思维
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 1e5 + 10;
+    
+    int countWays(vector<int>& nums) {
+        int n = nums.size();
+        sort(nums.begin(), nums.end());
+        
+        int res = 0;
+        // 枚举不被选择的左边界
+        for (int i = 0, max_choosed = -1; i < n; ++ i ) {
+            int choosed = i;
+            if (choosed < nums[i] && choosed > max_choosed)
+                res ++ ;
+            max_choosed = nums[i];
+        }
+        // 如果全部选中
+        if (n > nums.back())
+            res ++ ;
+        
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 2862. 完全子集的最大元素和](https://leetcode.cn/problems/maximum-element-sum-of-a-complete-subset-of-indices/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 容易想到按照因子的奇偶性对所有下标进行解析
+> 
+> 随后得到 st 值
+> 
+> 核心点在于：并非使用 st 记录奇偶性，而是记录对应奇偶的乘积 => 思考
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+using LL = long long;
+
+class Solution {
+public:
+    // 注意: 所谓的 '完全平方数' 是指下标，而非下标对应的值
+    //  => 不会有重复值，则只能使用 1-1e4 范围内的元素，且集合需要保证质数的幂次总和为偶数
+    //          后者必然符合: 质数大小不超过 25 个
+    //
+    // 还有个重要条件: 每对元素都需要能够两两完全平方 => 则一组内 所有元素的 st 必须完全一样
+    // 
+    // 【思考】ATTENTION: 不能比较二进制的 st，而应当计算乘积
+    
+    vector<int> ps = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97};
+    int cnt = 25;
+    
+    long long maximumSum(vector<int>& nums) {
+        int n = nums.size();
+        
+        LL res = 0;
+        unordered_map<int, LL> h;
+        for (int i = 1; i <= n; ++ i ) {
+            // int st = 0, x = i;
+            int st = 1, x = i;
+            for (int j = 0; j < 25; ++ j ) {
+                int c = 0, p = ps[j];
+                while (x % p == 0)
+                    x /= p, c ^= 1;
+                if (c)
+                    // st ^= 1 << j;
+                    st *= p;
+            }
+            if (x > 1) {
+                // 错误思维:
+                // 1. 只能自己成为一组的元素
+                // res = max(res, (LL)nums[i - 1]);    // ATTENTION: WA1, 需要单独考虑一下
+                // continue;
+                st *= x;
+            }
+            // 2. 可选的，能够与其他元素组合的元素
+            h[st] += nums[i - 1];
+        }
+
+        for (auto & [x, y] : h)
+            res = max(res, y);
+        
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

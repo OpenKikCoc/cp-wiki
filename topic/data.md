@@ -1695,3 +1695,66 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2857. 统计距离为 k 的点对](https://leetcode.cn/problems/count-pairs-of-points-with-distance-k/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 核心在于想到枚举思路
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    using PII = pair<int, int>;
+    
+    // 思考: 如何转化 x1^x2 + y1^y2 ?
+    //  直觉比较困难 考虑结合 k<=100
+    // =>   x1^x2 = 0, y1^y2 = k
+    //      x1^x2 = 1, y1^y2 = k - 1
+    //      ...
+    //      x1^x2 = k, y1^y2 = 0
+
+    int countPairs(vector<vector<int>>& coordinates, int k) {
+        int n = coordinates.size();
+        map<PII, int> S;
+        
+        int res = 0;
+        // 考虑 i<j 的顺序关系，需要外层循环枚举元素，内层枚举异或值
+        for (int i = 0; i < n; ++ i ) {
+            // 枚举 x 的异或值
+            int x1 = coordinates[i][0], y1 = coordinates[i][1];
+            for (int l = 0; l <= k; ++ l ) {
+                int r = k - l;
+                PII other = {x1 ^ l, y1 ^ r};
+                if (S.count(other))
+                    res += S[other];
+            }
+            // 边遍历边维护
+            S[{x1, y1}] ++ ;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
