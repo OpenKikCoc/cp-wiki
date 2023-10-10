@@ -2,6 +2,8 @@
 
 ## Competitive Programming
 
+[clisy.by](https://clist.by)
+
 [cp-algorithms](https://cp-algorithms.com)
 
 [算法学习笔记（目录） by Pecco](https://zhuanlan.zhihu.com/p/105467597)

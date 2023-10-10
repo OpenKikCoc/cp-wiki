@@ -1605,3 +1605,101 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2866. 美丽塔 II](https://leetcode.cn/problems/beautiful-towers-ii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典前后缀分解 推导思路
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 考虑枚举中心位置
+    // 则 对于一个具体的中心位置 i 其高度必然为 maxHeight[i]
+    //   左右延展时必须小于等于当前值 且小于等于历史最小值 => 显然不能暴力计算
+    // 考虑前后缀分解 => 这样答案很好求
+    // 问题在于前后缀求解什么
+    //      => l: 类似 LIS 的总和, 当高度增加时很好处理 高度减少时需要回退 => 单调栈
+    
+    using LL = long long;
+    using PII = pair<int, int>;
+    const static int N = 1e5 + 10;
+    
+    LL l[N], r[N];
+    
+    long long maximumSumOfHeights(vector<int>& maxHeights) {
+        int n = maxHeights.size();
+        memset(l, 0, sizeof l), memset(r, 0, sizeof r);
+        {
+            stack<PII> st;  // [height, cnt]
+            LL sum = 0;
+            for (int i = 1; i <= n; ++ i ) {
+                int x = maxHeights[i - 1];
+                sum += x;
+                
+                PII t = {x, 1};
+                while (st.size()) {
+                    auto [height, cnt] = st.top();
+                    if (height < t.first)
+                        break;
+                    st.pop();
+                    
+                    int diff = height - x;
+                    sum -= (LL)diff * cnt;
+                    t.second += cnt;
+                }
+                st.push(t);
+                l[i] = sum;
+            }
+        }
+        {
+            stack<PII> st;
+            LL sum = 0;
+            for (int i = n; i >= 1; -- i ) {
+                int x = maxHeights[i - 1];
+                sum += x;
+                
+                PII t = {x, 1};
+                while (st.size()) {
+                    auto [height, cnt] = st.top();
+                    if (height < t.first)
+                        break;
+                    st.pop();
+                    
+                    int diff = height - x;
+                    sum -= (LL)diff * cnt;
+                    t.second += cnt;
+                }
+                st.push(t);
+                r[i] = sum;
+            }
+        }
+        LL res = 0;
+        for (int i = 1; i <= n; ++ i )
+            res = max(res, l[i] + r[i + 1]);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
