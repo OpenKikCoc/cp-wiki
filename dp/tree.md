@@ -1741,6 +1741,89 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2872. 可以被 K 整除连通块的最大数目](https://leetcode.cn/problems/maximum-number-of-k-divisible-components/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典树形 DP
+> 
+> 一开始在想是否有多种构造方案，实际上可以证明对于 "最大数目" 的情况方案是固定的
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 思考: 如果某个边可以割，那割完之后的左右两侧一定需要上k整数倍，这样两侧才能独自一体或继续被割
+    //   题目保证values之和可以被k整除 则一定有解
+    // 1. dfs 求以某个节点为根的联通块数量及模数 返回根节点的数据即可
+    // 2. 问题在于 不同的根结果是否不同？ ==> 结论是不会 【重点是证明】
+    
+    const static int N = 3e4 + 10, M = 6e4 + 10;
+    
+    // ---------------------- graph ----------------------
+    int h[N], e[M], ne[M], idx;
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+    }
+    void add(int a, int b) {
+        e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    // ---------------------- dfs ----------------------
+    int f[N], g[N]; // 数量 模数
+    
+    void dfs(int u, int fa) {
+        f[u] = 0, g[u] = vs[u] % k;
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (j == fa)
+                continue;
+            dfs(j, u);
+            f[u] += f[j], g[u] = (g[u] + g[j]) % k;
+        }
+        if (!g[u])
+            f[u] ++ ;
+    }
+    
+    int n, k;
+    vector<int> vs;
+    
+    int maxKDivisibleComponents(int n, vector<vector<int>>& edges, vector<int>& values, int k) {
+        init();
+        this->n = n, this->k = k, this->vs = values;
+        for (auto & e : edges) {
+            int a = e[0], b = e[1];
+            add(a, b), add(b, a);
+        }
+        
+        dfs(0, -1);
+        
+        return f[0];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 
 ### 换根
 

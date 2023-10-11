@@ -1296,3 +1296,119 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2876. 有向图访问计数](https://leetcode.cn/problems/count-visited-nodes-in-a-directed-graph/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 标准 scc + topo sorting
+> 
+> 注意 **二次建图的方向与遍历顺序**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 考虑有向图 可能有scc 且可能所有节点非联通的
+    //   显然缩点跑dag即可
+    const static int N = 1e5 + 10, M = 2e5 + 10;
+    
+    int h1[N], h2[N], e[M], ne[M], idx;
+    void init() {
+        memset(h1, -1, sizeof h1), memset(h2, -1, sizeof h2);
+        idx = 0;
+    }
+    void add(int h[], int a, int b) {
+        e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    int dfn[N], low[N], timestamp;
+    int stk[N], top;
+    bool in_stk[N];
+    int id[N], scc_cnt, sz[N];
+    int dout[N];
+    
+    void tarjan(int u) {
+        dfn[u] = low[u] = ++ timestamp;
+        stk[ ++ top] = u, in_stk[u] = true;
+        for (int i = h1[u]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (!dfn[j]) {
+                tarjan(j);
+                low[u] = min(low[u], low[j]);
+            } else if (in_stk[j])
+                low[u] = min(low[u], dfn[j]);
+        }
+        
+        if (dfn[u] == low[u]) {
+            ++ scc_cnt;
+            int y;
+            do {
+                y = stk[top -- ];
+                in_stk[y] = false;
+                id[y] = scc_cnt;
+                sz[scc_cnt] ++ ;
+            } while (y != u);
+        }
+    }
+    
+    int f[N];
+    
+    vector<int> countVisitedNodes(vector<int>& edges) {
+        init();
+        
+        int n = edges.size();
+        for (int i = 0; i < n; ++ i )
+            add(h1, i, edges[i]);
+        
+        for (int i = 0; i < n; ++ i )
+            if (!dfn[i])
+                tarjan(i);
+        
+        for (int i = 0; i < n; ++ i )
+            for (int j = h1[i]; ~j; j = ne[j]) {
+                int k = e[j];
+                int a = id[i], b = id[k];
+                if (a != b)
+                    add(h2, a, b);  // ATTENTION 注意遍历顺序与建图方向的关系 这里不需要反向图
+            }
+        
+        memset(f, 0, sizeof f);
+        // 注意顺序 拓扑序逆序本质就是scc序
+        for (int i = 1; i <= scc_cnt; ++ i ) {
+            if (!f[i]) {
+                f[i] = sz[i];
+            }
+            for (int j = h2[i]; ~j; j = ne[j]) {
+                int k = e[j];
+                f[i] += f[k];
+            }
+        }
+        
+        vector<int> res;
+        for (int i = 0; i < n; ++ i )
+            res.push_back(f[id[i]]);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
