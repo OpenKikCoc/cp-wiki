@@ -1216,3 +1216,74 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2896. 执行操作使两个字符串相等](https://leetcode.cn/problems/apply-operations-to-make-two-strings-equal/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思维 DP 状态定义与转移
+> 
+> 反复做
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 550;
+
+    int f[N];
+
+    int minOperations(string s1, string s2, int x) {
+        int n = s1.size();
+
+        vector<int> xs;
+        for (int i = 0; i < n; ++ i )
+            if (s1[i] != s2[i])
+                xs.push_back(i);
+        int m = xs.size();
+        // 无论如何操作 s1的1的奇偶性不变
+        // 如果有奇数个位置不同 显然无法转变
+        if (m & 1)
+            return -1;
+        
+        // ATTENTION 状态定义与转移
+        //      => 考虑前i个位置中 有j个还未处理的情况下 最小成本
+        //      => ATTENTION 可以任务 j<=1 因为如果 j>1 一定可以通过第一种操作消除一对
+        memset(f, 0, sizeof f);
+        for (int i = 1; i <= m; ++ i ) {
+            f[i] = f[i - 1];
+
+            // 使用第一种操作
+            if (i % 2 == 0) // 偶数情况
+                f[i] = f[i - 1] + x;
+            
+            // 使用第二种操作
+            //  ATTENTION: 操作的两个位置中间一定不包含其他需要操作的位置
+            //          否则可以置换为两次第二种操作 并降低开销
+            if (i > 1)
+                f[i] = min(f[i], f[i - 2] + xs[i - 1] - xs[i - 2]);
+        }
+        return f[m];    // m 一定是偶数
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

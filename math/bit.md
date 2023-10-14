@@ -2040,3 +2040,66 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2897. 对数组执行操作使平方和最大](https://leetcode.cn/problems/apply-operations-on-array-to-maximize-sum-of-squares/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 典型按 bit 拆分
+> 
+> 思维与推导
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 1e5 + 10, M = 32, MOD = 1e9 + 7;
+
+    // ATTENTION 对于某一个bit位 操作前后的1的数量是不变的
+    //      => 考虑分 bit 统计
+    
+    int c[M];
+
+    int maxSum(vector<int>& nums, int k) {
+        int n = nums.size();
+        for (auto x : nums)
+            for (int j = 0; j < 32; ++ j )
+                c[j] += (x >> j) & 1;
+        
+        LL res = 0;
+        while (k -- ) {
+            // 每次都挑
+            // 思考，为什么能保证这样不会多计算 => k<=nums.size
+            LL t = 0;
+            for (int j = 0; j < 32; ++ j )
+                if (c[j]) {
+                    c[j] -- ;
+                    t += 1 << j;
+                }
+            res = (res + t * t % MOD) % MOD;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
