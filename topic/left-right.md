@@ -1703,3 +1703,70 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2906. 构造乘积矩阵](https://leetcode.cn/problems/construct-product-matrix/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 前后缀分解 重点在想到
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 初看认为是求逆元
+    // 实际上 只需要前后缀分解即可...
+    using LL = long long;
+    const static int N = 1e5 + 10, MOD = 12345;
+
+    LL l[N], r[N];
+    
+    vector<vector<int>> constructProductMatrix(vector<vector<int>>& grid) {
+        int n = grid.size(), m = grid[0].size();
+        
+        memset(l, 0, sizeof l), memset(r, 0, sizeof r);
+        
+        for (int i = 0; i < n; ++ i )
+            for (int j = 0; j < m; ++ j ) {
+                int x = grid[i][j];
+                int idx = i * m + j;
+                l[idx] = (idx ? l[idx - 1] : 1) * x % MOD;
+            }
+        for (int i = n - 1; i >= 0; -- i )
+            for (int j = m - 1; j >= 0; -- j ) {
+                int x = grid[i][j];
+                int idx = i * m + j;
+                r[idx] = (idx < n * m - 1 ? r[idx + 1] : 1) * x % MOD;
+            }
+        
+        vector<vector<int>> res(n, vector<int>(m));
+        for (int i = 0; i < n; ++ i )
+            for (int j = 0; j < m; ++ j ) {
+                LL idx = i * m + j;
+                LL t = (idx ? l[idx - 1] : 1) * (idx < n * m - 1 ? r[idx + 1] : 1) % MOD;
+                res[i][j] = t;
+            }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
