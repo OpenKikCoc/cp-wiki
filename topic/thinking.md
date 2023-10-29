@@ -1,5 +1,7 @@
 # 习题
 
+## 思维
+
 > [!NOTE] **[LeetCode 2790. 长度递增组的最大数目](https://leetcode.cn/problems/maximum-number-of-groups-with-increasing-length/)** [TAG]
 > 
 > 题意: TODO
@@ -177,6 +179,81 @@ public:
         for (auto & [x, y] : h)
             res = max(res, y);
         
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+## 计算复杂度分析
+
+> [!NOTE] **[LeetCode 2910. 合法分组的最少组数](https://leetcode.cn/problems/minimum-number-of-groups-to-create-a-valid-assignment/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 枚举的计算复杂度分析
+> 
+> > 设哈希表的大小为 m 哈希表中最小的 value 为 k
+> > 
+> > 由于所有 value 之和为 n 所以 $km \le n$
+> > 
+> > 而循环次数又至多为 km 所以时间复杂度为 $\mathcal{O}(n)$
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    vector<int> xs;
+
+    // 按照某个 sz 分组能否得到可行解
+    // ATTENTION sz 是下界，可以出现个数为 sz+1 的情况
+    bool check(int sz) {
+        for (auto x : xs)
+            if (x % sz > x / sz)    // ATTENTION 判断规则 (可以等 相当于数量为sz+1)
+                return false;
+        return true;
+    }
+
+    int minGroupsForValidAssignment(vector<int>& nums) {
+        // 不关心值具体是啥 只关心出现次数
+        unordered_map<int, int> h;
+        for (auto x : nums)
+            h[x] ++ ;
+        
+        int minv = 1e9;
+        xs.clear();
+        for (auto [k, v] : h)
+            xs.push_back(v), minv = min(minv, v);
+        
+        // 已知多个 "次数" 如何分配能够得到可行组
+        // 考虑枚举某个分组状况下(大小) 是否能构造出合理方案
+        int p;
+        for (p = minv; p >= 2; -- p )
+            if (check(p))
+                break;
+        
+        int res = 0;
+        for (auto x : xs)
+            res += (x + p) / (p + 1);   // ATTENTION 向上取整
         return res;
     }
 };
