@@ -1176,6 +1176,66 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2919. 使数组变美的最小增量运算数](https://leetcode.cn/problems/minimum-increment-operations-to-make-array-beautiful/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 状态定义与转移
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 思维: 快速假定结论 mod3 的所有位置作为发挥作用的位置 求最少需要加多少 => WA
+    // 考虑 dp f[i] 表示考虑前i个位置[且合法, 【第i个要放】] 的最小开销
+    using LL = long long;
+    const static int N = 1e5 + 10;
+    
+    LL f[N];    // ATTENTION 转移公式
+    
+    LL get_min(int a, int b, int c) {
+        a = max(a, 0), b = max(b, 0), c = max(c, 0);
+        return min(min(f[a], f[b]), f[c]);
+    }
+    
+    long long minIncrementOperations(vector<int>& nums, int k) {
+        memset(f, 0x3f, sizeof f);
+        f[0] = 0;
+        
+        int n = nums.size();
+        for (int i = 1; i <= n; ++ i ) {
+            bool flag = nums[i - 1] >= k;
+            if (flag)
+                f[i] = get_min(i - 3, i - 2, i - 1);
+            else
+                f[i] = get_min(i - 3, i - 2, i - 1) + k - nums[i - 1];
+        }
+        
+        return get_min(n - 2, n - 1, n);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 复杂线性
 
 > [!NOTE] **[LeetCode 689. 三个无重叠子数组的最大和](https://leetcode-cn.com/problems/maximum-sum-of-3-non-overlapping-subarrays/)**

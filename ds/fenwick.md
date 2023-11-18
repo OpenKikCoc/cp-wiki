@@ -2279,3 +2279,119 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2926. 平衡子序列的最大和](https://leetcode.cn/problems/maximum-balanced-subsequence-sum/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 暴力优化 + BIT 维护区间最值
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 原题转换: nums[i_j] - i_j >= nums[i_j-1] - i_j-1
+    //          nums[y]-y >= nums[x]-x => 这样 y 才能接在 x 后面
+    //    则 可以直接计算偏移量
+    
+    using LL = long long;
+    using PII = pair<int, int>;
+    
+    const static int N = 1e5 + 10;
+    
+    // -------------------------- begin --------------------------
+    vector<int> t;
+    int find(int x) {
+        return lower_bound(t.begin(), t.end(), x) - t.begin();
+    }
+    
+    LL tr[N], w[N];
+    int lowbit(int x) {
+        return x & -x;
+    }
+    void modify(int x, LL y) {
+        w[x] = max(w[x], y);
+        for (int i = x; i < N; i += lowbit(i)) {
+            tr[i] = max(tr[i], y);
+        }
+    }
+    LL query(int l, int r) {
+        LL ret = 0;
+        for (; l <= r; ) {
+            ret = max(ret, w[r]);
+            for ( -- r ; r >= l + lowbit(r); r -= lowbit(r))
+                ret = max(ret, tr[r]);
+        }
+        return ret;
+    }
+    
+    // --------------------------- end ---------------------------
+    
+    LL f[N];
+    
+    long long maxBalancedSubsequenceSum(vector<int>& nums) {
+        int n = nums.size();
+        
+        {
+            // 离散化
+            this->t.clear();
+            for (int i = 0; i < n; ++ i )
+                t.push_back(nums[i] - i);
+            
+            sort(t.begin(), t.end());
+            t.erase(unique(t.begin(), t.end()), t.end());
+        }
+        
+        vector<PII> xs;     // 计算偏移量
+        for (int i = 0; i < n; ++ i )
+            // xs.push_back({nums[i] - i, nums[i]});
+            xs.push_back({find(nums[i] - i) + 1, nums[i]}); // +1 方便 BIT 维护
+        
+        LL res = -1e15;
+        // 状态转移
+        /*
+        for (int i = 0; i < n; ++ i ) {
+            f[i] = 0;
+            for (int j = 0; j < i; ++ j ) {
+                if (xs[j].first <= xs[i].first) {
+                    f[i] = max(f[i], f[j]);
+                }
+            }
+            f[i] += nums[i];
+            res = max(res, f[i]);
+        }
+        */
+        // 前面本质上是从已有的一堆里面，找到一个符合条件的最大的
+        // 显然可以 bit，但是需要将 xs[i].first = nums[i]-i 进行离散化操作   #L34
+        memset(tr, 0xcf, sizeof tr), memset(w, 0xcf, sizeof w);    // ATTENTION: -INF
+        for (int i = 0; i < n; ++ i ) {
+            auto [x, y] = xs[i];
+            LL v = query(1, x);
+            res = max(res, v + y);
+            modify(x, v + y);
+        }
+        
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

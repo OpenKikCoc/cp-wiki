@@ -1758,3 +1758,97 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2920. 收集所有金币可获得的最大积分](https://leetcode.cn/problems/maximum-points-after-collecting-coins-from-all-nodes/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 树形 dp + 根据数据范围求解
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 题意: 要想收集节点上的金币，必须先收集该节点的祖先节点上的金币,
+    // => 则某一个节点的当前值计算应当与这条链上的选择方案相关
+    // 注意值域 1e4 则可以缓存每个值被压多少次
+    
+    using PII = pair<int, int>;
+    const static int N = 1e5 + 10, M = 2e5 + 10;
+    
+    int h[N], e[M], ne[M], idx;
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+    }
+    void add(int a, int b) {
+        e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    int k;
+    vector<int> cs;
+    // map<PII, int> hash;
+    int hash[N][18];    // ATTENTION 追加 c<17 的判断条件后仍然超时，考虑将 map 转为静态树组 => AC
+    
+    int dfs(int u, int fa, int c) {
+        // if (hash.count({u, c}))
+        //     return hash[{u, c}];
+        if (hash[u][c] != -1)
+            return hash[u][c];
+        
+        int original = cs[u];
+        // RE: Line 28: Char 32: runtime error: shift exponent 32 is too large for 32-bit type 'int' (solution.cpp)
+        // => 把 c 缩小
+        // c = min(c, 31);
+        //
+        // => TLE
+        // 考虑数据范围，在 c > 17 时直接不进入后续递归
+        int updated = original >> c;
+        
+        int a = updated - k, b = updated >> 1;
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (j == fa)
+                continue;
+            a += dfs(j, u, c);
+            
+            // ATTENTION: 追加 c<17 的判断条件
+            if (c < 17)
+                b += dfs(j, u, c + 1);
+        }
+        // return hash[{u, c}] = max(a, b);
+        return hash[u][c] = max(a, b);
+    }
+    
+    int maximumPoints(vector<vector<int>>& edges, vector<int>& coins, int k) {
+        init();
+        this->k = k, this->cs = coins;
+        for (auto & e : edges)
+            add(e[0], e[1]), add(e[1], e[0]);
+        
+        memset(hash, -1, sizeof hash);
+
+        return dfs(0, -1, 0);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
