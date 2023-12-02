@@ -1779,6 +1779,106 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2954. 统计感冒序列的数目](https://leetcode.cn/problems/count-the-number-of-infection-sequences/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 组合计数应用题 注意去重的推导和实现思路
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+using LL = long long;
+const static int N = 1e5 + 10, MOD = 1e9 + 7;
+
+LL qpow(LL a, LL b) {
+    LL ret = 1;
+    while (b) {
+        if (b & 1)
+            ret = ret * a % MOD;
+        a = a * a % MOD;
+        b >>= 1;
+    }
+    return ret;
+}
+
+LL f[N], g[N];  // 阶乘 & 逆元
+bool flag = false;
+void init() {
+    if (flag)
+        return;
+    flag = true;
+    f[0] = g[0] = 1;
+    for (int i = 1; i < N; ++ i ) {
+        f[i] = f[i - 1] * i % MOD;
+        g[i] = g[i - 1] * qpow(i, MOD - 2) % MOD;
+    }
+}
+
+class Solution {
+public:
+    // 直观看没有太好的思路 考虑尝试数学解法 [组合数学]
+    //
+    // ATTENTION 假设连续 0 的数量为 k
+    // - 如果只有一边都可以发生传染，那么只有一种传染序列
+    // - 如果两边都可以，那么每一次都可以选择从左或从右传染，除了最后一次，因此有 2^{k−1} 种序列
+    //
+    // 则 分区间统计累乘即可 ==> 实际上会有重复情况，因为在不同区间里也只能一次选其中的一个
+    // ==> 重复元素排列问题 【计算细节】
+    
+    LL comb(int a, int b) {
+        return f[a] * g[a - b] % MOD * g[b] % MOD;
+    }
+    
+    int numberOfSequence(int n, vector<int>& sick) {
+        init();
+        sort(sick.begin(), sick.end());
+        sick.push_back(n);  // 边界哨兵
+
+        LL res = 1;
+        int tot = 0, last = -1;
+        for (auto x : sick) {
+            int k = x - last - 1;
+            if (k > 0) {
+                LL t = 0;
+                if (last == -1 || x == n) {
+                    // 特殊情况 只能从某一个方向转移过来
+                    t = 1;
+                } else {
+                    // 可以从 左/右 转移过来 => 2^(k-1)
+                    t = qpow(2, k - 1);
+                }
+                // 【ATTENTION: 计算逻辑】
+                // 在总长为 tot+len 的序列中，选择 len 个位置填充 (内部的填充方法有 t 种)
+                res = res * comb(tot + k, k) % MOD * t % MOD;
+            }
+            last = x, tot += k;
+        }
+
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 排列数
 
 > [!NOTE] **[AcWing 1309. 车的放置](https://www.acwing.com/problem/content/1311/)** [TAG]

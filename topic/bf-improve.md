@@ -1,5 +1,7 @@
 ## 习题
 
+### 数学分析
+
 > [!NOTE] **[Codeforces The Brand New Function](http://codeforces.com/problemset/problem/243/A)**
 > 
 > 题意: TODO
@@ -151,6 +153,262 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2791. 树中可以形成回文的路径数](https://leetcode.cn/problems/count-paths-that-can-form-a-palindrome-in-a-tree/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典的暴力优化思路
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 关键点：可以重新排列
+    // 则 只需要关心两个点之间的不同字符的奇偶性即可
+    //
+    // 又因为 1e5 数据范围显然不能两两枚举
+    // 考虑直接统计从根到某个节点的所有字符的奇偶状态 并全局计数
+    // 最后遍历节点即可
+    using LL = long long;
+    const static int N = 1e5 + 10, M = N;
+    
+    int h[N], e[M], w[M], ne[M], idx;
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+    }
+    void add(int a, int b, int c) {
+        e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    unordered_map<int, int> count;
+    int st[N];
+    void dfs(int u, int s) {
+        st[u] = s;
+        count[s] ++ ;
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i];
+            int t = w[i];
+            dfs(j, s ^ (1 << t));
+        }
+    }
+    
+    long long countPalindromePaths(vector<int>& parent, string s) {
+        init();
+        int n = parent.size();
+        for (int i = 1; i < n; ++ i )
+            add(parent[i], i, s[i] - 'a');
+        
+        count.clear();
+        memset(st, 0, sizeof st);
+        dfs(0, 0);
+        
+        LL res = 0;
+        for (int i = 0; i < n; ++ i ) {
+            int a = st[i];
+            // 奇偶性相同的情况 要排除自身
+            res = res + ((LL)count[a] - 1);
+            // 奇偶性不同的情况
+            for (int j = 0; j < 26; ++ j ) {
+                int b = a ^ (1 << j);
+                res = res + (LL)count[b];
+            }
+        }
+        return res / 2;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 2949. 统计美丽子字符串 II](https://leetcode.cn/problems/count-beautiful-substrings-ii/) [TAG]**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 难点在于思路梳理 以及索引组织
+> 
+> 结合数学分析推导最高效的做法
+> 
+> 重复做
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 基础 O(n*sqrt(k))**
+
+```cpp
+class Solution {
+public:
+    // 考虑记录元音字母的数量及对应的位置 则辅音可求
+    //
+    // 考虑: 以每一个位置为结尾 往前数能找到的合法区间
+    //   => 问题在于 合法区间怎么确定
+    //  假定 [i, j] 合法, 则
+    //  - 长度为偶数 j-i+1 % 2 == 0                      => 下标奇偶分类可解 => 在后面2.的条件下不需要分类
+    //  - 元音个数与偶数相同
+    //       -> 1. 按个数是一半 则需要遍历校验
+    //       -> 2. 按个数相同【记录diff 取模】 可以快速找到所有符合要求的 再判断下能否整除就好做了
+    
+    using LL = long long;
+    const static int N = 5e4 + 10;
+    
+    // unordered_set<char> S = {'a', 'e', 'i', 'o', 'u'};
+    bool check(char c) {
+        return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u';
+    }
+    
+    // vector<LL> f[N + N];                         // 某个diff下，下标是多少
+    unordered_map<int, unordered_map<int, int>> f;  // 某个diff下，记录元音个数对k取模的次数【后面推导】
+                                                    // unordered_map<int, int> f[N + N] => 会超时 改成两层嵌套
+    int sum[N];
+    
+    long long beautifulSubstrings(string s, int k) {
+        // for (int i = 0; i < N + N; ++ i )
+        //     f[i].clear();
+        // f[0 + N].push_back(0);
+        f[0][0 % k] = 1;
+        memset(sum, 0, sizeof sum);
+        
+        vector<int> wd2; // w divide 2
+        for (int i = 0; i < k; ++ i ) {    // ATTENTION: 考虑只枚举到 k, 但是需要从 0 开始枚举
+            if (i * i % k == 0)
+                wd2.push_back(i);
+        }
+        
+        LL res = 0;
+        int n = s.size();
+        for (int i = 1, d = 0; i <= n; ++ i ) {
+            // bool flag = S.count(s[i - 1]);
+            bool flag = check(s[i - 1]);
+            d += flag ? 1 : -1;
+            sum[i] = sum[i - 1] + flag;
+            
+            // xs 中都是 diff 相同的，满足个数与长度要求
+            auto & xs = f[d];
+            
+            // 【ATTENTION 循环对于该数据范围太过重型 考虑是否有更快速索引办法】
+            // for (auto x : xs) {
+            //     // l: x+1, r: i
+            //     int w = (i - x) / 2;
+            //     if (w * w % k == 0)
+            //         res ++ ;
+            // }
+            //
+            // 考虑 w*w%k == 0    <=> (w/2%k * w/2%k) % k == 0
+            //                    ==> 思考【w/2必然是k的倍数?】不 => 因为 /2 的影响
+            //                    ==> 又因为k不定 求逆元比较困难 考虑直接枚举可行的 w/2 记为wd2
+            // 此时: 如果使用 i-2*x 去枚举左端点，复杂度仍然很高
+            //
+            // 考虑如何避免枚举:    重新定义 w = s[r]-s[l] 其也是长度的一半 同时 w*w%k == 0 (w%k==0)
+            //                    则 所有可行的l 都能使得 (s[l]-s[r])%k == 0
+            //                    => s[l]%k == s[r]%k
+            //                    => 同余 则 f 的第二维按照模数维护即可
+            for (auto x : wd2) {
+                int t = (sum[i] - x + k) % k;
+                if (xs.count(t))
+                    res += xs[t];
+            }
+            
+            xs[sum[i] % k] ++ ;
+        }
+        
+        return res;
+    }
+};
+```
+
+##### **C++ 数学 O(n)**
+
+```cpp
+class Solution {
+public:
+    // 前面已经推导知: 假定长度为 w, 有 (w/2)*(w/2)%k == 0
+    //
+    // 0x3f 的思路:  不是转换逆元, 而是把 /2 提取出来 => w*w % (4*k) == 0
+    //  TRICK  => 数学思维: 假定 K=4*k, 而 K 由 p1^e1 * p2^e2 ... 组成
+    //                 则: w = p1^((e1+1)/2) * ...  【幂次除二上取整即可】
+    //
+    // 接下来 w 必须是新的 k 的倍数
+    //        (r - l) % k == 0 => r % k == l % k
+    // 按照下标进行分组计数   且需要保证 diff 相同(使用状态压缩实现)
+    //
+    // 代码实现: 把 {下标分组, 状态表示} 合并成一维表示了
+    
+    using LL = long long;
+    const static int N = 5e4 + 10;
+    
+    int p_sqrt(int x) { // x 不会超过 4000
+        int res = 1;
+        for (int i = 2; i * i <= x; ++ i ) {
+            // 计算 x 包含多少个 i 的幂次
+            int t = 0;
+            while (x % i == 0)
+                x /= i, t ++ ;
+            
+            for (int j = 0; j < (t + 1) / 2; ++ j )
+                res *= i;
+        }
+        if (x > 1)
+            res *= x;   // 细节
+        return res;
+    }
+
+    //                              a + e + i + o + u
+    constexpr static int AEIOU_MASK = (1 << 0) + (1 << 4) + (1 << 8) + (1 << 14) + (1 << 20);
+    
+    long long beautifulSubstrings(string s, int k) {
+        int n = s.size();
+        k = p_sqrt(k * 4);
+        
+        unordered_map<int, int> f;
+        LL res = 0, sum = N;        // sum=N而非sum=0 是因为其值可能为负数 为了能用int表示而做的偏移
+        f[0 << 17 | sum] ++ ;       // 插入 f[{0, N}] N是偏移量
+        for (int i = 1; i <= n; ++ i ) {
+            int bit = (AEIOU_MASK >> (s[i - 1] - 'a')) & 1;
+            sum += bit ? 1 : -1;
+            res += f[(i % k) << 17 | sum] ++ ;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 双指针
 
 > [!NOTE] **[LeetCode 1521. 找到最接近目标值的函数值](https://leetcode-cn.com/problems/find-a-value-of-a-mysterious-function-closest-to-target/)** [TAG]
 > 
@@ -314,127 +572,55 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2257. 统计网格图中没有被保卫的格子数](https://leetcode.cn/problems/count-unguarded-cells-in-the-grid/)**
+> [!NOTE] **[LeetCode 2831. 找出最长等值子数组](https://leetcode.cn/problems/find-the-longest-equal-subarray/)**
 > 
 > 题意: TODO
 
 > [!TIP] **思路**
 > 
-> 复杂度可以接受直接把坐标存下来再二分，复杂度 $O(nmlog)$
+> 经典暴力优化
 > 
-> 实际上，我们可以直接用 bit 位表示某个位置的 `上下左右` 是否有守卫，进而把时间复杂度优化到 $O(nm)$
+> 按数值对下标分类 随后同向双指针
 
 <details>
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++ 二分**
+##### **C++**
 
 ```cpp
 class Solution {
 public:
-    // m * n <= 1e5
-    using PII = pair<int, int>;
+    // 考虑 直接遍历+枚举右端点 or 二分答案都不可行
+    //
+    // 思考 按照值分类记录下标  双指针维护
+    const static int N = 1e5 + 10;
     
-    vector<vector<bool>> st;
+    vector<int> xss[N];
     
-    int countUnguarded(int m, int n, vector<vector<int>>& guards, vector<vector<int>>& walls) {
-        this->st = vector<vector<bool>>(m, vector<bool>(n));
-        vector<vector<PII>> r(m), c(n);
-        for (int i = 0; i < m; ++ i )
-            r[i].push_back({-1, 0}), r[i].push_back({n, 0});
-        for (int i = 0; i < n; ++ i )
-            c[i].push_back({-1, 0}), c[i].push_back({m, 0});
-        for (auto & g : guards) {
-            int x = g[0], y = g[1];
-            st[x][y] = true;
-            r[x].push_back({y, 1});
-            c[y].push_back({x, 1});
-        }
-        for (auto & w : walls) {
-            int x= w[0], y = w[1];
-            st[x][y] = true;
-            r[x].push_back({y, -1});
-            c[y].push_back({x, -1});
-        }
-        for (int i = 0; i < m; ++ i )
-            sort(r[i].begin(), r[i].end());
-        for (int i = 0; i < n; ++ i )
-            sort(c[i].begin(), c[i].end());
-        
-        int res = 0;
-        for (int i = 0; i < m; ++ i )
-            for (int j = 0; j < n; ++ j ) {
-                if (st[i][j])
-                    continue;
-                // cout << " I = " << i << " j = " << j << endl;
-                
-                {
-                    auto it = lower_bound(r[i].begin(), r[i].end(), PII{j, 0});
-                    if ((*it).second == 1) {
-                        continue;
-                    }
-                    it -- ;
-                    if ((*it).second == 1) {
-                        continue;
-                    }
-                }
-                {
-                    auto it = lower_bound(c[j].begin(), c[j].end(), PII{i, 0});
-                    if ((*it).second == 1) {
-                        continue;
-                    }
-                    it -- ;
-                    if ((*it).second == 1) {
-                        continue;
-                    }
-                }
-                res ++ ;
+    int get(int x, int k) {
+        auto & xs = xss[x];
+        int n = xs.size(), ret = 0;
+        for (int i = 0, j = 0, del = 0; j < n; ++ j ) {
+            if (j)
+                del += xs[j] - xs[j - 1] - 1;
+            while (del > k && i < j) {
+                i ++ ;
+                del -= xs[i] - xs[i - 1] - 1;
             }
-        return res;
+            ret = max(ret, j - i + 1);
+        }
+        return ret;
     }
-};
-```
-
-##### **C++ 优化**
-
-```cpp
-class Solution {
-public:
-    // m * n <= 1e5
-    using PII = pair<int, int>;
     
-    vector<vector<int>> st;
-    
-    // 入参把 n m swap 了
-    int countUnguarded(int n, int m, vector<vector<int>>& guards, vector<vector<int>>& walls) {
-        st = vector<vector<int>>(n, vector<int>(m));
-        for (auto & g : guards)
-            st[g[0]][g[1]] = 15;
-        for (auto & w : walls)
-            st[w[0]][w[1]] = 16;    // 只要后四bit位全0即可
-        
+    int longestEqualSubarray(vector<int>& nums, int k) {
+        int n = nums.size();
         for (int i = 0; i < n; ++ i )
-            for (int j = 0; j < m; ++ j )
-                if (st[i][j] < 16) {
-                    if (i)
-                        st[i][j] |= st[i - 1][j] & 1;
-                    if (j)
-                        st[i][j] |= st[i][j - 1] & 2;
-                }
-        for (int i = n - 1; i >= 0; -- i )
-            for (int j = m - 1; j >= 0; -- j )
-                if (st[i][j] < 16) {
-                    if (i < n - 1)
-                        st[i][j] |= st[i + 1][j] & 4;
-                    if (j < m - 1)
-                        st[i][j] |= st[i][j + 1] & 8;
-                }
+            xss[nums[i]].push_back(i);
         
         int res = 0;
-        for (int i = 0; i < n; ++ i )
-            for (int j = 0; j < m; ++ j )
-                res += !st[i][j];
+        for (int i = 1; i <= n; ++ i )
+            res = max(res, get(i, k));
         return res;
     }
 };
@@ -452,6 +638,306 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2935. 找出强数对的最大异或值 II](https://leetcode.cn/problems/maximum-strong-pair-xor-ii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典暴力优化
+> 
+> 双指针(单调性证明) + Trie(删除操作)
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 较显然的，需要针对第一题的实现做 "暴力优化"
+    //     考虑将强数对的条件发生转化: 排序后，当前位置的元素向前找，差值不能超过当前元素值的所有位置中，异或值最大的
+    // => 显然 双指针扫描 + Trie维护 且结合了动态删除
+    
+    // ATTENTION N 的取值需要是 length * 20
+    // 【因为值域原因，每个值都可能产生20个trie中的节点】
+    const static int N = 5e4 * 20 + 10, M = 22;
+    
+    int tr[N][2], cnt[N], idx;
+    
+    void init() {
+        memset(tr, 0, sizeof tr);
+        idx = 0;
+    }
+    void insert(int x) {
+        int p = 0;
+        for (int i = M - 1; i >= 0; -- i ) {
+            int u = x >> i & 1;
+            if (!tr[p][u])
+                tr[p][u] = ++ idx;
+            p = tr[p][u];
+            cnt[p] ++ ;     // ATTENTION
+        }
+    }
+    void remove(int x) {
+        int p = 0;
+        for (int i = M - 1; i >= 0; -- i ) {
+            int u = x >> i & 1;
+            p = tr[p][u];   // 一定存在
+            cnt[p] -- ;     // ATTENTION
+        }
+    }
+    int query(int x) {
+        int p = 0, ret = 0;
+        for (int i = M - 1; i >= 0; -- i ) {
+            int u = x >> i & 1;
+            if (!tr[p][!u] || !cnt[tr[p][!u]])  // ATTENTION
+                p = tr[p][u];
+            else {
+                ret |= 1 << i;
+                p = tr[p][!u];
+            }
+        }
+        return ret;
+    }
+    
+    int maximumStrongPairXor(vector<int>& nums) {
+        init();
+        int n = nums.size(), res = 0;
+        sort(nums.begin(), nums.end());
+        for (int i = 0, j = 0; j < n; ++ j ) {
+            while (i < j && nums[j] - nums[i] > nums[i])    // ATTENTION 思考条件
+                remove(nums[i ++ ]);
+            // cout << " j = " << j << " i = " << i << " query = " << query(nums[j]) << endl;
+            res = max(res, query(nums[j]));
+            insert(nums[j]);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 2953. 统计完全子字符串](https://leetcode.cn/problems/count-complete-substrings/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 推导 双指针(滑动窗口)优化
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 最简单暴力的处理是:
+    //  1. 按照前缀和统计每个区间内的特定字符的数量
+    //  2. 枚举区间 O(n^2) 再判断区间内出现的字符是否符合要求 O(26) + O(n)
+    //  3. 统计求和
+    //
+    // 复杂度显然无法接受 考虑如何优化
+    //  1. 对于某一个确定的右端点i 思考其可能包含多少个字符 假定为 c
+    //  2. 则区间固定为 [i-c*k+1, i] 或者 (i-c*k, i]  => 枚举代价仍然无法接受
+    // 
+    // 尝试发现单调性以优化该过程
+    // 容易想到: 对于一个确定的i 向左侧不会无限延伸 因为字符数量有上限 最左侧的边界也不能超过k
+    //        且伴随着i右移 这个边界同样会右移【且由于第二个条件的存在 不会跨该条件的边界点】
+    // 则 双指针维护区间 并维护区间内的种类数量以及各种类个数 【在有限的范围内进行枚举】
+    
+    const static int N = 1e5 + 10, M = 26;
+    
+    int sum[N][M];
+    int n, k;
+    
+    int vars, bigger;
+    int cnt[M];
+    void init() {
+        vars = 0, bigger = 0;
+        memset(cnt, 0, sizeof cnt);
+    }
+    void add(char c) {
+        int t = c - 'a';
+        cnt[t] ++ ;
+        if (cnt[t] == 1)
+            vars ++ ;
+        if (cnt[t] == k + 1)
+            bigger ++ ;
+    }
+    void sub(char c) {
+        int t = c - 'a';
+        cnt[t] -- ;
+        if (cnt[t] == 0)
+            vars -- ;
+        if (cnt[t] == k)
+            bigger -- ;
+    }
+    bool invalid() {
+        return bigger > 0;
+    }
+    bool split(char a, char b) {
+        return abs(a - b) > 2;
+    }
+    bool check(int l, int r) {
+        for (int i = 0; i < M; ++ i )
+            if (sum[r][i] - sum[l - 1][i] != 0 && sum[r][i] - sum[l - 1][i] != k)
+                return false;
+        return true;
+    }
+    
+    int countCompleteSubstrings(string word, int k) {
+        this->n = word.size(), this->k = k;
+        {
+            memset(sum, 0, sizeof sum);
+            for (int i = 1; i <= n; ++ i ) {
+                for (int j = 0; j < M; ++ j )
+                    sum[i][j] = sum[i - 1][j];
+                sum[i][word[i - 1] - 'a'] ++ ;
+            }
+            
+            init();
+        }
+        
+        int res = 0;
+        for (int i = 1, j = 1; j <= n; ++ j ) {
+            if (j > 1 && split(word[j - 1], word[j - 1 - 1])) {
+                init(); // 提前收缩区间
+                i = j;
+            }
+            // 更新当前末尾 并收缩区间
+            add(word[j - 1]);
+            while (i <= j && invalid()) {
+                sub(word[i - 1]);
+                i ++ ;
+            }
+            
+            // ok, 现在 [i, j] 是一个 [每一种的数量不超k & 不违背字母序差值过大的区间了]
+            // 并且此时 符合条件的字母个数不会超过 vars 个 => 枚举?
+            //
+            // ATTENTION 条件必不可少 j-x*k+1 >= l
+            for (int x = 1; x <= vars && j - x * k + 1 >= i; ++ x ) {
+                int l = j - x * k + 1, r = j;
+                if (check(l, r))
+                    res ++ ;
+            }
+        }
+        
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 边遍历边维护
+
+> [!NOTE] **[LeetCode 2763. 所有子数组中不平衡数字之和](https://leetcode.cn/problems/sum-of-imbalance-numbers-of-all-subarrays/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然是经典的暴力优化 边遍历边维护计数值
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 1e3 显然最多 n^2logn
+    //  枚举左右端点 枚举右端点过程中【维护计数值】
+
+    int sumImbalanceNumbers(vector<int>& nums) {
+        int n = nums.size(), res = 0;
+        for (int i = 0; i < n; ++ i ) {
+            map<int, int> h;
+            int t = 0;
+            for (int j = i; j < n; ++ j ) {
+                int x = nums[j];
+                // 已存在的情况 计数值没有任何变化
+                if (h[x]) {
+                    res += t;
+                    continue;
+                }
+
+                // 不存在的情况 会新增一个数值
+                //  此时
+                //  - [-1, +1] 减少一个
+                //  - [-1,  _] 不变
+                //  - [ _, +1] 不变
+                //  - [ _,  _] 根据左右侧有没有判断是否会增加   // ATTENTION 如果都有要-1
+
+                h[x] ++ ;   // 方便后续查找迭代器
+
+                if (h.count(x - 1) && h.count(x + 1))       // ATTENTION h[x-1] 会直接创建 default 值
+                    t -- ;
+                else if (!h.count(x - 1) && !h.count(x + 1)) {
+                    int l = 0, r = 0;
+                    if (h.lower_bound(x) != h.begin())      // x 左侧存在其他值
+                        l = 1;
+                    if (h.upper_bound(x) != h.end())        // x 右侧存在其他值
+                        r = 1;
+                    
+                    t += l + r - (l && r ? 1 : 0);          // 如果左右都存在，则还要-1
+                } // else do nothing
+
+                h[x] ++ ;
+                res += t;
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 公式转化
 
 > [!NOTE] **[LeetCode 891. 子序列宽度之和](https://leetcode.cn/problems/sum-of-subsequence-widths/)**
 > 
@@ -680,6 +1166,194 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2681. 英雄的力量](https://leetcode.cn/problems/power-of-heroes/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 非常经典的暴力优化 $O(n^2)=>O(n)$
+> 
+> 思考细节推导
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 1e5 + 10, MOD = 1e9 + 7;
+
+    LL f[N];
+
+    int sumOfPower(vector<int>& nums) {
+        f[0] = 1;
+        for (int i = 1; i < N; ++ i )
+            f[i] = f[i - 1] * 2 % MOD;
+        sort(nums.begin(), nums.end());
+
+        LL res = 0, s = 0;
+        int n = nums.size();
+        for (int i = 0; i < n; ++ i ) {
+            LL x = nums[i]; // 作为最大值
+
+            // 把 j=i 的情况单独拎出来 方便后面的循环化简
+            res = (res + x * x % MOD * x % MOD) % MOD;
+
+            x = x * x % MOD;
+
+            // LL s = 0;
+            // for (int j = 0; j < i; ++ j ) {
+            //     LL t = f[i - j - 1], y = nums[j];
+            //     s = (s + y * t % MOD) % MOD;
+            // }
+            if (i)
+                s = (s * 2 % MOD + nums[i - 1]) % MOD;
+            res = (res + x * s % MOD) % MOD;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 二维偏序 (BIT)
+
+
+> [!NOTE] **[LeetCode 2926. 平衡子序列的最大和](https://leetcode.cn/problems/maximum-balanced-subsequence-sum/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 暴力优化 + BIT 维护区间最值
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 原题转换: nums[i_j] - i_j >= nums[i_j-1] - i_j-1
+    //          nums[y]-y >= nums[x]-x => 这样 y 才能接在 x 后面
+    //    则 可以直接计算偏移量
+    
+    using LL = long long;
+    using PII = pair<int, int>;
+    
+    const static int N = 1e5 + 10;
+    
+    // -------------------------- begin --------------------------
+    vector<int> t;
+    int find(int x) {
+        return lower_bound(t.begin(), t.end(), x) - t.begin();
+    }
+    
+    LL tr[N], w[N];
+    int lowbit(int x) {
+        return x & -x;
+    }
+    void modify(int x, LL y) {
+        w[x] = max(w[x], y);
+        for (int i = x; i < N; i += lowbit(i)) {
+            tr[i] = max(tr[i], y);
+        }
+    }
+    LL query(int l, int r) {
+        LL ret = 0;
+        for (; l <= r; ) {
+            ret = max(ret, w[r]);
+            for ( -- r ; r >= l + lowbit(r); r -= lowbit(r))
+                ret = max(ret, tr[r]);
+        }
+        return ret;
+    }
+    
+    // --------------------------- end ---------------------------
+    
+    LL f[N];
+    
+    long long maxBalancedSubsequenceSum(vector<int>& nums) {
+        int n = nums.size();
+        
+        {
+            // 离散化
+            this->t.clear();
+            for (int i = 0; i < n; ++ i )
+                t.push_back(nums[i] - i);
+            
+            sort(t.begin(), t.end());
+            t.erase(unique(t.begin(), t.end()), t.end());
+        }
+        
+        vector<PII> xs;     // 计算偏移量
+        for (int i = 0; i < n; ++ i )
+            // xs.push_back({nums[i] - i, nums[i]});
+            xs.push_back({find(nums[i] - i) + 1, nums[i]}); // +1 方便 BIT 维护
+        
+        LL res = -1e15;
+        // 状态转移
+        /*
+        for (int i = 0; i < n; ++ i ) {
+            f[i] = 0;
+            for (int j = 0; j < i; ++ j ) {
+                if (xs[j].first <= xs[i].first) {
+                    f[i] = max(f[i], f[j]);
+                }
+            }
+            f[i] += nums[i];
+            res = max(res, f[i]);
+        }
+        */
+        // 前面本质上是从已有的一堆里面，找到一个符合条件的最大的
+        // 显然可以 bit，但是需要将 xs[i].first = nums[i]-i 进行离散化操作   #L34
+        memset(tr, 0xcf, sizeof tr), memset(w, 0xcf, sizeof w);    // ATTENTION: -INF
+        for (int i = 0; i < n; ++ i ) {
+            auto [x, y] = xs[i];
+            LL v = query(1, x);
+            res = max(res, v + y);
+            modify(x, v + y);
+        }
+        
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 在线 BFS
 
 > [!NOTE] **[LeetCode 2612. 最少翻转操作数](https://leetcode.cn/problems/minimum-reverse-operations/)** [TAG]
 > 
@@ -990,494 +1664,129 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2681. 英雄的力量](https://leetcode.cn/problems/power-of-heroes/)**
+### BIT TRICK
+
+> [!NOTE] **[LeetCode 2257. 统计网格图中没有被保卫的格子数](https://leetcode.cn/problems/count-unguarded-cells-in-the-grid/)**
 > 
 > 题意: TODO
 
 > [!TIP] **思路**
 > 
-> 非常经典的暴力优化 $O(n^2)=>O(n)$
+> 复杂度可以接受直接把坐标存下来再二分，复杂度 $O(nmlog)$
 > 
-> 思考细节推导
+> 实际上，我们可以直接用 bit 位表示某个位置的 `上下左右` 是否有守卫，进而把时间复杂度优化到 $O(nm)$
 
 <details>
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++**
+##### **C++ 二分**
 
 ```cpp
 class Solution {
 public:
-    using LL = long long;
-    const static int N = 1e5 + 10, MOD = 1e9 + 7;
-
-    LL f[N];
-
-    int sumOfPower(vector<int>& nums) {
-        f[0] = 1;
-        for (int i = 1; i < N; ++ i )
-            f[i] = f[i - 1] * 2 % MOD;
-        sort(nums.begin(), nums.end());
-
-        LL res = 0, s = 0;
-        int n = nums.size();
-        for (int i = 0; i < n; ++ i ) {
-            LL x = nums[i]; // 作为最大值
-
-            // 把 j=i 的情况单独拎出来 方便后面的循环化简
-            res = (res + x * x % MOD * x % MOD) % MOD;
-
-            x = x * x % MOD;
-
-            // LL s = 0;
-            // for (int j = 0; j < i; ++ j ) {
-            //     LL t = f[i - j - 1], y = nums[j];
-            //     s = (s + y * t % MOD) % MOD;
-            // }
-            if (i)
-                s = (s * 2 % MOD + nums[i - 1]) % MOD;
-            res = (res + x * s % MOD) % MOD;
-        }
-        return res;
-    }
-};
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[LeetCode 2763. 所有子数组中不平衡数字之和](https://leetcode.cn/problems/sum-of-imbalance-numbers-of-all-subarrays/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 显然是经典的暴力优化 边遍历边维护计数值
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-class Solution {
-public:
-    // 1e3 显然最多 n^2logn
-    //  枚举左右端点 枚举右端点过程中【维护计数值】
-
-    int sumImbalanceNumbers(vector<int>& nums) {
-        int n = nums.size(), res = 0;
-        for (int i = 0; i < n; ++ i ) {
-            map<int, int> h;
-            int t = 0;
-            for (int j = i; j < n; ++ j ) {
-                int x = nums[j];
-                // 已存在的情况 计数值没有任何变化
-                if (h[x]) {
-                    res += t;
-                    continue;
-                }
-
-                // 不存在的情况 会新增一个数值
-                //  此时
-                //  - [-1, +1] 减少一个
-                //  - [-1,  _] 不变
-                //  - [ _, +1] 不变
-                //  - [ _,  _] 根据左右侧有没有判断是否会增加   // ATTENTION 如果都有要-1
-
-                h[x] ++ ;   // 方便后续查找迭代器
-
-                if (h.count(x - 1) && h.count(x + 1))       // ATTENTION h[x-1] 会直接创建 default 值
-                    t -- ;
-                else if (!h.count(x - 1) && !h.count(x + 1)) {
-                    int l = 0, r = 0;
-                    if (h.lower_bound(x) != h.begin())      // x 左侧存在其他值
-                        l = 1;
-                    if (h.upper_bound(x) != h.end())        // x 右侧存在其他值
-                        r = 1;
-                    
-                    t += l + r - (l && r ? 1 : 0);          // 如果左右都存在，则还要-1
-                } // else do nothing
-
-                h[x] ++ ;
-                res += t;
-            }
-        }
-        return res;
-    }
-};
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[LeetCode 2791. 树中可以形成回文的路径数](https://leetcode.cn/problems/count-paths-that-can-form-a-palindrome-in-a-tree/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 经典的暴力优化思路
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-class Solution {
-public:
-    // 关键点：可以重新排列
-    // 则 只需要关心两个点之间的不同字符的奇偶性即可
-    //
-    // 又因为 1e5 数据范围显然不能两两枚举
-    // 考虑直接统计从根到某个节点的所有字符的奇偶状态 并全局计数
-    // 最后遍历节点即可
-    using LL = long long;
-    const static int N = 1e5 + 10, M = N;
-    
-    int h[N], e[M], w[M], ne[M], idx;
-    void init() {
-        memset(h, -1, sizeof h);
-        idx = 0;
-    }
-    void add(int a, int b, int c) {
-        e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
-    }
-    
-    unordered_map<int, int> count;
-    int st[N];
-    void dfs(int u, int s) {
-        st[u] = s;
-        count[s] ++ ;
-        for (int i = h[u]; ~i; i = ne[i]) {
-            int j = e[i];
-            int t = w[i];
-            dfs(j, s ^ (1 << t));
-        }
-    }
-    
-    long long countPalindromePaths(vector<int>& parent, string s) {
-        init();
-        int n = parent.size();
-        for (int i = 1; i < n; ++ i )
-            add(parent[i], i, s[i] - 'a');
-        
-        count.clear();
-        memset(st, 0, sizeof st);
-        dfs(0, 0);
-        
-        LL res = 0;
-        for (int i = 0; i < n; ++ i ) {
-            int a = st[i];
-            // 奇偶性相同的情况 要排除自身
-            res = res + ((LL)count[a] - 1);
-            // 奇偶性不同的情况
-            for (int j = 0; j < 26; ++ j ) {
-                int b = a ^ (1 << j);
-                res = res + (LL)count[b];
-            }
-        }
-        return res / 2;
-    }
-};
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[LeetCode 2831. 找出最长等值子数组](https://leetcode.cn/problems/find-the-longest-equal-subarray/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 经典暴力优化
-> 
-> 按数值对下标分类 随后同向双指针
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-class Solution {
-public:
-    // 考虑 直接遍历+枚举右端点 or 二分答案都不可行
-    //
-    // 思考 按照值分类记录下标  双指针维护
-    const static int N = 1e5 + 10;
-    
-    vector<int> xss[N];
-    
-    int get(int x, int k) {
-        auto & xs = xss[x];
-        int n = xs.size(), ret = 0;
-        for (int i = 0, j = 0, del = 0; j < n; ++ j ) {
-            if (j)
-                del += xs[j] - xs[j - 1] - 1;
-            while (del > k && i < j) {
-                i ++ ;
-                del -= xs[i] - xs[i - 1] - 1;
-            }
-            ret = max(ret, j - i + 1);
-        }
-        return ret;
-    }
-    
-    int longestEqualSubarray(vector<int>& nums, int k) {
-        int n = nums.size();
-        for (int i = 0; i < n; ++ i )
-            xss[nums[i]].push_back(i);
-        
-        int res = 0;
-        for (int i = 1; i <= n; ++ i )
-            res = max(res, get(i, k));
-        return res;
-    }
-};
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[LeetCode 2926. 平衡子序列的最大和](https://leetcode.cn/problems/maximum-balanced-subsequence-sum/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 暴力优化 + BIT 维护区间最值
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-class Solution {
-public:
-    // 原题转换: nums[i_j] - i_j >= nums[i_j-1] - i_j-1
-    //          nums[y]-y >= nums[x]-x => 这样 y 才能接在 x 后面
-    //    则 可以直接计算偏移量
-    
-    using LL = long long;
+    // m * n <= 1e5
     using PII = pair<int, int>;
     
-    const static int N = 1e5 + 10;
+    vector<vector<bool>> st;
     
-    // -------------------------- begin --------------------------
-    vector<int> t;
-    int find(int x) {
-        return lower_bound(t.begin(), t.end(), x) - t.begin();
-    }
-    
-    LL tr[N], w[N];
-    int lowbit(int x) {
-        return x & -x;
-    }
-    void modify(int x, LL y) {
-        w[x] = max(w[x], y);
-        for (int i = x; i < N; i += lowbit(i)) {
-            tr[i] = max(tr[i], y);
-        }
-    }
-    LL query(int l, int r) {
-        LL ret = 0;
-        for (; l <= r; ) {
-            ret = max(ret, w[r]);
-            for ( -- r ; r >= l + lowbit(r); r -= lowbit(r))
-                ret = max(ret, tr[r]);
-        }
-        return ret;
-    }
-    
-    // --------------------------- end ---------------------------
-    
-    LL f[N];
-    
-    long long maxBalancedSubsequenceSum(vector<int>& nums) {
-        int n = nums.size();
-        
-        {
-            // 离散化
-            this->t.clear();
-            for (int i = 0; i < n; ++ i )
-                t.push_back(nums[i] - i);
-            
-            sort(t.begin(), t.end());
-            t.erase(unique(t.begin(), t.end()), t.end());
-        }
-        
-        vector<PII> xs;     // 计算偏移量
+    int countUnguarded(int m, int n, vector<vector<int>>& guards, vector<vector<int>>& walls) {
+        this->st = vector<vector<bool>>(m, vector<bool>(n));
+        vector<vector<PII>> r(m), c(n);
+        for (int i = 0; i < m; ++ i )
+            r[i].push_back({-1, 0}), r[i].push_back({n, 0});
         for (int i = 0; i < n; ++ i )
-            // xs.push_back({nums[i] - i, nums[i]});
-            xs.push_back({find(nums[i] - i) + 1, nums[i]}); // +1 方便 BIT 维护
+            c[i].push_back({-1, 0}), c[i].push_back({m, 0});
+        for (auto & g : guards) {
+            int x = g[0], y = g[1];
+            st[x][y] = true;
+            r[x].push_back({y, 1});
+            c[y].push_back({x, 1});
+        }
+        for (auto & w : walls) {
+            int x= w[0], y = w[1];
+            st[x][y] = true;
+            r[x].push_back({y, -1});
+            c[y].push_back({x, -1});
+        }
+        for (int i = 0; i < m; ++ i )
+            sort(r[i].begin(), r[i].end());
+        for (int i = 0; i < n; ++ i )
+            sort(c[i].begin(), c[i].end());
         
-        LL res = -1e15;
-        // 状态转移
-        /*
-        for (int i = 0; i < n; ++ i ) {
-            f[i] = 0;
-            for (int j = 0; j < i; ++ j ) {
-                if (xs[j].first <= xs[i].first) {
-                    f[i] = max(f[i], f[j]);
+        int res = 0;
+        for (int i = 0; i < m; ++ i )
+            for (int j = 0; j < n; ++ j ) {
+                if (st[i][j])
+                    continue;
+                // cout << " I = " << i << " j = " << j << endl;
+                
+                {
+                    auto it = lower_bound(r[i].begin(), r[i].end(), PII{j, 0});
+                    if ((*it).second == 1) {
+                        continue;
+                    }
+                    it -- ;
+                    if ((*it).second == 1) {
+                        continue;
+                    }
                 }
+                {
+                    auto it = lower_bound(c[j].begin(), c[j].end(), PII{i, 0});
+                    if ((*it).second == 1) {
+                        continue;
+                    }
+                    it -- ;
+                    if ((*it).second == 1) {
+                        continue;
+                    }
+                }
+                res ++ ;
             }
-            f[i] += nums[i];
-            res = max(res, f[i]);
-        }
-        */
-        // 前面本质上是从已有的一堆里面，找到一个符合条件的最大的
-        // 显然可以 bit，但是需要将 xs[i].first = nums[i]-i 进行离散化操作   #L34
-        memset(tr, 0xcf, sizeof tr), memset(w, 0xcf, sizeof w);    // ATTENTION: -INF
-        for (int i = 0; i < n; ++ i ) {
-            auto [x, y] = xs[i];
-            LL v = query(1, x);
-            res = max(res, v + y);
-            modify(x, v + y);
-        }
-        
         return res;
     }
 };
 ```
 
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[LeetCode 2935. 找出强数对的最大异或值 II](https://leetcode.cn/problems/maximum-strong-pair-xor-ii/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 经典暴力优化
-> 
-> 双指针(单调性证明) + Trie(删除操作)
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
+##### **C++ 优化**
 
 ```cpp
 class Solution {
 public:
-    // 较显然的，需要针对第一题的实现做 "暴力优化"
-    //     考虑将强数对的条件发生转化: 排序后，当前位置的元素向前找，差值不能超过当前元素值的所有位置中，异或值最大的
-    // => 显然 双指针扫描 + Trie维护 且结合了动态删除
+    // m * n <= 1e5
+    using PII = pair<int, int>;
     
-    // ATTENTION N 的取值需要是 length * 20
-    // 【因为值域原因，每个值都可能产生20个trie中的节点】
-    const static int N = 5e4 * 20 + 10, M = 22;
+    vector<vector<int>> st;
     
-    int tr[N][2], cnt[N], idx;
-    
-    void init() {
-        memset(tr, 0, sizeof tr);
-        idx = 0;
-    }
-    void insert(int x) {
-        int p = 0;
-        for (int i = M - 1; i >= 0; -- i ) {
-            int u = x >> i & 1;
-            if (!tr[p][u])
-                tr[p][u] = ++ idx;
-            p = tr[p][u];
-            cnt[p] ++ ;     // ATTENTION
-        }
-    }
-    void remove(int x) {
-        int p = 0;
-        for (int i = M - 1; i >= 0; -- i ) {
-            int u = x >> i & 1;
-            p = tr[p][u];   // 一定存在
-            cnt[p] -- ;     // ATTENTION
-        }
-    }
-    int query(int x) {
-        int p = 0, ret = 0;
-        for (int i = M - 1; i >= 0; -- i ) {
-            int u = x >> i & 1;
-            if (!tr[p][!u] || !cnt[tr[p][!u]])  // ATTENTION
-                p = tr[p][u];
-            else {
-                ret |= 1 << i;
-                p = tr[p][!u];
-            }
-        }
-        return ret;
-    }
-    
-    int maximumStrongPairXor(vector<int>& nums) {
-        init();
-        int n = nums.size(), res = 0;
-        sort(nums.begin(), nums.end());
-        for (int i = 0, j = 0; j < n; ++ j ) {
-            while (i < j && nums[j] - nums[i] > nums[i])    // ATTENTION 思考条件
-                remove(nums[i ++ ]);
-            // cout << " j = " << j << " i = " << i << " query = " << query(nums[j]) << endl;
-            res = max(res, query(nums[j]));
-            insert(nums[j]);
-        }
+    // 入参把 n m swap 了
+    int countUnguarded(int n, int m, vector<vector<int>>& guards, vector<vector<int>>& walls) {
+        st = vector<vector<int>>(n, vector<int>(m));
+        for (auto & g : guards)
+            st[g[0]][g[1]] = 15;
+        for (auto & w : walls)
+            st[w[0]][w[1]] = 16;    // 只要后四bit位全0即可
+        
+        for (int i = 0; i < n; ++ i )
+            for (int j = 0; j < m; ++ j )
+                if (st[i][j] < 16) {
+                    if (i)
+                        st[i][j] |= st[i - 1][j] & 1;
+                    if (j)
+                        st[i][j] |= st[i][j - 1] & 2;
+                }
+        for (int i = n - 1; i >= 0; -- i )
+            for (int j = m - 1; j >= 0; -- j )
+                if (st[i][j] < 16) {
+                    if (i < n - 1)
+                        st[i][j] |= st[i + 1][j] & 4;
+                    if (j < m - 1)
+                        st[i][j] |= st[i][j + 1] & 8;
+                }
+        
+        int res = 0;
+        for (int i = 0; i < n; ++ i )
+            for (int j = 0; j < m; ++ j )
+                res += !st[i][j];
         return res;
     }
 };

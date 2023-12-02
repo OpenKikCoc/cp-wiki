@@ -5006,6 +5006,65 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2944. 购买水果需要的最少金币数](https://leetcode.cn/problems/minimum-number-of-coins-for-fruits/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 线性递推 状态定义与转移
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 分析题意... 购买 idx 位置处的水果，接下来可以免费获得 idx 个(而非 prices[idx] 个)其他水果
+    // [且下标 idx 从 1 开始]
+    // 
+    // 以及... 按照数据示例，【接下来】值得就是一段连续区间... 不能自由选择
+    // => 考虑区间 dp => O(n^3) 显然不太可行
+    // => 考虑线性 dp
+    // 
+    // 从前到后 所有水果必然是连续获得 则可以一维线性维护 "截止到前 i 个位置的最小开销"
+    
+    const static int N = 1010;
+    
+    int f[N];
+    
+    int minimumCoins(vector<int>& prices) {
+        memset(f, 0x3f, sizeof f);
+        int n = prices.size();
+        f[0] = 0;
+        for (int i = 1; i <= n; ++ i ) {
+            int buy_cost = f[i - 1] + prices[i - 1];
+            f[i] = min(f[i], buy_cost); // 第 i 个位置买的情况下，更新 f[i]
+            // 同时更新 f[i+j]
+            for (int j = 1; j <= i && i + j <= n; ++ j )
+                f[i + j] = min(f[i + j], buy_cost);
+        }
+        return f[n];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 复杂递推
 
 #### 数学递推 dp

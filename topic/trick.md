@@ -6012,6 +6012,64 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2943. 最大化网格图中正方形空洞的面积](https://leetcode.cn/problems/maximize-area-of-square-hole-in-grid/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 横竖相互独立
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 【横竖互不影响】 所以可以各自找到横着的最大 & 竖着的最大
+    // => 但是题目要的还是正方形，所以只能找到出现过的所有的记录下来
+    //                      => 又因为连续性 只记录最大的即可
+    
+    int get(int n, vector<int> & ns) {
+        n += 2;
+        sort(ns.begin(), ns.end());
+        
+        int ret = 0;
+        for (int i = 0; i < ns.size(); ++ i ) {
+            int j = i + 1;
+            while (j < ns.size() && ns[j] == ns[j - 1] + 1)
+                j ++ ;
+            // 获取连续断开的区间长度
+            int w = j - i;
+            ret = max(ret, w + 1);
+            i = j - 1;
+        }
+        return ret;
+    }
+    
+    int maximizeSquareHoleArea(int n, int m, vector<int>& hBars, vector<int>& vBars) {
+        int x = get(n, hBars), y = get(m, vBars);
+        return min(x, y) * min(x, y);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 根据题意简化思维
 
 > [!NOTE] **[Codeforces C. Dima and Staircase](https://codeforces.com/problemset/problem/272/C)**
@@ -7232,6 +7290,157 @@ class Solution:
                 res.append(r - l + 1)
                 r = l = i + 1
         return res
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 构造连续区间
+
+> [!NOTE] **[LeetCode 330. 按要求补齐数组](https://leetcode-cn.com/problems/patching-array/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 1. 假设当前我们能生成的数字为[0, x)，如果 nums[i] 存在小于等于 x 的数，那么我们先选择添加这个数并将我们的 x = x + nums[i] 。
+> 
+> 2. 如果不存在的话，那么说明我们需要自己添加一个新数了，我们选择加入 x ,所以 x = x + x ，同时记录答案。
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int minPatches(vector<int>& nums, int n) {
+        long long x = 1;
+        int i = 0, res = 0;
+        while (x <= n) {
+            if (i < nums.size() && nums[i] <= x) x += nums[i ++ ];
+            else x += x, ++ res;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 1798. 你能构造出连续值的最大数目](https://leetcode-cn.com/problems/maximum-number-of-consecutive-values-you-can-make/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 有点类似跳跃游戏 思维有所不同
+> 
+> 本质是要能构造连续区间 思考细节推导
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int getMaximumConsecutive(vector<int>& coins) {
+        sort(coins.begin(), coins.end());
+        int lst = 0, n = coins.size();
+        for (int i = 0; i < n; ++ i )
+            if (coins[i] <= lst + 1)
+                lst += coins[i];
+            else
+                break;
+        return lst + 1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 2952. 需要添加的硬币的最小数量](https://leetcode.cn/problems/minimum-number-of-coins-to-be-added/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 1798 进阶，所有的数字可能都达不到 target，此时需要继续补全
+> 
+> 补全思维是倍增【思考】
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int minimumAddedCoins(vector<int>& coins, int target) {
+        sort(coins.begin(), coins.end());
+        int res = 0, p = 1; // 当前未能表示的是 1
+        for (int i = 0; i < coins.size(); ++ i ) {
+            if (p > target)
+                break;
+            int x = coins[i];
+            if (p >= x) {
+                p += x;
+            } else {
+                // p < x
+                p += p, res ++ ;
+                i -- ;
+            }
+        }
+        // ATTENTION: 思考这里的判断条件
+        if (p <= target) {
+            // 还有一部分需要追加元素才能够表示 此时显然 【按照p去倍增即可】
+            while (p <= target) {
+                res ++ ;
+                p += p;
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
 ```
 
 <!-- tabs:end -->

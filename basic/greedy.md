@@ -886,49 +886,6 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1798. 你能构造出连续值的最大数目](https://leetcode-cn.com/problems/maximum-number-of-consecutive-values-you-can-make/)** [TAG]
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 类似的总结 ==> 跳跃游戏 TODO
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-class Solution {
-public:
-    int getMaximumConsecutive(vector<int>& coins) {
-        sort(coins.begin(), coins.end());
-        int lst = 0, n = coins.size();
-        for (int i = 0; i < n; ++ i )
-            if (coins[i] <= lst + 1)
-                lst += coins[i];
-            else
-                break;
-        return lst + 1;
-    }
-};
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
 > [!NOTE] **[LeetCode 2086. 从房屋收集雨水需要的最少水桶数](https://leetcode-cn.com/problems/minimum-number-of-buckets-required-to-collect-rainwater-from-houses/)**
 > 
 > 题意: TODO
@@ -5186,50 +5143,6 @@ class Solution:
             if left >= 0:return i
             i = i + j + 1
         return -1
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[LeetCode 330. 按要求补齐数组](https://leetcode-cn.com/problems/patching-array/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 1. 假设当前我们能生成的数字为[0, x)，如果 nums[i] 存在小于等于 x 的数，那么我们先选择添加这个数并将我们的 x = x + nums[i] 。
-> 
-> 2. 如果不存在的话，那么说明我们需要自己添加一个新数了，我们选择加入 x ,所以 x = x + x ，同时记录答案。
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-class Solution {
-public:
-    int minPatches(vector<int>& nums, int n) {
-        long long x = 1;
-        int i = 0, res = 0;
-        while (x <= n) {
-            if (i < nums.size() && nums[i] <= x) x += nums[i ++ ];
-            else x += x, ++ res;
-        }
-        return res;
-    }
-};
-```
-
-##### **Python**
-
-```python
-
 ```
 
 <!-- tabs:end -->
