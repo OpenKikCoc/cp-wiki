@@ -1,6 +1,6 @@
 > [!NOTE] **ATTENTION**
 > 
-> **二维偏序问题常通过离线 BIT 来做**
+> 加强思维: **二维偏序问题常通过离线 BIT 来做**
 
 
 > [!NOTE] **特殊初始化方式**
@@ -2378,6 +2378,131 @@ public:
             modify(x, v + y);
         }
         
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 2940. 找到 Alice 和 Bob 可以相遇的建筑](https://leetcode.cn/problems/find-building-where-alice-and-bob-can-meet/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> BIT(最值) 处理二维偏序问题
+> 
+> 重点在于想到 并理清维护思路
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 题目进行抽象: 本质是对于一个 DAG，求 LCA
+    // 问题在于数据范围很大 边的数量可能非常多 没有办法提前建图
+    //   但是 本题并不关心要走多少步 所以建完全图应该也是没有必要的 考虑如何简化
+    // INSTEAD: LCA路子行不通 考虑如何结合queries进行离线操作
+    //
+    // 假定按坐标 左右两侧分别 a,b
+    // - 考虑特殊情况: a == b 或 a < b 且 h[a] < h[b] 则 靠右侧的 b 就是答案
+    // - 考虑一般情况: a < b, h[a] >= h[b] 则 b 右侧第一个大于 h[a] 的就是答案
+    //     => 【二维偏序问题】
+    //     => 考虑从右向左扫描: 以 heights 作为 BIT-idx, 以 index 作为 BIT-value 维护 [维护min-value]
+    //          边查询边更新即可
+    
+    using TIII = tuple<int, int, int>;
+    const static int N = 5e4 + 10, M = N << 2, INF = 0x3f3f3f3f;
+    
+    int tr[M], w[N];
+    int lowbit(int x) {
+        return x & -x;
+    }
+    void modify(int x, int y) {
+        w[x] = y;   // ATTENTION 考虑到遍历顺序 这里会自然取最小值
+        for (int i = x; i < N; i += lowbit(i))
+            tr[i] = min(tr[i], y);
+    }
+    int query(int l, int r) {
+        int ori_r = r;
+        int res = INF;
+        for (; l <= r; ) {
+            res = min(res, w[r]);
+            for ( -- r ; r >= l + lowbit(r); r -= lowbit(r))
+                res = min(res, tr[r]);
+        }
+        return res;
+    }
+    
+    vector<int> vs;
+    int find(int x) {
+        return lower_bound(vs.begin(), vs.end(), x) - vs.begin();
+    }
+    
+    vector<int> leftmostBuildingQueries(vector<int>& heights, vector<vector<int>>& queries) {
+        {
+            // 离散化 所有值
+            vs.clear();
+            for (auto x : heights)
+                vs.push_back(x);
+            sort(vs.begin(), vs.end());
+            vs.erase(unique(vs.begin(), vs.end()), vs.end());
+            
+            for (int i = 0; i < heights.size(); ++ i )
+                heights[i] = find(heights[i]) + 1;   // ATTENTION 需要+1 保证下标
+        }
+        
+        vector<TIII> qs;
+        for (int i = 0; i < queries.size(); ++ i ) {
+            int l = queries[i][0], r = queries[i][1];
+            if (l > r)
+                swap(l, r);
+            qs.push_back({r, l, i});
+        }
+        sort(qs.begin(), qs.end());
+        
+        // 初始化
+        memset(w, 0x3f, sizeof w), memset(tr, 0x3f, sizeof tr);
+        
+        vector<int> res(queries.size(), -1);
+        // ATTENTION: i 需要到 0，因为查询的下标可能到 0
+        for (int i = N - 1, p = qs.size() - 1; i >= 0; -- i ) {
+            while (p >= 0 && get<0>(qs[p]) == i) {
+                auto [r, l, idx] = qs[p];
+                // cout << " i = " << i << " p = " << p << " query-idx = " << idx << " l = " << l << " r = " << r << endl;
+                
+                // 需要特判
+                if (l == r) {
+                    res[idx] = r;
+                } else if (heights[l] < heights[r]) {
+                    res[idx] = r;
+                } else {
+                    int got = query(heights[l] + 1, N - 1);
+                    res[idx] = got > INF / 2 ? -1 : got;
+                }
+                p -- ;
+            }
+            
+            if (i < heights.size())
+                modify(heights[i], i);
+        }
+        // cout << endl;
         return res;
     }
 };

@@ -839,6 +839,71 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 2938. 区分黑球与白球](https://leetcode.cn/problems/separate-black-and-white-balls/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 冒泡排序计数 转化为 逆序对
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    
+    string s, t;
+    int n;
+    
+    LL merge_sort(int l, int r) {
+        if (l == r)
+            return 0;
+        int mid = l + r >> 1;
+        LL res = merge_sort(l, mid) + merge_sort(mid + 1, r);
+        int i = l, j = mid + 1, k = 0;
+        while (i <= mid && j <= r)
+            if (s[i] <= s[j])           // 白色0在左侧
+                t[k ++ ] = s[i ++ ];
+            else {
+                res += mid + 1 - i;
+                t[k ++ ] = s[j ++ ];
+            }
+        while (i <= mid)
+            t[k ++ ] = s[i ++ ];
+        while (j <= r)
+            t[k ++ ] = s[j ++ ];
+        for (int i = l, j = 0; i <= r; ++ i , ++ j )
+            s[i] = t[j];
+        return res;
+    }
+    
+    long long minimumSteps(string s) {
+        this->s = s, this->n = s.size();
+        this->t = s;
+        return merge_sort(0, n - 1);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[Luogu [NOIP2013 提高组] 火柴排队](https://www.luogu.com.cn/problem/P1966)**
 > 
 > 题意: TODO

@@ -1401,3 +1401,97 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 2935. 找出强数对的最大异或值 II](https://leetcode.cn/problems/maximum-strong-pair-xor-ii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典暴力优化
+> 
+> 双指针(单调性证明) + Trie(删除操作)
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 较显然的，需要针对第一题的实现做 "暴力优化"
+    //     考虑将强数对的条件发生转化: 排序后，当前位置的元素向前找，差值不能超过当前元素值的所有位置中，异或值最大的
+    // => 显然 双指针扫描 + Trie维护 且结合了动态删除
+    
+    // ATTENTION N 的取值需要是 length * 20
+    // 【因为值域原因，每个值都可能产生20个trie中的节点】
+    const static int N = 5e4 * 20 + 10, M = 22;
+    
+    int tr[N][2], cnt[N], idx;
+    
+    void init() {
+        memset(tr, 0, sizeof tr);
+        idx = 0;
+    }
+    void insert(int x) {
+        int p = 0;
+        for (int i = M - 1; i >= 0; -- i ) {
+            int u = x >> i & 1;
+            if (!tr[p][u])
+                tr[p][u] = ++ idx;
+            p = tr[p][u];
+            cnt[p] ++ ;     // ATTENTION
+        }
+    }
+    void remove(int x) {
+        int p = 0;
+        for (int i = M - 1; i >= 0; -- i ) {
+            int u = x >> i & 1;
+            p = tr[p][u];   // 一定存在
+            cnt[p] -- ;     // ATTENTION
+        }
+    }
+    int query(int x) {
+        int p = 0, ret = 0;
+        for (int i = M - 1; i >= 0; -- i ) {
+            int u = x >> i & 1;
+            if (!tr[p][!u] || !cnt[tr[p][!u]])  // ATTENTION
+                p = tr[p][u];
+            else {
+                ret |= 1 << i;
+                p = tr[p][!u];
+            }
+        }
+        return ret;
+    }
+    
+    int maximumStrongPairXor(vector<int>& nums) {
+        init();
+        int n = nums.size(), res = 0;
+        sort(nums.begin(), nums.end());
+        for (int i = 0, j = 0; j < n; ++ j ) {
+            while (i < j && nums[j] - nums[i] > nums[i])    // ATTENTION 思考条件
+                remove(nums[i ++ ]);
+            // cout << " j = " << j << " i = " << i << " query = " << query(nums[j]) << endl;
+            res = max(res, query(nums[j]));
+            insert(nums[j]);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

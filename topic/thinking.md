@@ -197,6 +197,92 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2939. 最大异或乘积](https://leetcode.cn/problems/maximum-xor-product/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思维题 参考注释思路
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 52, MOD = 1e9 + 7;
+    
+    // 思考 n 限制了可以自由 0/1 的总位数 => 因为 a/b 位数可能大于 n
+    //   如何使得结果最大? 显然需要让 a^x, b^x 各自最大
+    // 考虑: 如果 a/b 的某个位都是 0/0 则有必要使得x取 1 让 a/b + 1<<y
+    //      如果 a/b 的某个位分别是 1/0, 0/1 则只能有两种选择 => 二者分别 +/- 1<<y
+    // 最坏情况下 50个位都需要 +/- 
+    // ======> 贪心: 第一个位给其中一个数，剩下的位都给另一个数即可 => 需要求出 x
+    
+    int maximumXorProduct(long long a, long long b, int n) {
+        vector<int> t;
+        // ATTENTION 可以等于
+        for (int i = 0; i < n; ++ i ) {
+            int x = (a >> i) & 1, y = (b >> i) & 1;
+            if (x == 0 && y == 0) {
+                a += 1ll << i, b += 1ll << i;
+            } else if (x == 1 && y == 1) {
+                // do nothing
+                continue;
+            } else {
+                t.push_back(i);     // ATTENTION 简化，不需要关心是谁转移到谁
+                // ATTENTION 但是需要把 a, b 在此位消 0
+                if (x)
+                    a -= 1ll << i;  // ATTENTION use 1ll
+                else
+                    b -= 1ll << i;
+            }
+        }
+        
+        // 【核心在于分配策略】
+        if (a == b) {
+            // 对于所有不同的位 需要把最高位给 a 其余都给 b
+            for (int i = t.size() - 1; i >= 0; -- i ) {
+                if (i == t.size() - 1)
+                    a += 1ll << t[i];
+                else
+                    b += 1ll << t[i];
+            }
+        } else {
+            // 全给 a 或全给 b
+            LL tot = 0;
+            for (auto x : t)
+                tot += 1ll << x;
+            if (a < b)
+                a += tot;
+            else
+                b += tot;
+        }
+        a %= MOD, b %= MOD; // ATTENTION
+        // cout << " a = " << a << " b = " << b << endl;
+        return a * b % MOD;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ## 计算复杂度分析
 
 > [!NOTE] **[LeetCode 2910. 合法分组的最少组数](https://leetcode.cn/problems/minimum-number-of-groups-to-create-a-valid-assignment/)** [TAG]
