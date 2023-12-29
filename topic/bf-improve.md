@@ -859,6 +859,132 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2968. 执行操作使频率分数最大](https://leetcode.cn/problems/apply-operations-to-maximize-frequency-score/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 暴力优化 显然需要使用排序后的一段连续区间 考虑枚举区间右端点
+> 
+> - 二分
+> 
+> - 双指针
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 二分**
+
+```cpp
+class Solution {
+public:
+    // 数的数值范围很大 但数量只有1e5 => 考虑枚举每一个值 如果作为最终的众数 能构造多少个
+    //    枚举 O(n) 随后往前往后延伸(动态边界)... 不太好接受
+    //    考虑排序后枚举区间右端点(思考:为什么可以这样) 则可以二分众数个数(并快速判断)
+    
+    using LL = long long;
+    const static int N = 1e5 + 10;
+    
+    vector<int> ns;
+    int n;
+    
+    LL s[N], k;
+    
+    bool check(int l, int r) {
+        int mid = (l + r) / 2;
+        // 其他数字都要转化成 mid
+        int t = ns[mid - 1];
+        int lc = mid - l, rc = r - mid;
+        LL tot = ((LL)lc * t - (s[mid - 1] - s[l - 1])) + ((s[r] - s[mid]) - (LL)rc * t);
+        return tot <= k;
+    }
+    
+    int maxFrequencyScore(vector<int>& nums, long long k) {
+        this->ns = nums;
+        this->n = ns.size();
+        this->k = k;
+        sort(ns.begin(), ns.end());
+        {
+            s[0] = 0;
+            for (int i = 1; i <= n; ++ i )
+                s[i] = s[i - 1] + ns[i - 1];
+        }
+        
+        int res = 0;
+        for (int i = 1; i <= n; ++ i ) {
+            // 找到第一个无法满足的区间长度
+            int l = 1, r = i + 1;
+            while (l < r) {
+                int m = l + (r - l) / 2;
+                if (check(i - m + 1, i))
+                    l = m + 1;
+                else
+                    r = m;
+            }
+            res = max(res, l - 1);
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 双指针**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 1e5 + 10;
+
+    int n;
+    vector<int> ns;
+
+    LL s[N], k;
+
+    bool valid(int l, int r) {
+        int mid = (l + r) / 2;
+        int tar = ns[mid - 1];
+        int lc = mid - l, rc = r - mid;
+        return ((LL)lc * tar - (s[mid - 1] - s[l - 1])) + ((s[r] - s[mid]) - (LL)rc * tar) <= k;
+    }
+
+    int maxFrequencyScore(vector<int>& nums, long long k) {
+        this->ns = nums;
+        this->n = ns.size();
+        this->k = k;
+        sort(ns.begin(), ns.end());
+        {
+            s[0] = 0;
+            for (int i = 1; i <= n; ++ i )
+                s[i] = s[i - 1] + ns[i - 1];
+        }
+
+        int res = 0;
+        for (int i = 1, j = 1; j <= n; ++ j ) {
+            while (i <= j && !valid(i, j))
+                i ++ ;
+            res = max(res, j - i + 1);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 边遍历边维护
 
 > [!NOTE] **[LeetCode 2763. 所有子数组中不平衡数字之和](https://leetcode.cn/problems/sum-of-imbalance-numbers-of-all-subarrays/)**

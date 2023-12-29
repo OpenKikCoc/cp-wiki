@@ -1804,6 +1804,126 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2967. 使数组成为等数数组的最小代价](https://leetcode.cn/problems/minimum-cost-to-make-array-equalindromic/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 回文数构造 结合中位数思想 综合应用
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+using LL = long long;
+using PII = pair<int, int>;
+const static int N = 1e6;
+
+bool inited = false;
+
+int rs[N], cnt;
+
+bool check(LL x) {
+    string s = to_string(x);
+    for (int i = 0, j = s.size() - 1; i < j; ++ i , -- j )
+        if (s[i] != s[j])
+            return false;
+    return true;
+}
+LL getFrontHalfPart(LL x) {
+    string s = to_string(x);
+    s = s.substr(0, s.size() / 2);
+    return s.empty() ? 0 : stoll(s);
+}
+void init() {
+    if (inited)
+        return;
+    inited = true;
+
+    int l = 1, r = 1e9;
+    cnt = 0;
+    
+    for (int op = 0; op < 2; ++ op ) {
+        for (LL i = getFrontHalfPart(l); i <= r; ++ i ) {
+            LL t = (op ? i : i / 10);
+            LL conbined = i;
+            while (t)
+                conbined = conbined * 10 + t % 10, t /= 10;
+            if (conbined > r)
+                break;
+            if (check(conbined))
+                rs[cnt ++ ] = conbined;
+        }
+    }
+    sort(rs, rs + cnt);     // ATTENTION 前面是偶数位数 后面是奇数位数 所以要排序
+}
+
+
+class Solution {
+public:
+    // 考虑两个问题
+    // 1. 全部相等: 中位数代价最小
+    // 2. 回文: 整体做偏移
+    
+    // WA 546 / 647: [101,104,107,126,130] -> mid 107, 范围不够找到的是101，实际上应该是111
+    // WA 591 / 647: [1321,7284,9346,9460,7099,2796,5887,9351,2278,7590,7627,1552,5864,7409,9356,8480,2765,8036,8473,5573]
+    //              ATTENTION 不仅要关注 n/2 的位置，还要【分奇偶】关注后面挨着的位置 + 【左右边界要足够宽泛=>不如提前生成】
+    
+    vector<int> ns;
+    
+    bool debug = false;
+    
+    
+    PII get(int x) {
+        for (int i = 0; i < cnt; ++ i )
+            if (rs[i] >= x)
+                return {rs[i - 1], rs[i]};
+        return {rs[cnt - 2], rs[cnt - 1]};
+    }
+    
+    LL calc(int t) {
+        LL res = 0;
+        for (auto x : ns)
+            res += abs(t - x);
+        return res;
+    }
+    LL find(int x) {
+        auto [a, b] = get(x);
+        return min(calc(a), calc(b));
+    }
+    
+    long long minimumCost(vector<int>& nums) {
+        init();
+        
+        sort(nums.begin(), nums.end());
+        int n = nums.size();
+        this->ns = nums;
+        // 找到最近的回文数
+        // 不仅要关注 [n/2]，还要关注后面的数
+        if (n & 1)
+            return find(nums[n / 2]);
+        return min(find(nums[n / 2]), find(nums[min(n - 1, n / 2 + 1)]));   // ATTENTION min(n-1, ...)
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 进制数 思想
 
 > [!NOTE] **[Codeforces Pashmak and Buses](http://codeforces.com/problemset/problem/459/C)** [TAG]
