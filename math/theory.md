@@ -1,5 +1,62 @@
 ## 习题
 
+### 多边形构造
+
+> [!NOTE] **[LeetCode 2971. 找到最大周长的多边形](https://leetcode.cn/problems/find-polygon-with-the-largest-perimeter/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 如果有 k (k >= 3) 个 正 数 a1,a2,a3, ... ak 满足 a1 <= a2 <= a3 <= ... <= ak 且 a1 + a2 + a3 + ... + ak-1 > ak ，那么 一定 存在一个 k 条边的多边形，每条边的长度分别为 a1, a2, a3, ... ak
+> 
+> 排序贪心即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 1e5 + 10;
+    
+    LL s[N];
+    
+    long long largestPerimeter(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        int n = nums.size();
+        {
+            s[0] = 0;
+            for (int i = 1; i <= n; ++ i )
+                s[i] = s[i - 1] + nums[i - 1];
+        }
+        
+        // ATTENTION: 贪心即可 【不需要双指针】
+        for (int i = n; i >= 1; -- i )
+            if (s[i - 1] > nums[i - 1])
+                return s[i];
+        return -1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 拉格朗日四平方和
 
 > [!NOTE] **[LeetCode 279. 完全平方数](https://leetcode-cn.com/problems/perfect-squares/)**
