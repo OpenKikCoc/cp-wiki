@@ -2006,6 +2006,116 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2977. 转换字符串的最小成本 II](https://leetcode.cn/problems/minimum-cost-to-convert-string-ii/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> Trie + DP
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 2e5 + 10, M = 26, K = 2e3 + 10;  // trie树节点上限: 1000 * 100 * 2(两个串) = 2e5
+    const static LL INF = 1e16;
+
+    int son[N][M], idx, id;
+    unordered_map<string, int> hash;
+    unordered_map<int, int> mem;
+
+    void init() {
+        memset(son, 0, sizeof son);
+        idx = 0, id = 0;
+        hash.clear(), mem.clear();
+    }
+    void insert(string & s) {
+        if (hash.count(s))
+            return;
+        int p = 0;
+        for (auto c : s) {
+            int u = c - 'a';
+            if (!son[p][u])
+                son[p][u] = ++ idx ;
+            p = son[p][u];
+        }
+        hash[s] = ++ id ;   // 从 1 开始
+        mem[p] = id;        // 顺便记录树节点与对应值
+    }
+
+    LL w[K][K], f[K / 2];
+
+    long long minimumCost(string source, string target, vector<string>& original, vector<string>& changed, vector<int>& cost) {
+        init();
+
+        {
+            // 初始化 w
+            memset(w, 0x3f, sizeof w);
+            for (int i = 0; i < K; ++ i )
+                w[i][i] = 0;
+            for (int i = 0; i < original.size(); ++ i ) {
+                string a = original[i], b = changed[i];
+                // 插入 trie 同时记录离散化
+                insert(a), insert(b);
+                int x = hash[a], y = hash[b];
+                w[x][y] = min(w[x][y], (LL)cost[i]);
+            }
+
+            // floyd
+            for (int k = 1; k <= id; ++ k )
+                for (int i = 1; i <= id; ++ i )
+                    for (int j = 1; j <= id; ++ j )
+                        w[i][j] = min(w[i][j], w[i][k] + w[k][j]);
+        }
+
+        int n = source.size();
+        f[n] = 0;   // 边界值
+        for (int i = n - 1; i >= 0; -- i ) {
+            f[i] = INF;
+            
+            if (source[i] == target[i])
+                f[i] = f[i + 1];
+
+            // 从当前位置往后 找到可行串与对应消耗
+            for (int j = i, p1 = 0, p2 = 0; j < n; ++ j ) {
+                int u1 = source[j] - 'a', u2 = target[j] - 'a';
+                p1 = son[p1][u1], p2 = son[p2][u2];
+                if (p1 == 0 || p2 == 0)
+                    break;
+                // 如果存在两个对应的串
+                if (mem[p1] && mem[p2])
+                    // ATTENTION
+                    f[i] = min(f[i], f[j + 1] + w[mem[p1]][mem[p2]]);
+            }
+        }
+
+        if (f[0] >= INF / 2)
+            return -1;
+        return f[0];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 离线 trie
 
 > [!NOTE] **[LeetCode 1707. 与数组中元素的最大异或值](https://leetcode-cn.com/problems/maximum-xor-with-an-element-from-array/)**

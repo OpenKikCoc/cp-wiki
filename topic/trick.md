@@ -6070,6 +6070,91 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2975. 移除栅栏得到的正方形田地的最大面积](https://leetcode.cn/problems/maximum-square-area-by-removing-fences-from-a-field/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 类似 2943. 最大化网格图中正方形空洞的面积
+> 
+> 注意 set 会卡常，改成数组线性扫描即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const int MOD = 1e9 + 7;
+    
+    vector<int> get(vector<int> xs) {
+        vector<int> r;
+        int n = xs.size();
+        sort(xs.begin(), xs.end());
+        for (int i = 0; i < n; ++ i )
+            for (int j = 0; j < i; ++ j )
+                r.push_back(xs[i] - xs[j]);
+        sort(r.begin(), r.end());
+        r.erase(unique(r.begin(), r.end()), r.end());
+        return r;
+    }
+    
+    int maximizeSquareArea(int m, int n, vector<int>& hs, vector<int>& vs) {
+        vector<int> x, y;
+        {
+            hs.push_back(1), hs.push_back(m);
+            x = get(hs);
+        }
+        {
+            vs.push_back(1), vs.push_back(n);
+            y = get(vs);
+        }
+        int w = -1;
+        
+        // TLE: 632 / 648
+        /*
+        for (auto v : x)
+            if (y.find(v) != y.end())
+                w = max(w, v);
+        */
+        {
+            // 双指针便利 降低复杂度
+            for (int i = x.size() - 1, j = y.size() - 1; i >= 0 && j >= 0; -- i ) {
+                while (j >= 0 && y[j] > x[i])
+                    j -- ;
+                if (j >= 0 && y[j] == x[i]) {
+                    // cout << " i = " << i << " j = " << j << " w = " << ys[j] << " will break " << endl;
+                    w = y[j];
+                    break;
+                }
+            }
+        }
+        
+        if (w == -1)
+            return -1;
+        return (LL)w * w % MOD;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 根据题意简化思维
 
 > [!NOTE] **[Codeforces C. Dima and Staircase](https://codeforces.com/problemset/problem/272/C)**

@@ -10,6 +10,8 @@
 
 [leetcode-problems-rating](https://zerotrac.github.io/leetcode_problem_rating/#/)
 
+[lc-rating](https://huxulm.github.io/lc-rating/)
+
 [OEIS](https://oeis.org)
 
 ## English
