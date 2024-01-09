@@ -10,7 +10,9 @@
 
 [leetcode-problems-rating](https://zerotrac.github.io/leetcode_problem_rating/#/)
 
-[lc-rating](https://huxulm.github.io/lc-rating/)
+[更详细的 lc-rating](https://huxulm.github.io/lc-rating/)
+
+[LC Contest Rating Predictor](https://lccn.lbao.site)
 
 [OEIS](https://oeis.org)
 
