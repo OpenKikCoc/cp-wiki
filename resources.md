@@ -30,6 +30,12 @@
 
 [interview-english](https://github.com/Interview-Science/interview-english)
 
+[Qwerty Learner](https://qwerty.kaiyi.cool/)
+
+[Eye Types](https://www.eletypes.com/)
+
+[A-Programmers-Guide-to-English](https://github.com/yujiangshui/A-Programmers-Guide-to-English)
+
 ## Quant
 
 Heard on the Street: Quantitative Questions from Wall Street Job Interviews
