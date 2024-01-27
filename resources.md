@@ -50,6 +50,8 @@ A Practical Guide to Quantitive Finance Interviews
 
 [csdiy.wiki](https://csdiy.wiki)
 
+[Google Tech Dev Guide](https://techdevguide.withgoogle.com/paths/data-structures-and-algorithms/)
+
 [excalidraw.com](https://excalidraw.com)
 
 [coolor.co](https://coolors.co)
