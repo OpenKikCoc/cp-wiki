@@ -1914,6 +1914,103 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 2999. 统计强大整数的数目](https://leetcode.cn/problems/count-the-number-of-powerful-integers/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 较显然的数位 dp
+> 
+> 重点在于分情况讨论细节
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 显然数位dp 先把区间问题转化为单值问题
+    using LL = long long;
+    const static int N = 17;
+    
+    string s;
+    int m, limit;
+    
+    LL f[N][N]; // 剩下i位 当前位是j的不超过limit的可行数量 => 其实也可以直接 pow(limit+1, ...)
+    void init() {
+        memset(f, 0, sizeof f);
+        for (int j = 0; j <= limit; ++ j )
+            f[1][j] = 1;
+        for (int i = 2; i < N; ++ i )
+            for (int j = 0; j <= limit; ++ j )
+                for (int k = 0; k <= limit; ++ k )
+                    f[i][j] += f[i - 1][k];
+    }
+    
+    LL get(LL x) {
+        string t = to_string(x);
+        int n = t.size();
+        {
+            if (n < m)
+                return 0;
+            else if (n == m)
+                return t >= s;  
+        }
+        // n > m
+        int w = n - m;
+        
+        LL ret = 0;
+        for (int i = 0; i < w /*ATTENTION*/; ++ i ) {
+            int v = t[i] - '0';
+            
+            // 写法1 个人更习惯
+            for (int j = 0; j < v && j <= limit; ++ j )
+                ret += f[w - i][j];
+            if (v > limit)  // ATTENTION 则无论后面如何 都已经被 for-loop 计算过【细节推导】
+                return ret;
+            
+            /* 写法2
+            if (v <= limit) {
+                // 填的值受限制
+                for (int j = 0; j < v; ++ j )
+                    ret += f[w - i][j];
+            } else {
+                // 后面随便填都可以 提前返回
+                ret += f[w - i + 1][0];
+                return ret;
+            }*/
+        }
+        
+        // ATTENTION 如果中间没有return，则需要单独看最后一段
+        // => 推理: 此时 ret 的含义是严格小于x数位值的情况下的总数  需要加上等于(但不大于limit)的情况 (t.substr(w))
+        return ret + (t.substr(w) >= s);
+    }
+    
+    long long numberOfPowerfulInt(long long start, long long finish, int limit, string s) {
+        this->s = s, this->m = s.size(), this->limit = limit;
+        init();
+        return get(finish) - get(start - 1);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### TODO 汇总
 
 #### 拓展 n以内所有数字 每个数字在各个数位出现多少次
