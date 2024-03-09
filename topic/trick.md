@@ -6657,6 +6657,80 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 3001. 捕获黑皇后需要的最少移动次数](https://leetcode.cn/problems/minimum-moves-to-capture-the-queen/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> trick 答案至多为 2
+> 
+> 搜索显然不可行，换个思路
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // ATTENTION trick 答案至多为 2
+    //   搜索显然不可行，换个思路
+    //   由于【车】的存在:
+    //   - 如果和皇后在同行/列 如果有阻挡需要 1+1 否则只需要 1
+    //   - 如果不同行且不同列 一定狂月 2 次走到
+    // 则 只需要判断一次能否走到即可
+
+    int dx1[4] = {-1, 0, 1, 0}, dy1[4] = {0, 1, 0, -1};
+    int dx2[8] = {-1, -1, 1, 1}, dy2[4] = {-1, 1, 1, -1};
+
+    int X, Y;
+
+    bool check(int x, int y, int dx[], int dy[], int stoneX, int stoneY) {
+        // 枚举方向和步数
+        for (int i = 0; i < 4; ++ i )
+            for (int t = 1; t <= 8; ++ t ) {
+                int nx = x + dx[i] * t, ny = y + dy[i] * t;
+                if (nx < 1 || nx > 8 || ny < 1 || ny > 8)
+                    continue;
+                // ATTENTION 彼此撞到 排除
+                if (nx == stoneX && ny == stoneY)
+                    break;
+                if (nx == X && ny == Y)
+                    return true;
+            }
+        return false;
+    }
+
+    int minMovesToCaptureTheQueen(int a, int b, int c, int d, int e, int f) {
+        this->X = e, this->Y = f;
+
+        // 枚举车只走一步
+        if (check(a, b, dx1, dy1, c, d))
+            return 1;
+        // 枚举象只走一步
+        if (check(c, d, dx2, dy2, a, b))
+            return 1;
+        return 2;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 动态统计计数题
 
 > [!NOTE] **[LeetCode 1224. 最大相等频率](https://leetcode-cn.com/problems/maximum-equal-frequency/)** [TAG]

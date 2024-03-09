@@ -1770,3 +1770,103 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 3003. 执行操作后的最大分割数量](https://leetcode.cn/problems/maximize-the-number-of-partitions-after-operations/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 推导 转换思路 结合前后缀分解降低复杂度
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 首先 梳理明确:
+    //      假设不产生修改 则 [无论从左/从右侧开始贪心分段 段的总数都是相同的] 不同的是区间具体的左右边界
+    //
+    // 考虑前后缀分解 枚举在某个位置修改 以及改成不同字符对整体带来的影响
+
+    using PII = pair<int, int>; // seg-index, mask
+    const static int N = 1e4 + 10;
+
+    int K;
+    PII l[N], r[N];
+
+    void update(int bit, int & idx, int & size, int & mask) {
+        if (mask & bit)
+            return;
+        
+        if (size + 1 > K) {
+            // 需要从当前位置作为起始 新增一段
+            idx ++ ;
+            mask = bit;
+            size = 1;
+        } else {
+            mask |= bit;
+            size ++ ;
+        }
+    }
+
+    int maxPartitionsAfterOperations(string s, int k) {
+        // ATTENTION 必须特判
+        if (k == 26)
+            return 1;
+
+        this->K = k;
+        int n = s.size();
+        for (int i = 1, idx = 1, size = 0, mask = 0; i <= n; ++ i ) {
+            int bit = 1 << (s[i - 1] - 'a');
+            update(bit, idx, size, mask);
+            l[i] = {idx, mask};
+        }
+        for (int i = n, idx = 1, size = 0, mask = 0; i >= 1; -- i ) {
+            int bit = 1 << (s[i - 1] - 'a');
+            update(bit, idx, size, mask);
+            r[i] = {idx, mask};
+        }
+
+        int res = l[n].first;   // 默认不修改的情况下
+
+        for (int i = 1; i <= n; ++ i ) {
+            auto [l_idx, l_mask] = l[i - 1];
+            auto [r_idx, r_mask] = r[i + 1];
+            int union_size = __builtin_popcount(l_mask | r_mask);
+            int tot = l_idx + r_idx;    // 假设从当前位置割裂 总共有多少段
+            if (union_size < k) {
+                // 无论 i 位置上取什么值 左右都会合并
+                tot -- ;
+            } else if (union_size < 26) {
+                // 看当前位置是否 “能够独立”
+                bool f1 = (l_idx == 0 || __builtin_popcount(l_mask) == k);
+                bool f2 = (r_idx == 0 || __builtin_popcount(r_mask) == k);
+                if (f1 && f2)
+                    tot ++ ;
+            }
+            // 否则 i 位置上只能归并到 左/右 中的一个 => tot 不变
+
+            res = max(res, tot);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
