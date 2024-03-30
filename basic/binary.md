@@ -2587,6 +2587,78 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 3007. 价值和小于等于 K 的最大数字](https://leetcode.cn/problems/maximum-number-that-sum-of-the-prices-is-less-than-or-equal-to-k/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 标准二分 内部计算细节
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 10^15 = 45bit
+    using LL = long long;
+    
+    bool check(LL m, LL k, int x) {
+        LL res = 0;
+        // bit index, start from 1
+        for (int i = x; i < 50; i += x ) {
+            int t = i - 1;  // actual index
+            LL v = 1ll << t;
+            if (v > m)
+                break;
+            
+            bool right_exist = x > 1;
+            LL right = m % v;
+            LL left = m >> (t + 1);
+            
+            // ATTENTION 计数规则: 左侧可选范围，右侧随便选
+            LL add = max(left, 0ll) * v;
+            
+            if (m >> t & 1) // 如果上限可以取到
+                add += (right + 1);
+            
+            res += add;
+        }
+        return res <= k;
+    }
+    
+    long long findMaximumNumber(long long k, int x) {
+        // 找到第一个不符合条件的
+        LL l = 1, r = 1e15;
+        while (l < r) {
+            LL m = l + (r - l) / 2;
+            if (check(m, k, x))
+                l = m + 1;
+            else
+                r = m;
+        }
+        return l - 1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 二分套二分
 
 > [!NOTE] **[LeetCode 2040. 两个有序数组的第 K 小乘积](https://leetcode-cn.com/problems/kth-smallest-product-of-two-sorted-arrays/)** [TAG]

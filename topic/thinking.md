@@ -283,6 +283,81 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 3012. 通过操作使数组长度最小](https://leetcode.cn/problems/minimize-length-of-array-using-operations/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 本质: 任意挑两个数，小的干掉大的并能够在末尾留下 [小的/0]
+> 
+>   1. 消耗较大的数，结果最后只剩下一堆最小的数
+> 
+>   2. 这堆最小的数内部消耗
+> 
+> 容易知道，如果最小的数只有 1 个，最终答案就是 1
+> 
+> 如果不止一个，需要探索能够构造一个比全局最小数更小的数
+> 
+> > ATTNTION 自己想的是相邻数字取模... 实际上可以直接对【最小的数字取模】...【思维】
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using PII = pair<int, int>;
+    
+    bool check(vector<PII> & t, int v) {
+        for (int i = 0; i < t.size(); ++ i ) {
+            // WRONG
+            // int mod = t[i].first % t[i - 1].first;
+            
+            int mod = t[i].first % v;
+            if (mod /*non-zero*/ && mod < v)
+                return true;
+        }
+        return false;
+    }
+    
+    int minimumArrayLength(vector<int>& nums) {
+        unordered_map<int, int> h;
+        for (auto x : nums)
+            h[x] ++ ;
+        
+        vector<PII> t;
+        for (auto [k, v] : h)
+            t.push_back({k, v});
+        sort(t.begin(), t.end());
+
+        auto x = t[0].second;
+        if (x == 1)
+            return 1;
+        else if (check(t, t[0].first))
+            return 1;
+        
+        return (x + 1) / 2;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ## 计算复杂度分析
 
 > [!NOTE] **[LeetCode 2910. 合法分组的最少组数](https://leetcode.cn/problems/minimum-number-of-groups-to-create-a-valid-assignment/)** [TAG]

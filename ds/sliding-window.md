@@ -1488,6 +1488,105 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 3013. 将数组分成最小总代价的子数组 II](https://leetcode.cn/problems/divide-an-array-into-subarrays-with-minimum-cost-ii/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 标准滑动窗口
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+using LL = long long;
+struct Magic {
+    int K;
+    // s1 保存前 k 小值，s2 保存其它
+    multiset<LL> s1, s2;
+    LL sum;
+
+    Magic(int K): K(K), sum(0) {}
+
+    // 简化后续维护操作
+    void adjust() {
+        while (s1.size() < K && s2.size() > 0) {
+            LL t = *(s2.begin());
+            s2.erase(s2.begin());
+            s1.insert(t);
+            sum += t;
+        }
+        while (s1.size() > K) {
+            LL t = *(s1.rbegin());
+            s1.erase(prev(s1.end()));
+            s2.insert(t);
+            sum -= t;
+        }
+    }
+
+    void add(LL x) {
+        if (!s2.empty() && x >= *(s2.begin()))
+            s2.insert(x);
+        else
+            s1.insert(x), sum += x;
+        adjust();
+    }
+
+    void sub(LL x) {
+        auto it = s1.find(x);
+        if (it != s1.end())
+            s1.erase(it), sum -= x;
+        else
+            s2.erase(s2.find(x));
+        adjust();
+    }
+};
+
+class Solution {
+public:
+    // 一开始想复杂了
+    // 实际上题目只要求 第二&第K 二者之间呢不超过 dist 而非所有端点都不超过
+    // => 枚举第 k 段的起始位置，滑动窗口维护前面 k-2 个最小值的总和即可
+
+    long long minimumCost(vector<int>& nums, int k, int dist) {
+        int n = nums.size();
+
+        Magic m(k - 2); // 初始化窗口
+
+        for (int i = 1; i < k - 1; ++ i )
+            m.add(nums[i]);
+        
+        LL res = m.sum + nums[k - 1];   // 默认情况: 最后一个数组以 k-1 起始
+        for (int i = k; i < n; ++ i ) {
+            int t = i - dist - 1;
+            if (t > 0)
+                m.sub(nums[t]);
+            m.add(nums[i - 1]);
+            // ATTENTION nums[i] 是最后一个，m 维护的是中间的 k-2 个
+            res = min(res, m.sum + nums[i]);
+        }
+        return res + nums[0];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 类似单调队列的优化实践
 
 > [!NOTE] **[Codeforces Sereja ans Anagrams](http://codeforces.com/problemset/problem/367/B)**
