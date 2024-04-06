@@ -432,3 +432,64 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 3020. 子集中元素的最大数量](https://leetcode.cn/problems/find-the-maximum-number-of-elements-in-subset/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 细节略多容易WA
+> 
+> 主要在于时间复杂度分析
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 如果是 2 的幂次，最多指数到 32
+    // 则 按照每一个底数去做幂次统计... 然后枚举即可
+    using LL = long long;
+    
+    int maximumLength(vector<int>& nums) {
+        unordered_map<LL, int> h;
+        for (auto x : nums)
+            h[x] ++ ;
+        
+        int res = 0;
+        sort(nums.begin(), nums.end());
+        for (auto v : nums) {
+            if (v == 1) {
+                res = max(res, (h[1] % 2 ? h[1] : h[1] - 1));   // ATTENTION: k=0
+                continue;
+            }
+            
+            int t = 0;
+            LL x = v;
+            while (h.count(x) && h[x] > 1)
+                t += 2, x *= x;
+            t += (h.count(x) ? 1 : -1);
+            res = max(res, t);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
