@@ -1246,3 +1246,80 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 3036. 匹配模式数组的子数组数目 II](https://leetcode.cn/problems/number-of-subarrays-that-match-a-pattern-ii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典 KMP 应用
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 与 https://codeforces.com/problemset/problem/471/D 思想一致
+    const static int N = 1e6 + 10;
+    
+    int ns[N];
+    
+    vector<int> kmp(vector<int> & p, int m) {
+        vector<int> f(m + 1);
+        for (int i = 2, j = 0; i <= m; ++ i ) {
+            while (j && p[i] != p[j + 1])
+                j = f[j];
+            if (p[i] == p[j + 1])
+                j ++ ;
+            f[i] = j;
+        }
+        return f;
+    }
+    
+    int countMatchingSubarrays(vector<int>& nums, vector<int>& pattern) {
+        int n = nums.size(), m = pattern.size();
+        
+        for (int i = 1; i < n; ++ i )
+            if (nums[i] > nums[i - 1])
+                ns[i] = 1;
+            else if (nums[i] < nums[i - 1])
+                ns[i] = -1;
+            else
+                ns[i] = 0;
+        
+        pattern.insert(pattern.begin(), 0); // ATTENTION
+        auto f = kmp(pattern, m);
+        
+        int res = 0;
+        for (int i = 1, j = 0; i < n; ++ i ) {
+            while (j && ns[i] != pattern[j + 1])
+                j = f[j];
+            if (ns[i] == pattern[j + 1])
+                j ++ ;
+            if (j == m) {
+                res ++ ;
+                j = f[j];
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

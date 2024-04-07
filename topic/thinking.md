@@ -358,6 +358,71 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 3035. 回文字符串的最大数量](https://leetcode.cn/problems/maximum-palindromes-after-operations/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 很巧妙的思维题 重在理清思路
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 题目本质就是 在长度不变的情况下，所有字符串的字符可以任意swap
+    // 则 只与所有字符的计数 以及字符串长度有关
+
+    int maxPalindromesAfterOperations(vector<string>& words) {
+        // 考虑 先把左右的字母填了 最后在往正中间填入字母
+        int tot = 0, mask = 0;
+        for (auto & w : words) {
+            tot += w.size();
+            for (auto c : w)
+                mask ^= 1 << (c - 'a');
+        }
+        // 总字符长度为tot 奇数有even位
+        int even = __builtin_popcount(mask);
+        // ATTENTION 先把奇数位都单独拎出来 剩下都是偶数个数【重要的细节推理 => 这个一定是和字符串长度一一匹配的】
+        tot -= even;
+        
+        // 实际只会用到长度 [从短到长逐个填充]
+        sort(words.begin(), words.end(), [](const string & a, const string & b) {
+            return a.size() < b.size();
+        });
+        
+        int res = 0;
+        for (auto & w : words) {
+            tot -= (w.size() / 2) * 2;  // 对于奇数来说 会消除掉1
+            // ATTENTION 由于是从短到长 如果当前位置无法填充 后面的也没有填充可能 => 填充思想trick
+            if (tot < 0)
+                break;
+            res ++ ;
+        }
+        
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ## 计算复杂度分析
 
 > [!NOTE] **[LeetCode 2910. 合法分组的最少组数](https://leetcode.cn/problems/minimum-number-of-groups-to-create-a-valid-assignment/)** [TAG]

@@ -317,3 +317,94 @@ int main() {
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 3031. 将单词恢复初始状态所需的最短时间 II](https://leetcode.cn/problems/minimum-time-to-revert-word-to-initial-state-ii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 题意分析 显然只需要对比后缀与前缀
+> 
+> 1. 字符串哈希
+> 
+> 2. 更简单的方式是 扩展 kmp
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 字符串哈希**
+
+```cpp
+class Solution {
+public:
+    using ULL = unsigned long long;
+    const static int N = 1e6 + 10, P = 131;
+    
+    ULL h[N], p[N];
+    bool st[N];
+    
+    ULL get(int l, int r) {
+        return h[r] - h[l - 1] * p[r - l + 1];
+    }
+    
+    int minimumTimeToInitialState(string word, int k) {
+        int n = word.size();
+        h[0] = 0, p[0] = 1;
+        for (int i = 1; i <= n; ++ i ) {
+            h[i] = h[i - 1] * P + word[i - 1];
+            p[i] = p[i - 1] * P;
+        }
+        
+        memset(st, 0, sizeof st);
+        for (int i = 1, x = k/*定义为新的开头的原始下标*/; x <= n/*因为 如果超过了 n 则后面是任意的字母 一定可以拼成*/; x += k, ++ i ) {
+            int w = n - x;
+            if (get(1, w) == get(x + 1, n))
+                return i;
+        }
+        return (n + k - 1) / k;
+    }
+};
+```
+
+##### **C++ z-func**
+
+```cpp
+class Solution {
+public:
+    int minimumTimeToInitialState(string word, int k) {
+        int n = word.size();
+        vector<int> z(n);
+        for (int i = 1, l = 0, r = 0; i < n; ++ i ) {
+            if (i <= r && z[i - l] < r - i + 1)
+                z[i] = z[i - l];
+            else {
+                z[i] = max(0, r - i + 1);
+                while (i + z[i] < n && word[z[i]] == word[i + z[i]])
+                    z[i] ++ ;
+            }
+            if (i + z[i] - 1 > r)
+                l = i, r = i + z[i] - 1;
+            
+            // Special logic
+            if (i % k == 0 && z[i] >= n - i)
+                return i / k;
+        }
+        return (n + k - 1) / k;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
