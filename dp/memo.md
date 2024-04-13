@@ -1048,3 +1048,87 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 3040. 相同分数的最大操作数目 II](https://leetcode.cn/problems/maximum-number-of-operations-with-the-same-score-ii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 理论上最短路和记忆化搜索都可以过
+> 
+> 实际运行中 记忆化搜索效率更高
+> 
+> 之前总是不想写 memo... 改写下还是很划得来的...
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using PII = pair<int, int>;
+    const static int N = 2010;
+    
+    vector<int> nums;
+    int calc(int l, int r, int i) {
+        if (i == 0)
+            return nums[l] + nums[l + 1];
+        else if (i == 1)
+            return nums[l] + nums[r];
+        return nums[r - 1] + nums[r];
+    }
+    
+    int dx[3] = {2, 1, 0}, dy[3] = {0, -1, -2};
+    
+    int h[N][N];
+    void init() {
+        memset(h, -1, sizeof h);
+    }
+    int tar;    // ATTENTION 实现技巧
+    int dfs(int l, int r) {
+        if (l >= r)         // ATTENTION 需要放在前面 否则越界panic
+            return 0;
+        if (h[l][r] != -1)
+            return h[l][r];
+        
+        int t = 0;
+        for (int i = 0; i < 3; ++ i ) {
+            int x = l + dx[i], y = r + dy[i];
+            if (calc(l, r, i) == tar)
+                t = max(t, dfs(x, y) + 1);
+        }
+        return h[l][r] = t;
+    }
+    
+    
+    int maxOperations(vector<int>& nums) {
+        this->nums = nums;
+        int n = nums.size();
+        
+        int res = 0;
+        for (int i = 0; i < 3; ++ i ) {
+            init();
+            this->tar = calc(0, n - 1, i);
+            res = max(res, dfs(0 + dx[i], n - 1 + dy[i]));
+        }
+        return res + 1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

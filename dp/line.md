@@ -1236,6 +1236,75 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 3041. 修改数组后最大化数组中的连续元素数目](https://leetcode.cn/problems/maximize-consecutive-elements-in-an-array-after-modification/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 简单但很有意思的线性 DP
+> 
+> 重点在可以不连续
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 1e5 + 10;
+    
+    int f[N][2];
+    
+    void refresh_max(int & a, int b) {
+        a = max(a, b);
+    }
+    
+    int maxSelectedElements(vector<int>& nums) {
+        int n = nums.size();
+        sort(nums.begin(), nums.end());
+        
+        memset(f, 0, sizeof f);
+        f[1][0] = f[1][1] = 1;
+        
+        for (int i = 2; i <= n; ++ i ) {
+            int a = nums[i - 1], b = nums[i - 2];
+            f[i][0] = f[i][1] = 1;
+            
+            if (a == b + 1)
+                refresh_max(f[i][0], f[i - 1][0] + 1), refresh_max(f[i][1], f[i - 1][1] + 1);
+            else if (a == b) {
+                refresh_max(f[i][0], f[i - 1][0]), refresh_max(f[i][1], f[i - 1][1]);   // ATTENTION 可以继承
+                refresh_max(f[i][1], f[i - 1][0] + 1);
+            }
+            else if (a == b + 2)
+                refresh_max(f[i][0], f[i - 1][1] + 1);
+        }
+        
+        int res = 0;
+        for (int i = 1; i <= n; ++ i )
+            refresh_max(res, max(f[i][0], f[i][1]));
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 复杂线性
 
 > [!NOTE] **[LeetCode 689. 三个无重叠子数组的最大和](https://leetcode-cn.com/problems/maximum-sum-of-3-non-overlapping-subarrays/)**
