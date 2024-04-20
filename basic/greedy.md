@@ -3955,6 +3955,115 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 3049. 标记所有下标的最早秒数 II](https://leetcode.cn/problems/earliest-second-to-mark-indices-ii/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 需要非常注意的是...题意和前面不一样...
+> 
+> 本题不对标记时机做要求，则问题得以简化
+> 
+> 校验函数需结合贪心思想 使用反悔堆维护发生 "快速消除" 的下标及相应代价即可
+> 
+> 重复做
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    using PII = pair<int, int>;
+    const static int N = 5e3 + 10;
+    
+    int n;
+    int ns[N];
+    // vector<int> cs[N];
+    int ci[N], first[N];
+    LL sum = 0;
+    
+    bool check(int m) {
+        if (m < n)
+            return false;
+        
+        // 显然如果能一次撤销(直接打到0) 都应当一次撤销
+        // 如果对于某个位置来说无法撤销 则应当尝试回滚之前的撤销取消 取消的时候应当取消回滚cost最小的
+        //  ATTENTION 由于swap的情况存在 必须逆序遍历[思考]
+        priority_queue<int, vector<int>, greater<int>> heap;     // cost
+        
+        // ATTENTION 因为需要关注最左侧的位置 因而不能像T3那样跳跃访问
+        //  需要使用原始 changeIndices
+        LL cnt = 0, save = 0;
+        for (int i = m; i >= 1; -- i ) {
+            int idx = ci[i];
+            if (ns[idx] <= 1 || first[idx] < i) {   // 当前位置可以作为前面某个位置的标记操作占位
+                cnt ++ ;
+                continue;
+            }
+
+            if (cnt) {
+                heap.push(ns[idx]);
+                save += ns[idx];
+                cnt -- ;
+            } else {
+                if (!heap.empty() && heap.top() <= ns[idx]) {
+                    // swap
+                    int t = heap.top();
+                    save += ns[idx] - t;
+                    heap.pop(), heap.push(ns[idx]);
+                }
+                cnt ++ ;    // ATTENTION 当前位置本身没有新增操作 可以保留这个时间【思考】
+            }
+        }
+        // sum + n: 理论上总的操作次数
+        return cnt >= sum + n - save - heap.size();
+    }
+    
+    int earliestSecondToMarkIndices(vector<int>& nums, vector<int>& changeIndices) {
+        this->n = nums.size();
+        for (int i = 1; i <= n; ++ i )
+            ns[i] = nums[i - 1];
+        
+        memset(first, 0, sizeof first);
+        for (int i = changeIndices.size(); i >= 1; -- i )      // reverse for `first`
+            ci[i] = changeIndices[i - 1], first[changeIndices[i - 1]] = i;
+
+        this->sum = 0;
+        for (auto x : nums)
+            sum += x;
+        
+        int l = 0, r = changeIndices.size() + 1;
+        while (l < r) {
+            int m = l + (r - l) / 2;
+            if (check(m))
+                r = m;
+            else
+                l = m + 1;
+        }
+        return (l <= changeIndices.size()/*ATTENTION*/ && check(l)) ? l : -1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 贪心策略 堆维护
 
 > [!NOTE] **[LeetCode 407. 接雨水 II](https://leetcode-cn.com/problems/trapping-rain-water-ii/)**
