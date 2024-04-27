@@ -1759,6 +1759,96 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 3067. 在带权树网络中统计可连接服务器对数目 ](https://leetcode.cn/problems/count-pairs-of-connectable-servers-in-a-weighted-tree-network/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 题目数据范围接受 $n^2$ 暴力
+> 
+> 边维护边统计
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 显然不能枚举两个端点，这样复杂度爆炸...因为需要遍历所有中间点来统计答案
+    // 考虑枚举每个点作为中间点 可以有多少个数对 => 需要知道每个点到其他点的距离汇总信息
+    // ... 又因为 题目要求的本质是两个不同子树的信息统计，之前的代码只适用于同一节点的固定两侧 无法细拆
+    //
+    // 考虑直接暴力
+    
+    const static int N = 1010, M = 2010;
+    
+    int h[N], e[M], w[M], ne[M], idx;
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+    }
+    void add(int a, int b, int c) {
+        e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    int ss;
+    
+    // 求某个节点
+    int dfs(int u, int pa, int sum) {
+        int cnt = sum % ss == 0;        // 当前节点自己 如果符合要求则+1
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i], c = w[i];
+            if (j == pa)
+                continue;
+            
+            cnt += dfs(j, u, sum + c);  // 往子树延伸 统计总数
+        }
+        return cnt;
+    }
+    
+    
+    vector<int> countPairsOfConnectableServers(vector<vector<int>>& edges, int signalSpeed) {
+        init();
+        for (auto & e : edges)
+            add(e[0], e[1], e[2]), add(e[1], e[0], e[2]);
+        
+        this->ss = signalSpeed;
+        
+        vector<int> res;
+        for (int i = 0; i < edges.size() + 1; ++ i ) {
+            int sum = 0, tot = 0;       // 边遍历边统计 不需要/2
+            for (int j = h[i]; ~j; j = ne[j]) {
+                int v = e[j], c = w[j];
+                // cnt 为该独立子树下的、到当前节点的距离为 ss 倍数的节点总数...
+                int cnt = dfs(v, i, c);
+                tot += cnt * sum;   // ATTENTION 本颗子树的数量和 * 前面所有子树的数量和
+                sum += cnt;         // 维护
+            }
+            res.push_back(tot);
+        }
+        
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[LeetCode 2920. 收集所有金币可获得的最大积分](https://leetcode.cn/problems/maximum-points-after-collecting-coins-from-all-nodes/)** [TAG]
 > 
 > 题意: TODO

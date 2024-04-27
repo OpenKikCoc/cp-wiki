@@ -6731,6 +6731,66 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 3068. 最大节点价值之和](https://leetcode.cn/problems/find-the-maximum-sum-of-node-values/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思维 trick
+> 
+> TODO: dp 思维
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 由题意推导可知 本质上任意距离的两个节点间都可以执行一次操作 (操作链间接实现)
+    // 操作后每个数字都会发生变化
+    // => 则 根据变化量 每次选择增加最多的数字进行操作即可【需要成对】
+    
+    using LL = long long;
+    
+    long long maximumValueSum(vector<int>& nums, int k, vector<vector<int>>& edges) {
+        LL res = 0;
+        priority_queue<int> heap;
+        for (auto x : nums) {
+            res += x;
+            int diff = (x ^ k) - x;
+            heap.push(diff);    // ATTENTION 即便是负数也要加进去，因为最后可能 +/- 组合成一对
+        }
+        
+        while (heap.size() >= 2) {
+            int a = heap.top(); heap.pop();
+            int b = heap.top(); heap.pop();
+            if (a + b > 0)
+                res += a + b;
+            else
+                break;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 动态统计计数题
 
 > [!NOTE] **[LeetCode 1224. 最大相等频率](https://leetcode-cn.com/problems/maximum-equal-frequency/)** [TAG]
