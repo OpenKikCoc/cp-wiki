@@ -1722,6 +1722,88 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 3077. K 个不相交子数组的最大能量值 ](https://leetcode.cn/problems/maximum-strength-of-k-disjoint-subarrays/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典 DP 优化
+> 
+> 公式转化 + 边遍历边维护
+> 
+> 注意细节
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // [不相交子数组] => 显然是 dp 【线性 划分型DP】
+    // ATTENTION: 题意是将原始数组【切分】... 选出来的所有子数组【不】需要覆盖整个数组
+    
+    using LL = long long;
+    const static int N = 1e4 + 10;
+    const static LL INF = 1e16;
+
+    int n;
+    LL s[N], f[N];
+    
+    long long maximumStrength(vector<int>& nums, int k) {
+        this->n = nums.size();
+        {
+            s[0] = 0;
+            for (int i = 1; i <= n; ++ i )
+                s[i] = s[i - 1] + nums[i - 1];
+        }
+        
+        memset(f, 0, sizeof f);
+        for (int _k = 1; _k <= k; ++ _k ) {
+            static LL pre[N];
+            memcpy(pre, f, sizeof f);
+            
+            // 分情况讨论
+            // 1. i 不作为最右侧元素 则为前 i-1 个里选择 _k 个
+            //          f[_k][i] = f[_k][i - 1]
+            // 2. i 作为最右侧元素 则需要枚举左侧下标 L
+            //          f[_k][i] = f[_k - 1][L] + (s[i] - s[L]) * w       其中 [w = (-1)^_k+1 * (k - _k + 1)]
+            //  【变形】 f[_k][i] = (f[_k - 1][L] - s[L] * w) + s[i] * w;
+            //  其中  f[_k - 1][L] - s[L] * w 可以伴随遍历整体维护
+            // 3. 干掉第一维
+            
+            f[_k - 1] = -INF;   // ATTENTION 必须 否则case3 fail, 写在 for-loop 没用不会执行到
+
+            LL max_v = -INF;
+            int w = ((_k & 1) ? 1 : -1) * (k - _k + 1);
+            
+            for (int i = _k; i <= n - (k - _k)/*ATTENTION 后面需要留k-_k 个数*/; ++ i ) {
+                max_v = max(max_v, pre[i - 1] - s[i - 1] * w); // refresh
+                f[i] = max(f[i - 1], s[i] * w + max_v);
+            }
+        }
+        
+        return f[n];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 二维偏序 (BIT)
 
 
