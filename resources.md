@@ -18,21 +18,33 @@
 
 ## English
 
-[Chinese Programmer Wrong Pronunciation](https://cpwp.netlify.app)
-
-> https://github.com/antfu/cpwp
+### Words
 
 [most-frequent-technology-english-words](https://learn-english.dev)
 
 > https://github.com/Wei-Xia/most-frequent-technology-english-words
 
-[English-level-up-tips](https://github.com/byoungd/English-level-up-tips)
+[Chinese Programmer Wrong Pronunciation](https://cpwp.netlify.app)
+
+> https://github.com/antfu/cpwp
 
 [interview-english](https://github.com/Interview-Science/interview-english)
+
+### IELTS
+
+[Salvation lies within IELTS](https://hefengxian.github.io/my-ielts/#/)
+
+> https://github.com/hefengxian/my-ielts
+
+### Type Training
 
 [Qwerty Learner](https://qwerty.kaiyi.cool/)
 
 [Eye Types](https://www.eletypes.com/)
+
+### Others
+
+[English-level-up-tips](https://github.com/byoungd/English-level-up-tips)
 
 [A-Programmers-Guide-to-English](https://github.com/yujiangshui/A-Programmers-Guide-to-English)
 

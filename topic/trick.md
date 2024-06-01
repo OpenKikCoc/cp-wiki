@@ -909,7 +909,31 @@ class Solution:
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++**
+##### **C++ 1**
+
+```cpp
+class Solution {
+public:
+    int longestConsecutive(vector<int>& nums) {
+        int n = nums.size();
+        unordered_map<int, bool> m;
+        for (auto v : nums)
+            m[v] = true;
+        int res = 0;
+        for (auto v : nums) {
+            if (m[v - 1])
+                continue;
+            int cnt = 1;
+            while (m[ ++ v])
+                cnt ++ ;
+            res = max(res, cnt);
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 2**
 
 ```cpp
 class Solution {
