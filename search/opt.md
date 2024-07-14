@@ -111,7 +111,7 @@
 
 ### 简单预处理优化
 
-> [!NOTE] **[LeetCode 131. 分割回文串](https://leetcode-cn.com/problems/palindrome-partitioning/)**
+> [!NOTE] **[LeetCode 131. 分割回文串](https://leetcode.cn/problems/palindrome-partitioning/)**
 > 
 > 题意: TODO
 
@@ -226,7 +226,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 132. 分割回文串 II](https://leetcode-cn.com/problems/palindrome-partitioning-ii/)**
+> [!NOTE] **[LeetCode 132. 分割回文串 II](https://leetcode.cn/problems/palindrome-partitioning-ii/)**
 > 
 > 题意: TODO
 
@@ -320,7 +320,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 1278. 分割回文串 III](https://leetcode-cn.com/problems/palindrome-partitioning-iii/)**
+> [!NOTE] **[LeetCode 1278. 分割回文串 III](https://leetcode.cn/problems/palindrome-partitioning-iii/)**
 > 
 > 题意: TODO
 
@@ -380,7 +380,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1284. 转化为全零矩阵的最少反转次数](https://leetcode-cn.com/problems/minimum-number-of-flips-to-convert-binary-matrix-to-zero-matrix/)** [TAG]
+> [!NOTE] **[LeetCode 1284. 转化为全零矩阵的最少反转次数](https://leetcode.cn/problems/minimum-number-of-flips-to-convert-binary-matrix-to-zero-matrix/)** [TAG]
 > 
 > 题意: TODO
 
@@ -448,7 +448,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1307. 口算难题](https://leetcode-cn.com/problems/verbal-arithmetic-puzzle/)** [TAG]
+> [!NOTE] **[LeetCode 1307. 口算难题](https://leetcode.cn/problems/verbal-arithmetic-puzzle/)** [TAG]
 > 
 > 题意: TODO
 
@@ -1875,7 +1875,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 473. 火柴拼正方形](https://leetcode-cn.com/problems/matchsticks-to-square/)**
+> [!NOTE] **[LeetCode 473. 火柴拼正方形](https://leetcode.cn/problems/matchsticks-to-square/)**
 > 
 > 题意: TODO
 
@@ -1941,7 +1941,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 491. 递增子序列](https://leetcode-cn.com/problems/increasing-subsequences/)**
+> [!NOTE] **[LeetCode 491. 非递减子序列](https://leetcode.cn/problems/non-decreasing-subsequences/)**
 > 
 > 题意: TODO
 

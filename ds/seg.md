@@ -1598,7 +1598,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 699. 掉落的方块](https://leetcode-cn.com/problems/falling-squares/)**
+> [!NOTE] **[LeetCode 699. 掉落的方块](https://leetcode.cn/problems/falling-squares/)**
 > 
 > 题意: TODO
 
@@ -2526,7 +2526,7 @@ int main() {
 
 ### 进阶应用
 
-> [!NOTE] **[LeetCode 1505. 最多 K 次交换相邻数位后得到的最小整数](https://leetcode-cn.com/problems/minimum-possible-integer-after-at-most-k-adjacent-swaps-on-digits/)** [TAG] 模版题
+> [!NOTE] **[LeetCode 1505. 最多 K 次交换相邻数位后得到的最小整数](https://leetcode.cn/problems/minimum-possible-integer-after-at-most-k-adjacent-swaps-on-digits/)** [TAG] 模版题
 > 
 > 题意: TODO
 
@@ -2537,7 +2537,7 @@ int main() {
 > 1.  贪心：把最靠前的数字`x` 改最小，此时的 `最小` 需满足与 `x `位置差小于剩余可移动步数。随后进行的操作：将 `x` 与 `最小` 数字间的所有数字右移。
 > 2.  线段树：动态维护异动区间 以及 查找区间最小值来和靠前数交换
 >
-> 更新模版 参考[liouzhou_101](https://leetcode-cn.com/u/liouzhou_101/)
+> 更新模版 参考[liouzhou_101](https://leetcode.cn/u/liouzhou_101/)
 > 
 > **重复做**
 

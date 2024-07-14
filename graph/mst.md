@@ -908,7 +908,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 1135. 最低成本联通所有城市](https://leetcode-cn.com/problems/connecting-cities-with-minimum-cost/)**
+> [!NOTE] **[LeetCode 1135. 最低成本联通所有城市](https://leetcode.cn/problems/connecting-cities-with-minimum-cost/)**
 > 
 > 题意: TODO
 
@@ -1254,7 +1254,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 1489. 找到最小生成树里的关键边和伪关键边](https://leetcode-cn.com/problems/find-critical-and-pseudo-critical-edges-in-minimum-spanning-tree/)**
+> [!NOTE] **[LeetCode 1489. 找到最小生成树里的关键边和伪关键边](https://leetcode.cn/problems/find-critical-and-pseudo-critical-edges-in-minimum-spanning-tree/)**
 > 
 > 题意: TODO
 
@@ -1426,7 +1426,7 @@ public:
 
 > [!TIP] **有 $nlogn$ 算法, 参见 poj 3241**
 
-> [!NOTE] **[LeetCode 1584. 连接所有点的最小费用](https://leetcode-cn.com/problems/min-cost-to-connect-all-points/)** [TAG]
+> [!NOTE] **[LeetCode 1584. 连接所有点的最小费用](https://leetcode.cn/problems/min-cost-to-connect-all-points/)** [TAG]
 > 
 > 题意: TODO
 

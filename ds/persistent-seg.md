@@ -251,7 +251,7 @@ int main() {
 
 ## 习题
 
-> [!NOTE] **[LeetCode 1157. 子数组中占绝大多数的元素](https://leetcode-cn.com/problems/online-majority-element-in-subarray/)** [TAG]
+> [!NOTE] **[LeetCode 1157. 子数组中占绝大多数的元素](https://leetcode.cn/problems/online-majority-element-in-subarray/)** [TAG]
 > 
 > 题意: TODO
 

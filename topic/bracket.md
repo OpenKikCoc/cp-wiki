@@ -93,7 +93,7 @@ bool next_balanced_sequence(string& s) {
 
 ## 习题
 
-> [!NOTE] **[LeetCode 678. 有效的括号字符串](https://leetcode-cn.com/problems/valid-parenthesis-string/)**
+> [!NOTE] **[LeetCode 678. 有效的括号字符串](https://leetcode.cn/problems/valid-parenthesis-string/)**
 > 
 > 题意: TODO
 
@@ -146,7 +146,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2116. 判断一个括号字符串是否有效](https://leetcode-cn.com/problems/check-if-a-parentheses-string-can-be-valid/)** [TAG]
+> [!NOTE] **[LeetCode 2116. 判断一个括号字符串是否有效](https://leetcode.cn/problems/check-if-a-parentheses-string-can-be-valid/)** [TAG]
 > 
 > 题意: TODO
 
@@ -200,7 +200,7 @@ class Solution {
 * * *
 
 
-> [!NOTE] **[LeetCode 761. 特殊的二进制序列](https://leetcode-cn.com/problems/special-binary-string/)**
+> [!NOTE] **[LeetCode 761. 特殊的二进制序列](https://leetcode.cn/problems/special-binary-string/)**
 > 
 > 题意: TODO
 
@@ -260,7 +260,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1963. 使字符串平衡的最小交换次数](https://leetcode-cn.com/problems/minimum-number-of-swaps-to-make-the-string-balanced/)**
+> [!NOTE] **[LeetCode 1963. 使字符串平衡的最小交换次数](https://leetcode.cn/problems/minimum-number-of-swaps-to-make-the-string-balanced/)**
 > 
 > 题意: TODO
 

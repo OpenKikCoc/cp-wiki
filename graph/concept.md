@@ -478,7 +478,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 2127. 参加会议的最多员工数](https://leetcode-cn.com/problems/maximum-employees-to-be-invited-to-a-meeting/)** [TAG]
+> [!NOTE] **[LeetCode 2127. 参加会议的最多员工数](https://leetcode.cn/problems/maximum-employees-to-be-invited-to-a-meeting/)** [TAG]
 > 
 > 题意: TODO
 

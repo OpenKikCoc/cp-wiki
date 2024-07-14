@@ -249,7 +249,7 @@ $$
 
 ## 习题
 
-> [!NOTE] **[LeetCode 187. 重复的DNA序列](https://leetcode-cn.com/problems/repeated-dna-sequences/)**
+> [!NOTE] **[LeetCode 187. 重复的DNA序列](https://leetcode.cn/problems/repeated-dna-sequences/)**
 > 
 > 题意: TODO
 
@@ -333,7 +333,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 416. 分割等和子集](https://leetcode-cn.com/problems/partition-equal-subset-sum/)**
+> [!NOTE] **[LeetCode 416. 分割等和子集](https://leetcode.cn/problems/partition-equal-subset-sum/)**
 > 
 > 题意: TODO
 
@@ -426,7 +426,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 1452. 收藏清单](https://leetcode-cn.com/problems/people-whose-list-of-favorite-companies-is-not-a-subset-of-another-list/)**
+> [!NOTE] **[LeetCode 1452. 收藏清单](https://leetcode.cn/problems/people-whose-list-of-favorite-companies-is-not-a-subset-of-another-list/)**
 > 
 > 题意: TODO
 

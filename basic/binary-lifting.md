@@ -136,7 +136,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 1483. 树节点的第 K 个祖先](https://leetcode-cn.com/problems/kth-ancestor-of-a-tree-node/)**
+> [!NOTE] **[LeetCode 1483. 树节点的第 K 个祖先](https://leetcode.cn/problems/kth-ancestor-of-a-tree-node/)**
 > 
 > 题意: TODO
 

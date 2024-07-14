@@ -339,7 +339,7 @@ if __name__ == '__main__':
 
 * * *
 
-> [!NOTE] **[LeetCode 28. 实现 strStr()](https://leetcode-cn.com/problems/implement-strstr/)**
+> [!NOTE] **[LeetCode 28. 实现 strStr()](https://leetcode.cn/problems/implement-strstr/)**
 > 
 > 题意: TODO
 
@@ -468,7 +468,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 686. 重复叠加字符串匹配](https://leetcode-cn.com/problems/repeated-string-match/)**
+> [!NOTE] **[LeetCode 686. 重复叠加字符串匹配](https://leetcode.cn/problems/repeated-string-match/)**
 > 
 > 题意: TODO
 
@@ -845,7 +845,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 466. 统计重复个数](https://leetcode-cn.com/problems/count-the-repetitions/)**
+> [!NOTE] **[LeetCode 466. 统计重复个数](https://leetcode.cn/problems/count-the-repetitions/)**
 > 
 > 题意: TODO
 
@@ -1003,7 +1003,7 @@ int main() {
 
 ### 构造
 
-> [!NOTE] **[LeetCode 214. 最短回文串](https://leetcode-cn.com/problems/shortest-palindrome/)**
+> [!NOTE] **[LeetCode 214. 最短回文串](https://leetcode.cn/problems/shortest-palindrome/)**
 > 
 > 题意: TODO
 

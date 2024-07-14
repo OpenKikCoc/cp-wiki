@@ -257,7 +257,7 @@ dfs(root, EMPTY_NODE);
 
 ### 前序
 
-> [!NOTE] **[LeetCode 144. 二叉树的前序遍历](https://leetcode-cn.com/problems/binary-tree-preorder-traversal/)**
+> [!NOTE] **[LeetCode 144. 二叉树的前序遍历](https://leetcode.cn/problems/binary-tree-preorder-traversal/)**
 > 
 > 题意: TODO
 
@@ -380,7 +380,7 @@ class Solution:
 
 ### 中序
 
-> [!NOTE] **[LeetCode 94. 二叉树的中序遍历](https://leetcode-cn.com/problems/binary-tree-inorder-traversal/)**
+> [!NOTE] **[LeetCode 94. 二叉树的中序遍历](https://leetcode.cn/problems/binary-tree-inorder-traversal/)**
 > 
 > 题意: TODO
 
@@ -514,7 +514,7 @@ class Solution:
 
 ### 后序
 
-> [!NOTE] **[LeetCode 145. 二叉树的后序遍历](https://leetcode-cn.com/problems/binary-tree-postorder-traversal/)**
+> [!NOTE] **[LeetCode 145. 二叉树的后序遍历](https://leetcode.cn/problems/binary-tree-postorder-traversal/)**
 > 
 > 题意: TODO
 

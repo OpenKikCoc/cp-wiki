@@ -2,7 +2,7 @@
 >
 > **经典线性优化 状压递推复杂度 $O(n^2)$ -> $O(n)$**
 > 
-> 例: **[LeetCode 1723. 完成所有工作的最短时间](https://leetcode-cn.com/problems/find-minimum-time-to-finish-all-jobs/)**
+> 例: **[LeetCode 1723. 完成所有工作的最短时间](https://leetcode.cn/problems/find-minimum-time-to-finish-all-jobs/)**
 >
 > ```cpp
 > // 写法1
@@ -214,7 +214,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 1255. 得分最高的单词集合](https://leetcode-cn.com/problems/maximum-score-words-formed-by-letters/)**
+> [!NOTE] **[LeetCode 1255. 得分最高的单词集合](https://leetcode.cn/problems/maximum-score-words-formed-by-letters/)**
 > 
 > 题意: TODO
 
@@ -276,7 +276,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1601. 最多可达成的换楼请求数目](https://leetcode-cn.com/problems/maximum-number-of-achievable-transfer-requests/)**
+> [!NOTE] **[LeetCode 1601. 最多可达成的换楼请求数目](https://leetcode.cn/problems/maximum-number-of-achievable-transfer-requests/)**
 > 
 > 题意: TODO
 
@@ -330,7 +330,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1617. 统计子树中城市之间最大距离](https://leetcode-cn.com/problems/count-subtrees-with-max-distance-between-cities/)** [TAG]
+> [!NOTE] **[LeetCode 1617. 统计子树中城市之间最大距离](https://leetcode.cn/problems/count-subtrees-with-max-distance-between-cities/)** [TAG]
 > 
 > 题意: TODO
 
@@ -410,7 +410,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1681. 最小不兼容性](https://leetcode-cn.com/problems/minimum-incompatibility/)** [TAG]
+> [!NOTE] **[LeetCode 1681. 最小不兼容性](https://leetcode.cn/problems/minimum-incompatibility/)** [TAG]
 > 
 > 题意: TODO
 
@@ -487,7 +487,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2002. 两个回文子序列长度的最大乘积](https://leetcode-cn.com/problems/maximum-product-of-the-length-of-two-palindromic-subsequences/)**
+> [!NOTE] **[LeetCode 2002. 两个回文子序列长度的最大乘积](https://leetcode.cn/problems/maximum-product-of-the-length-of-two-palindromic-subsequences/)**
 > 
 > 题意: TODO
 
@@ -1368,7 +1368,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 1434. 每个人戴不同帽子的方案数](https://leetcode-cn.com/problems/number-of-ways-to-wear-different-hats-to-each-other/)** [TAG]
+> [!NOTE] **[LeetCode 1434. 每个人戴不同帽子的方案数](https://leetcode.cn/problems/number-of-ways-to-wear-different-hats-to-each-other/)** [TAG]
 > 
 > 题意: TODO
 
@@ -1505,7 +1505,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1655. 分配重复整数](https://leetcode-cn.com/problems/distribute-repeating-integers/)**
+> [!NOTE] **[LeetCode 1655. 分配重复整数](https://leetcode.cn/problems/distribute-repeating-integers/)**
 > 
 > 题意: TODO
 
@@ -1568,7 +1568,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1799. N 次操作后的最大分数和](https://leetcode-cn.com/problems/maximize-score-after-n-operations/)**
+> [!NOTE] **[LeetCode 1799. N 次操作后的最大分数和](https://leetcode.cn/problems/maximize-score-after-n-operations/)**
 > 
 > 题意: TODO
 
@@ -1616,7 +1616,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1947. 最大兼容性评分和](https://leetcode-cn.com/problems/maximum-compatibility-score-sum/)**
+> [!NOTE] **[LeetCode 1947. 最大兼容性评分和](https://leetcode.cn/problems/maximum-compatibility-score-sum/)**
 > 
 > 题意: TODO
 
@@ -1694,7 +1694,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1986. 完成任务的最少工作时间段](https://leetcode-cn.com/problems/minimum-number-of-work-sessions-to-finish-the-tasks/)**
+> [!NOTE] **[LeetCode 1986. 完成任务的最少工作时间段](https://leetcode.cn/problems/minimum-number-of-work-sessions-to-finish-the-tasks/)**
 > 
 > 题意: TODO
 
@@ -2196,7 +2196,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 526. 优美的排列](https://leetcode-cn.com/problems/beautiful-arrangement/)**
+> [!NOTE] **[LeetCode 526. 优美的排列](https://leetcode.cn/problems/beautiful-arrangement/)**
 > 
 > 题意: TODO
 
@@ -2274,7 +2274,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1349. 参加考试的最大学生数](https://leetcode-cn.com/problems/maximum-students-taking-exam/)** [TAG]
+> [!NOTE] **[LeetCode 1349. 参加考试的最大学生数](https://leetcode.cn/problems/maximum-students-taking-exam/)** [TAG]
 > 
 > 题意: TODO
 
@@ -2465,7 +2465,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1494. 并行课程 II](https://leetcode-cn.com/problems/parallel-courses-ii/)** [TAG]
+> [!NOTE] **[LeetCode 1494. 并行课程 II](https://leetcode.cn/problems/parallel-courses-ii/)** [TAG]
 > 
 > 题意: TODO
 
@@ -2876,7 +2876,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 691. 贴纸拼词](https://leetcode-cn.com/problems/stickers-to-spell-word/)**
+> [!NOTE] **[LeetCode 691. 贴纸拼词](https://leetcode.cn/problems/stickers-to-spell-word/)**
 > 
 > 题意: TODO
 
@@ -3019,7 +3019,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1595. 连通两组点的最小成本](https://leetcode-cn.com/problems/minimum-cost-to-connect-two-groups-of-points/)** [TAG]
+> [!NOTE] **[LeetCode 1595. 连通两组点的最小成本](https://leetcode.cn/problems/minimum-cost-to-connect-two-groups-of-points/)** [TAG]
 > 
 > 题意: TODO
 
@@ -3091,7 +3091,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1723. 完成所有工作的最短时间](https://leetcode-cn.com/problems/find-minimum-time-to-finish-all-jobs/)** [TAG]
+> [!NOTE] **[LeetCode 1723. 完成所有工作的最短时间](https://leetcode.cn/problems/find-minimum-time-to-finish-all-jobs/)** [TAG]
 > 
 > 题意: TODO
 
@@ -3259,7 +3259,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1879. 两个数组最小的异或值之和](https://leetcode-cn.com/problems/minimum-xor-sum-of-two-arrays/)** [TAG]
+> [!NOTE] **[LeetCode 1879. 两个数组最小的异或值之和](https://leetcode.cn/problems/minimum-xor-sum-of-two-arrays/)** [TAG]
 > 
 > 题意: TODO
 
@@ -3520,7 +3520,7 @@ public:
 
 对于三进制的状态压缩题目，可以考虑使用 `limit << 1` 的形式也可以使用 `pow(3, M)` 的形式
 
-> [!NOTE] **[LeetCode 1774. 最接近目标价格的甜点成本](https://leetcode-cn.com/problems/closest-dessert-cost/)**
+> [!NOTE] **[LeetCode 1774. 最接近目标价格的甜点成本](https://leetcode.cn/problems/closest-dessert-cost/)**
 > 
 > [weekly-230](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-02-28_Weekly-230)
 > 
@@ -3639,7 +3639,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1931. 用三种不同颜色为网格涂色](https://leetcode-cn.com/problems/painting-a-grid-with-three-different-colors/)**
+> [!NOTE] **[LeetCode 1931. 用三种不同颜色为网格涂色](https://leetcode.cn/problems/painting-a-grid-with-three-different-colors/)**
 > 
 > [weekly-249](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-07-11_Weekly-249)
 > 
@@ -3647,7 +3647,7 @@ public:
 
 > [!TIP] **思路**
 > 
-> dp思路简单版 [1411. 给 N x 3 网格图涂色的方案数](https://leetcode-cn.com/problems/number-of-ways-to-paint-n-3-grid/)
+> dp思路简单版 [1411. 给 N x 3 网格图涂色的方案数](https://leetcode.cn/problems/number-of-ways-to-paint-n-3-grid/)
 > 
 > 之前想用 01 10 11 表示三进制状态，但实现起来非常麻烦
 > 
@@ -3796,7 +3796,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1659. 最大化网格幸福感](https://leetcode-cn.com/problems/maximize-grid-happiness/)** [TAG]
+> [!NOTE] **[LeetCode 1659. 最大化网格幸福感](https://leetcode.cn/problems/maximize-grid-happiness/)** [TAG]
 > 
 > [weekly-215](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2020-11-15_Weekly-215)
 > 
@@ -3913,7 +3913,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2172. 数组的最大与和](https://leetcode-cn.com/problems/maximum-and-sum-of-array/)** [TAG]
+> [!NOTE] **[LeetCode 2172. 数组的最大与和](https://leetcode.cn/problems/maximum-and-sum-of-array/)** [TAG]
 > 
 > 题意: TODO
 
@@ -4021,7 +4021,7 @@ public:
 
 ### 八进制状压
 
-> [!NOTE] **[LeetCode 638. 大礼包](https://leetcode-cn.com/problems/shopping-offers/)**
+> [!NOTE] **[LeetCode 638. 大礼包](https://leetcode.cn/problems/shopping-offers/)**
 > 
 > 题意: TODO
 
@@ -4111,7 +4111,7 @@ public:
 
 ### 状压 + 记忆化搜索
 
-> [!NOTE] **[LeetCode 1900. 最佳运动员的比拼回合](https://leetcode-cn.com/problems/the-earliest-and-latest-rounds-where-players-compete/)**
+> [!NOTE] **[LeetCode 1900. 最佳运动员的比拼回合](https://leetcode.cn/problems/the-earliest-and-latest-rounds-where-players-compete/)**
 > 
 > 题意: TODO
 
@@ -4202,7 +4202,7 @@ public:
 
 ### 状压 + 枚举子集 + 组合计数
 
-> [!NOTE] **[LeetCode 1994. 好子集的数目](https://leetcode-cn.com/problems/the-number-of-good-subsets/)** [TAG]
+> [!NOTE] **[LeetCode 1994. 好子集的数目](https://leetcode.cn/problems/the-number-of-good-subsets/)** [TAG]
 > 
 > 题意: TODO
 
@@ -4406,7 +4406,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 合作开发](https://leetcode-cn.com/contest/cnunionpay-2022spring/problems/lCh58I/)**
+> [!NOTE] **[LeetCode 合作开发](https://leetcode.cn/contest/cnunionpay-2022spring/problems/lCh58I/)**
 > 
 > 题意: TODO
 
@@ -4484,7 +4484,7 @@ public:
 
 ### 状压 + meet in the middle
 
-> [!NOTE] **[LeetCode 2035. 将数组分成两个数组并最小化数组和的差](https://leetcode-cn.com/problems/partition-array-into-two-arrays-to-minimize-sum-difference/)**
+> [!NOTE] **[LeetCode 2035. 将数组分成两个数组并最小化数组和的差](https://leetcode.cn/problems/partition-array-into-two-arrays-to-minimize-sum-difference/)**
 > 
 > [weekly-262](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-10-10_Weekly-262)
 > 
@@ -4578,7 +4578,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1755. 最接近目标值的子序列和](https://leetcode-cn.com/problems/closest-subsequence-sum/)** [TAG]
+> [!NOTE] **[LeetCode 1755. 最接近目标值的子序列和](https://leetcode.cn/problems/closest-subsequence-sum/)** [TAG]
 > 
 > 题意: TODO
 

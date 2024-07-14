@@ -150,7 +150,7 @@ $E = \{a_{j_1}a_{j_2}\cdots a_{j_{n-1}}|a_j \in S, 1 \leq j \leq n\}$
 
 ### 一般欧拉
 
-> [!NOTE] **[LeetCode 2097. 合法重新排列数对](https://leetcode-cn.com/problems/valid-arrangement-of-pairs/)** [TAG]
+> [!NOTE] **[LeetCode 2097. 合法重新排列数对](https://leetcode.cn/problems/valid-arrangement-of-pairs/)** [TAG]
 > 
 > 题意: TODO
 
@@ -567,7 +567,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 332. 重新安排行程](https://leetcode-cn.com/problems/reconstruct-itinerary/)**
+> [!NOTE] **[LeetCode 332. 重新安排行程](https://leetcode.cn/problems/reconstruct-itinerary/)**
 > 
 > 题意: TODO
 
@@ -721,7 +721,7 @@ int main() {
 
 ### 复杂
 
-> [!NOTE] **[LeetCode 753. 破解保险箱](https://leetcode-cn.com/problems/cracking-the-safe/)**
+> [!NOTE] **[LeetCode 753. 破解保险箱](https://leetcode.cn/problems/cracking-the-safe/)**
 > 
 > 题意: TODO
 

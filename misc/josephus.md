@@ -84,7 +84,7 @@ $$
 
 ## 习题
 
-> [!NOTE] **[LeetCode 390. 消除游戏](https://leetcode-cn.com/problems/elimination-game/)**
+> [!NOTE] **[LeetCode 390. 消除游戏](https://leetcode.cn/problems/elimination-game/)**
 > 
 > 题意: TODO
 

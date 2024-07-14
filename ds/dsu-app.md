@@ -120,7 +120,7 @@
 
 ### 一般联通性质
 
-> [!NOTE] **[LeetCode 1562. 查找大小为 M 的最新分组](https://leetcode-cn.com/problems/find-latest-group-of-size-m/)**
+> [!NOTE] **[LeetCode 1562. 查找大小为 M 的最新分组](https://leetcode.cn/problems/find-latest-group-of-size-m/)**
 > 
 > 题意: 
 > 
@@ -498,7 +498,7 @@ public:
 
 ### 离线并查集
 
-> [!NOTE] **[LeetCode 1697. 检查边长度限制的路径是否存在](https://leetcode-cn.com/problems/checking-existence-of-edge-length-limited-paths/)** [TAG]
+> [!NOTE] **[LeetCode 1697. 检查边长度限制的路径是否存在](https://leetcode.cn/problems/checking-existence-of-edge-length-limited-paths/)** [TAG]
 > 
 > [Weekly-220](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2020-12-20_Weekly-220)
 > 
@@ -704,7 +704,7 @@ public:
 
 ### 联通性质进阶: 线段染色 / 快速找右侧的一个
 
-> [!NOTE] **[LeetCode 1851. 包含每个查询的最小区间](https://leetcode-cn.com/problems/minimum-interval-to-include-each-query/)** [TAG]
+> [!NOTE] **[LeetCode 1851. 包含每个查询的最小区间](https://leetcode.cn/problems/minimum-interval-to-include-each-query/)** [TAG]
 > 
 > [weekly-239](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-05-02_Weekly-239)
 > 

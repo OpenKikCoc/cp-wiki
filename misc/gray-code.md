@@ -126,7 +126,7 @@ int rev_g(int g) {
 
 - [SGU #249 Matrix](http://codeforces.com/problemsets/acmsguru/problem/99999/249) Difficulty: medium
 
-> [!NOTE] **[LeetCode 89. 格雷编码](https://leetcode-cn.com/problems/gray-code/)**
+> [!NOTE] **[LeetCode 89. 格雷编码](https://leetcode.cn/problems/gray-code/)**
 > 
 > 题意: TODO
 
@@ -199,7 +199,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 1238. 循环码排列](https://leetcode-cn.com/problems/circular-permutation-in-binary-representation/)**
+> [!NOTE] **[LeetCode 1238. 循环码排列](https://leetcode.cn/problems/circular-permutation-in-binary-representation/)**
 > 
 > 题意: TODO
 
@@ -260,7 +260,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1611. 使整数变为 0 的最少操作次数](https://leetcode-cn.com/problems/minimum-one-bit-operations-to-make-integers-zero/)** [TAG]
+> [!NOTE] **[LeetCode 1611. 使整数变为 0 的最少操作次数](https://leetcode.cn/problems/minimum-one-bit-operations-to-make-integers-zero/)** [TAG]
 > 
 > 题意: TODO
 

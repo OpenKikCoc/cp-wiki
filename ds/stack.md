@@ -181,7 +181,7 @@ stk.clear()
 
 ### 弹出匹配
 
-> [!NOTE] **[LeetCode 20. 有效的括号](https://leetcode-cn.com/problems/valid-parentheses/)**
+> [!NOTE] **[LeetCode 20. 有效的括号](https://leetcode.cn/problems/valid-parentheses/)**
 > 
 > 题意: TODO
 
@@ -265,7 +265,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 591. 标签验证器](https://leetcode-cn.com/problems/tag-validator/)**
+> [!NOTE] **[LeetCode 591. 标签验证器](https://leetcode.cn/problems/tag-validator/)**
 > 
 > 题意: TODO
 
@@ -338,7 +338,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1249. 移除无效的括号](https://leetcode-cn.com/problems/minimum-remove-to-make-valid-parentheses/)**
+> [!NOTE] **[LeetCode 1249. 移除无效的括号](https://leetcode.cn/problems/minimum-remove-to-make-valid-parentheses/)**
 > 
 > 题意: TODO
 
@@ -392,7 +392,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1541. 平衡括号字符串的最少插入次数](https://leetcode-cn.com/problems/minimum-insertions-to-balance-a-parentheses-string/)** [TAG]
+> [!NOTE] **[LeetCode 1541. 平衡括号字符串的最少插入次数](https://leetcode.cn/problems/minimum-insertions-to-balance-a-parentheses-string/)** [TAG]
 > 
 > 题意: TODO
 
@@ -619,7 +619,7 @@ public:
 
 ### 栈维护
 
-> [!NOTE] **[LeetCode 636. 函数的独占时间](https://leetcode-cn.com/problems/exclusive-time-of-functions/)**
+> [!NOTE] **[LeetCode 636. 函数的独占时间](https://leetcode.cn/problems/exclusive-time-of-functions/)**
 > 
 > 题意: TODO
 
@@ -818,7 +818,7 @@ public:
 
 ### 其他操作
 
-> [!NOTE] **[LeetCode 1190. 反转每对括号间的子串](https://leetcode-cn.com/problems/reverse-substrings-between-each-pair-of-parentheses/)** [TAG]
+> [!NOTE] **[LeetCode 1190. 反转每对括号间的子串](https://leetcode.cn/problems/reverse-substrings-between-each-pair-of-parentheses/)** [TAG]
 > 
 > 题意: TODO
 
@@ -887,7 +887,7 @@ public:
 
 ### trick
 
-> [!NOTE] **[LeetCode 2197. 替换数组中的非互质数](https://leetcode-cn.com/problems/replace-non-coprime-numbers-in-array/)** [TAG]
+> [!NOTE] **[LeetCode 2197. 替换数组中的非互质数](https://leetcode.cn/problems/replace-non-coprime-numbers-in-array/)** [TAG]
 > 
 > 题意: TODO
 

@@ -1,6 +1,6 @@
 ## 习题
 
-> [!NOTE] **[LeetCode 41. 缺失的第一个正数](https://leetcode-cn.com/problems/first-missing-positive/)**
+> [!NOTE] **[LeetCode 41. 缺失的第一个正数](https://leetcode.cn/problems/first-missing-positive/)**
 > 
 > 题意: TODO
 
@@ -65,7 +65,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 442. 数组中重复的数据](https://leetcode-cn.com/problems/find-all-duplicates-in-an-array/)**
+> [!NOTE] **[LeetCode 442. 数组中重复的数据](https://leetcode.cn/problems/find-all-duplicates-in-an-array/)**
 > 
 > 题意: TODO
 
@@ -166,7 +166,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 448. 找到所有数组中消失的数字](https://leetcode-cn.com/problems/find-all-numbers-disappeared-in-an-array/)**
+> [!NOTE] **[LeetCode 448. 找到所有数组中消失的数字](https://leetcode.cn/problems/find-all-numbers-disappeared-in-an-array/)**
 > 
 > 题意: TODO
 
@@ -252,7 +252,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 287. 寻找重复数](https://leetcode-cn.com/problems/find-the-duplicate-number/)**
+> [!NOTE] **[LeetCode 287. 寻找重复数](https://leetcode.cn/problems/find-the-duplicate-number/)**
 > 
 > 题意: TODO
 

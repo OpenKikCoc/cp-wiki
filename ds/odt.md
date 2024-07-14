@@ -193,7 +193,7 @@ void performance(int l, int r) {
 - [「Luogu 2787」理理思维](https://www.luogu.com.cn/problem/P2787)
 - [「Luogu 4979」矿洞：坍塌](https://www.luogu.com.cn/problem/P4979)
 
-> [!NOTE] **[LeetCode 715. Range 模块](https://leetcode-cn.com/problems/range-module/)**
+> [!NOTE] **[LeetCode 715. Range 模块](https://leetcode.cn/problems/range-module/)**
 > 
 > 题意: TODO
 
@@ -403,7 +403,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2213. 由单个字符重复的最长子字符串](https://leetcode-cn.com/problems/longest-substring-of-one-repeating-character/)** [TAG]
+> [!NOTE] **[LeetCode 2213. 由单个字符重复的最长子字符串](https://leetcode.cn/problems/longest-substring-of-one-repeating-character/)** [TAG]
 > 
 > 题意: TODO
 

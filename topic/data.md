@@ -1,6 +1,6 @@
 ## 习题
 
-> [!NOTE] **[LeetCode 1198. 找出所有行中最小公共元素](https://leetcode-cn.com/problems/find-smallest-common-element-in-all-rows/)**
+> [!NOTE] **[LeetCode 1198. 找出所有行中最小公共元素](https://leetcode.cn/problems/find-smallest-common-element-in-all-rows/)**
 > 
 > 题意: TODO
 
@@ -49,7 +49,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1326. 灌溉花园的最少水龙头数目](https://leetcode-cn.com/problems/minimum-number-of-taps-to-open-to-water-a-garden/)** [TAG]
+> [!NOTE] **[LeetCode 1326. 灌溉花园的最少水龙头数目](https://leetcode.cn/problems/minimum-number-of-taps-to-open-to-water-a-garden/)** [TAG]
 > 
 > 题意: TODO
 
@@ -172,7 +172,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1766. 互质树](https://leetcode-cn.com/problems/tree-of-coprimes/)** [TAG]
+> [!NOTE] **[LeetCode 1766. 互质树](https://leetcode.cn/problems/tree-of-coprimes/)** [TAG]
 > 
 > 题意: TODO
 
@@ -251,7 +251,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1906. 查询差绝对值的最小值](https://leetcode-cn.com/problems/minimum-absolute-difference-queries/)**
+> [!NOTE] **[LeetCode 1906. 查询差绝对值的最小值](https://leetcode.cn/problems/minimum-absolute-difference-queries/)**
 > 
 > 题意: TODO
 
@@ -315,7 +315,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1981. 最小化目标值与所选元素的差](https://leetcode-cn.com/problems/minimize-the-difference-between-target-and-chosen-elements/)**
+> [!NOTE] **[LeetCode 1981. 最小化目标值与所选元素的差](https://leetcode.cn/problems/minimize-the-difference-between-target-and-chosen-elements/)**
 > 
 > 题意: TODO
 
@@ -422,7 +422,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2188 完成比赛的最少时间](https://leetcode-cn.com/problems/minimum-time-to-finish-the-race/)**
+> [!NOTE] **[LeetCode 2188 完成比赛的最少时间](https://leetcode.cn/problems/minimum-time-to-finish-the-race/)**
 > 
 > 题意: TODO
 

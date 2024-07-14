@@ -1211,7 +1211,7 @@ int main() {
 
 ### LeetCode 基础
 
-> [!NOTE] **[LeetCode 233. 数字 1 的个数](https://leetcode-cn.com/problems/number-of-digit-one/)**
+> [!NOTE] **[LeetCode 233. 数字 1 的个数](https://leetcode.cn/problems/number-of-digit-one/)**
 > 
 > 题意: TODO
 
@@ -1347,7 +1347,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 600. 不含连续1的非负整数](https://leetcode-cn.com/problems/non-negative-integers-without-consecutive-ones/)**
+> [!NOTE] **[LeetCode 600. 不含连续1的非负整数](https://leetcode.cn/problems/non-negative-integers-without-consecutive-ones/)**
 > 
 > 题意: TODO
 
@@ -1445,7 +1445,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1397. 找到所有好字符串](https://leetcode-cn.com/problems/find-all-good-strings/)** [TAG]
+> [!NOTE] **[LeetCode 1397. 找到所有好字符串](https://leetcode.cn/problems/find-all-good-strings/)** [TAG]
 > 
 > 题意: TODO
 

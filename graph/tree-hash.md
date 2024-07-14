@@ -171,7 +171,7 @@ $prime(i)$ 表示第 $i$ 个质数。
 
 ## 习题
 
-> [!NOTE] **[LeetCode 572. 另一个树的子树](https://leetcode-cn.com/problems/subtree-of-another-tree/)**
+> [!NOTE] **[LeetCode 572. 另一个树的子树](https://leetcode.cn/problems/subtree-of-another-tree/)**
 > 
 > 题意: TODO
 
@@ -242,7 +242,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 652. 寻找重复的子树](https://leetcode-cn.com/problems/find-duplicate-subtrees/)**
+> [!NOTE] **[LeetCode 652. 寻找重复的子树](https://leetcode.cn/problems/find-duplicate-subtrees/)**
 > 
 > 题意: TODO
 

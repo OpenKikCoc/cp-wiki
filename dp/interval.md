@@ -642,7 +642,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 87. 扰乱字符串](https://leetcode-cn.com/problems/scramble-string/)**
+> [!NOTE] **[LeetCode 87. 扰乱字符串](https://leetcode.cn/problems/scramble-string/)**
 > 
 > 题意: TODO
 
@@ -822,7 +822,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 97. 交错字符串](https://leetcode-cn.com/problems/interleaving-string/)**
+> [!NOTE] **[LeetCode 97. 交错字符串](https://leetcode.cn/problems/interleaving-string/)**
 > 
 > 题意: TODO
 
@@ -923,7 +923,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 312. 戳气球](https://leetcode-cn.com/problems/burst-balloons/)**
+> [!NOTE] **[LeetCode 312. 戳气球](https://leetcode.cn/problems/burst-balloons/)**
 > 
 > 题意: TODO
 
@@ -1011,7 +1011,7 @@ class Solution(object):
 
 * * *
 
-> [!NOTE] **[LeetCode 375. 猜数字大小 II](https://leetcode-cn.com/problems/guess-number-higher-or-lower-ii/)**
+> [!NOTE] **[LeetCode 375. 猜数字大小 II](https://leetcode.cn/problems/guess-number-higher-or-lower-ii/)**
 > 
 > 题意: TODO
 
@@ -1095,7 +1095,7 @@ class Solution(object):
 
 * * *
 
-> [!NOTE] **[LeetCode 486. 预测赢家](https://leetcode-cn.com/problems/predict-the-winner/)**
+> [!NOTE] **[LeetCode 486. 预测赢家](https://leetcode.cn/problems/predict-the-winner/)**
 > 
 > 题意: TODO
 
@@ -1170,7 +1170,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 664. 奇怪的打印机](https://leetcode-cn.com/problems/strange-printer/)**
+> [!NOTE] **[LeetCode 664. 奇怪的打印机](https://leetcode.cn/problems/strange-printer/)**
 > 
 > 题意: TODO
 
@@ -1267,7 +1267,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 730. 统计不同回文子序列](https://leetcode-cn.com/problems/count-different-palindromic-subsequences/)**
+> [!NOTE] **[LeetCode 730. 统计不同回文子序列](https://leetcode.cn/problems/count-different-palindromic-subsequences/)**
 > 
 > 题意: TODO
 
@@ -1405,7 +1405,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 1246. 删除回文子数组](https://leetcode-cn.com/problems/palindrome-removal/)**
+> [!NOTE] **[LeetCode 1246. 删除回文子数组](https://leetcode.cn/problems/palindrome-removal/)**
 > 
 > 题意: TODO
 
@@ -1478,13 +1478,13 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 1531. 压缩字符串 II](https://leetcode-cn.com/problems/string-compression-ii/)** [TAG]
+> [!NOTE] **[LeetCode 1531. 压缩字符串 II](https://leetcode.cn/problems/string-compression-ii/)** [TAG]
 > 
 > 题意: TODO
 
 > [!TIP] **思路**
 > 
-> dp 解释参考 [题解](https://leetcode-cn.com/problems/string-compression-ii/solution/zhuan-zai-dp-by-mike-meng/)
+> dp 解释参考 [题解](https://leetcode.cn/problems/string-compression-ii/solution/zhuan-zai-dp-by-mike-meng/)
 > 
 > 状态定义 十分十分 trick 的状态转移与推理 ==> `前 i 个字符中最多选择 j 个字符进行删除`
 > 
@@ -1541,7 +1541,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1770. 执行乘法运算的最大分数](https://leetcode-cn.com/problems/maximum-score-from-performing-multiplication-operations/)**
+> [!NOTE] **[LeetCode 1770. 执行乘法运算的最大分数](https://leetcode.cn/problems/maximum-score-from-performing-multiplication-operations/)**
 > 
 > 题意: TODO
 
@@ -1784,7 +1784,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 1444. 切披萨的方案数](https://leetcode-cn.com/problems/number-of-ways-of-cutting-a-pizza/)**
+> [!NOTE] **[LeetCode 1444. 切披萨的方案数](https://leetcode.cn/problems/number-of-ways-of-cutting-a-pizza/)**
 > 
 > 题意: 
 > 
@@ -1850,7 +1850,7 @@ public:
 
 ### 进阶
 
-> [!NOTE] **[LeetCode 2019. 解出数学表达式的学生分数](https://leetcode-cn.com/problems/the-score-of-students-solving-math-expression/)**
+> [!NOTE] **[LeetCode 2019. 解出数学表达式的学生分数](https://leetcode.cn/problems/the-score-of-students-solving-math-expression/)**
 > 
 > [weekly-260](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-09-26_Weekly-260)
 > 
@@ -2050,7 +2050,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1771. 由子序列构造的最长回文串的长度](https://leetcode-cn.com/problems/maximize-palindrome-length-from-subsequences/)** [TAG]
+> [!NOTE] **[LeetCode 1771. 由子序列构造的最长回文串的长度](https://leetcode.cn/problems/maximize-palindrome-length-from-subsequences/)** [TAG]
 > 
 > 题意: TODO
 
@@ -2345,7 +2345,7 @@ public:
 
 尤其是线性优化
 
-> [!NOTE] **[LeetCode 1937. 扣分后的最大得分](https://leetcode-cn.com/problems/maximum-number-of-points-with-cost/)**
+> [!NOTE] **[LeetCode 1937. 扣分后的最大得分](https://leetcode.cn/problems/maximum-number-of-points-with-cost/)**
 > 
 > [weekly-250](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-07-18_Weekly-250)
 > 
@@ -2418,7 +2418,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1977. 划分数字的方案数](https://leetcode-cn.com/problems/number-of-ways-to-separate-numbers/)**
+> [!NOTE] **[LeetCode 1977. 划分数字的方案数](https://leetcode.cn/problems/number-of-ways-to-separate-numbers/)**
 > 
 > [biweekly-59](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-08-21_Biweekly-59)
 > 
@@ -2523,7 +2523,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 546. 移除盒子](https://leetcode-cn.com/problems/remove-boxes/)**
+> [!NOTE] **[LeetCode 546. 移除盒子](https://leetcode.cn/problems/remove-boxes/)**
 > 
 > 题意: TODO
 
@@ -2690,7 +2690,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1563. 石子游戏 V](https://leetcode-cn.com/problems/stone-game-v/)** [TAG]
+> [!NOTE] **[LeetCode 1563. 石子游戏 V](https://leetcode.cn/problems/stone-game-v/)** [TAG]
 > 
 > 题意: TODO
 
@@ -2702,7 +2702,7 @@ public:
 > 
 > - 区间DP基础上 + 记忆化 ==> AC
 > 
-> - 优化写法: [考虑不用记忆化搜索的优化](https://leetcode-cn.com/problems/stone-game-v/solution/on2dong-tai-gui-hua-jie-fa-by-huangyuyang/) ==> AC
+> - 优化写法: [考虑不用记忆化搜索的优化](https://leetcode.cn/problems/stone-game-v/solution/on2dong-tai-gui-hua-jie-fa-by-huangyuyang/) ==> AC
 > 
 > **非常经典的优化（题目条件每个数都是正数 且本题特殊条件说明左右区间比大小 显然可以预处理）**
 > 

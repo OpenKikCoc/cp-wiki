@@ -296,7 +296,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 5. 最长回文子串](https://leetcode-cn.com/problems/longest-palindromic-substring/)**
+> [!NOTE] **[LeetCode 5. 最长回文子串](https://leetcode.cn/problems/longest-palindromic-substring/)**
 > 
 > 题意: TODO
 
@@ -372,7 +372,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 647. 回文子串](https://leetcode-cn.com/problems/palindromic-substrings/)**
+> [!NOTE] **[LeetCode 647. 回文子串](https://leetcode.cn/problems/palindromic-substrings/)**
 > 
 > 题意: TODO
 
@@ -458,7 +458,7 @@ class Solution:
 
 ### 进阶
 
-> [!NOTE] **[LeetCode 1960. 两个回文子字符串长度的最大乘积](https://leetcode-cn.com/problems/maximum-product-of-the-length-of-two-palindromic-substrings/)**
+> [!NOTE] **[LeetCode 1960. 两个回文子字符串长度的最大乘积](https://leetcode.cn/problems/maximum-product-of-the-length-of-two-palindromic-substrings/)**
 > 
 > [Biweekly-58]()
 > 

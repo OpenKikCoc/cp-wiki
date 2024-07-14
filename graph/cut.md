@@ -239,7 +239,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 1192. 查找集群内的「关键连接」](https://leetcode-cn.com/problems/critical-connections-in-a-network/)**
+> [!NOTE] **[LeetCode 1192. 查找集群内的「关键连接」](https://leetcode.cn/problems/critical-connections-in-a-network/)**
 > 
 > 题意: TODO
 

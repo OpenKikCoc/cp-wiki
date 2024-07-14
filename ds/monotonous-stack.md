@@ -200,7 +200,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 1944. 队列中可以看到的人数](https://leetcode-cn.com/problems/number-of-visible-people-in-a-queue/)**
+> [!NOTE] **[LeetCode 1944. 队列中可以看到的人数](https://leetcode.cn/problems/number-of-visible-people-in-a-queue/)**
 > 
 > [biweekly-57](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-07-24_Biweekly-57/)
 > 
@@ -283,7 +283,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 496. 下一个更大元素 I](https://leetcode-cn.com/problems/next-greater-element-i/)**
+> [!NOTE] **[LeetCode 496. 下一个更大元素 I](https://leetcode.cn/problems/next-greater-element-i/)**
 > 
 > 题意: TODO
 
@@ -376,7 +376,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 503. 下一个更大元素 II](https://leetcode-cn.com/problems/next-greater-element-ii/)**
+> [!NOTE] **[LeetCode 503. 下一个更大元素 II](https://leetcode.cn/problems/next-greater-element-ii/)**
 > 
 > 题意: TODO
 
@@ -491,7 +491,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 556. 下一个更大元素 III](https://leetcode-cn.com/problems/next-greater-element-iii/)**
+> [!NOTE] **[LeetCode 556. 下一个更大元素 III](https://leetcode.cn/problems/next-greater-element-iii/)**
 > 
 > 题意: TODO
 
@@ -537,7 +537,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 735. 行星碰撞](https://leetcode-cn.com/problems/asteroid-collision/)**
+> [!NOTE] **[LeetCode 735. 行星碰撞](https://leetcode.cn/problems/asteroid-collision/)**
 > 
 > 题意: TODO
 
@@ -732,7 +732,7 @@ public:
 
 ### 进阶（推导）
 
-> [!NOTE] **[LeetCode 42. 接雨水](https://leetcode-cn.com/problems/trapping-rain-water/)**
+> [!NOTE] **[LeetCode 42. 接雨水](https://leetcode.cn/problems/trapping-rain-water/)**
 > 
 > 题意: TODO
 
@@ -873,7 +873,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 84. 柱状图中最大的矩形](https://leetcode-cn.com/problems/largest-rectangle-in-histogram/)**
+> [!NOTE] **[LeetCode 84. 柱状图中最大的矩形](https://leetcode.cn/problems/largest-rectangle-in-histogram/)**
 > 
 > 题意: TODO
 
@@ -1022,7 +1022,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 85. 最大矩形](https://leetcode-cn.com/problems/maximal-rectangle/)**
+> [!NOTE] **[LeetCode 85. 最大矩形](https://leetcode.cn/problems/maximal-rectangle/)**
 > 
 > 题意: TODO
 
@@ -1188,7 +1188,7 @@ int main() {
 * * *
 
 
-> [!NOTE] **[LeetCode 1944. 队列中可以看到的人数](https://leetcode-cn.com/problems/number-of-visible-people-in-a-queue/)**
+> [!NOTE] **[LeetCode 1944. 队列中可以看到的人数](https://leetcode.cn/problems/number-of-visible-people-in-a-queue/)**
 > 
 > 题意: TODO
 
@@ -1566,7 +1566,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 316. 去除重复字母](https://leetcode-cn.com/problems/remove-duplicate-letters/)**
+> [!NOTE] **[LeetCode 316. 去除重复字母](https://leetcode.cn/problems/remove-duplicate-letters/)**
 > 
 > 题意: TODO
 
@@ -1637,7 +1637,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2030. 含特定字母的最小子序列](https://leetcode-cn.com/problems/smallest-k-length-subsequence-with-occurrences-of-a-letter/)**
+> [!NOTE] **[LeetCode 2030. 含特定字母的最小子序列](https://leetcode.cn/problems/smallest-k-length-subsequence-with-occurrences-of-a-letter/)**
 > 
 > [weekly-261](https://github.com/OpenKikCoc/LeetCode/blob/master/Contest/2021-10-03_Weekly-261/)
 > 
@@ -1718,7 +1718,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 321. 拼接最大数](https://leetcode-cn.com/problems/create-maximum-number/)**
+> [!NOTE] **[LeetCode 321. 拼接最大数](https://leetcode.cn/problems/create-maximum-number/)**
 > 
 > 题意: TODO
 
@@ -1819,7 +1819,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 402. 移掉K位数字](https://leetcode-cn.com/problems/remove-k-digits/)**
+> [!NOTE] **[LeetCode 402. 移掉K位数字](https://leetcode.cn/problems/remove-k-digits/)**
 > 
 > 题意: TODO
 
@@ -1948,7 +1948,7 @@ class Solution(object):
 
 * * *
 
-> [!NOTE] **[LeetCode 1673. 找出最具竞争力的子序列](https://leetcode-cn.com/problems/find-the-most-competitive-subsequence/)**
+> [!NOTE] **[LeetCode 1673. 找出最具竞争力的子序列](https://leetcode.cn/problems/find-the-most-competitive-subsequence/)**
 > 
 > 题意: TODO
 
@@ -1999,7 +1999,7 @@ public:
 
 ### 132 模式
 
-> [!NOTE] **[LeetCode 456. 132模式](https://leetcode-cn.com/problems/132-pattern/)**
+> [!NOTE] **[LeetCode 456. 132模式](https://leetcode.cn/problems/132-pattern/)**
 > 
 > 题意: TODO
 

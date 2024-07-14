@@ -408,7 +408,7 @@ int main() {
 * * *
 
 
-> [!NOTE] **[LeetCode 488. 祖玛游戏](https://leetcode-cn.com/problems/zuma-game/)**
+> [!NOTE] **[LeetCode 488. 祖玛游戏](https://leetcode.cn/problems/zuma-game/)**
 > 
 > 题意: TODO
 

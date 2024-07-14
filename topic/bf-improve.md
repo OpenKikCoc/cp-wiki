@@ -633,13 +633,13 @@ public:
 
 ### 双指针
 
-> [!NOTE] **[LeetCode 1521. 找到最接近目标值的函数值](https://leetcode-cn.com/problems/find-a-value-of-a-mysterious-function-closest-to-target/)** [TAG]
+> [!NOTE] **[LeetCode 1521. 找到最接近目标值的函数值](https://leetcode.cn/problems/find-a-value-of-a-mysterious-function-closest-to-target/)** [TAG]
 > 
 > 题意: TODO
 
 > [!TIP] **思路**
 > 
-> 可以部分参考 [898. 子数组按位或操作](https://leetcode-cn.com/problems/bitwise-ors-of-subarrays/)
+> 可以部分参考 [898. 子数组按位或操作](https://leetcode.cn/problems/bitwise-ors-of-subarrays/)
 > 
 > - 双指针 + 前缀和
 > 

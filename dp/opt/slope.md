@@ -470,7 +470,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 1776. 车队 II](https://leetcode-cn.com/problems/car-fleet-ii/)** [TAG]
+> [!NOTE] **[LeetCode 1776. 车队 II](https://leetcode.cn/problems/car-fleet-ii/)** [TAG]
 > 
 > 题意: TODO
 

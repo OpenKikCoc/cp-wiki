@@ -302,7 +302,7 @@ if __name__ == "__main__":
 
 * * *
 
-> [!NOTE] **[LeetCode 2013. 检测正方形](https://leetcode-cn.com/problems/detect-squares/)**
+> [!NOTE] **[LeetCode 2013. 检测正方形](https://leetcode.cn/problems/detect-squares/)**
 > 
 > 题意: TODO
 

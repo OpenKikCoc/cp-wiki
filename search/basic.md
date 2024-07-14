@@ -6,13 +6,13 @@
 > 
 > 回溯时需特别注意 **恢复现场** 的相关实现
 > 
-> 如下面 [LeetCode LCP 58. 积木拼接](https://leetcode-cn.com/problems/De4qBB/) 一题中使用全局变量执行修改与回溯
+> 如下面 [LeetCode LCP 58. 积木拼接](https://leetcode.cn/problems/De4qBB/) 一题中使用全局变量执行修改与回溯
 > 
 > 但全局变量本身会在下一层递归中被再次修改，这样在上层递归中执行【恢复现场】时必然有问题。
 
 ### 构造
 
-> [!NOTE] **[LeetCode 22. 括号生成](https://leetcode-cn.com/problems/generate-parentheses/)**
+> [!NOTE] **[LeetCode 22. 括号生成](https://leetcode.cn/problems/generate-parentheses/)**
 > 
 > 题意: TODO
 
@@ -114,7 +114,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 95. 不同的二叉搜索树 II](https://leetcode-cn.com/problems/unique-binary-search-trees-ii/)**
+> [!NOTE] **[LeetCode 95. 不同的二叉搜索树 II](https://leetcode.cn/problems/unique-binary-search-trees-ii/)**
 > 
 > 题意: TODO
 
@@ -210,7 +210,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 96. 不同的二叉搜索树](https://leetcode-cn.com/problems/unique-binary-search-trees/)**
+> [!NOTE] **[LeetCode 96. 不同的二叉搜索树](https://leetcode.cn/problems/unique-binary-search-trees/)**
 > 
 > 题意: TODO
 
@@ -293,7 +293,7 @@ class Solution:
 
 ### 子集
 
-> [!NOTE] **[LeetCode 78. 子集](https://leetcode-cn.com/problems/subsets/)**
+> [!NOTE] **[LeetCode 78. 子集](https://leetcode.cn/problems/subsets/)**
 > 
 > 题意: TODO
 
@@ -383,7 +383,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 90. 子集 II](https://leetcode-cn.com/problems/subsets-ii/)**
+> [!NOTE] **[LeetCode 90. 子集 II](https://leetcode.cn/problems/subsets-ii/)**
 > 
 > 题意: TODO
 
@@ -451,7 +451,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 698. 划分为k个相等的子集](https://leetcode-cn.com/problems/partition-to-k-equal-sum-subsets/)**
+> [!NOTE] **[LeetCode 698. 划分为k个相等的子集](https://leetcode.cn/problems/partition-to-k-equal-sum-subsets/)**
 > 
 > 题意: TODO
 
@@ -555,7 +555,7 @@ class Solution:
 
 ### 排列
 
-> [!NOTE] **[LeetCode 46. 全排列](https://leetcode-cn.com/problems/permutations/)**
+> [!NOTE] **[LeetCode 46. 全排列](https://leetcode.cn/problems/permutations/)**
 > 
 > 题意: TODO
 
@@ -643,7 +643,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 47. 全排列 II](https://leetcode-cn.com/problems/permutations-ii/)**
+> [!NOTE] **[LeetCode 47. 全排列 II](https://leetcode.cn/problems/permutations-ii/)**
 > 
 > 题意: TODO
 
@@ -727,7 +727,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 784. 字母大小写全排列](https://leetcode-cn.com/problems/letter-case-permutation/)**
+> [!NOTE] **[LeetCode 784. 字母大小写全排列](https://leetcode.cn/problems/letter-case-permutation/)**
 > 
 > 题意: TODO
 
@@ -803,7 +803,7 @@ class Solution:
 
 ### 组合
 
-> [!NOTE] **[LeetCode 77. 组合](https://leetcode-cn.com/problems/combinations/)**
+> [!NOTE] **[LeetCode 77. 组合](https://leetcode.cn/problems/combinations/)**
 > 
 > 题意: TODO
 
@@ -874,7 +874,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 39. 组合总和](https://leetcode-cn.com/problems/combination-sum/)**
+> [!NOTE] **[LeetCode 39. 组合总和](https://leetcode.cn/problems/combination-sum/)**
 > 
 > 题意: TODO
 
@@ -999,13 +999,13 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 216. 组合总和 III](https://leetcode-cn.com/problems/combination-sum-iii/)**
+> [!NOTE] **[LeetCode 216. 组合总和 III](https://leetcode.cn/problems/combination-sum-iii/)**
 > 
 > 题意: TODO
 
 > [!TIP] **思路**
 >
-> 和  **[LeetCode 39. 组合总和](https://leetcode-cn.com/problems/combination-sum/)** 思路类似，不同点在于：
+> 和  **[LeetCode 39. 组合总和](https://leetcode.cn/problems/combination-sum/)** 思路类似，不同点在于：
 >
 > 1. 递归出口规则稍微有点不同：这道题要求每种组合的个数 == k
 > 2. 这道题不允许有重复数字，所以在进行本层递归的下一次添加数字，要从 u + 1 开始
@@ -1069,7 +1069,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 377. 组合总和 Ⅳ](https://leetcode-cn.com/problems/combination-sum-iv/)**
+> [!NOTE] **[LeetCode 377. 组合总和 Ⅳ](https://leetcode.cn/problems/combination-sum-iv/)**
 > 
 > 题意: TODO
 
@@ -1186,7 +1186,7 @@ class Solution:
 
 ### dfs 递归
 
-> [!NOTE] **[LeetCode 112. 路径总和](https://leetcode-cn.com/problems/path-sum/)**
+> [!NOTE] **[LeetCode 112. 路径总和](https://leetcode.cn/problems/path-sum/)**
 > 
 > 题意: TODO
 
@@ -1233,13 +1233,13 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 113. 路径总和 II](https://leetcode-cn.com/problems/path-sum-ii/)**
+> [!NOTE] **[LeetCode 113. 路径总和 II](https://leetcode.cn/problems/path-sum-ii/)**
 > 
 > 题意: TODO
 
 > [!TIP] **思路**
 > 
-> 这道题目和  **[LeetCode 112. 路径总和](https://leetcode-cn.com/problems/path-sum/)** 基本一样，不同点在于需要把**所有路径**记录下来。
+> 这道题目和  **[LeetCode 112. 路径总和](https://leetcode.cn/problems/path-sum/)** 基本一样，不同点在于需要把**所有路径**记录下来。
 
 <details>
 <summary>详细代码</summary>
@@ -1298,7 +1298,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 124. 二叉树中的最大路径和](https://leetcode-cn.com/problems/binary-tree-maximum-path-sum/)**
+> [!NOTE] **[LeetCode 124. 二叉树中的最大路径和](https://leetcode.cn/problems/binary-tree-maximum-path-sum/)**
 > 
 > 题意: TODO
 
@@ -1360,7 +1360,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 386. 字典序排数](https://leetcode-cn.com/problems/lexicographical-numbers/)**
+> [!NOTE] **[LeetCode 386. 字典序排数](https://leetcode.cn/problems/lexicographical-numbers/)**
 > 
 > 题意: TODO
 
@@ -1444,7 +1444,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 1215. 步进数](https://leetcode-cn.com/problems/stepping-numbers/)**
+> [!NOTE] **[LeetCode 1215. 步进数](https://leetcode.cn/problems/stepping-numbers/)**
 > 
 > 题意: TODO
 
@@ -1528,7 +1528,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 1273. 删除树节点](https://leetcode-cn.com/problems/delete-tree-nodes/)**
+> [!NOTE] **[LeetCode 1273. 删除树节点](https://leetcode.cn/problems/delete-tree-nodes/)**
 > 
 > 题意: TODO
 
@@ -1632,7 +1632,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 1315. 祖父节点值为偶数的节点和](https://leetcode-cn.com/problems/sum-of-nodes-with-even-valued-grandparent/)**
+> [!NOTE] **[LeetCode 1315. 祖父节点值为偶数的节点和](https://leetcode.cn/problems/sum-of-nodes-with-even-valued-grandparent/)**
 > 
 > 题意: TODO
 
@@ -1733,7 +1733,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 1415. 长度为 n 的开心字符串中字典序第 k 小的字符串](https://leetcode-cn.com/problems/the-k-th-lexicographical-string-of-all-happy-strings-of-length-n/)**
+> [!NOTE] **[LeetCode 1415. 长度为 n 的开心字符串中字典序第 k 小的字符串](https://leetcode.cn/problems/the-k-th-lexicographical-string-of-all-happy-strings-of-length-n/)**
 > 
 > 题意: TODO
 
@@ -1815,7 +1815,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 1530. 好叶子节点对的数量](https://leetcode-cn.com/problems/number-of-good-leaf-nodes-pairs/)** [TAG]
+> [!NOTE] **[LeetCode 1530. 好叶子节点对的数量](https://leetcode.cn/problems/number-of-good-leaf-nodes-pairs/)** [TAG]
 > 
 > 题意: TODO
 
@@ -1897,7 +1897,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 2014. 重复 K 次的最长子序列](https://leetcode-cn.com/problems/longest-subsequence-repeated-k-times/)** [TAG]
+> [!NOTE] **[LeetCode 2014. 重复 K 次的最长子序列](https://leetcode.cn/problems/longest-subsequence-repeated-k-times/)** [TAG]
 > 
 > 题意: TODO
 
@@ -2173,7 +2173,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2056. 棋盘上有效移动组合的数目](https://leetcode-cn.com/problems/number-of-valid-move-combinations-on-chessboard/)** [TAG]
+> [!NOTE] **[LeetCode 2056. 棋盘上有效移动组合的数目](https://leetcode.cn/problems/number-of-valid-move-combinations-on-chessboard/)** [TAG]
 > 
 > 题意: TODO
 
@@ -2345,7 +2345,7 @@ public:
 
 ### dfs 回溯
 
-> [!NOTE] **[LeetCode 51. N 皇后](https://leetcode-cn.com/problems/n-queens/)**
+> [!NOTE] **[LeetCode 51. N 皇后](https://leetcode.cn/problems/n-queens/)**
 > 
 > 题意: TODO
 
@@ -2440,7 +2440,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 52. N皇后 II](https://leetcode-cn.com/problems/n-queens-ii/)**
+> [!NOTE] **[LeetCode 52. N皇后 II](https://leetcode.cn/problems/n-queens-ii/)**
 > 
 > 题意: TODO
 
@@ -2516,7 +2516,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 93. 复原 IP 地址](https://leetcode-cn.com/problems/restore-ip-addresses)**
+> [!NOTE] **[LeetCode 93. 复原 IP 地址](https://leetcode.cn/problems/restore-ip-addresses)**
 > 
 > 题意: TODO
 
@@ -2686,7 +2686,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 301. 删除无效的括号](https://leetcode-cn.com/problems/remove-invalid-parentheses/)**
+> [!NOTE] **[LeetCode 301. 删除无效的括号](https://leetcode.cn/problems/remove-invalid-parentheses/)**
 > 
 > 题意: TODO
 
@@ -2889,7 +2889,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 529. 扫雷游戏](https://leetcode-cn.com/problems/minesweeper/)**
+> [!NOTE] **[LeetCode 529. 扫雷游戏](https://leetcode.cn/problems/minesweeper/)**
 > 
 > 题意: TODO
 
@@ -3014,7 +3014,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 679. 24 点游戏](https://leetcode-cn.com/problems/24-game/)**
+> [!NOTE] **[LeetCode 679. 24 点游戏](https://leetcode.cn/problems/24-game/)**
 > 
 > 题意: TODO
 
@@ -3117,7 +3117,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 1219. 黄金矿工](https://leetcode-cn.com/problems/path-with-maximum-gold/)** [TAG]
+> [!NOTE] **[LeetCode 1219. 黄金矿工](https://leetcode.cn/problems/path-with-maximum-gold/)** [TAG]
 > 
 > 题意: TODO
 
@@ -3203,7 +3203,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode LCP 58. 积木拼接](https://leetcode-cn.com/problems/De4qBB/)** [TAG]
+> [!NOTE] **[LeetCode LCP 58. 积木拼接](https://leetcode.cn/problems/De4qBB/)** [TAG]
 > 
 > 题意: TODO
 
@@ -3753,7 +3753,7 @@ int main() {
 
 ### 表达式类求解
 
-> [!NOTE] **[LeetCode 241. 为运算表达式设计优先级](https://leetcode-cn.com/problems/different-ways-to-add-parentheses/)**
+> [!NOTE] **[LeetCode 241. 为运算表达式设计优先级](https://leetcode.cn/problems/different-ways-to-add-parentheses/)**
 > 
 > 题意: TODO
 
@@ -3858,7 +3858,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 282. 给表达式添加运算符](https://leetcode-cn.com/problems/expression-add-operators/)**
+> [!NOTE] **[LeetCode 282. 给表达式添加运算符](https://leetcode.cn/problems/expression-add-operators/)**
 > 
 > 题意: TODO
 
@@ -3932,7 +3932,7 @@ public:
 
 ### 进阶
 
-> [!NOTE] **[LeetCode 126. 单词接龙 II](https://leetcode-cn.com/problems/word-ladder-ii/)**
+> [!NOTE] **[LeetCode 126. 单词接龙 II](https://leetcode.cn/problems/word-ladder-ii/)**
 > 
 > 题意: TODO
 
@@ -4022,7 +4022,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 127. 单词接龙](https://leetcode-cn.com/problems/word-ladder/)**
+> [!NOTE] **[LeetCode 127. 单词接龙](https://leetcode.cn/problems/word-ladder/)**
 > 
 > 题意: TODO
 
@@ -4079,7 +4079,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 139. 单词拆分](https://leetcode-cn.com/problems/word-break/)**
+> [!NOTE] **[LeetCode 139. 单词拆分](https://leetcode.cn/problems/word-break/)**
 > 
 > 题意: TODO
 
@@ -4170,7 +4170,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 140. 单词拆分 II](https://leetcode-cn.com/problems/word-break-ii/)**
+> [!NOTE] **[LeetCode 140. 单词拆分 II](https://leetcode.cn/problems/word-break-ii/)**
 > 
 > 题意: TODO
 
@@ -4314,7 +4314,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1900. 最佳运动员的比拼回合](https://leetcode-cn.com/problems/the-earliest-and-latest-rounds-where-players-compete/)**
+> [!NOTE] **[LeetCode 1900. 最佳运动员的比拼回合](https://leetcode.cn/problems/the-earliest-and-latest-rounds-where-players-compete/)**
 > 
 > 题意: TODO
 

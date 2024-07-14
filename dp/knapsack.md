@@ -1936,7 +1936,7 @@ Actually, this is a 0/1 knapsack problem.
 
 * * *
 
-> [!NOTE] **[LeetCode 1449. 数位成本和为目标值的最大数字](https://leetcode-cn.com/problems/form-largest-integer-with-digits-that-add-up-to-target/)**
+> [!NOTE] **[LeetCode 1449. 数位成本和为目标值的最大数字](https://leetcode.cn/problems/form-largest-integer-with-digits-that-add-up-to-target/)**
 > 
 > 题意: 
 > 
@@ -2293,7 +2293,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 474. 一和零](https://leetcode-cn.com/problems/ones-and-zeroes/)**
+> [!NOTE] **[LeetCode 474. 一和零](https://leetcode.cn/problems/ones-and-zeroes/)**
 > 
 > 题意: TODO
 
@@ -2830,7 +2830,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 1155. 掷骰子的N种方法](https://leetcode-cn.com/problems/number-of-dice-rolls-with-target-sum/)** TAG
+> [!NOTE] **[LeetCode 1155. 掷骰子的N种方法](https://leetcode.cn/problems/number-of-dice-rolls-with-target-sum/)** TAG
 > 
 > 题意: TODO
 

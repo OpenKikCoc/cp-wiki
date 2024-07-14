@@ -429,7 +429,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 4. 寻找两个正序数组的中位数](https://leetcode-cn.com/problems/median-of-two-sorted-arrays/)**
+> [!NOTE] **[LeetCode 4. 寻找两个正序数组的中位数](https://leetcode.cn/problems/median-of-two-sorted-arrays/)**
 > 
 > 题意: TODO
 
@@ -525,7 +525,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 34. 在排序数组中查找元素的第一个和最后一个位置](https://leetcode-cn.com/problems/find-first-and-last-position-of-element-in-sorted-array/)**
+> [!NOTE] **[LeetCode 34. 在排序数组中查找元素的第一个和最后一个位置](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/)**
 > 
 > 题意: TODO
 
@@ -599,7 +599,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 162. 寻找峰值](https://leetcode-cn.com/problems/find-peak-element/)**
+> [!NOTE] **[LeetCode 162. 寻找峰值](https://leetcode.cn/problems/find-peak-element/)**
 > 
 > 题意: TODO
 
@@ -733,7 +733,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 274. H 指数](https://leetcode-cn.com/problems/h-index/)**
+> [!NOTE] **[LeetCode 274. H 指数](https://leetcode.cn/problems/h-index/)**
 > 
 > 题意: TODO
 
@@ -801,7 +801,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 275. H 指数 II](https://leetcode-cn.com/problems/h-index-ii/)**
+> [!NOTE] **[LeetCode 275. H 指数 II](https://leetcode.cn/problems/h-index-ii/)**
 > 
 > 题意: TODO
 
@@ -858,7 +858,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 540. 有序数组中的单一元素](https://leetcode-cn.com/problems/single-element-in-a-sorted-array/)**
+> [!NOTE] **[LeetCode 540. 有序数组中的单一元素](https://leetcode.cn/problems/single-element-in-a-sorted-array/)**
 > 
 > 题意: TODO
 
@@ -907,7 +907,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1818 绝对差值和](https://leetcode-cn.com/problems/minimum-absolute-sum-difference/)**
+> [!NOTE] **[LeetCode 1818 绝对差值和](https://leetcode.cn/problems/minimum-absolute-sum-difference/)**
 > 
 > 题意: TODO
 
@@ -966,7 +966,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2080. 区间内查询数字的频率](https://leetcode-cn.com/problems/range-frequency-queries/)**
+> [!NOTE] **[LeetCode 2080. 区间内查询数字的频率](https://leetcode.cn/problems/range-frequency-queries/)**
 > 
 > 题意: TODO
 
@@ -1070,7 +1070,7 @@ public:
 
 ### 二分答案
 
-> [!NOTE] **[LeetCode 410. 分割数组的最大值](https://leetcode-cn.com/problems/split-array-largest-sum/)**
+> [!NOTE] **[LeetCode 410. 分割数组的最大值](https://leetcode.cn/problems/split-array-largest-sum/)**
 > 
 > 题意: TODO
 
@@ -1192,7 +1192,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 475. 供暖器](https://leetcode-cn.com/problems/heaters/)**
+> [!NOTE] **[LeetCode 475. 供暖器](https://leetcode.cn/problems/heaters/)**
 > 
 > 题意: TODO
 
@@ -1260,7 +1260,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 778. 水位上升的泳池中游泳](https://leetcode-cn.com/problems/swim-in-rising-water/)**
+> [!NOTE] **[LeetCode 778. 水位上升的泳池中游泳](https://leetcode.cn/problems/swim-in-rising-water/)**
 > 
 > 题意: TODO
 
@@ -1326,7 +1326,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 793. 阶乘函数后 K 个零](https://leetcode-cn.com/problems/preimage-size-of-factorial-zeroes-function/)**
+> [!NOTE] **[LeetCode 793. 阶乘函数后 K 个零](https://leetcode.cn/problems/preimage-size-of-factorial-zeroes-function/)**
 > 
 > 题意: TODO
 
@@ -1386,7 +1386,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1292. 元素和小于等于阈值的正方形的最大边长](https://leetcode-cn.com/problems/maximum-side-length-of-a-square-with-sum-less-than-or-equal-to-threshold/)**
+> [!NOTE] **[LeetCode 1292. 元素和小于等于阈值的正方形的最大边长](https://leetcode.cn/problems/maximum-side-length-of-a-square-with-sum-less-than-or-equal-to-threshold/)**
 > 
 > 题意: TODO
 
@@ -1447,7 +1447,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1300. 转变数组后最接近目标值的数组和](https://leetcode-cn.com/problems/sum-of-mutated-array-closest-to-target/)**
+> [!NOTE] **[LeetCode 1300. 转变数组后最接近目标值的数组和](https://leetcode.cn/problems/sum-of-mutated-array-closest-to-target/)**
 > 
 > 题意: TODO
 
@@ -1515,7 +1515,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1552. 两球之间的磁力](https://leetcode-cn.com/problems/magnetic-force-between-two-balls/)**
+> [!NOTE] **[LeetCode 1552. 两球之间的磁力](https://leetcode.cn/problems/magnetic-force-between-two-balls/)**
 > 
 > 题意: TODO
 
@@ -1577,7 +1577,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1648. 销售价值减少的颜色球](https://leetcode-cn.com/problems/sell-diminishing-valued-colored-balls/)** [TAG]
+> [!NOTE] **[LeetCode 1648. 销售价值减少的颜色球](https://leetcode.cn/problems/sell-diminishing-valued-colored-balls/)** [TAG]
 > 
 > 题意: TODO
 
@@ -1696,7 +1696,7 @@ public:
 > 
 > 题意: 
 > 
-> 同 [LeetCode 1648. 销售价值减少的颜色球](https://leetcode-cn.com/problems/sell-diminishing-valued-colored-balls/) 稍作修改
+> 同 [LeetCode 1648. 销售价值减少的颜色球](https://leetcode.cn/problems/sell-diminishing-valued-colored-balls/) 稍作修改
 
 > [!TIP] **思路**
 > 
@@ -1814,7 +1814,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1870. 准时到达的列车最小时速](https://leetcode-cn.com/problems/minimum-speed-to-arrive-on-time/)**
+> [!NOTE] **[LeetCode 1870. 准时到达的列车最小时速](https://leetcode.cn/problems/minimum-speed-to-arrive-on-time/)**
 > 
 > 题意: TODO
 
@@ -2862,7 +2862,7 @@ public:
 
 ### 二分套二分
 
-> [!NOTE] **[LeetCode 2040. 两个有序数组的第 K 小乘积](https://leetcode-cn.com/problems/kth-smallest-product-of-two-sorted-arrays/)** [TAG]
+> [!NOTE] **[LeetCode 2040. 两个有序数组的第 K 小乘积](https://leetcode.cn/problems/kth-smallest-product-of-two-sorted-arrays/)** [TAG]
 > 
 > 题意: TODO
 
@@ -3077,7 +3077,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 1515. 服务中心的最佳位置](https://leetcode-cn.com/problems/best-position-for-a-service-centre/)** [TAG]
+> [!NOTE] **[LeetCode 1515. 服务中心的最佳位置](https://leetcode.cn/problems/best-position-for-a-service-centre/)** [TAG]
 > 
 > 题意: POJ2420 原题
 
@@ -3154,7 +3154,7 @@ public:
 > 
 > `[l, r]` 而非 `[l, r)` 并且注意和右侧比较（such as `nums[mid] < nums[r]`）
 
-> [!NOTE] **[LeetCode 153. 寻找旋转排序数组中的最小值](https://leetcode-cn.com/problems/find-minimum-in-rotated-sorted-array/)**
+> [!NOTE] **[LeetCode 153. 寻找旋转排序数组中的最小值](https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array/)**
 > 
 > 题意: TODO
 
@@ -3212,7 +3212,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 154. 寻找旋转排序数组中的最小值 II](https://leetcode-cn.com/problems/find-minimum-in-rotated-sorted-array-ii/)**
+> [!NOTE] **[LeetCode 154. 寻找旋转排序数组中的最小值 II](https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array-ii/)**
 > 
 > 题意: TODO
 
@@ -3270,7 +3270,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 33. 搜索旋转排序数组](https://leetcode-cn.com/problems/search-in-rotated-sorted-array/)**
+> [!NOTE] **[LeetCode 33. 搜索旋转排序数组](https://leetcode.cn/problems/search-in-rotated-sorted-array/)**
 > 
 > 题意: TODO
 
@@ -3323,7 +3323,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 81. 搜索旋转排序数组 II](https://leetcode-cn.com/problems/search-in-rotated-sorted-array-ii/)**
+> [!NOTE] **[LeetCode 81. 搜索旋转排序数组 II](https://leetcode.cn/problems/search-in-rotated-sorted-array-ii/)**
 > 
 > 题意: TODO
 
@@ -3379,7 +3379,7 @@ public:
 
 ### 抽象二分思想
 
-> [!NOTE] **[LeetCode 74. 搜索二维矩阵](https://leetcode-cn.com/problems/search-a-2d-matrix/)**
+> [!NOTE] **[LeetCode 74. 搜索二维矩阵](https://leetcode.cn/problems/search-a-2d-matrix/)**
 > 
 > 题意: TODO
 
@@ -3451,7 +3451,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 240. 搜索二维矩阵 II](https://leetcode-cn.com/problems/search-a-2d-matrix-ii/)**
+> [!NOTE] **[LeetCode 240. 搜索二维矩阵 II](https://leetcode.cn/problems/search-a-2d-matrix-ii/)**
 > 
 > 题意: TODO
 
@@ -3507,7 +3507,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 378. 有序矩阵中第K小的元素](https://leetcode-cn.com/problems/kth-smallest-element-in-a-sorted-matrix/)**
+> [!NOTE] **[LeetCode 378. 有序矩阵中第K小的元素](https://leetcode.cn/problems/kth-smallest-element-in-a-sorted-matrix/)**
 > 
 > 题意: TODO
 

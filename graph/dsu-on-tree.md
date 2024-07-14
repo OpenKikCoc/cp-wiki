@@ -199,7 +199,7 @@ int main() {
 
 ## 习题
 
-> [!NOTE] **[LeetCode 2003. 每棵子树内缺失的最小基因值](https://leetcode-cn.com/problems/smallest-missing-genetic-value-in-each-subtree/)** [TAG]
+> [!NOTE] **[LeetCode 2003. 每棵子树内缺失的最小基因值](https://leetcode.cn/problems/smallest-missing-genetic-value-in-each-subtree/)** [TAG]
 > 
 > 题意: TODO
 

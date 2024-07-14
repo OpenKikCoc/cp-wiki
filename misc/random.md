@@ -374,7 +374,7 @@ int main() {
 
 ## 习题
 
-> [!NOTE] **[LeetCode 470. 用 Rand7() 实现 Rand10()](https://leetcode-cn.com/problems/implement-rand10-using-rand7/)**
+> [!NOTE] **[LeetCode 470. 用 Rand7() 实现 Rand10()](https://leetcode.cn/problems/implement-rand10-using-rand7/)**
 > 
 > 题意: TODO
 
@@ -447,7 +447,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 478. 在圆内随机生成点](https://leetcode-cn.com/problems/generate-random-point-in-a-circle/)**
+> [!NOTE] **[LeetCode 478. 在圆内随机生成点](https://leetcode.cn/problems/generate-random-point-in-a-circle/)**
 > 
 > 题意: TODO
 
@@ -513,7 +513,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 497. 非重叠矩形中的随机点](https://leetcode-cn.com/problems/random-point-in-non-overlapping-rectangles/)**
+> [!NOTE] **[LeetCode 497. 非重叠矩形中的随机点](https://leetcode.cn/problems/random-point-in-non-overlapping-rectangles/)**
 > 
 > 题意: TODO
 
@@ -584,7 +584,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 519. 随机翻转矩阵](https://leetcode-cn.com/problems/random-flip-matrix/)**
+> [!NOTE] **[LeetCode 519. 随机翻转矩阵](https://leetcode.cn/problems/random-flip-matrix/)**
 > 
 > 题意: TODO
 
@@ -652,7 +652,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 528. 按权重随机选择](https://leetcode-cn.com/problems/random-pick-with-weight/)**
+> [!NOTE] **[LeetCode 528. 按权重随机选择](https://leetcode.cn/problems/random-pick-with-weight/)**
 > 
 > 题意: TODO
 
@@ -706,7 +706,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 710. 黑名单中的随机数](https://leetcode-cn.com/problems/random-pick-with-blacklist/)**
+> [!NOTE] **[LeetCode 710. 黑名单中的随机数](https://leetcode.cn/problems/random-pick-with-blacklist/)**
 > 
 > 题意: TODO
 

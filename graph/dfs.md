@@ -600,7 +600,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 133. 克隆图](https://leetcode-cn.com/problems/clone-graph/)**
+> [!NOTE] **[LeetCode 133. 克隆图](https://leetcode.cn/problems/clone-graph/)**
 > 
 > 题意: TODO
 
@@ -703,7 +703,7 @@ class Solution:
 
 ### 遍历问题
 
-> [!NOTE] **[LeetCode 130. 被围绕的区域](https://leetcode-cn.com/problems/surrounded-regions/)**
+> [!NOTE] **[LeetCode 130. 被围绕的区域](https://leetcode.cn/problems/surrounded-regions/)**
 > 
 > 题意: TODO
 
@@ -804,7 +804,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 200. 岛屿数量](https://leetcode-cn.com/problems/number-of-islands/)**
+> [!NOTE] **[LeetCode 200. 岛屿数量](https://leetcode.cn/problems/number-of-islands/)**
 > 
 > 题意: TODO
 
@@ -883,7 +883,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 417. 太平洋大西洋水流问题](https://leetcode-cn.com/problems/pacific-atlantic-water-flow/)**
+> [!NOTE] **[LeetCode 417. 太平洋大西洋水流问题](https://leetcode.cn/problems/pacific-atlantic-water-flow/)**
 > 
 > 题意: TODO
 
@@ -1013,7 +1013,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 463. 岛屿的周长](https://leetcode-cn.com/problems/island-perimeter/)**
+> [!NOTE] **[LeetCode 463. 岛屿的周长](https://leetcode.cn/problems/island-perimeter/)**
 > 
 > 题意: TODO
 
@@ -1114,7 +1114,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 542. 01 矩阵](https://leetcode-cn.com/problems/01-matrix/)**
+> [!NOTE] **[LeetCode 542. 01 矩阵](https://leetcode.cn/problems/01-matrix/)**
 > 
 > 题意: TODO
 
@@ -1170,7 +1170,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1254. 统计封闭岛屿的数目](https://leetcode-cn.com/problems/number-of-closed-islands/)**
+> [!NOTE] **[LeetCode 1254. 统计封闭岛屿的数目](https://leetcode.cn/problems/number-of-closed-islands/)**
 > 
 > 题意: TODO
 
@@ -1264,7 +1264,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1559. 二维网格图中探测环](https://leetcode-cn.com/problems/detect-cycles-in-2d-grid/)** [TAG]
+> [!NOTE] **[LeetCode 1559. 二维网格图中探测环](https://leetcode.cn/problems/detect-cycles-in-2d-grid/)** [TAG]
 > 
 > 题意: TODO
 
@@ -1329,7 +1329,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1905. 统计子岛屿](https://leetcode-cn.com/problems/count-sub-islands/)**
+> [!NOTE] **[LeetCode 1905. 统计子岛屿](https://leetcode.cn/problems/count-sub-islands/)**
 > 
 > 题意: TODO
 
@@ -1578,7 +1578,7 @@ public:
 
 ### 进阶
 
-> [!NOTE] **[LeetCode 749. 隔离病毒](https://leetcode-cn.com/problems/contain-virus/)**
+> [!NOTE] **[LeetCode 749. 隔离病毒](https://leetcode.cn/problems/contain-virus/)**
 > 
 > 题意: TODO
 
@@ -1683,7 +1683,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1568. 使陆地分离的最少天数](https://leetcode-cn.com/problems/minimum-number-of-days-to-disconnect-island/)** [TAG]
+> [!NOTE] **[LeetCode 1568. 使陆地分离的最少天数](https://leetcode.cn/problems/minimum-number-of-days-to-disconnect-island/)** [TAG]
 > 
 > 题意: TODO
 

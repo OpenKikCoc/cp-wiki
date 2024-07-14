@@ -177,7 +177,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 1154. 一年中的第几天](https://leetcode-cn.com/problems/day-of-the-year/)**
+> [!NOTE] **[LeetCode 1154. 一年中的第几天](https://leetcode.cn/problems/day-of-the-year/)**
 > 
 > 题意: TODO
 
@@ -247,7 +247,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1185. 一周中的第几天](https://leetcode-cn.com/problems/day-of-the-week/)**
+> [!NOTE] **[LeetCode 1185. 一周中的第几天](https://leetcode.cn/problems/day-of-the-week/)**
 > 
 > 题意: TODO
 
@@ -297,7 +297,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1360. 日期之间隔几天](https://leetcode-cn.com/problems/number-of-days-between-two-dates/)** [TAG]
+> [!NOTE] **[LeetCode 1360. 日期之间隔几天](https://leetcode.cn/problems/number-of-days-between-two-dates/)** [TAG]
 > 
 > 题意: TODO
 
@@ -790,7 +790,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 592. 分数加减运算](https://leetcode-cn.com/problems/fraction-addition-and-subtraction/)**
+> [!NOTE] **[LeetCode 592. 分数加减运算](https://leetcode.cn/problems/fraction-addition-and-subtraction/)**
 > 
 > 题意: TODO
 
@@ -847,7 +847,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 68. 文本左右对齐](https://leetcode-cn.com/problems/text-justification/)**
+> [!NOTE] **[LeetCode 68. 文本左右对齐](https://leetcode.cn/problems/text-justification/)**
 > 
 > 题意: TODO
 
@@ -920,7 +920,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 71. 简化路径](https://leetcode-cn.com/problems/simplify-path/)**
+> [!NOTE] **[LeetCode 71. 简化路径](https://leetcode.cn/problems/simplify-path/)**
 > 
 > 题意: TODO
 
@@ -991,7 +991,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 80. 删除排序数组中的重复项 II](https://leetcode-cn.com/problems/remove-duplicates-from-sorted-array-ii/)**
+> [!NOTE] **[LeetCode 80. 删除排序数组中的重复项 II](https://leetcode.cn/problems/remove-duplicates-from-sorted-array-ii/)**
 > 
 > 题意: TODO
 
@@ -1043,7 +1043,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 149. 直线上最多的点数](https://leetcode-cn.com/problems/max-points-on-a-line/)**
+> [!NOTE] **[LeetCode 149. 直线上最多的点数](https://leetcode.cn/problems/max-points-on-a-line/)**
 > 
 > 题意: TODO
 
@@ -1166,7 +1166,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 290. 单词规律](https://leetcode-cn.com/problems/word-pattern/)**
+> [!NOTE] **[LeetCode 290. 单词规律](https://leetcode.cn/problems/word-pattern/)**
 > 
 > 题意: TODO
 
@@ -1217,7 +1217,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 498. 对角线遍历](https://leetcode-cn.com/problems/diagonal-traverse/)**
+> [!NOTE] **[LeetCode 498. 对角线遍历](https://leetcode.cn/problems/diagonal-traverse/)**
 > 
 > 题意: TODO
 
@@ -1264,7 +1264,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 649. Dota2 参议院](https://leetcode-cn.com/problems/dota2-senate/)**
+> [!NOTE] **[LeetCode 649. Dota2 参议院](https://leetcode.cn/problems/dota2-senate/)**
 > 
 > 题意: TODO
 
@@ -1351,7 +1351,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 721. 账户合并](https://leetcode-cn.com/problems/accounts-merge/)**
+> [!NOTE] **[LeetCode 721. 账户合并](https://leetcode.cn/problems/accounts-merge/)**
 > 
 > 题意: TODO
 
@@ -1415,7 +1415,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 794. 有效的井字游戏](https://leetcode-cn.com/problems/valid-tic-tac-toe-state/)**
+> [!NOTE] **[LeetCode 794. 有效的井字游戏](https://leetcode.cn/problems/valid-tic-tac-toe-state/)**
 > 
 > 题意: TODO
 
@@ -1479,7 +1479,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1152. 用户网站访问行为分析](https://leetcode-cn.com/problems/analyze-user-website-visit-pattern/)**
+> [!NOTE] **[LeetCode 1152. 用户网站访问行为分析](https://leetcode.cn/problems/analyze-user-website-visit-pattern/)**
 > 
 > 题意: TODO
 
@@ -1558,7 +1558,7 @@ public:
 * * *
 
 
-> [!NOTE] **[LeetCode 1153. 字符串转化](https://leetcode-cn.com/problems/string-transforms-into-another-string/)** TAG
+> [!NOTE] **[LeetCode 1153. 字符串转化](https://leetcode.cn/problems/string-transforms-into-another-string/)** TAG
 > 
 > 题意: 注意：原题要求转化为以下条件
 > 
@@ -1648,7 +1648,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1409. 查询带键的排列](https://leetcode-cn.com/problems/queries-on-a-permutation-with-key/)**
+> [!NOTE] **[LeetCode 1409. 查询带键的排列](https://leetcode.cn/problems/queries-on-a-permutation-with-key/)**
 > 
 > 题意: TODO
 
@@ -1705,7 +1705,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1932. 合并多棵二叉搜索树](https://leetcode-cn.com/problems/merge-bsts-to-create-single-bst/)** [TAG]
+> [!NOTE] **[LeetCode 1932. 合并多棵二叉搜索树](https://leetcode.cn/problems/merge-bsts-to-create-single-bst/)** [TAG]
 > 
 > 题意: TODO
 
@@ -1821,7 +1821,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1958. 检查操作是否合法](https://leetcode-cn.com/problems/check-if-move-is-legal/)**
+> [!NOTE] **[LeetCode 1958. 检查操作是否合法](https://leetcode.cn/problems/check-if-move-is-legal/)**
 > 
 > 题意: TODO
 
@@ -1914,7 +1914,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2018. 判断单词是否能放入填字游戏内](https://leetcode-cn.com/problems/check-if-word-can-be-placed-in-crossword/)**
+> [!NOTE] **[LeetCode 2018. 判断单词是否能放入填字游戏内](https://leetcode.cn/problems/check-if-word-can-be-placed-in-crossword/)**
 > 
 > 题意: TODO
 
@@ -2206,7 +2206,7 @@ public:
 
 ### 字符串处理
 
-> [!NOTE] **[LeetCode 388. 文件的最长绝对路径](https://leetcode-cn.com/problems/longest-absolute-file-path/)**
+> [!NOTE] **[LeetCode 388. 文件的最长绝对路径](https://leetcode.cn/problems/longest-absolute-file-path/)**
 > 
 > 题意: TODO
 
@@ -2256,7 +2256,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 393. UTF-8 编码验证](https://leetcode-cn.com/problems/utf-8-validation/)**
+> [!NOTE] **[LeetCode 393. UTF-8 编码验证](https://leetcode.cn/problems/utf-8-validation/)**
 > 
 > 题意: TODO
 
@@ -2310,7 +2310,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 443. 压缩字符串](https://leetcode-cn.com/problems/string-compression/)**
+> [!NOTE] **[LeetCode 443. 压缩字符串](https://leetcode.cn/problems/string-compression/)**
 > 
 > 题意: TODO
 
@@ -2392,7 +2392,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 467. 环绕字符串中唯一的子字符串](https://leetcode-cn.com/problems/unique-substrings-in-wraparound-string/)**
+> [!NOTE] **[LeetCode 467. 环绕字符串中唯一的子字符串](https://leetcode.cn/problems/unique-substrings-in-wraparound-string/)**
 > 
 > 题意: TODO
 
@@ -2438,7 +2438,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 468. 验证IP地址](https://leetcode-cn.com/problems/validate-ip-address/)**
+> [!NOTE] **[LeetCode 468. 验证IP地址](https://leetcode.cn/problems/validate-ip-address/)**
 > 
 > 题意: TODO
 
@@ -2521,7 +2521,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 605. 种花问题](https://leetcode-cn.com/problems/can-place-flowers/)**
+> [!NOTE] **[LeetCode 605. 种花问题](https://leetcode.cn/problems/can-place-flowers/)**
 > 
 > 题意: TODO
 
@@ -2589,7 +2589,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 640. 求解方程](https://leetcode-cn.com/problems/solve-the-equation/)**
+> [!NOTE] **[LeetCode 640. 求解方程](https://leetcode.cn/problems/solve-the-equation/)**
 > 
 > 题意: TODO
 
@@ -2655,7 +2655,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 722. 删除注释](https://leetcode-cn.com/problems/remove-comments/)**
+> [!NOTE] **[LeetCode 722. 删除注释](https://leetcode.cn/problems/remove-comments/)**
 > 
 > 题意: TODO
 
@@ -2715,7 +2715,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 767. 重构字符串](https://leetcode-cn.com/problems/reorganize-string/)**
+> [!NOTE] **[LeetCode 767. 重构字符串](https://leetcode.cn/problems/reorganize-string/)**
 > 
 > 题意: TODO
 
@@ -2808,7 +2808,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1169. 查询无效交易](https://leetcode-cn.com/problems/invalid-transactions/)**
+> [!NOTE] **[LeetCode 1169. 查询无效交易](https://leetcode.cn/problems/invalid-transactions/)**
 > 
 > 题意: TODO
 
@@ -2882,7 +2882,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1209. 删除字符串中的所有相邻重复项 II](https://leetcode-cn.com/problems/remove-all-adjacent-duplicates-in-string-ii/)**
+> [!NOTE] **[LeetCode 1209. 删除字符串中的所有相邻重复项 II](https://leetcode.cn/problems/remove-all-adjacent-duplicates-in-string-ii/)**
 > 
 > 题意: TODO
 
@@ -2982,7 +2982,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1410. HTML 实体解析器](https://leetcode-cn.com/problems/html-entity-parser/)**
+> [!NOTE] **[LeetCode 1410. HTML 实体解析器](https://leetcode.cn/problems/html-entity-parser/)**
 > 
 > 题意: TODO
 
@@ -3096,7 +3096,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1432. 改变一个整数能得到的最大差值](https://leetcode-cn.com/problems/max-difference-you-can-get-from-changing-an-integer/)**
+> [!NOTE] **[LeetCode 1432. 改变一个整数能得到的最大差值](https://leetcode.cn/problems/max-difference-you-can-get-from-changing-an-integer/)**
 > 
 > 题意: TODO
 
@@ -3162,7 +3162,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1839. 所有元音按顺序排布的最长子字符串](https://leetcode-cn.com/problems/longest-substring-of-all-vowels-in-order/)**
+> [!NOTE] **[LeetCode 1839. 所有元音按顺序排布的最长子字符串](https://leetcode.cn/problems/longest-substring-of-all-vowels-in-order/)**
 > 
 > 题意: TODO
 
@@ -3284,7 +3284,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1849. 将字符串拆分为递减的连续值](https://leetcode-cn.com/problems/splitting-a-string-into-descending-consecutive-values/)**
+> [!NOTE] **[LeetCode 1849. 将字符串拆分为递减的连续值](https://leetcode.cn/problems/splitting-a-string-into-descending-consecutive-values/)**
 > 
 > 题意: TODO
 
@@ -3480,7 +3480,7 @@ public:
 
 ### 丑数
 
-> [!NOTE] **[LeetCode 263. 丑数](https://leetcode-cn.com/problems/ugly-number/)**
+> [!NOTE] **[LeetCode 263. 丑数](https://leetcode.cn/problems/ugly-number/)**
 > 
 > 题意: TODO
 
@@ -3528,7 +3528,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 264. 丑数 II](https://leetcode-cn.com/problems/ugly-number-ii/)**
+> [!NOTE] **[LeetCode 264. 丑数 II](https://leetcode.cn/problems/ugly-number-ii/)**
 > 
 > 题意: TODO
 
@@ -3583,7 +3583,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 313. 超级丑数](https://leetcode-cn.com/problems/super-ugly-number/)**
+> [!NOTE] **[LeetCode 313. 超级丑数](https://leetcode.cn/problems/super-ugly-number/)**
 > 
 > 题意: TODO
 
@@ -3986,7 +3986,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 1138. 字母板上的路径](https://leetcode-cn.com/problems/alphabet-board-path/)**
+> [!NOTE] **[LeetCode 1138. 字母板上的路径](https://leetcode.cn/problems/alphabet-board-path/)**
 > 
 > 题意: TODO
 
@@ -4121,7 +4121,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1887. 使数组元素相等的减少操作次数](https://leetcode-cn.com/problems/reduction-operations-to-make-the-array-elements-equal/)**
+> [!NOTE] **[LeetCode 1887. 使数组元素相等的减少操作次数](https://leetcode.cn/problems/reduction-operations-to-make-the-array-elements-equal/)**
 > 
 > 题意: TODO
 
@@ -4559,7 +4559,7 @@ public:
 
 ### STL 简化模拟
 
-> [!NOTE] **[LeetCode 2122. 还原原数组](https://leetcode-cn.com/problems/recover-the-original-array/)** [TAG]
+> [!NOTE] **[LeetCode 2122. 还原原数组](https://leetcode.cn/problems/recover-the-original-array/)** [TAG]
 > 
 > 题意: TODO
 
@@ -4623,7 +4623,7 @@ public:
 
 ### 数字相关
 
-> [!NOTE] **[LeetCode 7. 整数反转](https://leetcode-cn.com/problems/reverse-integer/)**
+> [!NOTE] **[LeetCode 7. 整数反转](https://leetcode.cn/problems/reverse-integer/)**
 > 
 > 题意: TODO
 
@@ -4706,7 +4706,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 8. 字符串转换整数 (atoi)](https://leetcode-cn.com/problems/string-to-integer-atoi/)**
+> [!NOTE] **[LeetCode 8. 字符串转换整数 (atoi)](https://leetcode.cn/problems/string-to-integer-atoi/)**
 > 
 > 题意: TODO
 
@@ -4787,7 +4787,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 12. 整数转罗马数字](https://leetcode-cn.com/problems/integer-to-roman/)**
+> [!NOTE] **[LeetCode 12. 整数转罗马数字](https://leetcode.cn/problems/integer-to-roman/)**
 > 
 > 题意: TODO
 
@@ -4845,7 +4845,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 13. 罗马数字转整数](https://leetcode-cn.com/problems/roman-to-integer/)**
+> [!NOTE] **[LeetCode 13. 罗马数字转整数](https://leetcode.cn/problems/roman-to-integer/)**
 > 
 > 题意: TODO
 
@@ -4931,7 +4931,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[SwordOffer 16. 数值的整数次方](https://leetcode-cn.com/problems/shu-zhi-de-zheng-shu-ci-fang-lcof/)**
+> [!NOTE] **[SwordOffer 16. 数值的整数次方](https://leetcode.cn/problems/shu-zhi-de-zheng-shu-ci-fang-lcof/)**
 > 
 > 题意: TODO
 
@@ -5002,7 +5002,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[SwordOffer 20. 表示数值的字符串](https://leetcode-cn.com/problems/biao-shi-shu-zhi-de-zi-fu-chuan-lcof/)**
+> [!NOTE] **[SwordOffer 20. 表示数值的字符串](https://leetcode.cn/problems/biao-shi-shu-zhi-de-zi-fu-chuan-lcof/)**
 > 
 > 题意: TODO
 
@@ -5110,7 +5110,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 29. 两数相除](https://leetcode-cn.com/problems/divide-two-integers/)**
+> [!NOTE] **[LeetCode 29. 两数相除](https://leetcode.cn/problems/divide-two-integers/)**
 > 
 > 题意: TODO
 
@@ -5272,7 +5272,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 43. 字符串相乘](https://leetcode-cn.com/problems/multiply-strings/)**
+> [!NOTE] **[LeetCode 43. 字符串相乘](https://leetcode.cn/problems/multiply-strings/)**
 > 
 > 题意: TODO
 
@@ -5358,7 +5358,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 65. 有效数字](https://leetcode-cn.com/problems/valid-number/)**
+> [!NOTE] **[LeetCode 65. 有效数字](https://leetcode.cn/problems/valid-number/)**
 > 
 > 题意: TODO
 
@@ -5467,7 +5467,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 66. 加一](https://leetcode-cn.com/problems/plus-one/)**
+> [!NOTE] **[LeetCode 66. 加一](https://leetcode.cn/problems/plus-one/)**
 > 
 > 题意: TODO
 
@@ -5531,7 +5531,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 165. 比较版本号](https://leetcode-cn.com/problems/compare-version-numbers/)**
+> [!NOTE] **[LeetCode 165. 比较版本号](https://leetcode.cn/problems/compare-version-numbers/)**
 > 
 > 题意: TODO
 
@@ -5589,7 +5589,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 166. 分数到小数](https://leetcode-cn.com/problems/fraction-to-recurring-decimal/)**
+> [!NOTE] **[LeetCode 166. 分数到小数](https://leetcode.cn/problems/fraction-to-recurring-decimal/)**
 > 
 > 题意: TODO
 
@@ -5676,7 +5676,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 179. 最大数](https://leetcode-cn.com/problems/largest-number/)**
+> [!NOTE] **[LeetCode 179. 最大数](https://leetcode.cn/problems/largest-number/)**
 > 
 > 题意: TODO
 
@@ -5744,7 +5744,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 273. 整数转换英文表示](https://leetcode-cn.com/problems/integer-to-english-words/)**
+> [!NOTE] **[LeetCode 273. 整数转换英文表示](https://leetcode.cn/problems/integer-to-english-words/)**
 > 
 > 题意: TODO
 
@@ -5817,7 +5817,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 405. 数字转换为十六进制数](https://leetcode-cn.com/problems/convert-a-number-to-hexadecimal/)**
+> [!NOTE] **[LeetCode 405. 数字转换为十六进制数](https://leetcode.cn/problems/convert-a-number-to-hexadecimal/)**
 > 
 > 题意: TODO
 
@@ -5878,7 +5878,7 @@ public:
 
 ### 螺旋矩阵
 
-> [!NOTE] **[LeetCode 54. 螺旋矩阵](https://leetcode-cn.com/problems/spiral-matrix/)**
+> [!NOTE] **[LeetCode 54. 螺旋矩阵](https://leetcode.cn/problems/spiral-matrix/)**
 > 
 > 题意: TODO
 
@@ -5946,7 +5946,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 59. 螺旋矩阵 II](https://leetcode-cn.com/problems/spiral-matrix-ii/)**
+> [!NOTE] **[LeetCode 59. 螺旋矩阵 II](https://leetcode.cn/problems/spiral-matrix-ii/)**
 > 
 > 题意: TODO
 
@@ -6089,7 +6089,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1914. 循环轮转矩阵](https://leetcode-cn.com/problems/cyclically-rotating-a-grid/)**
+> [!NOTE] **[LeetCode 1914. 循环轮转矩阵](https://leetcode.cn/problems/cyclically-rotating-a-grid/)**
 > 
 > 题意: TODO
 
@@ -6193,7 +6193,7 @@ public:
 
 ### excel 表
 
-> [!NOTE] **[LeetCode 168. Excel表列名称](https://leetcode-cn.com/problems/excel-sheet-column-title/)**
+> [!NOTE] **[LeetCode 168. Excel表列名称](https://leetcode.cn/problems/excel-sheet-column-title/)**
 > 
 > 题意: TODO
 
@@ -6274,7 +6274,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 171. Excel表列序号](https://leetcode-cn.com/problems/excel-sheet-column-number/)**
+> [!NOTE] **[LeetCode 171. Excel表列序号](https://leetcode.cn/problems/excel-sheet-column-number/)**
 > 
 > 题意: TODO
 

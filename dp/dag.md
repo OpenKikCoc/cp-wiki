@@ -199,7 +199,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 2192. 有向无环图中一个节点的所有祖先](https://leetcode-cn.com/problems/all-ancestors-of-a-node-in-a-directed-acyclic-graph/)**
+> [!NOTE] **[LeetCode 2192. 有向无环图中一个节点的所有祖先](https://leetcode.cn/problems/all-ancestors-of-a-node-in-a-directed-acyclic-graph/)**
 > 
 > 题意: TODO
 

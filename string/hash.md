@@ -287,7 +287,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 648. 单词替换](https://leetcode-cn.com/problems/replace-words/)**
+> [!NOTE] **[LeetCode 648. 单词替换](https://leetcode.cn/problems/replace-words/)**
 > 
 > 题意: TODO
 
@@ -378,7 +378,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 796. 旋转字符串](https://leetcode-cn.com/problems/rotate-string/)**
+> [!NOTE] **[LeetCode 796. 旋转字符串](https://leetcode.cn/problems/rotate-string/)**
 > 
 > 题意: TODO
 
@@ -436,7 +436,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1147. 段式回文](https://leetcode-cn.com/problems/longest-chunked-palindrome-decomposition/) TAG**
+> [!NOTE] **[LeetCode 1147. 段式回文](https://leetcode.cn/problems/longest-chunked-palindrome-decomposition/) TAG**
 > 
 > 题意: TODO
 
@@ -503,7 +503,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1316. 不同的循环子字符串](https://leetcode-cn.com/problems/distinct-echo-substrings/)** [TAG]
+> [!NOTE] **[LeetCode 1316. 不同的循环子字符串](https://leetcode.cn/problems/distinct-echo-substrings/)** [TAG]
 > 
 > 题意: TODO
 
@@ -559,7 +559,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1392. 最长快乐前缀](https://leetcode-cn.com/problems/longest-happy-prefix/)** [TAG]
+> [!NOTE] **[LeetCode 1392. 最长快乐前缀](https://leetcode.cn/problems/longest-happy-prefix/)** [TAG]
 > 
 > 题意: 
 > 
@@ -787,7 +787,7 @@ public:
 
 ### 进阶
 
-> [!NOTE] **[LeetCode 2156. 查找给定哈希值的子串](https://leetcode-cn.com/problems/find-substring-with-given-hash-value/)** [TAG]
+> [!NOTE] **[LeetCode 2156. 查找给定哈希值的子串](https://leetcode.cn/problems/find-substring-with-given-hash-value/)** [TAG]
 > 
 > 题意: TODO
 

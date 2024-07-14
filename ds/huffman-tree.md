@@ -176,7 +176,7 @@ void huffmanCoding(Htree root, int len, int arr[]) {  // 计算霍夫曼编码
 
 ### 进阶 huffman 思想
 
-> [!NOTE] **[LeetCode 1199. 建造街区的最短时间](https://leetcode-cn.com/problems/minimum-time-to-build-blocks/)** [TAG]
+> [!NOTE] **[LeetCode 1199. 建造街区的最短时间](https://leetcode.cn/problems/minimum-time-to-build-blocks/)** [TAG]
 > 
 > 题意: TODO
 

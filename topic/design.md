@@ -2,7 +2,7 @@
 
 ### LRU LFU
 
-> [!NOTE] **[LeetCode 146. LRU缓存机制](https://leetcode-cn.com/problems/lru-cache/)**
+> [!NOTE] **[LeetCode 146. LRU缓存机制](https://leetcode.cn/problems/lru-cache/)**
 > 
 > 题意: TODO
 
@@ -235,7 +235,7 @@ class LRUCache:
 
 * * *
 
-> [!NOTE] **[LeetCode 460. LFU 缓存](https://leetcode-cn.com/problems/lfu-cache/)**
+> [!NOTE] **[LeetCode 460. LFU 缓存](https://leetcode.cn/problems/lfu-cache/)**
 > 
 > 题意: TODO
 
@@ -490,7 +490,7 @@ public:
 
 ### 数据结构
 
-> [!NOTE] **[LeetCode 284. 顶端迭代器](https://leetcode-cn.com/problems/peeking-iterator/)**
+> [!NOTE] **[LeetCode 284. 顶端迭代器](https://leetcode.cn/problems/peeking-iterator/)**
 > 
 > 题意: TODO
 
@@ -571,7 +571,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 341. 扁平化嵌套列表迭代器](https://leetcode-cn.com/problems/flatten-nested-list-iterator/)**
+> [!NOTE] **[LeetCode 341. 扁平化嵌套列表迭代器](https://leetcode.cn/problems/flatten-nested-list-iterator/)**
 > 
 > 题意: TODO
 
@@ -626,7 +626,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1286. 字母组合迭代器](https://leetcode-cn.com/problems/iterator-for-combination/)**
+> [!NOTE] **[LeetCode 1286. 字母组合迭代器](https://leetcode.cn/problems/iterator-for-combination/)**
 > 
 > 题意: TODO
 
@@ -683,7 +683,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 380. 常数时间插入、删除和获取随机元素](https://leetcode-cn.com/problems/insert-delete-getrandom-o1/)**
+> [!NOTE] **[LeetCode 380. 常数时间插入、删除和获取随机元素](https://leetcode.cn/problems/insert-delete-getrandom-o1/)**
 > 
 > 题意: TODO
 
@@ -812,7 +812,7 @@ func (this *RandomizedSet) GetRandom() int {
 
 * * *
 
-> [!NOTE] **[LeetCode 381. O(1) 时间插入、删除和获取随机元素 - 允许重复](https://leetcode-cn.com/problems/insert-delete-getrandom-o1-duplicates-allowed/)**
+> [!NOTE] **[LeetCode 381. O(1) 时间插入、删除和获取随机元素 - 允许重复](https://leetcode.cn/problems/insert-delete-getrandom-o1-duplicates-allowed/)**
 > 
 > 题意: TODO
 
@@ -887,7 +887,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 382. 链表随机节点](https://leetcode-cn.com/problems/linked-list-random-node/)**
+> [!NOTE] **[LeetCode 382. 链表随机节点](https://leetcode.cn/problems/linked-list-random-node/)**
 > 
 > 题意: TODO
 
@@ -950,7 +950,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 432. 全 O(1) 的数据结构](https://leetcode-cn.com/problems/all-oone-data-structure/)**
+> [!NOTE] **[LeetCode 432. 全 O(1) 的数据结构](https://leetcode.cn/problems/all-oone-data-structure/)**
 > 
 > 题意: TODO
 
@@ -1216,7 +1216,7 @@ func (this *AllOne) GetMinKey() string {
 
 * * *
 
-> [!NOTE] **[LeetCode 622. 设计循环队列](https://leetcode-cn.com/problems/design-circular-queue/)**
+> [!NOTE] **[LeetCode 622. 设计循环队列](https://leetcode.cn/problems/design-circular-queue/)**
 > 
 > 题意: TODO
 
@@ -1375,7 +1375,7 @@ class MyCircularQueue:
 
 * * *
 
-> [!NOTE] **[LeetCode 641. 设计循环双端队列](https://leetcode-cn.com/problems/design-circular-deque/)**
+> [!NOTE] **[LeetCode 641. 设计循环双端队列](https://leetcode.cn/problems/design-circular-deque/)**
 > 
 > 题意: TODO
 
@@ -1484,7 +1484,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 705. 设计哈希集合](https://leetcode-cn.com/problems/design-hashset/)**
+> [!NOTE] **[LeetCode 705. 设计哈希集合](https://leetcode.cn/problems/design-hashset/)**
 > 
 > 题意: TODO
 
@@ -1559,7 +1559,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 706. 设计哈希映射](https://leetcode-cn.com/problems/design-hashmap/)**
+> [!NOTE] **[LeetCode 706. 设计哈希映射](https://leetcode.cn/problems/design-hashmap/)**
 > 
 > 题意: TODO
 
@@ -1639,7 +1639,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 707. 设计链表](https://leetcode-cn.com/problems/design-linked-list/)**
+> [!NOTE] **[LeetCode 707. 设计链表](https://leetcode.cn/problems/design-linked-list/)**
 > 
 > 题意: TODO
 
@@ -1749,7 +1749,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1146. 快照数组](https://leetcode-cn.com/problems/snapshot-array/)**
+> [!NOTE] **[LeetCode 1146. 快照数组](https://leetcode.cn/problems/snapshot-array/)**
 > 
 > 题意: TODO
 
@@ -1819,7 +1819,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1166. 设计文件系统](https://leetcode-cn.com/problems/design-file-system/)**
+> [!NOTE] **[LeetCode 1166. 设计文件系统](https://leetcode.cn/problems/design-file-system/)**
 > 
 > 题意: TODO
 
@@ -1877,7 +1877,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1172. 餐盘栈](https://leetcode-cn.com/problems/dinner-plate-stacks/)** [TAG]
+> [!NOTE] **[LeetCode 1172. 餐盘栈](https://leetcode.cn/problems/dinner-plate-stacks/)** [TAG]
 > 
 > 题意: TODO
 
@@ -1998,7 +1998,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1348. 推文计数](https://leetcode-cn.com/problems/tweet-counts-per-frequency/)**
+> [!NOTE] **[LeetCode 1348. 推文计数](https://leetcode.cn/problems/tweet-counts-per-frequency/)**
 > 
 > 题意: TODO
 
@@ -2051,7 +2051,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1670. 设计前中后队列](https://leetcode-cn.com/problems/design-front-middle-back-queue/)**
+> [!NOTE] **[LeetCode 1670. 设计前中后队列](https://leetcode.cn/problems/design-front-middle-back-queue/)**
 > 
 > 题意: TODO
 
@@ -2224,7 +2224,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2034. 股票价格波动](https://leetcode-cn.com/problems/stock-price-fluctuation/)**
+> [!NOTE] **[LeetCode 2034. 股票价格波动](https://leetcode.cn/problems/stock-price-fluctuation/)**
 > 
 > 题意: TODO
 
@@ -2340,7 +2340,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 优惠活动系统](https://leetcode-cn.com/contest/cnunionpay-2022spring/problems/kDPV0f/)**
+> [!NOTE] **[LeetCode 优惠活动系统](https://leetcode.cn/contest/cnunionpay-2022spring/problems/kDPV0f/)**
 > 
 > 题意: TODO
 
@@ -2423,7 +2423,7 @@ public:
 
 ### 四叉树
 
-> [!NOTE] **[LeetCode 427. 建立四叉树](https://leetcode-cn.com/problems/construct-quad-tree/)**
+> [!NOTE] **[LeetCode 427. 建立四叉树](https://leetcode.cn/problems/construct-quad-tree/)**
 > 
 > 题意: TODO
 
@@ -2478,7 +2478,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 558. 四叉树交集](https://leetcode-cn.com/problems/logical-or-of-two-binary-grids-represented-as-quad-trees/)**
+> [!NOTE] **[LeetCode 558. 四叉树交集](https://leetcode.cn/problems/logical-or-of-two-binary-grids-represented-as-quad-trees/)**
 > 
 > 题意: TODO
 
@@ -2572,7 +2572,7 @@ public:
 
 ### 随机化
 
-> [!NOTE] **[LeetCode 384. 打乱数组](https://leetcode-cn.com/problems/shuffle-an-array/)**
+> [!NOTE] **[LeetCode 384. 打乱数组](https://leetcode.cn/problems/shuffle-an-array/)**
 > 
 > 题意: TODO
 
@@ -2694,7 +2694,7 @@ public:
 
 ### 系统设计
 
-> [!NOTE] **[LeetCode 355. 设计推特](https://leetcode-cn.com/problems/design-twitter/)**
+> [!NOTE] **[LeetCode 355. 设计推特](https://leetcode.cn/problems/design-twitter/)**
 > 
 > 题意: TODO
 
@@ -2791,7 +2791,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 385. 迷你语法分析器](https://leetcode-cn.com/problems/mini-parser/)**
+> [!NOTE] **[LeetCode 385. 迷你语法分析器](https://leetcode.cn/problems/mini-parser/)**
 > 
 > 题意: TODO
 
@@ -2874,7 +2874,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 535. TinyURL 的加密与解密](https://leetcode-cn.com/problems/encode-and-decode-tinyurl/)**
+> [!NOTE] **[LeetCode 535. TinyURL 的加密与解密](https://leetcode.cn/problems/encode-and-decode-tinyurl/)**
 > 
 > 题意: TODO
 
@@ -2936,7 +2936,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1396. 设计地铁系统](https://leetcode-cn.com/problems/design-underground-system/)**
+> [!NOTE] **[LeetCode 1396. 设计地铁系统](https://leetcode.cn/problems/design-underground-system/)**
 > 
 > 题意: TODO
 
@@ -2995,7 +2995,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1472. 设计浏览器历史记录](https://leetcode-cn.com/problems/design-browser-history/)**
+> [!NOTE] **[LeetCode 1472. 设计浏览器历史记录](https://leetcode.cn/problems/design-browser-history/)**
 > 
 > 题意: TODO
 
@@ -3093,7 +3093,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1912. 设计电影租借系统](https://leetcode-cn.com/problems/design-movie-rental-system/)**
+> [!NOTE] **[LeetCode 1912. 设计电影租借系统](https://leetcode.cn/problems/design-movie-rental-system/)**
 > 
 > 题意: TODO
 

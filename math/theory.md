@@ -59,7 +59,7 @@ public:
 
 ### 拉格朗日四平方和
 
-> [!NOTE] **[LeetCode 279. 完全平方数](https://leetcode-cn.com/problems/perfect-squares/)**
+> [!NOTE] **[LeetCode 279. 完全平方数](https://leetcode.cn/problems/perfect-squares/)**
 > 
 > 题意: TODO
 
@@ -162,7 +162,7 @@ class Solution:
 
 ### 约数与完全平方数
 
-> [!NOTE] **[LeetCode 319. 灯泡开关](https://leetcode-cn.com/problems/bulb-switcher/)**
+> [!NOTE] **[LeetCode 319. 灯泡开关](https://leetcode.cn/problems/bulb-switcher/)**
 > 
 > 题意: TODO
 
@@ -204,7 +204,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 672. 灯泡开关 Ⅱ](https://leetcode-cn.com/problems/bulb-switcher-ii/)**
+> [!NOTE] **[LeetCode 672. 灯泡开关 Ⅱ](https://leetcode.cn/problems/bulb-switcher-ii/)**
 > 
 > 题意: TODO
 
@@ -284,7 +284,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1375. 灯泡开关 III](https://leetcode-cn.com/problems/bulb-switcher-iii/)**
+> [!NOTE] **[LeetCode 1375. 灯泡开关 III](https://leetcode.cn/problems/bulb-switcher-iii/)**
 > 
 > 题意: TODO
 
@@ -329,7 +329,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1529. 灯泡开关 IV](https://leetcode-cn.com/problems/bulb-switcher-iv/)**
+> [!NOTE] **[LeetCode 1529. 灯泡开关 IV](https://leetcode.cn/problems/bulb-switcher-iv/)**
 > 
 > 题意: TODO
 
@@ -391,7 +391,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 365. 水壶问题](https://leetcode-cn.com/problems/water-and-jug-problem/)**
+> [!NOTE] **[LeetCode 365. 水壶问题](https://leetcode.cn/problems/water-and-jug-problem/)**
 > 
 > 题意: TODO
 

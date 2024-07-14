@@ -145,7 +145,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 31. 下一个排列](https://leetcode-cn.com/problems/next-permutation/)**
+> [!NOTE] **[LeetCode 31. 下一个排列](https://leetcode.cn/problems/next-permutation/)**
 > 
 > 题意: TODO
 
@@ -218,7 +218,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 1830. 使字符串有序的最少操作次数](https://leetcode-cn.com/problems/minimum-number-of-operations-to-make-string-sorted/)** [TAG]
+> [!NOTE] **[LeetCode 1830. 使字符串有序的最少操作次数](https://leetcode.cn/problems/minimum-number-of-operations-to-make-string-sorted/)** [TAG]
 > 
 > 题意: TODO
 
@@ -412,7 +412,7 @@ public:
 
 ### min
 
-> [!NOTE] **[LeetCode 1189. “气球” 的最大数量](https://leetcode-cn.com/problems/maximum-number-of-balloons/)**
+> [!NOTE] **[LeetCode 1189. “气球” 的最大数量](https://leetcode.cn/problems/maximum-number-of-balloons/)**
 > 
 > 题意: TODO
 

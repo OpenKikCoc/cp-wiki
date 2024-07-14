@@ -410,7 +410,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 650. 只有两个键的键盘](https://leetcode-cn.com/problems/2-keys-keyboard/)**
+> [!NOTE] **[LeetCode 650. 只有两个键的键盘](https://leetcode.cn/problems/2-keys-keyboard/)**
 > 
 > 题意: TODO
 
@@ -476,7 +476,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1250. 检查「好数组」](https://leetcode-cn.com/problems/check-if-it-is-a-good-array/)**
+> [!NOTE] **[LeetCode 1250. 检查「好数组」](https://leetcode.cn/problems/check-if-it-is-a-good-array/)**
 > 
 > 题意: TODO
 
@@ -515,7 +515,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1819. 序列中不同最大公约数的数目](https://leetcode-cn.com/problems/number-of-different-subsequences-gcds/)**
+> [!NOTE] **[LeetCode 1819. 序列中不同最大公约数的数目](https://leetcode.cn/problems/number-of-different-subsequences-gcds/)**
 > 
 > 题意: TODO
 
@@ -571,7 +571,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2001. 可互换矩形的组数](https://leetcode-cn.com/problems/number-of-pairs-of-interchangeable-rectangles/)**
+> [!NOTE] **[LeetCode 2001. 可互换矩形的组数](https://leetcode.cn/problems/number-of-pairs-of-interchangeable-rectangles/)**
 > 
 > 题意: TODO
 
@@ -1111,7 +1111,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 1808. 好因子的最大数目](https://leetcode-cn.com/problems/maximize-number-of-nice-divisors/)**
+> [!NOTE] **[LeetCode 1808. 好因子的最大数目](https://leetcode.cn/problems/maximize-number-of-nice-divisors/)**
 > 
 > 题意: TODO
 
@@ -1401,7 +1401,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 780. 到达终点](https://leetcode-cn.com/problems/reaching-points/)**
+> [!NOTE] **[LeetCode 780. 到达终点](https://leetcode.cn/problems/reaching-points/)**
 > 
 > 题意: TODO
 
@@ -1596,7 +1596,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 1354. 多次求和构造目标数组](https://leetcode-cn.com/problems/construct-target-array-with-multiple-sums/)**
+> [!NOTE] **[LeetCode 1354. 多次求和构造目标数组](https://leetcode.cn/problems/construct-target-array-with-multiple-sums/)**
 > 
 > 题意: TODO
 

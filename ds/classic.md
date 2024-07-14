@@ -2,7 +2,7 @@
 
 ### 栈与队列
 
-> [!NOTE] **[SwordOffer 09. 用两个栈实现队列](https://leetcode-cn.com/problems/yong-liang-ge-zhan-shi-xian-dui-lie-lcof/)**
+> [!NOTE] **[SwordOffer 09. 用两个栈实现队列](https://leetcode.cn/problems/yong-liang-ge-zhan-shi-xian-dui-lie-lcof/)**
 > 
 > 题意: TODO
 
@@ -135,7 +135,7 @@ class MyQueue(object):
 
 * * *
 
-> [!NOTE] **[LeetCode 225. 用队列实现栈](https://leetcode-cn.com/problems/implement-stack-using-queues/)**
+> [!NOTE] **[LeetCode 225. 用队列实现栈](https://leetcode.cn/problems/implement-stack-using-queues/)**
 > 
 > 题意: TODO
 
@@ -260,7 +260,7 @@ class MyStack:
 
 * * *
 
-> [!NOTE] **[LeetCode 232. 用栈实现队列](https://leetcode-cn.com/problems/implement-queue-using-stacks/)**
+> [!NOTE] **[LeetCode 232. 用栈实现队列](https://leetcode.cn/problems/implement-queue-using-stacks/)**
 > 
 > 题意: TODO
 
@@ -375,7 +375,7 @@ class MyQueue:
 
 ### 栈
 
-> [!NOTE] **[SwordOffer 30. 包含min函数的栈](https://leetcode-cn.com/problems/bao-han-minhan-shu-de-zhan-lcof/)**
+> [!NOTE] **[SwordOffer 30. 包含min函数的栈](https://leetcode.cn/problems/bao-han-minhan-shu-de-zhan-lcof/)**
 > 
 > 题意: TODO
 
@@ -461,7 +461,7 @@ class MinStack(object):
 
 * * *
 
-> [!NOTE] **[SwordOffer 31. 栈的压入、弹出序列](https://leetcode-cn.com/problems/zhan-de-ya-ru-dan-chu-xu-lie-lcof/)**
+> [!NOTE] **[SwordOffer 31. 栈的压入、弹出序列](https://leetcode.cn/problems/zhan-de-ya-ru-dan-chu-xu-lie-lcof/)**
 > 
 > 题意: TODO
 

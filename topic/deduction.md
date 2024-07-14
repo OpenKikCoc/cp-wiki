@@ -185,7 +185,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 338. 比特位计数](https://leetcode-cn.com/problems/counting-bits/)**
+> [!NOTE] **[LeetCode 338. 比特位计数](https://leetcode.cn/problems/counting-bits/)**
 > 
 > 题意: TODO
 
@@ -261,7 +261,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 357. 计算各个位数不同的数字个数](https://leetcode-cn.com/problems/count-numbers-with-unique-digits/)**
+> [!NOTE] **[LeetCode 357. 计算各个位数不同的数字个数](https://leetcode.cn/problems/count-numbers-with-unique-digits/)**
 > 
 > 题意: TODO
 
@@ -330,7 +330,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 396. 旋转函数](https://leetcode-cn.com/problems/rotate-function/)**
+> [!NOTE] **[LeetCode 396. 旋转函数](https://leetcode.cn/problems/rotate-function/)**
 > 
 > 题意: TODO
 

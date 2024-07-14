@@ -551,7 +551,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 494. 目标和](https://leetcode-cn.com/problems/target-sum/)**
+> [!NOTE] **[LeetCode 494. 目标和](https://leetcode.cn/problems/target-sum/)**
 > 
 > 题意: TODO
 
@@ -1055,7 +1055,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1866. 恰有 K 根木棍可以看到的排列数目](https://leetcode-cn.com/problems/number-of-ways-to-rearrange-sticks-with-k-sticks-visible/)** [TAG]
+> [!NOTE] **[LeetCode 1866. 恰有 K 根木棍可以看到的排列数目](https://leetcode.cn/problems/number-of-ways-to-rearrange-sticks-with-k-sticks-visible/)** [TAG]
 > 
 > 题意: TODO
 

@@ -877,7 +877,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 1136. 平行课程](https://leetcode-cn.com/problems/parallel-courses/)**
+> [!NOTE] **[LeetCode 1136. 平行课程](https://leetcode.cn/problems/parallel-courses/)**
 > 
 > 题意: TODO
 
@@ -1000,7 +1000,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1857. 有向图中最大颜色值](https://leetcode-cn.com/problems/largest-color-value-in-a-directed-graph/)**
+> [!NOTE] **[LeetCode 1857. 有向图中最大颜色值](https://leetcode.cn/problems/largest-color-value-in-a-directed-graph/)**
 > 
 > 题意: TODO
 
@@ -1100,7 +1100,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2050. 并行课程 III](https://leetcode-cn.com/problems/parallel-courses-iii/)**
+> [!NOTE] **[LeetCode 2050. 并行课程 III](https://leetcode.cn/problems/parallel-courses-iii/)**
 > 
 > 题意: TODO
 
@@ -1185,7 +1185,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 207. 课程表](https://leetcode-cn.com/problems/course-schedule/)**
+> [!NOTE] **[LeetCode 207. 课程表](https://leetcode.cn/problems/course-schedule/)**
 > 
 > 题意: TODO
 
@@ -1290,7 +1290,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 210. 课程表 II](https://leetcode-cn.com/problems/course-schedule-ii/)**
+> [!NOTE] **[LeetCode 210. 课程表 II](https://leetcode.cn/problems/course-schedule-ii/)**
 > 
 > 题意: TODO
 
@@ -1534,7 +1534,7 @@ public:
 
 ### 拓扑排序方案数（可重集排序问题）
 
-> [!NOTE] **[LeetCode 1916. 统计为蚁群构筑房间的不同顺序](https://leetcode-cn.com/problems/count-ways-to-build-rooms-in-an-ant-colony/)**
+> [!NOTE] **[LeetCode 1916. 统计为蚁群构筑房间的不同顺序](https://leetcode.cn/problems/count-ways-to-build-rooms-in-an-ant-colony/)**
 > 
 > [weekly-247](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-06-27_Weekly-247)
 > 
@@ -1630,7 +1630,7 @@ public:
 
 ### 进阶应用
 
-> [!NOTE] **[LeetCode 1203. 项目管理](https://leetcode-cn.com/problems/sort-items-by-groups-respecting-dependencies/)** [TAG]
+> [!NOTE] **[LeetCode 1203. 项目管理](https://leetcode.cn/problems/sort-items-by-groups-respecting-dependencies/)** [TAG]
 > 
 > 题意: TODO
 
@@ -1726,7 +1726,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1591. 奇怪的打印机 II](https://leetcode-cn.com/problems/strange-printer-ii/)** [TAG]
+> [!NOTE] **[LeetCode 1591. 奇怪的打印机 II](https://leetcode.cn/problems/strange-printer-ii/)** [TAG]
 > 
 > 题意: TODO
 
@@ -1810,7 +1810,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1632. 矩阵转换后的秩](https://leetcode-cn.com/problems/rank-transform-of-a-matrix/)** [TAG]
+> [!NOTE] **[LeetCode 1632. 矩阵转换后的秩](https://leetcode.cn/problems/rank-transform-of-a-matrix/)** [TAG]
 > 
 > 题意: TODO
 
@@ -2040,7 +2040,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2115. 从给定原材料中找到所有可以做出的菜](https://leetcode-cn.com/problems/find-all-possible-recipes-from-given-supplies/)** [TAG]
+> [!NOTE] **[LeetCode 2115. 从给定原材料中找到所有可以做出的菜](https://leetcode.cn/problems/find-all-possible-recipes-from-given-supplies/)** [TAG]
 > 
 > 题意: TODO
 

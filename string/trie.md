@@ -701,7 +701,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 208. 实现 Trie (前缀树)](https://leetcode-cn.com/problems/implement-trie-prefix-tree/)**
+> [!NOTE] **[LeetCode 208. 实现 Trie (前缀树)](https://leetcode.cn/problems/implement-trie-prefix-tree/)**
 > 
 > 题意: TODO
 
@@ -899,7 +899,7 @@ class Trie:
 
 * * *
 
-> [!NOTE] **[LeetCode 211. 添加与搜索单词 - 数据结构设计](https://leetcode-cn.com/problems/design-add-and-search-words-data-structure/)**
+> [!NOTE] **[LeetCode 211. 添加与搜索单词 - 数据结构设计](https://leetcode.cn/problems/design-add-and-search-words-data-structure/)**
 > 
 > 题意: TODO
 
@@ -1077,7 +1077,7 @@ class WordDictionary:
 
 * * *
 
-> [!NOTE] **[LeetCode 212. 单词搜索 II](https://leetcode-cn.com/problems/word-search-ii/)**
+> [!NOTE] **[LeetCode 212. 单词搜索 II](https://leetcode.cn/problems/word-search-ii/)**
 > 
 > 题意: TODO
 
@@ -1224,7 +1224,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 421. 数组中两个数的最大异或值](https://leetcode-cn.com/problems/maximum-xor-of-two-numbers-in-an-array/)**
+> [!NOTE] **[LeetCode 421. 数组中两个数的最大异或值](https://leetcode.cn/problems/maximum-xor-of-two-numbers-in-an-array/)**
 > 
 > 题意: TODO
 
@@ -1290,7 +1290,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 676. 实现一个魔法字典](https://leetcode-cn.com/problems/implement-magic-dictionary/)**
+> [!NOTE] **[LeetCode 676. 实现一个魔法字典](https://leetcode.cn/problems/implement-magic-dictionary/)**
 > 
 > 题意: TODO
 
@@ -1371,7 +1371,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 677. 键值映射](https://leetcode-cn.com/problems/map-sum-pairs/)**
+> [!NOTE] **[LeetCode 677. 键值映射](https://leetcode.cn/problems/map-sum-pairs/)**
 > 
 > 题意: TODO
 
@@ -1452,7 +1452,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 720. 词典中最长的单词](https://leetcode-cn.com/problems/longest-word-in-dictionary/)**
+> [!NOTE] **[LeetCode 720. 词典中最长的单词](https://leetcode.cn/problems/longest-word-in-dictionary/)**
 > 
 > 题意: TODO
 
@@ -1521,7 +1521,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2227. 加密解密字符串](https://leetcode-cn.com/problems/encrypt-and-decrypt-strings/)**
+> [!NOTE] **[LeetCode 2227. 加密解密字符串](https://leetcode.cn/problems/encrypt-and-decrypt-strings/)**
 > 
 > 题意: TODO
 
@@ -1759,7 +1759,7 @@ public:
 
 ### 进阶构造和使用
 
-> [!NOTE] **[LeetCode 745. 前缀和后缀搜索](https://leetcode-cn.com/problems/prefix-and-suffix-search/)**
+> [!NOTE] **[LeetCode 745. 前缀和后缀搜索](https://leetcode.cn/problems/prefix-and-suffix-search/)**
 > 
 > 题意: TODO
 
@@ -1841,7 +1841,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1268. 搜索推荐系统](https://leetcode-cn.com/problems/search-suggestions-system/)**
+> [!NOTE] **[LeetCode 1268. 搜索推荐系统](https://leetcode.cn/problems/search-suggestions-system/)**
 > 
 > 题意: TODO
 
@@ -1922,7 +1922,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1803. 统计异或值在范围内的数对有多少](https://leetcode-cn.com/problems/count-pairs-with-xor-in-a-range/)** [TAG]
+> [!NOTE] **[LeetCode 1803. 统计异或值在范围内的数对有多少](https://leetcode.cn/problems/count-pairs-with-xor-in-a-range/)** [TAG]
 > 
 > 题意: TODO
 
@@ -2118,7 +2118,7 @@ public:
 
 ### 离线 trie
 
-> [!NOTE] **[LeetCode 1707. 与数组中元素的最大异或值](https://leetcode-cn.com/problems/maximum-xor-with-an-element-from-array/)**
+> [!NOTE] **[LeetCode 1707. 与数组中元素的最大异或值](https://leetcode.cn/problems/maximum-xor-with-an-element-from-array/)**
 > 
 > [Weekly-210](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2020-12-27_Weekly-221)
 > 
@@ -2207,7 +2207,7 @@ public:
 
 * * *
 
-> [!NOTE] **[AcWing 1938. 查询最大基因差](https://leetcode-cn.com/problems/maximum-genetic-difference-query/)**
+> [!NOTE] **[AcWing 1938. 查询最大基因差](https://leetcode.cn/problems/maximum-genetic-difference-query/)**
 > 
 > 题意: TODO
 
@@ -2335,7 +2335,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1707. 与数组中元素的最大异或值](https://leetcode-cn.com/problems/maximum-xor-with-an-element-from-array/)** [TAG]
+> [!NOTE] **[LeetCode 1707. 与数组中元素的最大异或值](https://leetcode.cn/problems/maximum-xor-with-an-element-from-array/)** [TAG]
 > 
 > 题意: TODO
 
@@ -2422,7 +2422,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1938. 查询最大基因差](https://leetcode-cn.com/problems/maximum-genetic-difference-query/)** [TAG]
+> [!NOTE] **[LeetCode 1938. 查询最大基因差](https://leetcode.cn/problems/maximum-genetic-difference-query/)** [TAG]
 > 
 > 题意: TODO
 
@@ -2820,7 +2820,7 @@ public:
 
 ### trie 动态拓展 + 树 hash
 
-> [!NOTE] **[LeetCode 1948. 删除系统中的重复文件夹](https://leetcode-cn.com/problems/delete-duplicate-folders-in-system/)**
+> [!NOTE] **[LeetCode 1948. 删除系统中的重复文件夹](https://leetcode.cn/problems/delete-duplicate-folders-in-system/)**
 > 
 > [weekly-251](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-07-25_Weekly-251)
 > 

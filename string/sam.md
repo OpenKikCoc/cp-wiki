@@ -632,7 +632,7 @@ $$
 
 ## 习题
 
-> [!NOTE] **[LeetCode 1923. 最长公共子路径](https://leetcode-cn.com/problems/longest-common-subpath/)**
+> [!NOTE] **[LeetCode 1923. 最长公共子路径](https://leetcode.cn/problems/longest-common-subpath/)**
 > 
 > 题意: TODO
 

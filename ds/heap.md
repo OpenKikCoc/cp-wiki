@@ -118,7 +118,7 @@ int main() {
 
 ### heap
 
-> [!NOTE] **[LeetCode 373. 查找和最小的K对数字](https://leetcode-cn.com/problems/find-k-pairs-with-smallest-sums/)**
+> [!NOTE] **[LeetCode 373. 查找和最小的K对数字](https://leetcode.cn/problems/find-k-pairs-with-smallest-sums/)**
 > 
 > 题意: TODO
 
@@ -189,7 +189,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 658. 找到 K 个最接近的元素](https://leetcode-cn.com/problems/find-k-closest-elements/)**
+> [!NOTE] **[LeetCode 658. 找到 K 个最接近的元素](https://leetcode.cn/problems/find-k-closest-elements/)**
 > 
 > 题意: TODO
 
@@ -233,7 +233,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 692. 前K个高频单词](https://leetcode-cn.com/problems/top-k-frequent-words/)**
+> [!NOTE] **[LeetCode 692. 前K个高频单词](https://leetcode.cn/problems/top-k-frequent-words/)**
 > 
 > 题意: 尝试以 $O(n log k)$ 时间复杂度和 $O(n)$ 空间复杂度解决。
 
@@ -303,7 +303,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 1439. 有序矩阵中的第 k 个最小数组和](https://leetcode-cn.com/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/)** [TAG]
+> [!NOTE] **[LeetCode 1439. 有序矩阵中的第 k 个最小数组和](https://leetcode.cn/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/)** [TAG]
 > 
 > 题意: TODO
 
@@ -383,7 +383,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1801. 积压订单中的订单总数](https://leetcode-cn.com/problems/number-of-orders-in-the-backlog/)**
+> [!NOTE] **[LeetCode 1801. 积压订单中的订单总数](https://leetcode.cn/problems/number-of-orders-in-the-backlog/)**
 > 
 > 题意: TODO
 
@@ -467,7 +467,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1847. 最近的房间](https://leetcode-cn.com/problems/closest-room/)**
+> [!NOTE] **[LeetCode 1847. 最近的房间](https://leetcode.cn/problems/closest-room/)**
 > 
 > 题意: TODO
 
@@ -596,7 +596,7 @@ public:
 
 ### 双堆模拟 一般用于占用类问题
 
-> [!NOTE] **[LeetCode 1606. 找到处理最多请求的服务器](https://leetcode-cn.com/problems/find-servers-that-handled-most-number-of-requests/)** [TAG]
+> [!NOTE] **[LeetCode 1606. 找到处理最多请求的服务器](https://leetcode.cn/problems/find-servers-that-handled-most-number-of-requests/)** [TAG]
 > 
 > 题意: TODO
 
@@ -658,7 +658,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1882. 使用服务器处理任务](https://leetcode-cn.com/problems/process-tasks-using-servers/)**
+> [!NOTE] **[LeetCode 1882. 使用服务器处理任务](https://leetcode.cn/problems/process-tasks-using-servers/)**
 > 
 > 题意: TODO
 
@@ -884,7 +884,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1942. 最小未被占据椅子的编号](https://leetcode-cn.com/problems/the-number-of-the-smallest-unoccupied-chair/)**
+> [!NOTE] **[LeetCode 1942. 最小未被占据椅子的编号](https://leetcode.cn/problems/the-number-of-the-smallest-unoccupied-chair/)**
 > 
 > 题意: TODO
 
@@ -1202,7 +1202,7 @@ public:
 
 ### multiset
 
-> [!NOTE] **[LeetCode 218. 天际线问题](https://leetcode-cn.com/problems/the-skyline-problem/)**
+> [!NOTE] **[LeetCode 218. 天际线问题](https://leetcode.cn/problems/the-skyline-problem/)**
 > 
 > 题意: TODO
 
@@ -1259,7 +1259,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 480. 滑动窗口中位数](https://leetcode-cn.com/problems/sliding-window-median/)**
+> [!NOTE] **[LeetCode 480. 滑动窗口中位数](https://leetcode.cn/problems/sliding-window-median/)**
 > 
 > 题意: TODO
 

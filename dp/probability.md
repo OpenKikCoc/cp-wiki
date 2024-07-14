@@ -247,7 +247,7 @@ int main() {
 
 ## 习题
 
-> [!NOTE] **[LeetCode 1377. T 秒后青蛙的位置](https://leetcode-cn.com/problems/frog-position-after-t-seconds/)** [TAG]
+> [!NOTE] **[LeetCode 1377. T 秒后青蛙的位置](https://leetcode.cn/problems/frog-position-after-t-seconds/)** [TAG]
 > 
 > 题意: 
 > 
@@ -801,7 +801,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1467. 两个盒子中球的颜色数相同的概率](https://leetcode-cn.com/problems/probability-of-a-two-boxes-having-the-same-number-of-distinct-balls/)** [TAG]
+> [!NOTE] **[LeetCode 1467. 两个盒子中球的颜色数相同的概率](https://leetcode.cn/problems/probability-of-a-two-boxes-having-the-same-number-of-distinct-balls/)** [TAG]
 > 
 > 题意: TODO
 
@@ -809,7 +809,7 @@ public:
 > 
 > dp + 组合数
 > 
-> [题解](https://leetcode-cn.com/problems/probability-of-a-two-boxes-having-the-same-number-of-distinct-balls/solution/cdong-tai-gui-hua-bi-sai-de-shi-hou-bei-fan-yi-ken/)
+> [题解](https://leetcode.cn/problems/probability-of-a-two-boxes-having-the-same-number-of-distinct-balls/solution/cdong-tai-gui-hua-bi-sai-de-shi-hou-bei-fan-yi-ken/)
 > 
 > 重复做 todo
 

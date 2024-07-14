@@ -218,7 +218,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 587. 安装栅栏](https://leetcode-cn.com/problems/erect-the-fence/)**
+> [!NOTE] **[LeetCode 587. 安装栅栏](https://leetcode.cn/problems/erect-the-fence/)**
 > 
 > 题意: TODO
 

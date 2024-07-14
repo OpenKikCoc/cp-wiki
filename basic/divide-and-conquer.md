@@ -235,7 +235,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 454. 四数相加 II](https://leetcode-cn.com/problems/4sum-ii/)**
+> [!NOTE] **[LeetCode 454. 四数相加 II](https://leetcode.cn/problems/4sum-ii/)**
 > 
 > 题意: TODO
 
@@ -293,7 +293,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 779. 第K个语法符号](https://leetcode-cn.com/problems/k-th-symbol-in-grammar/)**
+> [!NOTE] **[LeetCode 779. 第K个语法符号](https://leetcode.cn/problems/k-th-symbol-in-grammar/)**
 > 
 > 题意: TODO
 
@@ -334,7 +334,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1274. 矩形内船只的数目](https://leetcode-cn.com/problems/number-of-ships-in-a-rectangle/)** [TAG]
+> [!NOTE] **[LeetCode 1274. 矩形内船只的数目](https://leetcode.cn/problems/number-of-ships-in-a-rectangle/)** [TAG]
 > 
 > 题意: TODO
 

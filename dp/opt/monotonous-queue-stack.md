@@ -540,7 +540,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 1687. 从仓库到码头运输箱子](https://leetcode-cn.com/problems/delivering-boxes-from-storage-to-ports/)** [TAG]
+> [!NOTE] **[LeetCode 1687. 从仓库到码头运输箱子](https://leetcode.cn/problems/delivering-boxes-from-storage-to-ports/)** [TAG]
 > 
 > 题意: TODO
 
@@ -616,7 +616,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1696. 跳跃游戏 VI](https://leetcode-cn.com/problems/jump-game-vi/)**
+> [!NOTE] **[LeetCode 1696. 跳跃游戏 VI](https://leetcode.cn/problems/jump-game-vi/)**
 > 
 > 题意: TODO
 

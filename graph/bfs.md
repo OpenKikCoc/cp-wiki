@@ -294,7 +294,7 @@ if __name__ == '__main__':
 
 * * *
 
-> [!NOTE] **[LeetCode 1210. 穿过迷宫的最少移动次数](https://leetcode-cn.com/problems/minimum-moves-to-reach-target-with-rotations/)**
+> [!NOTE] **[LeetCode 1210. 穿过迷宫的最少移动次数](https://leetcode.cn/problems/minimum-moves-to-reach-target-with-rotations/)**
 > 
 > 题意: TODO
 
@@ -360,7 +360,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1926. 迷宫中离入口最近的出口](https://leetcode-cn.com/problems/nearest-exit-from-entrance-in-maze/)**
+> [!NOTE] **[LeetCode 1926. 迷宫中离入口最近的出口](https://leetcode.cn/problems/nearest-exit-from-entrance-in-maze/)**
 > 
 > 题意: TODO
 
@@ -573,7 +573,7 @@ public:
 
 ### trick bfs
 
-> [!NOTE] **[LeetCode 675. 为高尔夫比赛砍树](https://leetcode-cn.com/problems/cut-off-trees-for-golf-event/)**
+> [!NOTE] **[LeetCode 675. 为高尔夫比赛砍树](https://leetcode.cn/problems/cut-off-trees-for-golf-event/)**
 > 
 > 题意: TODO
 
@@ -656,7 +656,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1263. 推箱子](https://leetcode-cn.com/problems/minimum-moves-to-move-a-box-to-their-target-location/)** [TAG]
+> [!NOTE] **[LeetCode 1263. 推箱子](https://leetcode.cn/problems/minimum-moves-to-move-a-box-to-their-target-location/)** [TAG]
 > 
 > 题意: TODO
 
@@ -744,7 +744,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1293. 网格中的最短路径](https://leetcode-cn.com/problems/shortest-path-in-a-grid-with-obstacles-elimination/)** [TAG]
+> [!NOTE] **[LeetCode 1293. 网格中的最短路径](https://leetcode.cn/problems/shortest-path-in-a-grid-with-obstacles-elimination/)** [TAG]
 > 
 > 题意: TODO
 
@@ -816,7 +816,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1298. 你能从盒子里获得的最大糖果数](https://leetcode-cn.com/problems/maximum-candies-you-can-get-from-boxes/)** [TAG]
+> [!NOTE] **[LeetCode 1298. 你能从盒子里获得的最大糖果数](https://leetcode.cn/problems/maximum-candies-you-can-get-from-boxes/)** [TAG]
 > 
 > 题意: TODO
 
@@ -890,7 +890,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2092. 找出知晓秘密的所有专家](https://leetcode-cn.com/problems/find-all-people-with-secret/)**
+> [!NOTE] **[LeetCode 2092. 找出知晓秘密的所有专家](https://leetcode.cn/problems/find-all-people-with-secret/)**
 > 
 > 题意: TODO
 
@@ -1053,7 +1053,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1466. 重新规划路线](https://leetcode-cn.com/problems/reorder-routes-to-make-all-paths-lead-to-the-city-zero/)**
+> [!NOTE] **[LeetCode 1466. 重新规划路线](https://leetcode.cn/problems/reorder-routes-to-make-all-paths-lead-to-the-city-zero/)**
 > 
 > 题意: TODO
 
@@ -1313,7 +1313,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 1368. 使网格图至少有一条有效路径的最小代价](https://leetcode-cn.com/problems/minimum-cost-to-make-at-least-one-valid-path-in-a-grid/)** [TAG]
+> [!NOTE] **[LeetCode 1368. 使网格图至少有一条有效路径的最小代价](https://leetcode.cn/problems/minimum-cost-to-make-at-least-one-valid-path-in-a-grid/)** [TAG]
 > 
 > 题意: TODO
 
@@ -1375,7 +1375,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode LCP 56. 信物传送](https://leetcode-cn.com/problems/6UEx57/)**
+> [!NOTE] **[LeetCode LCP 56. 信物传送](https://leetcode.cn/problems/6UEx57/)**
 > 
 > 题意: TODO
 

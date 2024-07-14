@@ -443,7 +443,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 729. 我的日程安排表 I](https://leetcode-cn.com/problems/my-calendar-i/)**
+> [!NOTE] **[LeetCode 729. 我的日程安排表 I](https://leetcode.cn/problems/my-calendar-i/)**
 > 
 > 题意: TODO
 
@@ -509,7 +509,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1825. 求出 MK 平均值](https://leetcode-cn.com/problems/finding-mk-average/)** [TAG]
+> [!NOTE] **[LeetCode 1825. 求出 MK 平均值](https://leetcode.cn/problems/finding-mk-average/)** [TAG]
 > 
 > 题意: TODO
 
@@ -617,7 +617,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2102. 序列顺序查询](https://leetcode-cn.com/problems/sequentially-ordinal-rank-tracker/)**
+> [!NOTE] **[LeetCode 2102. 序列顺序查询](https://leetcode.cn/problems/sequentially-ordinal-rank-tracker/)**
 > 
 > 题意: TODO
 
@@ -751,7 +751,7 @@ class SORTracker {
 
 ### BST
 
-> [!NOTE] **[LeetCode 98. 验证二叉搜索树](https://leetcode-cn.com/problems/validate-binary-search-tree/)**
+> [!NOTE] **[LeetCode 98. 验证二叉搜索树](https://leetcode.cn/problems/validate-binary-search-tree/)**
 > 
 > 题意: TODO
 
@@ -845,7 +845,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 173. 二叉搜索树迭代器](https://leetcode-cn.com/problems/binary-search-tree-iterator/)**
+> [!NOTE] **[LeetCode 173. 二叉搜索树迭代器](https://leetcode.cn/problems/binary-search-tree-iterator/)**
 > 
 > 题意: TODO
 
@@ -933,7 +933,7 @@ class BSTIterator:
 
 * * *
 
-> [!NOTE] **[LeetCode 99. 恢复二叉搜索树](https://leetcode-cn.com/problems/recover-binary-search-tree/)**
+> [!NOTE] **[LeetCode 99. 恢复二叉搜索树](https://leetcode.cn/problems/recover-binary-search-tree/)**
 > 
 > 题意: TODO
 
@@ -1023,7 +1023,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 450. 删除二叉搜索树中的节点](https://leetcode-cn.com/problems/delete-node-in-a-bst/)**
+> [!NOTE] **[LeetCode 450. 删除二叉搜索树中的节点](https://leetcode.cn/problems/delete-node-in-a-bst/)**
 > 
 > 题意: TODO
 
@@ -1077,7 +1077,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 501. 二叉搜索树中的众数](https://leetcode-cn.com/problems/find-mode-in-binary-search-tree/)**
+> [!NOTE] **[LeetCode 501. 二叉搜索树中的众数](https://leetcode.cn/problems/find-mode-in-binary-search-tree/)**
 > 
 > 题意: TODO
 
@@ -1187,7 +1187,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 701. 二叉搜索树中的插入操作](https://leetcode-cn.com/problems/insert-into-a-binary-search-tree/)**
+> [!NOTE] **[LeetCode 701. 二叉搜索树中的插入操作](https://leetcode.cn/problems/insert-into-a-binary-search-tree/)**
 > 
 > 题意: TODO
 
@@ -1245,7 +1245,7 @@ public:
 - 先序
 
   ```cpp
-  // [144. 二叉树的前序遍历](https://leetcode-cn.com/problems/binary-tree-preorder-traversal/)
+  // [144. 二叉树的前序遍历](https://leetcode.cn/problems/binary-tree-preorder-traversal/)
   class Solution {
   public:
       vector<int> preorderTraversal(TreeNode* root) {
@@ -1375,7 +1375,7 @@ public:
 
 ### 构造 BST
 
-> [!NOTE] **[LeetCode 108. 将有序数组转换为二叉搜索树](https://leetcode-cn.com/problems/convert-sorted-array-to-binary-search-tree/)**
+> [!NOTE] **[LeetCode 108. 将有序数组转换为二叉搜索树](https://leetcode.cn/problems/convert-sorted-array-to-binary-search-tree/)**
 > 
 > 题意: TODO
 
@@ -1431,7 +1431,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 109. 有序链表转换二叉搜索树](https://leetcode-cn.com/problems/convert-sorted-list-to-binary-search-tree/)**
+> [!NOTE] **[LeetCode 109. 有序链表转换二叉搜索树](https://leetcode.cn/problems/convert-sorted-list-to-binary-search-tree/)**
 > 
 > 题意: TODO
 

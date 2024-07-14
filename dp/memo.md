@@ -105,7 +105,7 @@ if __name__ == '__main__':
 
 * * *
 
-> [!NOTE] **[LeetCode 329. 矩阵中的最长递增路径](https://leetcode-cn.com/problems/longest-increasing-path-in-a-matrix/)**
+> [!NOTE] **[LeetCode 329. 矩阵中的最长递增路径](https://leetcode.cn/problems/longest-increasing-path-in-a-matrix/)**
 > 
 > 题意: TODO
 
@@ -291,7 +291,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 403. 青蛙过河](https://leetcode-cn.com/problems/frog-jump/)**
+> [!NOTE] **[LeetCode 403. 青蛙过河](https://leetcode.cn/problems/frog-jump/)**
 > 
 > 题意: TODO
 
@@ -441,7 +441,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 464. 我能赢吗](https://leetcode-cn.com/problems/can-i-win/)**
+> [!NOTE] **[LeetCode 464. 我能赢吗](https://leetcode.cn/problems/can-i-win/)**
 > 
 > 题意: TODO
 
@@ -599,7 +599,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 1240. 铺瓷砖](https://leetcode-cn.com/problems/tiling-a-rectangle-with-the-fewest-squares/)**
+> [!NOTE] **[LeetCode 1240. 铺瓷砖](https://leetcode.cn/problems/tiling-a-rectangle-with-the-fewest-squares/)**
 > 
 > 题意: TODO
 
@@ -706,7 +706,7 @@ int tilingRectangle(int n, int m) {
 
 * * *
 
-> [!NOTE] **[LeetCode 1553. 吃掉 N 个橘子的最少天数](https://leetcode-cn.com/problems/minimum-number-of-days-to-eat-n-oranges/)**
+> [!NOTE] **[LeetCode 1553. 吃掉 N 个橘子的最少天数](https://leetcode.cn/problems/minimum-number-of-days-to-eat-n-oranges/)**
 > 
 > 题意: TODO
 

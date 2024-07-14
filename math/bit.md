@@ -326,7 +326,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 190. 颠倒二进制位](https://leetcode-cn.com/problems/reverse-bits/)**
+> [!NOTE] **[LeetCode 190. 颠倒二进制位](https://leetcode.cn/problems/reverse-bits/)**
 > 
 > 题意: TODO
 
@@ -372,7 +372,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 191. 位1的个数](https://leetcode-cn.com/problems/number-of-1-bits/)**
+> [!NOTE] **[LeetCode 191. 位1的个数](https://leetcode.cn/problems/number-of-1-bits/)**
 > 
 > 题意: TODO
 
@@ -430,7 +430,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 231. 2的幂](https://leetcode-cn.com/problems/power-of-two/)**
+> [!NOTE] **[LeetCode 231. 2的幂](https://leetcode.cn/problems/power-of-two/)**
 > 
 > 题意: TODO
 
@@ -466,7 +466,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 326. 3的幂](https://leetcode-cn.com/problems/power-of-three/)**
+> [!NOTE] **[LeetCode 326. 3的幂](https://leetcode.cn/problems/power-of-three/)**
 > 
 > 题意: TODO
 
@@ -502,7 +502,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 342. 4的幂](https://leetcode-cn.com/problems/power-of-four/)**
+> [!NOTE] **[LeetCode 342. 4的幂](https://leetcode.cn/problems/power-of-four/)**
 > 
 > 题意: TODO
 
@@ -555,7 +555,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 693. 交替位二进制数](https://leetcode-cn.com/problems/binary-number-with-alternating-bits/)**
+> [!NOTE] **[LeetCode 693. 交替位二进制数](https://leetcode.cn/problems/binary-number-with-alternating-bits/)**
 > 
 > 题意: TODO
 
@@ -610,7 +610,7 @@ public:
 
 ### 数值操作
 
-> [!NOTE] **[LeetCode 371. 两整数之和](https://leetcode-cn.com/problems/sum-of-two-integers/)**
+> [!NOTE] **[LeetCode 371. 两整数之和](https://leetcode.cn/problems/sum-of-two-integers/)**
 > 
 > 题意: TODO
 
@@ -654,7 +654,7 @@ public:
 
 ### 位维护状态
 
-> [!NOTE] **[LeetCode 289. 生命游戏](https://leetcode-cn.com/problems/game-of-life/)**
+> [!NOTE] **[LeetCode 289. 生命游戏](https://leetcode.cn/problems/game-of-life/)**
 > 
 > 题意: TODO
 
@@ -751,7 +751,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 1178. 猜字谜](https://leetcode-cn.com/problems/number-of-valid-words-for-each-puzzle/)**
+> [!NOTE] **[LeetCode 1178. 猜字谜](https://leetcode.cn/problems/number-of-valid-words-for-each-puzzle/)**
 > 
 > 题意: TODO
 
@@ -811,7 +811,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1371. 每个元音包含偶数次的最长子字符串](https://leetcode-cn.com/problems/find-the-longest-substring-containing-vowels-in-even-counts/)** [TAG]
+> [!NOTE] **[LeetCode 1371. 每个元音包含偶数次的最长子字符串](https://leetcode.cn/problems/find-the-longest-substring-containing-vowels-in-even-counts/)** [TAG]
 > 
 > 题意: TODO
 
@@ -867,7 +867,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1386. 安排电影院座位](https://leetcode-cn.com/problems/cinema-seat-allocation/)** [TAG]
+> [!NOTE] **[LeetCode 1386. 安排电影院座位](https://leetcode.cn/problems/cinema-seat-allocation/)** [TAG]
 > 
 > 题意: TODO
 
@@ -946,7 +946,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1442. 形成两个异或相等数组的三元组数目](https://leetcode-cn.com/problems/count-triplets-that-can-form-two-arrays-of-equal-xor/)**
+> [!NOTE] **[LeetCode 1442. 形成两个异或相等数组的三元组数目](https://leetcode.cn/problems/count-triplets-that-can-form-two-arrays-of-equal-xor/)**
 > 
 > 题意: TODO
 
@@ -1023,7 +1023,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1461. 检查一个字符串是否包含所有长度为 K 的二进制子串](https://leetcode-cn.com/problems/check-if-a-string-contains-all-binary-codes-of-size-k/)**
+> [!NOTE] **[LeetCode 1461. 检查一个字符串是否包含所有长度为 K 的二进制子串](https://leetcode.cn/problems/check-if-a-string-contains-all-binary-codes-of-size-k/)**
 > 
 > 题意: TODO
 
@@ -1071,7 +1071,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1542. 找出最长的超赞子字符串](https://leetcode-cn.com/problems/find-longest-awesome-substring/)**
+> [!NOTE] **[LeetCode 1542. 找出最长的超赞子字符串](https://leetcode.cn/problems/find-longest-awesome-substring/)**
 > 
 > 题意: TODO
 
@@ -1243,7 +1243,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 458. 可怜的小猪](https://leetcode-cn.com/problems/poor-pigs/)**
+> [!NOTE] **[LeetCode 458. 可怜的小猪](https://leetcode.cn/problems/poor-pigs/)**
 > 
 > 题意: TODO
 
@@ -1285,7 +1285,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1734. 解码异或后的排列](https://leetcode-cn.com/problems/decode-xored-permutation/)**
+> [!NOTE] **[LeetCode 1734. 解码异或后的排列](https://leetcode.cn/problems/decode-xored-permutation/)**
 > 
 > 题意: TODO
 
@@ -1497,7 +1497,7 @@ public:
 
 ### 思想
 
-> [!NOTE] **[LeetCode 201. 数字范围按位与](https://leetcode-cn.com/problems/bitwise-and-of-numbers-range/)**
+> [!NOTE] **[LeetCode 201. 数字范围按位与](https://leetcode.cn/problems/bitwise-and-of-numbers-range/)**
 > 
 > 题意: TODO
 
@@ -1556,7 +1556,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1558. 得到目标数组的最少函数调用次数](https://leetcode-cn.com/problems/minimum-numbers-of-function-calls-to-make-target-array/)** [TAG]
+> [!NOTE] **[LeetCode 1558. 得到目标数组的最少函数调用次数](https://leetcode.cn/problems/minimum-numbers-of-function-calls-to-make-target-array/)** [TAG]
 > 
 > 题意: TODO
 
@@ -1651,7 +1651,7 @@ public:
 
 ### 经典位划分
 
-> [!NOTE] **[LeetCode 136. 只出现一次的数字](https://leetcode-cn.com/problems/single-number/)**
+> [!NOTE] **[LeetCode 136. 只出现一次的数字](https://leetcode.cn/problems/single-number/)**
 > 
 > 题意: TODO
 
@@ -1697,7 +1697,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 137. 只出现一次的数字 II](https://leetcode-cn.com/problems/single-number-ii/)**
+> [!NOTE] **[LeetCode 137. 只出现一次的数字 II](https://leetcode.cn/problems/single-number-ii/)**
 > 
 > 题意: TODO
 
@@ -1801,7 +1801,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 260. 只出现一次的数字 III](https://leetcode-cn.com/problems/single-number-iii/)**
+> [!NOTE] **[LeetCode 260. 只出现一次的数字 III](https://leetcode.cn/problems/single-number-iii/)**
 > 
 > 题意: TODO
 
@@ -1875,7 +1875,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 268. 丢失的数字](https://leetcode-cn.com/problems/missing-number/)**
+> [!NOTE] **[LeetCode 268. 丢失的数字](https://leetcode.cn/problems/missing-number/)**
 > 
 > 题意: TODO
 
@@ -1931,7 +1931,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 477. 汉明距离总和](https://leetcode-cn.com/problems/total-hamming-distance/)**
+> [!NOTE] **[LeetCode 477. 汉明距离总和](https://leetcode.cn/problems/total-hamming-distance/)**
 > 
 > 题意: TODO
 
@@ -1991,7 +1991,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 1835. 所有数对按位与结果的异或和](https://leetcode-cn.com/problems/find-xor-sum-of-all-pairs-bitwise-and/)**
+> [!NOTE] **[LeetCode 1835. 所有数对按位与结果的异或和](https://leetcode.cn/problems/find-xor-sum-of-all-pairs-bitwise-and/)**
 > 
 > 题意: TODO
 

@@ -59,7 +59,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 32. 最长有效括号](https://leetcode-cn.com/problems/longest-valid-parentheses/)**
+> [!NOTE] **[LeetCode 32. 最长有效括号](https://leetcode.cn/problems/longest-valid-parentheses/)**
 > 
 > 题意: TODO
 
@@ -165,7 +165,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 115. 不同的子序列](https://leetcode-cn.com/problems/distinct-subsequences/)**
+> [!NOTE] **[LeetCode 115. 不同的子序列](https://leetcode.cn/problems/distinct-subsequences/)**
 > 
 > 题意: TODO
 
@@ -243,7 +243,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 152. 乘积最大子数组](https://leetcode-cn.com/problems/maximum-product-subarray/)**
+> [!NOTE] **[LeetCode 152. 乘积最大子数组](https://leetcode.cn/problems/maximum-product-subarray/)**
 > 
 > 题意: TODO
 
@@ -332,7 +332,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 413. 等差数列划分](https://leetcode-cn.com/problems/arithmetic-slices/)**
+> [!NOTE] **[LeetCode 413. 等差数列划分](https://leetcode.cn/problems/arithmetic-slices/)**
 > 
 > 题意: TODO
 
@@ -457,7 +457,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 446. 等差数列划分 II - 子序列](https://leetcode-cn.com/problems/arithmetic-slices-ii-subsequence/)**
+> [!NOTE] **[LeetCode 446. 等差数列划分 II - 子序列](https://leetcode.cn/problems/arithmetic-slices-ii-subsequence/)**
 > 
 > 题意: TODO
 
@@ -524,7 +524,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 639. 解码方法II](https://leetcode-cn.com/problems/decode-ways-ii/)**
+> [!NOTE] **[LeetCode 639. 解码方法II](https://leetcode.cn/problems/decode-ways-ii/)**
 > 
 > 题意: TODO
 
@@ -580,7 +580,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 688. “马”在棋盘上的概率](https://leetcode-cn.com/problems/knight-probability-in-chessboard/)**
+> [!NOTE] **[LeetCode 688. “马”在棋盘上的概率](https://leetcode.cn/problems/knight-probability-in-chessboard/)**
 > 
 > 题意: TODO
 
@@ -673,7 +673,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 790. 多米诺和托米诺平铺](https://leetcode-cn.com/problems/domino-and-tromino-tiling/)**
+> [!NOTE] **[LeetCode 790. 多米诺和托米诺平铺](https://leetcode.cn/problems/domino-and-tromino-tiling/)**
 > 
 > 题意: TODO
 
@@ -784,7 +784,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 1621. 大小为 K 的不重叠线段的数目](https://leetcode-cn.com/problems/number-of-sets-of-k-non-overlapping-line-segments/)**
+> [!NOTE] **[LeetCode 1621. 大小为 K 的不重叠线段的数目](https://leetcode.cn/problems/number-of-sets-of-k-non-overlapping-line-segments/)**
 > 
 > 题意: TODO
 
@@ -849,7 +849,7 @@ public:
 
 ##### **C++ 转化 组合数**
 
-[题解](https://leetcode-cn.com/problems/number-of-sets-of-k-non-overlapping-line-segments/solution/da-xiao-wei-k-de-bu-zhong-die-xian-duan-de-shu-mu-/)
+[题解](https://leetcode.cn/problems/number-of-sets-of-k-non-overlapping-line-segments/solution/da-xiao-wei-k-de-bu-zhong-die-xian-duan-de-shu-mu-/)
 
 ```cpp
 class Solution {
@@ -1307,7 +1307,7 @@ public:
 
 ### 复杂线性
 
-> [!NOTE] **[LeetCode 689. 三个无重叠子数组的最大和](https://leetcode-cn.com/problems/maximum-sum-of-3-non-overlapping-subarrays/)**
+> [!NOTE] **[LeetCode 689. 三个无重叠子数组的最大和](https://leetcode.cn/problems/maximum-sum-of-3-non-overlapping-subarrays/)**
 > 
 > 题意: TODO
 
@@ -1404,7 +1404,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 740. 删除与获得点数](https://leetcode-cn.com/problems/delete-and-earn/)**
+> [!NOTE] **[LeetCode 740. 删除与获得点数](https://leetcode.cn/problems/delete-and-earn/)**
 > 
 > 题意: TODO
 
@@ -1645,7 +1645,7 @@ int main() {
 * * *
 
 
-> [!NOTE] **[LeetCode 1187. 使数组严格递增](https://leetcode-cn.com/problems/make-array-strictly-increasing/)** [TAG]
+> [!NOTE] **[LeetCode 1187. 使数组严格递增](https://leetcode.cn/problems/make-array-strictly-increasing/)** [TAG]
 > 
 > 题意: TODO
 
@@ -1710,7 +1710,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1223. 掷骰子模拟](https://leetcode-cn.com/problems/dice-roll-simulation/)**
+> [!NOTE] **[LeetCode 1223. 掷骰子模拟](https://leetcode.cn/problems/dice-roll-simulation/)**
 > 
 > 题意: TODO
 
@@ -1764,7 +1764,7 @@ int dieSimulator(int n, vector<int>& rollMax) {
 
 * * *
 
-> [!NOTE] **[LeetCode 1388. 3n 块披萨](https://leetcode-cn.com/problems/pizza-with-3n-slices/)** [TAG]
+> [!NOTE] **[LeetCode 1388. 3n 块披萨](https://leetcode.cn/problems/pizza-with-3n-slices/)** [TAG]
 > 
 > 题意: 
 > 
@@ -1824,13 +1824,13 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1478. 安排邮筒](https://leetcode-cn.com/problems/allocate-mailboxes/)**
+> [!NOTE] **[LeetCode 1478. 安排邮筒](https://leetcode.cn/problems/allocate-mailboxes/)**
 > 
 > 题意: TODO
 
 > [!TIP] **思路**
 >
-> [何逊的题解](https://leetcode-cn.com/problems/allocate-mailboxes/solution/dong-tai-gui-hua-shi-jian-fu-za-du-oknlognkong-jia/)
+> [何逊的题解](https://leetcode.cn/problems/allocate-mailboxes/solution/dong-tai-gui-hua-shi-jian-fu-za-du-oknlognkong-jia/)
 >
 > $f[i, j] 表示前 i 个建筑用 j 个邮箱的最短距离和 预处理 dis[i, j]为从 i 到 j 使用一个邮箱时的消耗$
 >
@@ -1886,7 +1886,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1575. 统计所有可行路径](https://leetcode-cn.com/problems/count-all-possible-routes/)** [TAG]
+> [!NOTE] **[LeetCode 1575. 统计所有可行路径](https://leetcode.cn/problems/count-all-possible-routes/)** [TAG]
 > 
 > 题意: TODO
 
@@ -1938,7 +1938,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1751. 最多可以参加的会议数目 II](https://leetcode-cn.com/problems/maximum-number-of-events-that-can-be-attended-ii/)**
+> [!NOTE] **[LeetCode 1751. 最多可以参加的会议数目 II](https://leetcode.cn/problems/maximum-number-of-events-that-can-be-attended-ii/)**
 > 
 > 题意: TODO
 
@@ -1999,7 +1999,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1787. 使所有区间的异或结果为零](https://leetcode-cn.com/problems/make-the-xor-of-all-segments-equal-to-zero/)** [TAG]
+> [!NOTE] **[LeetCode 1787. 使所有区间的异或结果为零](https://leetcode.cn/problems/make-the-xor-of-all-segments-equal-to-zero/)** [TAG]
 > 
 > 题意: TODO
 
@@ -2071,7 +2071,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1959. K 次调整数组大小浪费的最小总空间](https://leetcode-cn.com/problems/minimum-total-space-wasted-with-k-resizing-operations/)**
+> [!NOTE] **[LeetCode 1959. K 次调整数组大小浪费的最小总空间](https://leetcode.cn/problems/minimum-total-space-wasted-with-k-resizing-operations/)**
 > 
 > 题意: TODO
 
@@ -2218,7 +2218,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1997. 访问完所有房间的第一天](https://leetcode-cn.com/problems/first-day-where-you-have-been-in-all-the-rooms/)** [TAG]
+> [!NOTE] **[LeetCode 1997. 访问完所有房间的第一天](https://leetcode.cn/problems/first-day-where-you-have-been-in-all-the-rooms/)** [TAG]
 > 
 > 题意: TODO
 
@@ -2280,7 +2280,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2008. 出租车的最大盈利](https://leetcode-cn.com/problems/maximum-earnings-from-taxi/)** [TAG]
+> [!NOTE] **[LeetCode 2008. 出租车的最大盈利](https://leetcode.cn/problems/maximum-earnings-from-taxi/)** [TAG]
 > 
 > 题意: TODO
 
@@ -2866,7 +2866,7 @@ public:
 
 ### 股票问题
 
-> [!NOTE] **[LeetCode 121. 买卖股票的最佳时机](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock/)**
+> [!NOTE] **[LeetCode 121. 买卖股票的最佳时机](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock/)**
 > 
 > 题意: TODO
 
@@ -2960,7 +2960,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 122. 买卖股票的最佳时机 II](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-ii/)**
+> [!NOTE] **[LeetCode 122. 买卖股票的最佳时机 II](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-ii/)**
 > 
 > 题意: TODO
 
@@ -3085,7 +3085,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 123. 买卖股票的最佳时机 III](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iii/)**
+> [!NOTE] **[LeetCode 123. 买卖股票的最佳时机 III](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iii/)**
 > 
 > 题意: TODO
 
@@ -3209,7 +3209,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 188. 买卖股票的最佳时机 IV](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iv/)**
+> [!NOTE] **[LeetCode 188. 买卖股票的最佳时机 IV](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iv/)**
 > 
 > 题意: TODO
 
@@ -3385,7 +3385,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 309. 最佳买卖股票时机含冷冻期](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/)**
+> [!NOTE] **[LeetCode 309. 最佳买卖股票时机含冷冻期](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-with-cooldown/)**
 > 
 > 题意: TODO
 
@@ -3513,7 +3513,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 714. 买卖股票的最佳时机含手续费](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/)**
+> [!NOTE] **[LeetCode 714. 买卖股票的最佳时机含手续费](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/)**
 > 
 > 题意: TODO
 
@@ -3719,7 +3719,7 @@ int main() {
 
 ### 打家劫舍
 
-> [!NOTE] **[LeetCode 198. 打家劫舍](https://leetcode-cn.com/problems/house-robber/)**
+> [!NOTE] **[LeetCode 198. 打家劫舍](https://leetcode.cn/problems/house-robber/)**
 > 
 > 题意: TODO
 
@@ -3818,7 +3818,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 213. 打家劫舍 II](https://leetcode-cn.com/problems/house-robber-ii/)**
+> [!NOTE] **[LeetCode 213. 打家劫舍 II](https://leetcode.cn/problems/house-robber-ii/)**
 > 
 > 题意: TODO
 
@@ -3911,7 +3911,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 337. 打家劫舍 III](https://leetcode-cn.com/problems/house-robber-iii/)**
+> [!NOTE] **[LeetCode 337. 打家劫舍 III](https://leetcode.cn/problems/house-robber-iii/)**
 > 
 > 题意: TODO
 
@@ -3996,7 +3996,7 @@ class Solution:
 
 ### 一般递推
 
-> [!NOTE] **[LeetCode 799. 香槟塔](https://leetcode-cn.com/problems/champagne-tower/)**
+> [!NOTE] **[LeetCode 799. 香槟塔](https://leetcode.cn/problems/champagne-tower/)**
 > 
 > 题意: TODO
 
@@ -4064,7 +4064,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 1182. 与目标颜色间的最短距离](https://leetcode-cn.com/problems/shortest-distance-to-target-color/)** [TAG]
+> [!NOTE] **[LeetCode 1182. 与目标颜色间的最短距离](https://leetcode.cn/problems/shortest-distance-to-target-color/)** [TAG]
 > 
 > 题意: TODO
 
@@ -4209,7 +4209,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1220. 统计元音字母序列的数目](https://leetcode-cn.com/problems/count-vowels-permutation/)**
+> [!NOTE] **[LeetCode 1220. 统计元音字母序列的数目](https://leetcode.cn/problems/count-vowels-permutation/)**
 > 
 > 题意: TODO
 
@@ -4293,7 +4293,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 1262. 可被三整除的最大和](https://leetcode-cn.com/problems/greatest-sum-divisible-by-three/)** [TAG]
+> [!NOTE] **[LeetCode 1262. 可被三整除的最大和](https://leetcode.cn/problems/greatest-sum-divisible-by-three/)** [TAG]
 > 
 > 题意: TODO
 
@@ -4370,7 +4370,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 1335. 工作计划的最低难度](https://leetcode-cn.com/problems/minimum-difficulty-of-a-job-schedule/)**
+> [!NOTE] **[LeetCode 1335. 工作计划的最低难度](https://leetcode.cn/problems/minimum-difficulty-of-a-job-schedule/)**
 > 
 > 题意: TODO
 
@@ -4450,7 +4450,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 1639. 通过给定词典构造目标字符串的方案数](https://leetcode-cn.com/problems/number-of-ways-to-form-a-target-string-given-a-dictionary/)** [TAG]
+> [!NOTE] **[LeetCode 1639. 通过给定词典构造目标字符串的方案数](https://leetcode.cn/problems/number-of-ways-to-form-a-target-string-given-a-dictionary/)** [TAG]
 > 
 > 题意: TODO
 
@@ -4497,7 +4497,7 @@ class Solution {
 
 * * *
 
-> [!NOTE] **[LeetCode 1680. 连接连续二进制数字](https://leetcode-cn.com/problems/concatenation-of-consecutive-binary-numbers/)**
+> [!NOTE] **[LeetCode 1680. 连接连续二进制数字](https://leetcode.cn/problems/concatenation-of-consecutive-binary-numbers/)**
 > 
 > 题意: TODO
 
@@ -4577,7 +4577,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 1955. 统计特殊子序列的数目](https://leetcode-cn.com/problems/count-number-of-special-subsequences/)**
+> [!NOTE] **[LeetCode 1955. 统计特殊子序列的数目](https://leetcode.cn/problems/count-number-of-special-subsequences/)**
 > 
 > 题意: TODO
 
@@ -5138,7 +5138,7 @@ public:
 
 #### 数学递推 dp
 
-> [!NOTE] **[LeetCode 1259. 不相交的握手](https://leetcode-cn.com/problems/handshakes-that-dont-cross/)** [TAG]
+> [!NOTE] **[LeetCode 1259. 不相交的握手](https://leetcode.cn/problems/handshakes-that-dont-cross/)** [TAG]
 > 
 > 题意: TODO
 
@@ -5188,7 +5188,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1269. 停在原地的方案数](https://leetcode-cn.com/problems/number-of-ways-to-stay-in-the-same-place-after-some-steps/)** [TAG]
+> [!NOTE] **[LeetCode 1269. 停在原地的方案数](https://leetcode.cn/problems/number-of-ways-to-stay-in-the-same-place-after-some-steps/)** [TAG]
 > 
 > 题意: TODO
 
@@ -5396,7 +5396,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 1411. 给 N x 3 网格图涂色的方案数](https://leetcode-cn.com/problems/number-of-ways-to-paint-n-x-3-grid/)**
+> [!NOTE] **[LeetCode 1411. 给 N x 3 网格图涂色的方案数](https://leetcode.cn/problems/number-of-ways-to-paint-n-x-3-grid/)**
 > 
 > 题意: TODO
 
@@ -5440,7 +5440,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1420. 生成数组](https://leetcode-cn.com/problems/build-array-where-you-can-find-the-maximum-exactly-k-comparisons/)** [TAG]
+> [!NOTE] **[LeetCode 1420. 生成数组](https://leetcode.cn/problems/build-array-where-you-can-find-the-maximum-exactly-k-comparisons/)** [TAG]
 > 
 > 题意: TODO
 
@@ -5514,7 +5514,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1473. 粉刷房子 III](https://leetcode-cn.com/problems/paint-house-iii/)**
+> [!NOTE] **[LeetCode 1473. 粉刷房子 III](https://leetcode.cn/problems/paint-house-iii/)**
 > 
 > 题意: TODO
 
@@ -5577,7 +5577,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1739. 放置盒子](https://leetcode-cn.com/problems/building-boxes/)** [TAG]
+> [!NOTE] **[LeetCode 1739. 放置盒子](https://leetcode.cn/problems/building-boxes/)** [TAG]
 > 
 > 题意: TODO
 
@@ -5702,7 +5702,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1883. 准时抵达会议现场的最小跳过休息次数](https://leetcode-cn.com/problems/minimum-skips-to-arrive-at-meeting-on-time/)** [TAG]
+> [!NOTE] **[LeetCode 1883. 准时抵达会议现场的最小跳过休息次数](https://leetcode.cn/problems/minimum-skips-to-arrive-at-meeting-on-time/)** [TAG]
 > 
 > 题意: TODO
 
@@ -5787,7 +5787,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1987. 不同的好子序列数目](https://leetcode-cn.com/problems/number-of-unique-good-subsequences/)** [TAG]
+> [!NOTE] **[LeetCode 1987. 不同的好子序列数目](https://leetcode.cn/problems/number-of-unique-good-subsequences/)** [TAG]
 > 
 > 题意: TODO
 
@@ -5851,7 +5851,7 @@ public:
 
 #### 栅栏涂色
 
-> [!NOTE] **[LeetCode 276. 栅栏涂色](https://leetcode-cn.com/problems/paint-fence/)**
+> [!NOTE] **[LeetCode 276. 栅栏涂色](https://leetcode.cn/problems/paint-fence/)**
 > 
 > 题意: TODO
 
@@ -5967,7 +5967,7 @@ public:
 
 ### 分层最短路
 
-> [!NOTE] **[LeetCode 1824. 最少侧跳次数](https://leetcode-cn.com/problems/minimum-sideway-jumps/)** [TAG]
+> [!NOTE] **[LeetCode 1824. 最少侧跳次数](https://leetcode.cn/problems/minimum-sideway-jumps/)** [TAG]
 > 
 > 题意: TODO
 

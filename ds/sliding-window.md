@@ -2,7 +2,7 @@
 
 ## 一般应用
 
-> [!NOTE] **[LeetCode 30. 串联所有单词的子串](https://leetcode-cn.com/problems/substring-with-concatenation-of-all-words/)**
+> [!NOTE] **[LeetCode 30. 串联所有单词的子串](https://leetcode.cn/problems/substring-with-concatenation-of-all-words/)**
 > 
 > 题意: TODO
 
@@ -99,7 +99,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 76. 最小覆盖子串](https://leetcode-cn.com/problems/minimum-window-substring/)**
+> [!NOTE] **[LeetCode 76. 最小覆盖子串](https://leetcode.cn/problems/minimum-window-substring/)**
 > 
 > 题意: TODO
 
@@ -181,7 +181,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 209. 长度最小的子数组](https://leetcode-cn.com/problems/minimum-size-subarray-sum/)**
+> [!NOTE] **[LeetCode 209. 长度最小的子数组](https://leetcode.cn/problems/minimum-size-subarray-sum/)**
 > 
 > 题意: TODO
 
@@ -247,7 +247,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 220. 存在重复元素 III](https://leetcode-cn.com/problems/contains-duplicate-iii/)**
+> [!NOTE] **[LeetCode 220. 存在重复元素 III](https://leetcode.cn/problems/contains-duplicate-iii/)**
 > 
 > 题意: TODO
 
@@ -309,7 +309,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 239. 滑动窗口最大值](https://leetcode-cn.com/problems/sliding-window-maximum/)**
+> [!NOTE] **[LeetCode 239. 滑动窗口最大值](https://leetcode.cn/problems/sliding-window-maximum/)**
 > 
 > 题意: TODO
 
@@ -367,7 +367,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 395. 至少有K个重复字符的最长子串](https://leetcode-cn.com/problems/longest-substring-with-at-least-k-repeating-characters/)**
+> [!NOTE] **[LeetCode 395. 至少有K个重复字符的最长子串](https://leetcode.cn/problems/longest-substring-with-at-least-k-repeating-characters/)**
 > 
 > 题意: TODO
 
@@ -456,7 +456,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 424. 替换后的最长重复字符](https://leetcode-cn.com/problems/longest-repeating-character-replacement/)**
+> [!NOTE] **[LeetCode 424. 替换后的最长重复字符](https://leetcode.cn/problems/longest-repeating-character-replacement/)**
 > 
 > 题意: TODO
 
@@ -523,7 +523,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 438. 找到字符串中所有字母异位词](https://leetcode-cn.com/problems/find-all-anagrams-in-a-string/)**
+> [!NOTE] **[LeetCode 438. 找到字符串中所有字母异位词](https://leetcode.cn/problems/find-all-anagrams-in-a-string/)**
 > 
 > 题意: TODO
 
@@ -630,7 +630,7 @@ class Solution(object):
 
 * * *
 
-> [!NOTE] **[LeetCode 567. 字符串的排列](https://leetcode-cn.com/problems/permutation-in-string/)**
+> [!NOTE] **[LeetCode 567. 字符串的排列](https://leetcode.cn/problems/permutation-in-string/)**
 > 
 > 题意: TODO
 
@@ -717,7 +717,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 643. 子数组最大平均数 I](https://leetcode-cn.com/problems/maximum-average-subarray-i/)**
+> [!NOTE] **[LeetCode 643. 子数组最大平均数 I](https://leetcode.cn/problems/maximum-average-subarray-i/)**
 > 
 > 题意: TODO
 
@@ -770,7 +770,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1151. 最少交换次数来组合所有的 1](https://leetcode-cn.com/problems/minimum-swaps-to-group-all-1s-together/)**
+> [!NOTE] **[LeetCode 1151. 最少交换次数来组合所有的 1](https://leetcode.cn/problems/minimum-swaps-to-group-all-1s-together/)**
 > 
 > 题意: TODO
 
@@ -818,7 +818,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1176. 健身计划评估](https://leetcode-cn.com/problems/diet-plan-performance/)**
+> [!NOTE] **[LeetCode 1176. 健身计划评估](https://leetcode.cn/problems/diet-plan-performance/)**
 > 
 > 题意: TODO
 
@@ -873,7 +873,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1208. 尽可能使字符串相等](https://leetcode-cn.com/problems/get-equal-substrings-within-budget/)**
+> [!NOTE] **[LeetCode 1208. 尽可能使字符串相等](https://leetcode.cn/problems/get-equal-substrings-within-budget/)**
 > 
 > 题意: TODO
 
@@ -943,7 +943,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1425. 带限制的子序列和](https://leetcode-cn.com/problems/constrained-subsequence-sum/)**
+> [!NOTE] **[LeetCode 1425. 带限制的子序列和](https://leetcode.cn/problems/constrained-subsequence-sum/)**
 > 
 > 题意: TODO
 
@@ -1000,7 +1000,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1438. 绝对差不超过限制的最长连续子数组](https://leetcode-cn.com/problems/longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit/)** [TAG]
+> [!NOTE] **[LeetCode 1438. 绝对差不超过限制的最长连续子数组](https://leetcode.cn/problems/longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit/)** [TAG]
 > 
 > 题意: TODO
 
@@ -1050,7 +1050,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1477. 找两个和为目标值且不重叠的子数组](https://leetcode-cn.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/)**
+> [!NOTE] **[LeetCode 1477. 找两个和为目标值且不重叠的子数组](https://leetcode.cn/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/)**
 > 
 > 题意: TODO
 
@@ -1105,7 +1105,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1695. 删除子数组的最大得分](https://leetcode-cn.com/problems/maximum-erasure-value/)**
+> [!NOTE] **[LeetCode 1695. 删除子数组的最大得分](https://leetcode.cn/problems/maximum-erasure-value/)**
 > 
 > 题意: TODO
 
@@ -1181,7 +1181,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2106. 摘水果](https://leetcode-cn.com/problems/maximum-fruits-harvested-after-at-most-k-steps/)** [TAG]
+> [!NOTE] **[LeetCode 2106. 摘水果](https://leetcode.cn/problems/maximum-fruits-harvested-after-at-most-k-steps/)** [TAG]
 > 
 > 题意: TODO
 

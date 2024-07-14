@@ -99,7 +99,7 @@ while (n--) {
 
 ## 习题
 
-> [!NOTE] **[LeetCode 169. 多数元素](https://leetcode-cn.com/problems/majority-element/)**
+> [!NOTE] **[LeetCode 169. 多数元素](https://leetcode.cn/problems/majority-element/)**
 > 
 > 题意: TODO
 
@@ -176,7 +176,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 229. 求众数 II](https://leetcode-cn.com/problems/majority-element-ii/)**
+> [!NOTE] **[LeetCode 229. 求众数 II](https://leetcode.cn/problems/majority-element-ii/)**
 > 
 > 题意: TODO
 
@@ -228,7 +228,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1287. 有序数组中出现次数超过25%的元素](https://leetcode-cn.com/problems/element-appearing-more-than-25-in-sorted-array/)**
+> [!NOTE] **[LeetCode 1287. 有序数组中出现次数超过25%的元素](https://leetcode.cn/problems/element-appearing-more-than-25-in-sorted-array/)**
 > 
 > 题意: TODO
 

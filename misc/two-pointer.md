@@ -10,7 +10,7 @@
 
 如果不和其他数据结构结合使用，双指针维护区间信息的最简单模式就是维护具有一定单调性，新增和删去一个元素都很方便处理的信息，就比如正数的和、正整数的积等等。
 
-> [!NOTE] **例题 1 [leetcode 713. 乘积小于 K 的子数组](https://leetcode-cn.com/problems/subarray-product-less-than-k/)**
+> [!NOTE] **例题 1 [leetcode 713. 乘积小于 K 的子数组](https://leetcode.cn/problems/subarray-product-less-than-k/)**
 > 
 > 给定一个长度为 $n$ 的正整数数组 $\mathit{nums}$ 和整数 $k$, 找出该数组内乘积小于 $k$ 的连续子数组的个数。$1 \leq n \leq 3 \times 10^4, 1 \leq nums[i] \leq 1000, 0 \leq k \leq 10^6$
 
@@ -41,7 +41,7 @@ int numSubarrayProductLessThanK(vector<int>& nums, int k) {
 
 ## 子序列匹配
 
-> [!NOTE] **例题 3 [leetcode 524. 通过删除字母匹配到字典里最长单词](https://leetcode-cn.com/problems/longest-word-in-dictionary-through-deleting/)**
+> [!NOTE] **例题 3 [leetcode 524. 通过删除字母匹配到字典里最长单词](https://leetcode.cn/problems/longest-word-in-dictionary-through-deleting/)**
 > 
 > 给定一个字符串 $s$ 和一个字符串数组 $\mathit{dictionary}$ 作为字典，找出并返回字典中最长的字符串，该字符串可以通过删除 $s$ 中的某些字符得到。
 
@@ -74,7 +74,7 @@ string findLongestWord(string s, vector<string>& dictionary) {
 
 很多时候在序列上使用双指针之所以能够正确地达到目的，是因为序列的某些性质，最常见的就是利用序列的有序性。
 
-> [!NOTE] **例题 4 [leetcode 167. 两数之和 II - 输入有序数组](https://leetcode-cn.com/problems/two-sum-ii-input-array-is-sorted/)**
+> [!NOTE] **例题 4 [leetcode 167. 两数之和 II - 输入有序数组](https://leetcode.cn/problems/two-sum-ii-input-array-is-sorted/)**
 > 
 > 给定一个已按照 **升序排列** 的整数数组 `numbers`，请你从数组中找出两个数满足相加之和等于目标数 `target`。
 
@@ -317,7 +317,7 @@ if __name__ == '__main__':
 
 * * *
 
-> [!NOTE] **[LeetCode 167. 两数之和 II - 输入有序数组](https://leetcode-cn.com/problems/two-sum-ii-input-array-is-sorted/)**
+> [!NOTE] **[LeetCode 167. 两数之和 II - 输入有序数组](https://leetcode.cn/problems/two-sum-ii-input-array-is-sorted/)**
 > 
 > 题意: TODO
 
@@ -386,7 +386,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 611. 有效三角形的个数](https://leetcode-cn.com/problems/valid-triangle-number/)**
+> [!NOTE] **[LeetCode 611. 有效三角形的个数](https://leetcode.cn/problems/valid-triangle-number/)**
 > 
 > 题意: TODO
 
@@ -430,7 +430,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 633. 平方数之和](https://leetcode-cn.com/problems/sum-of-square-numbers/)**
+> [!NOTE] **[LeetCode 633. 平方数之和](https://leetcode.cn/problems/sum-of-square-numbers/)**
 > 
 > 题意: TODO
 
@@ -516,7 +516,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 719. 找出第 k 小的距离对](https://leetcode-cn.com/problems/find-k-th-smallest-pair-distance/)**
+> [!NOTE] **[LeetCode 719. 找出第 k 小的距离对](https://leetcode.cn/problems/find-k-th-smallest-pair-distance/)**
 > 
 > 题意: TODO
 
@@ -569,7 +569,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1213. 三个有序数组的交集](https://leetcode-cn.com/problems/intersection-of-three-sorted-arrays/)**
+> [!NOTE] **[LeetCode 1213. 三个有序数组的交集](https://leetcode.cn/problems/intersection-of-three-sorted-arrays/)**
 > 
 > 题意: TODO
 
@@ -659,7 +659,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1638. 统计只差一个字符的子串数目](https://leetcode-cn.com/problems/count-substrings-that-differ-by-one-character/)**
+> [!NOTE] **[LeetCode 1638. 统计只差一个字符的子串数目](https://leetcode.cn/problems/count-substrings-that-differ-by-one-character/)**
 > 
 > 题意: TODO
 
@@ -775,7 +775,7 @@ public:
 
 > 链表判环、找中点的快慢指针应用参见链表部分
 
-> [!NOTE] **[LeetCode 202. 快乐数](https://leetcode-cn.com/problems/happy-number/)**
+> [!NOTE] **[LeetCode 202. 快乐数](https://leetcode.cn/problems/happy-number/)**
 > 
 > 题意: TODO
 
@@ -852,7 +852,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 457. 环形数组循环](https://leetcode-cn.com/problems/circular-array-loop/)**
+> [!NOTE] **[LeetCode 457. 环形数组循环](https://leetcode.cn/problems/circular-array-loop/)**
 > 
 > 题意: TODO
 
@@ -919,7 +919,7 @@ public:
 
 ### 优化双指针
 
-> [!NOTE] **[LeetCode 15. 三数之和](https://leetcode-cn.com/problems/3sum/)**
+> [!NOTE] **[LeetCode 15. 三数之和](https://leetcode.cn/problems/3sum/)**
 > 
 > 题意: TODO
 
@@ -1020,7 +1020,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 16. 最接近的三数之和](https://leetcode-cn.com/problems/3sum-closest/)**
+> [!NOTE] **[LeetCode 16. 最接近的三数之和](https://leetcode.cn/problems/3sum-closest/)**
 > 
 > 题意: TODO
 
@@ -1086,7 +1086,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 18. 四数之和](https://leetcode-cn.com/problems/4sum/)**
+> [!NOTE] **[LeetCode 18. 四数之和](https://leetcode.cn/problems/4sum/)**
 > 
 > 题意: TODO
 
@@ -1162,7 +1162,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 786. 第 K 个最小的素数分数](https://leetcode-cn.com/problems/k-th-smallest-prime-fraction/)**
+> [!NOTE] **[LeetCode 786. 第 K 个最小的素数分数](https://leetcode.cn/problems/k-th-smallest-prime-fraction/)**
 > 
 > 题意: TODO
 
@@ -1226,7 +1226,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1610. 可见点的最大数目](https://leetcode-cn.com/problems/maximum-number-of-visible-points/)** [TAG]
+> [!NOTE] **[LeetCode 1610. 可见点的最大数目](https://leetcode.cn/problems/maximum-number-of-visible-points/)** [TAG]
 > 
 > 题意: TODO
 
@@ -1292,7 +1292,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1855. 下标对中的最大距离](https://leetcode-cn.com/problems/maximum-distance-between-a-pair-of-values/)**
+> [!NOTE] **[LeetCode 1855. 下标对中的最大距离](https://leetcode.cn/problems/maximum-distance-between-a-pair-of-values/)**
 > 
 > 题意: TODO
 
@@ -1597,7 +1597,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 11. 盛最多水的容器](https://leetcode-cn.com/problems/container-with-most-water/)**
+> [!NOTE] **[LeetCode 11. 盛最多水的容器](https://leetcode.cn/problems/container-with-most-water/)**
 > 
 > 题意: TODO
 
@@ -1657,7 +1657,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 532. 数组中的 k-diff 数对](https://leetcode-cn.com/problems/k-diff-pairs-in-an-array/)**
+> [!NOTE] **[LeetCode 532. 数组中的 k-diff 数对](https://leetcode.cn/problems/k-diff-pairs-in-an-array/)**
 > 
 > 题意: TODO
 
@@ -1727,7 +1727,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1537. 最大得分](https://leetcode-cn.com/problems/get-the-maximum-score/)**
+> [!NOTE] **[LeetCode 1537. 最大得分](https://leetcode.cn/problems/get-the-maximum-score/)**
 > 
 > 题意: TODO
 
@@ -1788,7 +1788,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1712. 将数组分成三个子数组的方案数](https://leetcode-cn.com/problems/ways-to-split-array-into-three-subarrays/)** [TAG]
+> [!NOTE] **[LeetCode 1712. 将数组分成三个子数组的方案数](https://leetcode.cn/problems/ways-to-split-array-into-three-subarrays/)** [TAG]
 > 
 > 题意: TODO
 
@@ -1870,7 +1870,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1793. 好子数组的最大分数](https://leetcode-cn.com/problems/maximum-score-of-a-good-subarray/)** [TAG]
+> [!NOTE] **[LeetCode 1793. 好子数组的最大分数](https://leetcode.cn/problems/maximum-score-of-a-good-subarray/)** [TAG]
 > 
 > 题意: TODO
 

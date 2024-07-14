@@ -111,7 +111,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 1910. 删除一个字符串中所有出现的给定子字符串](https://leetcode-cn.com/problems/remove-all-occurrences-of-a-substring/)**
+> [!NOTE] **[LeetCode 1910. 删除一个字符串中所有出现的给定子字符串](https://leetcode.cn/problems/remove-all-occurrences-of-a-substring/)**
 > 
 > 题意: TODO
 

@@ -152,7 +152,7 @@ if __name__ == '__main__':
 
 * * *
 
-> [!NOTE] **[LeetCode 440. 字典序的第K小数字](https://leetcode-cn.com/problems/k-th-smallest-in-lexicographical-order/)**
+> [!NOTE] **[LeetCode 440. 字典序的第K小数字](https://leetcode.cn/problems/k-th-smallest-in-lexicographical-order/)**
 > 
 > 题意: TODO
 
@@ -263,7 +263,7 @@ public:
 
 ### 可重集排列问题
 
-> [!NOTE] **[LeetCode 1916. 统计为蚁群构筑房间的不同顺序](https://leetcode-cn.com/problems/count-ways-to-build-rooms-in-an-ant-colony/)** [TAG]
+> [!NOTE] **[LeetCode 1916. 统计为蚁群构筑房间的不同顺序](https://leetcode.cn/problems/count-ways-to-build-rooms-in-an-ant-colony/)** [TAG]
 > 
 > 题意: TODO
 

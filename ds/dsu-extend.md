@@ -333,7 +333,7 @@ if __name__ == '__main__':
 
 * * *
 
-> [!NOTE] **[LeetCode 684. 冗余连接](https://leetcode-cn.com/problems/redundant-connection/)**
+> [!NOTE] **[LeetCode 684. 冗余连接](https://leetcode.cn/problems/redundant-connection/)**
 > 
 > 题意: TODO
 
@@ -384,7 +384,7 @@ public:
 * * *
 
 
-> [!NOTE] **[LeetCode 685. 冗余连接 II](https://leetcode-cn.com/problems/redundant-connection-ii/)**
+> [!NOTE] **[LeetCode 685. 冗余连接 II](https://leetcode.cn/problems/redundant-connection-ii/)**
 > 
 > 题意: TODO
 
@@ -536,7 +536,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1319. 连通网络的操作次数](https://leetcode-cn.com/problems/number-of-operations-to-make-network-connected/)**
+> [!NOTE] **[LeetCode 1319. 连通网络的操作次数](https://leetcode.cn/problems/number-of-operations-to-make-network-connected/)**
 > 
 > 题意: TODO
 
@@ -592,7 +592,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1627. 带阈值的图连通性](https://leetcode-cn.com/problems/graph-connectivity-with-threshold/)** [TAG]
+> [!NOTE] **[LeetCode 1627. 带阈值的图连通性](https://leetcode.cn/problems/graph-connectivity-with-threshold/)** [TAG]
 > 
 > 题意: TODO
 
@@ -845,7 +845,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 399. 除法求值](https://leetcode-cn.com/problems/evaluate-division/)**
+> [!NOTE] **[LeetCode 399. 除法求值](https://leetcode.cn/problems/evaluate-division/)**
 > 
 > 题意: TODO
 
@@ -1290,7 +1290,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 2076. 处理含限制条件的好友请求](https://leetcode-cn.com/problems/process-restricted-friend-requests/)** [TAG]
+> [!NOTE] **[LeetCode 2076. 处理含限制条件的好友请求](https://leetcode.cn/problems/process-restricted-friend-requests/)** [TAG]
 > 
 > 题意: 并非**反集**的一道题
 
@@ -1629,7 +1629,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 1361. 验证二叉树](https://leetcode-cn.com/problems/validate-binary-tree-nodes/)**
+> [!NOTE] **[LeetCode 1361. 验证二叉树](https://leetcode.cn/problems/validate-binary-tree-nodes/)**
 > 
 > 题意:
 > 
@@ -1708,7 +1708,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1579. 保证图可完全遍历](https://leetcode-cn.com/problems/remove-max-number-of-edges-to-keep-graph-fully-traversable/)** [TAG]
+> [!NOTE] **[LeetCode 1579. 保证图可完全遍历](https://leetcode.cn/problems/remove-max-number-of-edges-to-keep-graph-fully-traversable/)** [TAG]
 > 
 > 题意: TODO
 
@@ -1779,7 +1779,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1970. 你能穿过矩阵的最后一天](https://leetcode-cn.com/problems/last-day-where-you-can-still-cross/)**
+> [!NOTE] **[LeetCode 1970. 你能穿过矩阵的最后一天](https://leetcode.cn/problems/last-day-where-you-can-still-cross/)**
 > 
 > 题意: TODO
 
@@ -2326,7 +2326,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 1202. 交换字符串中的元素](https://leetcode-cn.com/problems/smallest-string-with-swaps/)** [TAG]
+> [!NOTE] **[LeetCode 1202. 交换字符串中的元素](https://leetcode.cn/problems/smallest-string-with-swaps/)** [TAG]
 > 
 > 题意: TODO
 
@@ -2385,7 +2385,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1722. 执行交换操作后的最小汉明距离](https://leetcode-cn.com/problems/minimize-hamming-distance-after-swap-operations/)**
+> [!NOTE] **[LeetCode 1722. 执行交换操作后的最小汉明距离](https://leetcode.cn/problems/minimize-hamming-distance-after-swap-operations/)**
 > 
 > 题意: TODO
 
@@ -2493,7 +2493,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1998. 数组的最大公因数排序](https://leetcode-cn.com/problems/gcd-sort-of-an-array/)**
+> [!NOTE] **[LeetCode 1998. 数组的最大公因数排序](https://leetcode.cn/problems/gcd-sort-of-an-array/)**
 > 
 > 题意: TODO
 
@@ -2594,7 +2594,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2157. 字符串分组](https://leetcode-cn.com/problems/groups-of-strings/)**
+> [!NOTE] **[LeetCode 2157. 字符串分组](https://leetcode.cn/problems/groups-of-strings/)**
 > 
 > 题意: TODO
 

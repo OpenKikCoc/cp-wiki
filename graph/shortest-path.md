@@ -905,7 +905,7 @@ if __name__ == '__main__':
 
 * * *
 
-> [!NOTE] **[LeetCode 743. 网络延迟时间](https://leetcode-cn.com/problems/network-delay-time/)**
+> [!NOTE] **[LeetCode 743. 网络延迟时间](https://leetcode.cn/problems/network-delay-time/)**
 > 
 > 题意: TODO
 
@@ -982,7 +982,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1514. 概率最大的路径](https://leetcode-cn.com/problems/path-with-maximum-probability/)**
+> [!NOTE] **[LeetCode 1514. 概率最大的路径](https://leetcode.cn/problems/path-with-maximum-probability/)**
 > 
 > 题意: TODO
 
@@ -1229,7 +1229,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 1786. 从第一个节点出发到最后一个节点的受限路径数](https://leetcode-cn.com/problems/number-of-restricted-paths-from-first-to-last-node/)**
+> [!NOTE] **[LeetCode 1786. 从第一个节点出发到最后一个节点的受限路径数](https://leetcode.cn/problems/number-of-restricted-paths-from-first-to-last-node/)**
 > 
 > 题意: TODO
 
@@ -1390,7 +1390,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode LCP 35. 电动车游城市](https://leetcode-cn.com/problems/DFPeFJ/)**
+> [!NOTE] **[LeetCode LCP 35. 电动车游城市](https://leetcode.cn/problems/DFPeFJ/)**
 > 
 > 题意: TODO
 
@@ -1572,7 +1572,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2203 得到要求路径的最小带权子图](https://leetcode-cn.com/problems/minimum-weighted-subgraph-with-the-required-paths/)** [TAG]
+> [!NOTE] **[LeetCode 2203 得到要求路径的最小带权子图](https://leetcode.cn/problems/minimum-weighted-subgraph-with-the-required-paths/)** [TAG]
 > 
 > 题意: TODO
 
@@ -2325,7 +2325,7 @@ if __name__ == '__main__':
 
 * * *
 
-> [!NOTE] **[LeetCode 787. K 站中转内最便宜的航班](https://leetcode-cn.com/problems/cheapest-flights-within-k-stops/)**
+> [!NOTE] **[LeetCode 787. K 站中转内最便宜的航班](https://leetcode.cn/problems/cheapest-flights-within-k-stops/)**
 > 
 > 题意: TODO
 
@@ -4101,7 +4101,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 1761. 一个图中连通三元组的最小度数](https://leetcode-cn.com/problems/minimum-degree-of-a-connected-trio-in-a-graph/)**
+> [!NOTE] **[LeetCode 1761. 一个图中连通三元组的最小度数](https://leetcode.cn/problems/minimum-degree-of-a-connected-trio-in-a-graph/)**
 > 
 > 题意: TODO
 
@@ -4440,7 +4440,7 @@ public:
 
 ### 拆点最短路 -> TODO 放到graph子章节
 
-> [!NOTE] **[LeetCode 1928. 规定时间内到达终点的最小花费](https://leetcode-cn.com/problems/minimum-cost-to-reach-destination-in-time/)** [TAG]
+> [!NOTE] **[LeetCode 1928. 规定时间内到达终点的最小花费](https://leetcode.cn/problems/minimum-cost-to-reach-destination-in-time/)** [TAG]
 > 
 > [biweekly 56](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-07-10_Biweekly-56)
 > 
@@ -4576,7 +4576,7 @@ public:
 
 ### 次短路等
 
-> [!NOTE] **[AcWing 2045. 到达目的地的第二短时间](https://leetcode-cn.com/problems/second-minimum-time-to-reach-destination/)**
+> [!NOTE] **[AcWing 2045. 到达目的地的第二短时间](https://leetcode.cn/problems/second-minimum-time-to-reach-destination/)**
 > 
 > [weekly-263](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-10-17_Weekly-263)
 > 
@@ -4935,7 +4935,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 建信03. 地铁路线规划](https://leetcode-cn.com/contest/ccbft-2021fall/problems/zQTFs4/)** [TAG]
+> [!NOTE] **[LeetCode 建信03. 地铁路线规划](https://leetcode.cn/contest/ccbft-2021fall/problems/zQTFs4/)** [TAG]
 > 
 > 题意: TODO
 

@@ -559,7 +559,7 @@ def pre():
 
 ### 一般筛法
 
-> [!NOTE] **[LeetCode 1390. 四因数](https://leetcode-cn.com/problems/four-divisors/)**
+> [!NOTE] **[LeetCode 1390. 四因数](https://leetcode.cn/problems/four-divisors/)**
 > 
 > 题意: 
 > 

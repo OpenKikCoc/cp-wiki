@@ -17,7 +17,7 @@
 >     }
 > ```
 >
-> 具体使用参见 [307. 区域和检索 - 数组可修改](https://leetcode-cn.com/problems/range-sum-query-mutable/)
+> 具体使用参见 [307. 区域和检索 - 数组可修改](https://leetcode.cn/problems/range-sum-query-mutable/)
 >
 > - 给所有的位置加 1
 >
@@ -851,7 +851,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 315. 计算右侧小于当前元素的个数](https://leetcode-cn.com/problems/count-of-smaller-numbers-after-self/)**
+> [!NOTE] **[LeetCode 315. 计算右侧小于当前元素的个数](https://leetcode.cn/problems/count-of-smaller-numbers-after-self/)**
 > 
 > 题意: TODO
 
@@ -908,7 +908,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 406. 根据身高重建队列](https://leetcode-cn.com/problems/queue-reconstruction-by-height/)**
+> [!NOTE] **[LeetCode 406. 根据身高重建队列](https://leetcode.cn/problems/queue-reconstruction-by-height/)**
 > 
 > 题意: TODO
 
@@ -1047,7 +1047,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 1649. 通过指令创建有序数组](https://leetcode-cn.com/problems/create-sorted-array-through-instructions/)**
+> [!NOTE] **[LeetCode 1649. 通过指令创建有序数组](https://leetcode.cn/problems/create-sorted-array-through-instructions/)**
 > 
 > 题意: TODO
 
@@ -1132,7 +1132,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1845. 座位预约管理系统](https://leetcode-cn.com/problems/seat-reservation-manager/)**
+> [!NOTE] **[LeetCode 1845. 座位预约管理系统](https://leetcode.cn/problems/seat-reservation-manager/)**
 > 
 > 题意: TODO
 
@@ -1428,7 +1428,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 327. 区间和的个数](https://leetcode-cn.com/problems/count-of-range-sum/)**
+> [!NOTE] **[LeetCode 327. 区间和的个数](https://leetcode.cn/problems/count-of-range-sum/)**
 > 
 > 题意: TODO
 
@@ -1626,7 +1626,7 @@ public:
 
 ### 综合应用
 
-> [!NOTE] **[LeetCode 2179. 统计数组中好三元组数目](https://leetcode-cn.com/problems/count-good-triplets-in-an-array/)**
+> [!NOTE] **[LeetCode 2179. 统计数组中好三元组数目](https://leetcode.cn/problems/count-good-triplets-in-an-array/)**
 > 
 > 题意: TODO
 
@@ -1797,7 +1797,7 @@ int main() {
 
 ### 进阶应用
 
-> [!NOTE] **[LeetCode 1505. 最多 K 次交换相邻数位后得到的最小整数](https://leetcode-cn.com/problems/minimum-possible-integer-after-at-most-k-adjacent-swaps-on-digits/)** [TAG] 模版题
+> [!NOTE] **[LeetCode 1505. 最多 K 次交换相邻数位后得到的最小整数](https://leetcode.cn/problems/minimum-possible-integer-after-at-most-k-adjacent-swaps-on-digits/)** [TAG] 模版题
 > 
 > 题意: TODO
 
@@ -1810,7 +1810,7 @@ int main() {
 > 1.  贪心：把最靠前的数字`x` 改最小，此时的 `最小` 需满足与 `x `位置差小于剩余可移动步数。随后进行的操作：将 `x` 与 `最小` 数字间的所有数字右移。
 > 2.  线段树：动态维护异动区间 以及 查找区间最小值来和靠前数交换
 >
-> 更新模版 参考[liouzhou_101](https://leetcode-cn.com/u/liouzhou_101/)
+> 更新模版 参考[liouzhou_101](https://leetcode.cn/u/liouzhou_101/)
 > 
 > **重复做**
 

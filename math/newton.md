@@ -121,7 +121,7 @@ public static BigInteger isqrtNewton(BigInteger n) {
 ## 习题
 
 - [UVa 10428 - The Roots](https://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=16&page=show_problem&problem=1369)
--   [LeetCode 69. x 的平方根](https://leetcode-cn.com/problems/sqrtx/)
+-   [LeetCode 69. x 的平方根](https://leetcode.cn/problems/sqrtx/)
 
 
 > [!NOTE] **[Luogu [NOIP2001 提高组] 一元三次方程求解](https://www.luogu.com.cn/problem/P1024)**
@@ -189,7 +189,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 69. x 的平方根](https://leetcode-cn.com/problems/sqrtx/)**
+> [!NOTE] **[LeetCode 69. x 的平方根](https://leetcode.cn/problems/sqrtx/)**
 > 
 > 题意: TODO
 
@@ -252,7 +252,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 367. 有效的完全平方数](https://leetcode-cn.com/problems/valid-perfect-square/)**
+> [!NOTE] **[LeetCode 367. 有效的完全平方数](https://leetcode.cn/problems/valid-perfect-square/)**
 > 
 > 题意: TODO
 

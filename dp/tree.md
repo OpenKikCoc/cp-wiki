@@ -1085,7 +1085,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 1372. 二叉树中的最长交错路径](https://leetcode-cn.com/problems/longest-zigzag-path-in-a-binary-tree/)**
+> [!NOTE] **[LeetCode 1372. 二叉树中的最长交错路径](https://leetcode.cn/problems/longest-zigzag-path-in-a-binary-tree/)**
 > 
 > 题意: TODO
 
@@ -1160,7 +1160,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 1373. 二叉搜索子树的最大键值和](https://leetcode-cn.com/problems/maximum-sum-bst-in-binary-tree/)** [TAG]
+> [!NOTE] **[LeetCode 1373. 二叉搜索子树的最大键值和](https://leetcode.cn/problems/maximum-sum-bst-in-binary-tree/)** [TAG]
 > 
 > 题意: 
 > 
@@ -1217,7 +1217,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode LCP 34. 二叉树染色](https://leetcode-cn.com/problems/er-cha-shu-ran-se-UGC/)**
+> [!NOTE] **[LeetCode LCP 34. 二叉树染色](https://leetcode.cn/problems/er-cha-shu-ran-se-UGC/)**
 > 
 > 题意: TODO
 
@@ -2227,7 +2227,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 310. 最小高度树](https://leetcode-cn.com/problems/minimum-height-trees/)**
+> [!NOTE] **[LeetCode 310. 最小高度树](https://leetcode.cn/problems/minimum-height-trees/)**
 > 
 > 题意: TODO
 
@@ -3146,7 +3146,7 @@ public:
 > [!TIP] **思路**
 > 与leetcode看守题不同之处在于：这个是看边 leetcode是看节点
 > 
-> https://leetcode-cn.com/problems/binary-tree-cameras/
+> https://leetcode.cn/problems/binary-tree-cameras/
 > 
 > - f[i] 没有放置也没有被覆盖的不考虑
 > - f[i][0] i节点没有放置 覆盖全部边

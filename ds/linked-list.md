@@ -594,7 +594,7 @@ if __name__ == '__main__':
 
 ### 链表操作
 
-> [!NOTE] **[LeetCode 19. 删除链表的倒数第N个节点](https://leetcode-cn.com/problems/remove-nth-node-from-end-of-list/)**
+> [!NOTE] **[LeetCode 19. 删除链表的倒数第N个节点](https://leetcode.cn/problems/remove-nth-node-from-end-of-list/)**
 > 
 > 题意: TODO
 
@@ -663,7 +663,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 21. 合并两个有序链表](https://leetcode-cn.com/problems/merge-two-sorted-lists/)**
+> [!NOTE] **[LeetCode 21. 合并两个有序链表](https://leetcode.cn/problems/merge-two-sorted-lists/)**
 > 
 > 题意: TODO
 
@@ -733,7 +733,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 23. 合并K个升序链表](https://leetcode-cn.com/problems/merge-k-sorted-lists/)**
+> [!NOTE] **[LeetCode 23. 合并K个升序链表](https://leetcode.cn/problems/merge-k-sorted-lists/)**
 > 
 > 题意: TODO
 
@@ -854,7 +854,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 24. 两两交换链表中的节点](https://leetcode-cn.com/problems/swap-nodes-in-pairs/)**
+> [!NOTE] **[LeetCode 24. 两两交换链表中的节点](https://leetcode.cn/problems/swap-nodes-in-pairs/)**
 > 
 > 题意: TODO
 
@@ -954,7 +954,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 25. K 个一组翻转链表](https://leetcode-cn.com/problems/reverse-nodes-in-k-group/)**
+> [!NOTE] **[LeetCode 25. K 个一组翻转链表](https://leetcode.cn/problems/reverse-nodes-in-k-group/)**
 > 
 > 题意: TODO
 
@@ -1061,7 +1061,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 61. 旋转链表](https://leetcode-cn.com/problems/rotate-list/)**
+> [!NOTE] **[LeetCode 61. 旋转链表](https://leetcode.cn/problems/rotate-list/)**
 > 
 > 题意: TODO
 
@@ -1165,7 +1165,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 82. 删除排序链表中的重复元素 II](https://leetcode-cn.com/problems/remove-duplicates-from-sorted-list-ii/)**
+> [!NOTE] **[LeetCode 82. 删除排序链表中的重复元素 II](https://leetcode.cn/problems/remove-duplicates-from-sorted-list-ii/)**
 > 
 > 题意: TODO
 
@@ -1271,7 +1271,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 86. 分隔链表](https://leetcode-cn.com/problems/partition-list/)**
+> [!NOTE] **[LeetCode 86. 分隔链表](https://leetcode.cn/problems/partition-list/)**
 > 
 > 题意: TODO
 
@@ -1362,7 +1362,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 92. 反转链表 II](https://leetcode-cn.com/problems/reverse-linked-list-ii/)**
+> [!NOTE] **[LeetCode 92. 反转链表 II](https://leetcode.cn/problems/reverse-linked-list-ii/)**
 > 
 > 题意: TODO
 
@@ -1477,7 +1477,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 138. 复制带随机指针的链表](https://leetcode-cn.com/problems/copy-list-with-random-pointer/)**
+> [!NOTE] **[LeetCode 138. 复制带随机指针的链表](https://leetcode.cn/problems/copy-list-with-random-pointer/)**
 > 
 > 题意: TODO
 
@@ -1555,7 +1555,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 141. 环形链表](https://leetcode-cn.com/problems/linked-list-cycle/)**
+> [!NOTE] **[LeetCode 141. 环形链表](https://leetcode.cn/problems/linked-list-cycle/)**
 > 
 > 题意: TODO
 
@@ -1614,7 +1614,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 142. 环形链表 II](https://leetcode-cn.com/problems/linked-list-cycle-ii/)**
+> [!NOTE] **[LeetCode 142. 环形链表 II](https://leetcode.cn/problems/linked-list-cycle-ii/)**
 > 
 > 题意: TODO
 
@@ -1685,7 +1685,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 143. 重排链表](https://leetcode-cn.com/problems/reorder-list/)**
+> [!NOTE] **[LeetCode 143. 重排链表](https://leetcode.cn/problems/reorder-list/)**
 > 
 > 题意: TODO
 
@@ -1820,7 +1820,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 147. 对链表进行插入排序](https://leetcode-cn.com/problems/insertion-sort-list/)**
+> [!NOTE] **[LeetCode 147. 对链表进行插入排序](https://leetcode.cn/problems/insertion-sort-list/)**
 > 
 > 题意: TODO
 
@@ -1905,7 +1905,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 148. 排序链表](https://leetcode-cn.com/problems/sort-list/)**
+> [!NOTE] **[LeetCode 148. 排序链表](https://leetcode.cn/problems/sort-list/)**
 > 
 > 题意: TODO
 
@@ -2059,7 +2059,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 160. 相交链表](https://leetcode-cn.com/problems/intersection-of-two-linked-lists/)**
+> [!NOTE] **[LeetCode 160. 相交链表](https://leetcode.cn/problems/intersection-of-two-linked-lists/)**
 > 
 > 题意: TODO
 
@@ -2108,7 +2108,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 203. 移除链表元素](https://leetcode-cn.com/problems/remove-linked-list-elements/)**
+> [!NOTE] **[LeetCode 203. 移除链表元素](https://leetcode.cn/problems/remove-linked-list-elements/)**
 > 
 > 题意: TODO
 
@@ -2189,7 +2189,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 206. 反转链表](https://leetcode-cn.com/problems/reverse-linked-list/)**
+> [!NOTE] **[LeetCode 206. 反转链表](https://leetcode.cn/problems/reverse-linked-list/)**
 > 
 > 题意: TODO
 
@@ -2304,7 +2304,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 234. 回文链表](https://leetcode-cn.com/problems/palindrome-linked-list/)**
+> [!NOTE] **[LeetCode 234. 回文链表](https://leetcode.cn/problems/palindrome-linked-list/)**
 > 
 > 题意: TODO
 
@@ -2432,7 +2432,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 237. 删除链表中的节点](https://leetcode-cn.com/problems/delete-node-in-a-linked-list/)**
+> [!NOTE] **[LeetCode 237. 删除链表中的节点](https://leetcode.cn/problems/delete-node-in-a-linked-list/)**
 > 
 > 题意: TODO
 
@@ -2484,7 +2484,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 328. 奇偶链表](https://leetcode-cn.com/problems/odd-even-linked-list/)**
+> [!NOTE] **[LeetCode 328. 奇偶链表](https://leetcode.cn/problems/odd-even-linked-list/)**
 > 
 > 题意: TODO
 
@@ -2555,7 +2555,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 725. 分隔链表](https://leetcode-cn.com/problems/split-linked-list-in-parts/)**
+> [!NOTE] **[LeetCode 725. 分隔链表](https://leetcode.cn/problems/split-linked-list-in-parts/)**
 > 
 > 题意: TODO
 
@@ -2615,7 +2615,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1171. 从链表中删去总和值为零的连续节点](https://leetcode-cn.com/problems/remove-zero-sum-consecutive-nodes-from-linked-list/)**
+> [!NOTE] **[LeetCode 1171. 从链表中删去总和值为零的连续节点](https://leetcode.cn/problems/remove-zero-sum-consecutive-nodes-from-linked-list/)**
 > 
 > 题意: TODO
 
@@ -2710,7 +2710,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2095. 删除链表的中间节点](https://leetcode-cn.com/problems/delete-the-middle-node-of-a-linked-list/)**
+> [!NOTE] **[LeetCode 2095. 删除链表的中间节点](https://leetcode.cn/problems/delete-the-middle-node-of-a-linked-list/)**
 > 
 > 题意: TODO
 
@@ -2846,7 +2846,7 @@ public:
 
 ### 结合递归
 
-> [!NOTE] **[LeetCode 430. 扁平化多级双向链表](https://leetcode-cn.com/problems/flatten-a-multilevel-doubly-linked-list/)**
+> [!NOTE] **[LeetCode 430. 扁平化多级双向链表](https://leetcode.cn/problems/flatten-a-multilevel-doubly-linked-list/)**
 > 
 > 题意: TODO
 

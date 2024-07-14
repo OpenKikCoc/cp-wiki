@@ -161,7 +161,7 @@ std::sort(da + 1, da + 1 + 10, cmp);  // 使用 cmp 函数进行比较，从大�
 
 ## 习题
 
-> [!NOTE] **[LeetCode 1451. 重新排列句子中的单词](https://leetcode-cn.com/problems/rearrange-words-in-a-sentence/)**
+> [!NOTE] **[LeetCode 1451. 重新排列句子中的单词](https://leetcode.cn/problems/rearrange-words-in-a-sentence/)**
 > 
 > 题意: TODO
 

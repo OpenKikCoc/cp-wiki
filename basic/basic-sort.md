@@ -445,7 +445,7 @@ inline void radix_sort(unsigned A[], int len)
 
 ### 快排 partitiong
 
-> [!NOTE] **[LeetCode 215. 数组中的第K个最大元素](https://leetcode-cn.com/problems/kth-largest-element-in-an-array/)**
+> [!NOTE] **[LeetCode 215. 数组中的第K个最大元素](https://leetcode.cn/problems/kth-largest-element-in-an-array/)**
 > 
 > 题意: TODO
 
@@ -582,7 +582,7 @@ class Solution:
 
 ### 三路排序
 
-> [!NOTE] **[SwordOffer 21. 调整数组顺序使奇数位于偶数前面](https://leetcode-cn.com/problems/diao-zheng-shu-zu-shun-xu-shi-qi-shu-wei-yu-ou-shu-qian-mian-lcof/)**
+> [!NOTE] **[SwordOffer 21. 调整数组顺序使奇数位于偶数前面](https://leetcode.cn/problems/diao-zheng-shu-zu-shun-xu-shi-qi-shu-wei-yu-ou-shu-qian-mian-lcof/)**
 > 
 > 题意: TODO
 
@@ -641,7 +641,7 @@ class Solution(object):
 
 * * *
 
-> [!NOTE] **[LeetCode 75. 颜色分类](https://leetcode-cn.com/problems/sort-colors/)**
+> [!NOTE] **[LeetCode 75. 颜色分类](https://leetcode.cn/problems/sort-colors/)**
 > 
 > 题意: TODO
 
@@ -718,7 +718,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 324. 摆动排序 II](https://leetcode-cn.com/problems/wiggle-sort-ii/)**
+> [!NOTE] **[LeetCode 324. 摆动排序 II](https://leetcode.cn/problems/wiggle-sort-ii/)**
 > 
 > 题意: 非常 trick
 
@@ -988,7 +988,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 493. 翻转对](https://leetcode-cn.com/problems/reverse-pairs/)**
+> [!NOTE] **[LeetCode 493. 翻转对](https://leetcode.cn/problems/reverse-pairs/)**
 > 
 > 题意: TODO
 
@@ -1046,7 +1046,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1850. 邻位交换的最小次数](https://leetcode-cn.com/problems/minimum-adjacent-swaps-to-reach-the-kth-smallest-number/)** [TAG]
+> [!NOTE] **[LeetCode 1850. 邻位交换的最小次数](https://leetcode.cn/problems/minimum-adjacent-swaps-to-reach-the-kth-smallest-number/)** [TAG]
 > 
 > 题意: TODO
 
@@ -1104,7 +1104,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2193. 得到回文串的最少操作次数](https://leetcode-cn.com/problems/minimum-number-of-moves-to-make-palindrome/)** [TAG]
+> [!NOTE] **[LeetCode 2193. 得到回文串的最少操作次数](https://leetcode.cn/problems/minimum-number-of-moves-to-make-palindrome/)** [TAG]
 > 
 > 题意: TODO
 
@@ -1267,7 +1267,7 @@ public:
 
 ### 桶排序
 
-> [!NOTE] **[LeetCode 164. 最大间距](https://leetcode-cn.com/problems/maximum-gap/)**
+> [!NOTE] **[LeetCode 164. 最大间距](https://leetcode.cn/problems/maximum-gap/)**
 > 
 > 题意: TODO
 

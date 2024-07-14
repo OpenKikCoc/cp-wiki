@@ -233,7 +233,7 @@ if __name__ == '__main__':
 
 * * *
 
-> [!NOTE] **[LeetCode 1499. 满足不等式的最大值](https://leetcode-cn.com/problems/max-value-of-equation/)**
+> [!NOTE] **[LeetCode 1499. 满足不等式的最大值](https://leetcode.cn/problems/max-value-of-equation/)**
 > 
 > 题意: TODO
 
@@ -307,7 +307,7 @@ public:
 
 ### 结合前后缀分解
 
-> [!NOTE] **[LeetCode 1888. 使二进制字符串字符交替的最少反转次数](https://leetcode-cn.com/problems/minimum-number-of-flips-to-make-the-binary-string-alternating/)**
+> [!NOTE] **[LeetCode 1888. 使二进制字符串字符交替的最少反转次数](https://leetcode.cn/problems/minimum-number-of-flips-to-make-the-binary-string-alternating/)**
 > 
 > [weekly-244](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-06-06_Weekly-244) 详细看左侧链接
 > 

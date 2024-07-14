@@ -290,7 +290,7 @@ public:
 
 ### 最大表示法
 
-> [!NOTE] **[LeetCode 1163. 按字典序排在最后的子串](https://leetcode-cn.com/problems/last-substring-in-lexicographical-order/)**
+> [!NOTE] **[LeetCode 1163. 按字典序排在最后的子串](https://leetcode.cn/problems/last-substring-in-lexicographical-order/)**
 > 
 > 题意: TODO
 

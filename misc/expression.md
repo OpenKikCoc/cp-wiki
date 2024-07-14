@@ -146,7 +146,7 @@ int calc(const std::string &s) {  // 计算转换好的后缀表达式
 
 #### 表达式
 
-> [!NOTE] **[LeetCode 1896. 反转表达式值的最少操作次数](https://leetcode-cn.com/problems/minimum-cost-to-change-the-final-value-of-expression/)** [TAG]
+> [!NOTE] **[LeetCode 1896. 反转表达式值的最少操作次数](https://leetcode.cn/problems/minimum-cost-to-change-the-final-value-of-expression/)** [TAG]
 > 
 > [biweekly-54](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-06-12_Biweekly-54#1896-反转表达式值的最少操作次数-tag)
 > 
@@ -237,7 +237,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2019. 解出数学表达式的学生分数](https://leetcode-cn.com/problems/the-score-of-students-solving-math-expression/)** [TAG]
+> [!NOTE] **[LeetCode 2019. 解出数学表达式的学生分数](https://leetcode.cn/problems/the-score-of-students-solving-math-expression/)** [TAG]
 > 
 > 题意: TODO
 
@@ -438,7 +438,7 @@ public:
 
 #### 基本计算器
 
-> [!NOTE] **[LeetCode 224. 基本计算器](https://leetcode-cn.com/problems/basic-calculator/)**
+> [!NOTE] **[LeetCode 224. 基本计算器](https://leetcode.cn/problems/basic-calculator/)**
 > 
 > 题意: TODO
 
@@ -562,7 +562,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 227. 基本计算器 II](https://leetcode-cn.com/problems/basic-calculator-ii/)**
+> [!NOTE] **[LeetCode 227. 基本计算器 II](https://leetcode.cn/problems/basic-calculator-ii/)**
 > 
 > 题意: TODO
 
@@ -666,7 +666,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 770. 基本计算器 IV](https://leetcode-cn.com/problems/basic-calculator-iv/)**
+> [!NOTE] **[LeetCode 770. 基本计算器 IV](https://leetcode.cn/problems/basic-calculator-iv/)**
 > 
 > 题意: TODO
 
@@ -809,7 +809,7 @@ public:
 
 ### 后缀
 
-> [!NOTE] **[LeetCode 150. 逆波兰表达式求值](https://leetcode-cn.com/problems/evaluate-reverse-polish-notation/)**
+> [!NOTE] **[LeetCode 150. 逆波兰表达式求值](https://leetcode.cn/problems/evaluate-reverse-polish-notation/)**
 > 
 > 题意: TODO
 

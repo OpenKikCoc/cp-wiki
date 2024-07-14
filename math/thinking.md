@@ -43,7 +43,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 222. 完全二叉树的节点个数](https://leetcode-cn.com/problems/count-complete-tree-nodes/)**
+> [!NOTE] **[LeetCode 222. 完全二叉树的节点个数](https://leetcode.cn/problems/count-complete-tree-nodes/)**
 > 
 > 题意: TODO
 
@@ -126,7 +126,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 223. 矩形面积](https://leetcode-cn.com/problems/rectangle-area/)**
+> [!NOTE] **[LeetCode 223. 矩形面积](https://leetcode.cn/problems/rectangle-area/)**
 > 
 > 题意: TODO
 
@@ -166,7 +166,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 441. 排列硬币](https://leetcode-cn.com/problems/arranging-coins/)**
+> [!NOTE] **[LeetCode 441. 排列硬币](https://leetcode.cn/problems/arranging-coins/)**
 > 
 > 题意: TODO
 
@@ -209,7 +209,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 483. 最小好进制](https://leetcode-cn.com/problems/smallest-good-base/)**
+> [!NOTE] **[LeetCode 483. 最小好进制](https://leetcode.cn/problems/smallest-good-base/)**
 > 
 > 题意: TODO
 
@@ -256,7 +256,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 628. 三个数的最大乘积](https://leetcode-cn.com/problems/maximum-product-of-three-numbers/)**
+> [!NOTE] **[LeetCode 628. 三个数的最大乘积](https://leetcode.cn/problems/maximum-product-of-three-numbers/)**
 > 
 > 题意: TODO
 
@@ -303,7 +303,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 754. 到达终点数字](https://leetcode-cn.com/problems/reach-a-number/)**
+> [!NOTE] **[LeetCode 754. 到达终点数字](https://leetcode.cn/problems/reach-a-number/)**
 > 
 > 题意: TODO
 
@@ -343,7 +343,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 775. 全局倒置与局部倒置](https://leetcode-cn.com/problems/global-and-local-inversions/)**
+> [!NOTE] **[LeetCode 775. 全局倒置与局部倒置](https://leetcode.cn/problems/global-and-local-inversions/)**
 > 
 > 题意: TODO
 
@@ -382,7 +382,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 781. 森林中的兔子](https://leetcode-cn.com/problems/rabbits-in-forest/)**
+> [!NOTE] **[LeetCode 781. 森林中的兔子](https://leetcode.cn/problems/rabbits-in-forest/)**
 > 
 > 题意: TODO
 
@@ -446,7 +446,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1197. 进击的骑士](https://leetcode-cn.com/problems/minimum-knight-moves/)**
+> [!NOTE] **[LeetCode 1197. 进击的骑士](https://leetcode.cn/problems/minimum-knight-moves/)**
 > 
 > 题意: TODO
 
@@ -521,13 +521,13 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1330. 翻转子数组得到最大的数组值](https://leetcode-cn.com/problems/reverse-subarray-to-maximize-array-value/)** [TAG]
+> [!NOTE] **[LeetCode 1330. 翻转子数组得到最大的数组值](https://leetcode.cn/problems/reverse-subarray-to-maximize-array-value/)** [TAG]
 > 
 > 题意: TODO
 
 > [!TIP] **思路**
 >
-> 比赛的时候n^2 TLE一发 尝试优化表达式 思路可以参考 [这里](https://leetcode-cn.com/problems/reverse-subarray-to-maximize-array-value/solution/onzuo-fa-jie-jue-ci-wen-ti-by-hu-tu-tu-7/)
+> 比赛的时候n^2 TLE一发 尝试优化表达式 思路可以参考 [这里](https://leetcode.cn/problems/reverse-subarray-to-maximize-array-value/solution/onzuo-fa-jie-jue-ci-wen-ti-by-hu-tu-tu-7/)
 >
 > 更进一步：找到一个最大一个最小
 >
@@ -669,7 +669,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1359. 有效的快递序列数目](https://leetcode-cn.com/problems/count-all-valid-pickup-and-delivery-options/)** [TAG]
+> [!NOTE] **[LeetCode 1359. 有效的快递序列数目](https://leetcode.cn/problems/count-all-valid-pickup-and-delivery-options/)** [TAG]
 > 
 > 题意: TODO
 
@@ -714,7 +714,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1404. 将二进制表示减到 1 的步骤数](https://leetcode-cn.com/problems/number-of-steps-to-reduce-a-number-in-binary-representation-to-one/)**
+> [!NOTE] **[LeetCode 1404. 将二进制表示减到 1 的步骤数](https://leetcode.cn/problems/number-of-steps-to-reduce-a-number-in-binary-representation-to-one/)**
 > 
 > 题意: 
 > 
@@ -860,7 +860,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1518. 换酒问题](https://leetcode-cn.com/problems/water-bottles/)**
+> [!NOTE] **[LeetCode 1518. 换酒问题](https://leetcode.cn/problems/water-bottles/)**
 > 
 > 题意: TODO
 
@@ -901,7 +901,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1523. 在区间范围内统计奇数数目](https://leetcode-cn.com/problems/count-odd-numbers-in-an-interval-range/)**
+> [!NOTE] **[LeetCode 1523. 在区间范围内统计奇数数目](https://leetcode.cn/problems/count-odd-numbers-in-an-interval-range/)**
 > 
 > 题意: TODO
 
@@ -935,7 +935,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1526. 形成目标数组的子数组最少增加次数](https://leetcode-cn.com/problems/minimum-number-of-increments-on-subarrays-to-form-a-target-array/)** [TAG]
+> [!NOTE] **[LeetCode 1526. 形成目标数组的子数组最少增加次数](https://leetcode.cn/problems/minimum-number-of-increments-on-subarrays-to-form-a-target-array/)** [TAG]
 > 
 > 题意: TODO
 
@@ -1030,7 +1030,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 1675. 数组的最小偏移量](https://leetcode-cn.com/problems/minimize-deviation-in-array/)**
+> [!NOTE] **[LeetCode 1675. 数组的最小偏移量](https://leetcode.cn/problems/minimize-deviation-in-array/)**
 > 
 > 题意: TODO
 
@@ -1055,7 +1055,7 @@ public:
         第二步:操作 1 的只会减少某个数的值,而只有减少最大值结果才可能更优.
         第三步:使用平衡树或堆维护最大值,直到最大值为奇数不能再操作为止.
     考虑优化:
-        https://leetcode-cn.com/problems/minimize-deviation-in-array/solution/yi-chong-fu-za-du-geng-di-de-zuo-fa-by-heltion-2/
+        https://leetcode.cn/problems/minimize-deviation-in-array/solution/yi-chong-fu-za-du-geng-di-de-zuo-fa-by-heltion-2/
     */
     int minimumDeviation(vector<int>& nums) {
         int n = nums.size(), mi = INT_MAX, res = INT_MAX;
@@ -1091,7 +1091,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1716. 计算力扣银行的钱](https://leetcode-cn.com/problems/calculate-money-in-leetcode-bank/)**
+> [!NOTE] **[LeetCode 1716. 计算力扣银行的钱](https://leetcode.cn/problems/calculate-money-in-leetcode-bank/)**
 > 
 > 题意: TODO
 
@@ -1173,7 +1173,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1726. 同积元组](https://leetcode-cn.com/problems/tuple-with-same-product/)**
+> [!NOTE] **[LeetCode 1726. 同积元组](https://leetcode.cn/problems/tuple-with-same-product/)**
 > 
 > 题意: TODO
 
@@ -1219,7 +1219,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1780. 判断一个数字是否可以表示成三的幂的和](https://leetcode-cn.com/problems/check-if-number-is-a-sum-of-powers-of-three/)**
+> [!NOTE] **[LeetCode 1780. 判断一个数字是否可以表示成三的幂的和](https://leetcode.cn/problems/check-if-number-is-a-sum-of-powers-of-three/)**
 > 
 > 题意: TODO
 
@@ -1258,7 +1258,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1806. 还原排列的最少操作步数](https://leetcode-cn.com/problems/minimum-number-of-operations-to-reinitialize-a-permutation/)**
+> [!NOTE] **[LeetCode 1806. 还原排列的最少操作步数](https://leetcode.cn/problems/minimum-number-of-operations-to-reinitialize-a-permutation/)**
 > 
 > 题意: TODO
 
@@ -1349,7 +1349,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1862. 向下取整数对和](https://leetcode-cn.com/problems/sum-of-floored-pairs/)**
+> [!NOTE] **[LeetCode 1862. 向下取整数对和](https://leetcode.cn/problems/sum-of-floored-pairs/)**
 > 
 > 题意: TODO
 
@@ -1456,7 +1456,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1904. 你完成的完整对局数](https://leetcode-cn.com/problems/the-number-of-full-rounds-you-have-played/)**
+> [!NOTE] **[LeetCode 1904. 你完成的完整对局数](https://leetcode.cn/problems/the-number-of-full-rounds-you-have-played/)**
 > 
 > 题意: TODO
 
@@ -1548,7 +1548,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 1954. 收集足够苹果的最小花园周长](https://leetcode-cn.com/problems/minimum-garden-perimeter-to-collect-enough-apples/)**
+> [!NOTE] **[LeetCode 1954. 收集足够苹果的最小花园周长](https://leetcode.cn/problems/minimum-garden-perimeter-to-collect-enough-apples/)**
 > 
 > 题意: TODO
 
@@ -1644,7 +1644,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1969. 数组元素的最小非零乘积](https://leetcode-cn.com/problems/minimum-non-zero-product-of-the-array-elements/)**
+> [!NOTE] **[LeetCode 1969. 数组元素的最小非零乘积](https://leetcode.cn/problems/minimum-non-zero-product-of-the-array-elements/)**
 > 
 > 题意: TODO
 
@@ -1742,7 +1742,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1980. 找出不同的二进制字符串](https://leetcode-cn.com/problems/find-unique-binary-string/)**
+> [!NOTE] **[LeetCode 1980. 找出不同的二进制字符串](https://leetcode.cn/problems/find-unique-binary-string/)**
 > 
 > 题意: TODO
 
@@ -1817,7 +1817,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2183. 统计可以被 K 整除的下标对数目](https://leetcode-cn.com/problems/count-array-pairs-divisible-by-k/)** [TAG]
+> [!NOTE] **[LeetCode 2183. 统计可以被 K 整除的下标对数目](https://leetcode.cn/problems/count-array-pairs-divisible-by-k/)** [TAG]
 > 
 > 题意: TODO
 
@@ -1918,7 +1918,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 理财产品](https://leetcode-cn.com/contest/cnunionpay-2022spring/problems/I4mOGz/)**
+> [!NOTE] **[LeetCode 理财产品](https://leetcode.cn/contest/cnunionpay-2022spring/problems/I4mOGz/)**
 > 
 > 题意: TODO
 

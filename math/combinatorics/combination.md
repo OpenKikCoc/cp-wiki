@@ -1137,7 +1137,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 1569. 将子数组重新排序得到同一个二叉查找树的方案数](https://leetcode-cn.com/problems/number-of-ways-to-reorder-array-to-get-same-bst/)** [TAG]
+> [!NOTE] **[LeetCode 1569. 将子数组重新排序得到同一个二叉查找树的方案数](https://leetcode.cn/problems/number-of-ways-to-reorder-array-to-get-same-bst/)** [TAG]
 > 
 > 题意: TODO
 
@@ -1251,7 +1251,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1573. 分割字符串的方案数](https://leetcode-cn.com/problems/number-of-ways-to-split-a-string/)**
+> [!NOTE] **[LeetCode 1573. 分割字符串的方案数](https://leetcode.cn/problems/number-of-ways-to-split-a-string/)**
 > 
 > 题意: TODO
 
@@ -1298,7 +1298,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1735. 生成乘积数组的方案数](https://leetcode-cn.com/problems/count-ways-to-make-array-with-product/)**
+> [!NOTE] **[LeetCode 1735. 生成乘积数组的方案数](https://leetcode.cn/problems/count-ways-to-make-array-with-product/)**
 > 
 > 题意: TODO
 
@@ -1375,7 +1375,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 建信04. 电学实验课](https://leetcode-cn.com/contest/ccbft-2021fall/problems/lSjqMF/)** [TAG]
+> [!NOTE] **[LeetCode 建信04. 电学实验课](https://leetcode.cn/contest/ccbft-2021fall/problems/lSjqMF/)** [TAG]
 > 
 > 题意: TODO
 

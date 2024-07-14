@@ -643,7 +643,7 @@ void karatsuba_mul(int a[], int b[], int c[]) {
 
 ### 高精度综合应用
 
-> [!NOTE] **[LeetCode 306. 累加数](https://leetcode-cn.com/problems/additive-number/)**
+> [!NOTE] **[LeetCode 306. 累加数](https://leetcode.cn/problems/additive-number/)**
 > 
 > 题意: TODO
 

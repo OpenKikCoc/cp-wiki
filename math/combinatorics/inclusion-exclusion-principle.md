@@ -842,7 +842,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 1201. 丑数 III](https://leetcode-cn.com/problems/ugly-number-iii/)** [TAG]
+> [!NOTE] **[LeetCode 1201. 丑数 III](https://leetcode.cn/problems/ugly-number-iii/)** [TAG]
 > 
 > 题意: TODO
 

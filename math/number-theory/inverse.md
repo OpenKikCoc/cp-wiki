@@ -314,7 +314,7 @@ for i in range(1, n + 1):
 
 ## 习题
 
-> [!NOTE] **[LeetCode 1622. 奇妙序列](https://leetcode-cn.com/problems/fancy-sequence/)** [TAG]
+> [!NOTE] **[LeetCode 1622. 奇妙序列](https://leetcode.cn/problems/fancy-sequence/)** [TAG]
 > 
 > 题意: TODO
 

@@ -92,7 +92,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 335. 路径交叉](https://leetcode-cn.com/problems/self-crossing/)**
+> [!NOTE] **[LeetCode 335. 路径交叉](https://leetcode.cn/problems/self-crossing/)**
 > 
 > 题意: TODO
 
@@ -146,7 +146,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 391. 完美矩形](https://leetcode-cn.com/problems/perfect-rectangle/)**
+> [!NOTE] **[LeetCode 391. 完美矩形](https://leetcode.cn/problems/perfect-rectangle/)**
 > 
 > 题意: TODO
 
@@ -223,7 +223,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 420. 强密码检验器](https://leetcode-cn.com/problems/strong-password-checker/)**
+> [!NOTE] **[LeetCode 420. 强密码检验器](https://leetcode.cn/problems/strong-password-checker/)**
 > 
 > 题意: TODO
 
@@ -312,7 +312,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2029. 石子游戏 IX](https://leetcode-cn.com/problems/stone-game-ix/)** [TAG]
+> [!NOTE] **[LeetCode 2029. 石子游戏 IX](https://leetcode.cn/problems/stone-game-ix/)** [TAG]
 > 
 > 题意: TODO
 

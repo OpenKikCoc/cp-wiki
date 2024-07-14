@@ -1,6 +1,6 @@
 ## 习题
 
-> [!NOTE] **[LeetCode 1889. 装包裹的最小浪费空间](https://leetcode-cn.com/problems/minimum-space-wasted-from-packaging/)** [TAG]
+> [!NOTE] **[LeetCode 1889. 装包裹的最小浪费空间](https://leetcode.cn/problems/minimum-space-wasted-from-packaging/)** [TAG]
 > 
 > 题意: TODO
 
@@ -173,7 +173,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1937. 扣分后的最大得分](https://leetcode-cn.com/problems/maximum-number-of-points-with-cost/)** [TAG]
+> [!NOTE] **[LeetCode 1937. 扣分后的最大得分](https://leetcode.cn/problems/maximum-number-of-points-with-cost/)** [TAG]
 > 
 > 题意: TODO
 
@@ -242,7 +242,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1977. 划分数字的方案数](https://leetcode-cn.com/problems/number-of-ways-to-separate-numbers/)** [TAG]
+> [!NOTE] **[LeetCode 1977. 划分数字的方案数](https://leetcode.cn/problems/number-of-ways-to-separate-numbers/)** [TAG]
 > 
 > 题意: TODO
 

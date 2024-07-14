@@ -1458,7 +1458,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 1257. 最小公共区域](https://leetcode-cn.com/problems/smallest-common-region/)**
+> [!NOTE] **[LeetCode 1257. 最小公共区域](https://leetcode.cn/problems/smallest-common-region/)**
 > 
 > 题意: TODO
 

@@ -1,6 +1,6 @@
 ## 习题
 
-> [!NOTE] **[LeetCode 336. 回文对](https://leetcode-cn.com/problems/palindrome-pairs/)**
+> [!NOTE] **[LeetCode 336. 回文对](https://leetcode.cn/problems/palindrome-pairs/)**
 > 
 > 题意: TODO
 

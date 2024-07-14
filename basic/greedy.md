@@ -122,7 +122,7 @@
 
 - [P1209\[USACO1.3\]修理牛棚 Barn Repair - 洛谷](https://www.luogu.com.cn/problem/P1209)
 - [P2123 皇后游戏 - 洛谷](https://www.luogu.com.cn/problem/P2123)
-- [LeetCode 上标签为算法的题目](https://leetcode-cn.com/tag/greedy/)
+- [LeetCode 上标签为算法的题目](https://leetcode.cn/tag/greedy/)
 
 ### 基本贪心
 
@@ -385,7 +385,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1363. 形成三的最大倍数](https://leetcode-cn.com/problems/largest-multiple-of-three/)**
+> [!NOTE] **[LeetCode 1363. 形成三的最大倍数](https://leetcode.cn/problems/largest-multiple-of-three/)**
 > 
 > 题意: 
 > 
@@ -483,7 +483,7 @@ public:
 
 > [!TIP] **思路**
 > 
-> 类似 **[LeetCode 1363. 形成三的最大倍数](https://leetcode-cn.com/problems/largest-multiple-of-three/)**
+> 类似 **[LeetCode 1363. 形成三的最大倍数](https://leetcode.cn/problems/largest-multiple-of-three/)**
 > 
 > 分情况讨论
 
@@ -591,7 +591,7 @@ int main() {
 * * *
 
 
-> [!NOTE] **[LeetCode 1402. 做菜顺序](https://leetcode-cn.com/problems/reducing-dishes/)**
+> [!NOTE] **[LeetCode 1402. 做菜顺序](https://leetcode.cn/problems/reducing-dishes/)**
 > 
 > 题意: 
 > 
@@ -641,7 +641,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1414. 和为 K 的最少斐波那契数字数目](https://leetcode-cn.com/problems/find-the-minimum-number-of-fibonacci-numbers-whose-sum-is-k/)**
+> [!NOTE] **[LeetCode 1414. 和为 K 的最少斐波那契数字数目](https://leetcode.cn/problems/find-the-minimum-number-of-fibonacci-numbers-whose-sum-is-k/)**
 > 
 > 题意: TODO
 
@@ -705,7 +705,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1536. 排布二进制网格的最少交换次数](https://leetcode-cn.com/problems/minimum-swaps-to-arrange-a-binary-grid/)** [TAG]
+> [!NOTE] **[LeetCode 1536. 排布二进制网格的最少交换次数](https://leetcode.cn/problems/minimum-swaps-to-arrange-a-binary-grid/)** [TAG]
 > 
 > 题意: TODO
 
@@ -768,7 +768,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1691. 堆叠长方体的最大高度](https://leetcode-cn.com/problems/maximum-height-by-stacking-cuboids/)**
+> [!NOTE] **[LeetCode 1691. 堆叠长方体的最大高度](https://leetcode.cn/problems/maximum-height-by-stacking-cuboids/)**
 > 
 > 题意: TODO
 
@@ -818,7 +818,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1717. 删除子字符串的最大得分](https://leetcode-cn.com/problems/maximum-score-from-removing-substrings/)** [TAG]
+> [!NOTE] **[LeetCode 1717. 删除子字符串的最大得分](https://leetcode.cn/problems/maximum-score-from-removing-substrings/)** [TAG]
 > 
 > 题意: TODO
 
@@ -886,7 +886,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2086. 从房屋收集雨水需要的最少水桶数](https://leetcode-cn.com/problems/minimum-number-of-buckets-required-to-collect-rainwater-from-houses/)**
+> [!NOTE] **[LeetCode 2086. 从房屋收集雨水需要的最少水桶数](https://leetcode.cn/problems/minimum-number-of-buckets-required-to-collect-rainwater-from-houses/)**
 > 
 > 题意: TODO
 
@@ -1913,7 +1913,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 462. 最少移动次数使数组元素相等 II](https://leetcode-cn.com/problems/minimum-moves-to-equal-array-elements-ii/)**
+> [!NOTE] **[LeetCode 462. 最少移动次数使数组元素相等 II](https://leetcode.cn/problems/minimum-moves-to-equal-array-elements-ii/)**
 > 
 > 题意: TODO
 
@@ -1978,7 +1978,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1703. 得到连续 K 个 1 的最少相邻交换次数](https://leetcode-cn.com/problems/minimum-adjacent-swaps-for-k-consecutive-ones/)** [TAG]
+> [!NOTE] **[LeetCode 1703. 得到连续 K 个 1 的最少相邻交换次数](https://leetcode.cn/problems/minimum-adjacent-swaps-for-k-consecutive-ones/)** [TAG]
 > 
 > 题意: TODO
 
@@ -2037,7 +2037,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2033. 获取单值网格的最小操作数](https://leetcode-cn.com/problems/minimum-operations-to-make-a-uni-value-grid/)**
+> [!NOTE] **[LeetCode 2033. 获取单值网格的最小操作数](https://leetcode.cn/problems/minimum-operations-to-make-a-uni-value-grid/)**
 > 
 > 题意: TODO
 
@@ -2164,7 +2164,7 @@ public:
 
 > [!TIP] **思路**
 > 
-> 同 [LeetCode 2033. 获取单值网格的最小操作数](https://leetcode-cn.com/problems/minimum-operations-to-make-a-uni-value-grid/)
+> 同 [LeetCode 2033. 获取单值网格的最小操作数](https://leetcode.cn/problems/minimum-operations-to-make-a-uni-value-grid/)
 > 
 > 很多博客并未提及为何可以使用中位数，直观来看使用中位数无法确保其他数可以有效转变为该中位数。
 > 
@@ -2339,7 +2339,7 @@ public:
 
 > [!NOTE] **[AcWing 803. 区间合并](https://www.acwing.com/problem/content/805/)**
 > 
-> 题意: [LeetCode 56. 合并区间](https://leetcode-cn.com/problems/merge-intervals/)
+> 题意: [LeetCode 56. 合并区间](https://leetcode.cn/problems/merge-intervals/)
 
 <details>
 <summary>详细代码</summary>
@@ -2422,7 +2422,7 @@ if __name__ == '__main__':
 
 * * *
 
-> [!NOTE] **[LeetCode 57. 插入区间](https://leetcode-cn.com/problems/insert-interval/)**
+> [!NOTE] **[LeetCode 57. 插入区间](https://leetcode.cn/problems/insert-interval/)**
 > 
 > 题意: TODO
 
@@ -2771,7 +2771,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 352. 将数据流变为多个不相交区间](https://leetcode-cn.com/problems/data-stream-as-disjoint-intervals/)**
+> [!NOTE] **[LeetCode 352. 将数据流变为多个不相交区间](https://leetcode.cn/problems/data-stream-as-disjoint-intervals/)**
 > 
 > 题意: TODO
 
@@ -2846,7 +2846,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 435. 无重叠区间](https://leetcode-cn.com/problems/non-overlapping-intervals/)**
+> [!NOTE] **[LeetCode 435. 无重叠区间](https://leetcode.cn/problems/non-overlapping-intervals/)**
 > 
 > 题意: TODO
 
@@ -2946,7 +2946,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 436. 寻找右区间](https://leetcode-cn.com/problems/find-right-interval/)**
+> [!NOTE] **[LeetCode 436. 寻找右区间](https://leetcode.cn/problems/find-right-interval/)**
 > 
 > 题意: TODO
 
@@ -3038,7 +3038,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 632. 最小区间](https://leetcode-cn.com/problems/smallest-range-covering-elements-from-k-lists/)**
+> [!NOTE] **[LeetCode 632. 最小区间](https://leetcode.cn/problems/smallest-range-covering-elements-from-k-lists/)**
 > 
 > 题意: TODO
 
@@ -3097,7 +3097,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 757. 设置交集大小至少为2](https://leetcode-cn.com/problems/set-intersection-size-at-least-two/)**
+> [!NOTE] **[LeetCode 757. 设置交集大小至少为2](https://leetcode.cn/problems/set-intersection-size-at-least-two/)**
 > 
 > 题意: TODO
 
@@ -3163,7 +3163,7 @@ public:
 >
 > 经典区间问题：每个区间内需要至少某些个点被覆盖，求满足所有区间的情况下的最小覆盖点数和
 > 
-> 相比 [LeetCode 757. 设置交集大小至少为2](https://leetcode-cn.com/problems/set-intersection-size-at-least-two/) 每个区间内要选的数量不一
+> 相比 [LeetCode 757. 设置交集大小至少为2](https://leetcode.cn/problems/set-intersection-size-at-least-two/) 每个区间内要选的数量不一
 >
 > TODO 进阶：[LCP 32. 批量处理任务](https://leetcode.cn/problems/t3fKg1/)
 > 
@@ -3231,7 +3231,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1229. 安排会议日程](https://leetcode-cn.com/problems/meeting-scheduler/)**
+> [!NOTE] **[LeetCode 1229. 安排会议日程](https://leetcode.cn/problems/meeting-scheduler/)**
 > 
 > 题意: TODO
 
@@ -3307,7 +3307,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1235. 规划兼职工作](https://leetcode-cn.com/problems/maximum-profit-in-job-scheduling/)**
+> [!NOTE] **[LeetCode 1235. 规划兼职工作](https://leetcode.cn/problems/maximum-profit-in-job-scheduling/)**
 > 
 > 题意: TODO
 
@@ -3385,13 +3385,13 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1751. 最多可以参加的会议数目 II](https://leetcode-cn.com/problems/maximum-number-of-events-that-can-be-attended-ii/)**
+> [!NOTE] **[LeetCode 1751. 最多可以参加的会议数目 II](https://leetcode.cn/problems/maximum-number-of-events-that-can-be-attended-ii/)**
 > 
 > 题意: TODO
 
 > [!TIP] **思路**
 > 
-> 与上题 [LeetCode 1235. 规划兼职工作](https://leetcode-cn.com/problems/maximum-profit-in-job-scheduling/) 一样
+> 与上题 [LeetCode 1235. 规划兼职工作](https://leetcode.cn/problems/maximum-profit-in-job-scheduling/) 一样
 > 
 > 但做法不同
 
@@ -3446,7 +3446,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1272. 删除区间](https://leetcode-cn.com/problems/remove-interval/)**
+> [!NOTE] **[LeetCode 1272. 删除区间](https://leetcode.cn/problems/remove-interval/)**
 > 
 > 题意: TODO
 
@@ -3500,7 +3500,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1546. 和为目标值的最大数目不重叠非空子数组数目](https://leetcode-cn.com/problems/maximum-number-of-non-overlapping-subarrays-with-sum-equals-target/)**
+> [!NOTE] **[LeetCode 1546. 和为目标值的最大数目不重叠非空子数组数目](https://leetcode.cn/problems/maximum-number-of-non-overlapping-subarrays-with-sum-equals-target/)**
 > 
 > 题意: TODO
 
@@ -3826,7 +3826,7 @@ if __name__ == '__main__':
 
 * * *
 
-> [!NOTE] **[LeetCode 2136. 全部开花的最早一天](https://leetcode-cn.com/problems/earliest-possible-day-of-full-bloom/)** [TAG]
+> [!NOTE] **[LeetCode 2136. 全部开花的最早一天](https://leetcode.cn/problems/earliest-possible-day-of-full-bloom/)** [TAG]
 > 
 > 题意: TODO
 
@@ -4066,7 +4066,7 @@ public:
 
 ### 贪心策略 堆维护
 
-> [!NOTE] **[LeetCode 407. 接雨水 II](https://leetcode-cn.com/problems/trapping-rain-water-ii/)**
+> [!NOTE] **[LeetCode 407. 接雨水 II](https://leetcode.cn/problems/trapping-rain-water-ii/)**
 > 
 > 题意: TODO
 
@@ -4190,7 +4190,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 502. IPO](https://leetcode-cn.com/problems/ipo/)**
+> [!NOTE] **[LeetCode 502. IPO](https://leetcode.cn/problems/ipo/)**
 > 
 > 题意: TODO
 
@@ -4246,7 +4246,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 630. 课程表 III](https://leetcode-cn.com/problems/course-schedule-iii/)**
+> [!NOTE] **[LeetCode 630. 课程表 III](https://leetcode.cn/problems/course-schedule-iii/)**
 > 
 > 题意: TODO
 
@@ -4297,7 +4297,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 659. 分割数组为连续子序列](https://leetcode-cn.com/problems/split-array-into-consecutive-subsequences/)**
+> [!NOTE] **[LeetCode 659. 分割数组为连续子序列](https://leetcode.cn/problems/split-array-into-consecutive-subsequences/)**
 > 
 > 题意: TODO
 
@@ -4376,7 +4376,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1353. 最多可以参加的会议数目](https://leetcode-cn.com/problems/maximum-number-of-events-that-can-be-attended/)** [TAG]
+> [!NOTE] **[LeetCode 1353. 最多可以参加的会议数目](https://leetcode.cn/problems/maximum-number-of-events-that-can-be-attended/)** [TAG]
 > 
 > 题意: TODO
 
@@ -4430,7 +4430,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1383. 最大的团队表现值](https://leetcode-cn.com/problems/maximum-performance-of-a-team/)**
+> [!NOTE] **[LeetCode 1383. 最大的团队表现值](https://leetcode.cn/problems/maximum-performance-of-a-team/)**
 > 
 > 题意: 
 > 
@@ -4493,7 +4493,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1488. 避免洪水泛滥](https://leetcode-cn.com/problems/avoid-flood-in-the-city/)**
+> [!NOTE] **[LeetCode 1488. 避免洪水泛滥](https://leetcode.cn/problems/avoid-flood-in-the-city/)**
 > 
 > 题意: TODO
 
@@ -4600,7 +4600,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1834. 单线程 CPU](https://leetcode-cn.com/problems/single-threaded-cpu/)** [TAG]
+> [!NOTE] **[LeetCode 1834. 单线程 CPU](https://leetcode.cn/problems/single-threaded-cpu/)** [TAG]
 > 
 > 题意: TODO
 
@@ -4796,7 +4796,7 @@ public:
 ### 贪心 堆 负数转正数思想 TODO
 
 
-> [!NOTE] **[LeetCode 1982. 从子集的和还原数组](https://leetcode-cn.com/problems/find-array-given-subset-sums/)** [TAG]
+> [!NOTE] **[LeetCode 1982. 从子集的和还原数组](https://leetcode.cn/problems/find-array-given-subset-sums/)** [TAG]
 > 
 > 题意: TODO
 
@@ -4806,13 +4806,13 @@ public:
 > 
 > 随后简化处理流程
 > 
-> > https://leetcode-cn.com/problems/find-array-given-subset-sums/solution/ti-jie-cong-zi-ji-de-he-huan-yuan-shu-zu-q9qw/
+> > https://leetcode.cn/problems/find-array-given-subset-sums/solution/ti-jie-cong-zi-ji-de-he-huan-yuan-shu-zu-q9qw/
 > > 
 > > 全非负数的基础版 题目链接 https://www.codechef.com/problems/ANUMLA
 > > 
 > > 理解思路
 > 
-> > https://leetcode-cn.com/problems/find-array-given-subset-sums/solution/jian-yi-ti-jie-by-sfiction-9i43/
+> > https://leetcode.cn/problems/find-array-given-subset-sums/solution/jian-yi-ti-jie-by-sfiction-9i43/
 > > 
 > > 本题有负值，则将所有数 -min_element 转化为非负问题
 > > 
@@ -5173,7 +5173,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 134. 加油站](https://leetcode-cn.com/problems/gas-station/)**
+> [!NOTE] **[LeetCode 134. 加油站](https://leetcode.cn/problems/gas-station/)**
 > 
 > 题意: TODO
 
@@ -5261,7 +5261,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 376. 摆动序列](https://leetcode-cn.com/problems/wiggle-subsequence/)**
+> [!NOTE] **[LeetCode 376. 摆动序列](https://leetcode.cn/problems/wiggle-subsequence/)**
 > 
 > 题意: TODO
 
@@ -5377,7 +5377,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1405. 最长快乐字符串](https://leetcode-cn.com/problems/longest-happy-string/)**
+> [!NOTE] **[LeetCode 1405. 最长快乐字符串](https://leetcode.cn/problems/longest-happy-string/)**
 > 
 > 题意: 
 > 
@@ -5462,7 +5462,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1520. 最多的不重叠子字符串](https://leetcode-cn.com/problems/maximum-number-of-non-overlapping-substrings/)** [TAG]
+> [!NOTE] **[LeetCode 1520. 最多的不重叠子字符串](https://leetcode.cn/problems/maximum-number-of-non-overlapping-substrings/)** [TAG]
 > 
 > 题意: 
 > 
@@ -5548,7 +5548,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1953. 你可以工作的最大周数](https://leetcode-cn.com/problems/maximum-number-of-weeks-for-which-you-can-work/)**
+> [!NOTE] **[LeetCode 1953. 你可以工作的最大周数](https://leetcode.cn/problems/maximum-number-of-weeks-for-which-you-can-work/)**
 > 
 > 题意: TODO
 
@@ -5620,7 +5620,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2071. 你可以安排的最多任务数目](https://leetcode-cn.com/problems/maximum-number-of-tasks-you-can-assign/)** TAG
+> [!NOTE] **[LeetCode 2071. 你可以安排的最多任务数目](https://leetcode.cn/problems/maximum-number-of-tasks-you-can-assign/)** TAG
 > 
 > 题意: TODO
 
@@ -5648,7 +5648,7 @@ public:
     vector<int> ts, ws;
     int q[N];
     
-    // https://leetcode-cn.com/problems/maximum-number-of-tasks-you-can-assign/solution/c-er-fen-tao-tan-xin-by-blackskygg-kmbu/
+    // https://leetcode.cn/problems/maximum-number-of-tasks-you-can-assign/solution/c-er-fen-tao-tan-xin-by-blackskygg-kmbu/
     bool check(int mid) {
         // 维护 [..., v + st] 的队列，当前worker的最优解一定是选择第一个or最后一个 或false
         int hh = 0, tt = -1, pills = ps;
@@ -5827,7 +5827,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2193. 得到回文串的最少操作次数](https://leetcode-cn.com/problems/minimum-number-of-moves-to-make-palindrome/)** [TAG]
+> [!NOTE] **[LeetCode 2193. 得到回文串的最少操作次数](https://leetcode.cn/problems/minimum-number-of-moves-to-make-palindrome/)** [TAG]
 > 
 > 题意: TODO
 
@@ -6541,7 +6541,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 2234. 花园的最大总美丽值](https://leetcode-cn.com/problems/maximum-total-beauty-of-the-gardens/)** [TAG]
+> [!NOTE] **[LeetCode 2234. 花园的最大总美丽值](https://leetcode.cn/problems/maximum-total-beauty-of-the-gardens/)** [TAG]
 > 
 > 题意: TODO
 

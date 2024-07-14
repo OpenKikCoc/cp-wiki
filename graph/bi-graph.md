@@ -406,7 +406,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 785. 判断二分图](https://leetcode-cn.com/problems/is-graph-bipartite/)**
+> [!NOTE] **[LeetCode 785. 判断二分图](https://leetcode.cn/problems/is-graph-bipartite/)**
 > 
 > 题意: TODO
 

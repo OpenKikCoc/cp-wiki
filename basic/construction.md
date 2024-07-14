@@ -110,7 +110,7 @@
 
 ### 待细分
 
-> [!NOTE] **[LeetCode 667. 优美的排列 II](https://leetcode-cn.com/problems/beautiful-arrangement-ii/)**
+> [!NOTE] **[LeetCode 667. 优美的排列 II](https://leetcode.cn/problems/beautiful-arrangement-ii/)**
 > 
 > 题意: TODO
 
@@ -158,7 +158,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1253. 重构 2 行二进制矩阵](https://leetcode-cn.com/problems/reconstruct-a-2-row-binary-matrix/)**
+> [!NOTE] **[LeetCode 1253. 重构 2 行二进制矩阵](https://leetcode.cn/problems/reconstruct-a-2-row-binary-matrix/)**
 > 
 > 题意: TODO
 
@@ -222,7 +222,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1968. 构造元素不等于两相邻元素平均值的数组](https://leetcode-cn.com/problems/array-with-elements-not-equal-to-average-of-neighbors/)**
+> [!NOTE] **[LeetCode 1968. 构造元素不等于两相邻元素平均值的数组](https://leetcode.cn/problems/array-with-elements-not-equal-to-average-of-neighbors/)**
 > 
 > 题意: TODO
 
@@ -1635,7 +1635,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2081. k 镜像数字的和](https://leetcode-cn.com/problems/sum-of-k-mirror-numbers/)** [TAG]
+> [!NOTE] **[LeetCode 2081. k 镜像数字的和](https://leetcode.cn/problems/sum-of-k-mirror-numbers/)** [TAG]
 > 
 > 题意: TODO
 
@@ -1711,7 +1711,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2217. 找到指定长度的回文数](https://leetcode-cn.com/problems/find-palindrome-with-fixed-length/)** [TAG]
+> [!NOTE] **[LeetCode 2217. 找到指定长度的回文数](https://leetcode.cn/problems/find-palindrome-with-fixed-length/)** [TAG]
 > 
 > 题意: TODO
 

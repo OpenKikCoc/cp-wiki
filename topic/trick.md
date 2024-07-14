@@ -2,7 +2,7 @@
 
 ### STL
 
-> [!NOTE] **[LeetCode 537. 复数乘法](https://leetcode-cn.com/problems/complex-number-multiplication/)**
+> [!NOTE] **[LeetCode 537. 复数乘法](https://leetcode.cn/problems/complex-number-multiplication/)**
 > 
 > 题意: TODO
 
@@ -41,7 +41,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 539. 最小时间差](https://leetcode-cn.com/problems/minimum-time-difference/)**
+> [!NOTE] **[LeetCode 539. 最小时间差](https://leetcode.cn/problems/minimum-time-difference/)**
 > 
 > 题意: TODO
 
@@ -136,7 +136,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 609. 在系统中查找重复文件](https://leetcode-cn.com/problems/find-duplicate-file-in-system/)**
+> [!NOTE] **[LeetCode 609. 在系统中查找重复文件](https://leetcode.cn/problems/find-duplicate-file-in-system/)**
 > 
 > 题意: TODO
 
@@ -279,7 +279,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 400. 第N个数字](https://leetcode-cn.com/problems/nth-digit/)**
+> [!NOTE] **[LeetCode 400. 第N个数字](https://leetcode.cn/problems/nth-digit/)**
 > 
 > 题意: TODO
 
@@ -291,7 +291,7 @@ int main() {
 >
 > 经典 数位dp 重复做
 >
-> 同剑指 offer [44. 数字序列中某一位的数字](https://leetcode-cn.com/problems/shu-zi-xu-lie-zhong-mou-yi-wei-de-shu-zi-lcof/)
+> 同剑指 offer [44. 数字序列中某一位的数字](https://leetcode.cn/problems/shu-zi-xu-lie-zhong-mou-yi-wei-de-shu-zi-lcof/)
 
 <details>
 <summary>详细代码</summary>
@@ -360,7 +360,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1366. 通过投票对团队排名](https://leetcode-cn.com/problems/rank-teams-by-votes/)**
+> [!NOTE] **[LeetCode 1366. 通过投票对团队排名](https://leetcode.cn/problems/rank-teams-by-votes/)**
 > 
 > 题意: 
 > 
@@ -457,13 +457,13 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2141. 同时运行 N 台电脑的最长时间](https://leetcode-cn.com/problems/maximum-running-time-of-n-computers/)** [TAG]
+> [!NOTE] **[LeetCode 2141. 同时运行 N 台电脑的最长时间](https://leetcode.cn/problems/maximum-running-time-of-n-computers/)** [TAG]
 > 
 > 题意: TODO
 
 > [!TIP] **思路**
 > 
-> [ABC227 D题](https://leetcode-cn.com/link/?target=https://atcoder.jp/contests/abc227/tasks/abc227_d)
+> [ABC227 D题](https://leetcode.cn/link/?target=https://atcoder.jp/contests/abc227/tasks/abc227_d)
 > 
 > 经典题目 **trick思维**
 
@@ -670,7 +670,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 423. 从英文中重建数字](https://leetcode-cn.com/problems/reconstruct-original-digits-from-english/)**
+> [!NOTE] **[LeetCode 423. 从英文中重建数字](https://leetcode.cn/problems/reconstruct-original-digits-from-english/)**
 > 
 > 题意: TODO
 
@@ -742,7 +742,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1419. 数青蛙](https://leetcode-cn.com/problems/minimum-number-of-frogs-croaking/)**
+> [!NOTE] **[LeetCode 1419. 数青蛙](https://leetcode.cn/problems/minimum-number-of-frogs-croaking/)**
 > 
 > 题意: TODO
 
@@ -805,7 +805,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 73. 矩阵置零](https://leetcode-cn.com/problems/set-matrix-zeroes/)**
+> [!NOTE] **[LeetCode 73. 矩阵置零](https://leetcode.cn/problems/set-matrix-zeroes/)**
 > 
 > 题意: TODO
 
@@ -897,7 +897,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 128. 最长连续序列](https://leetcode-cn.com/problems/longest-consecutive-sequence/)**
+> [!NOTE] **[LeetCode 128. 最长连续序列](https://leetcode.cn/problems/longest-consecutive-sequence/)**
 > 
 > 题意: TODO
 
@@ -1034,7 +1034,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 258. 各位相加](https://leetcode-cn.com/problems/add-digits/)**
+> [!NOTE] **[LeetCode 258. 各位相加](https://leetcode.cn/problems/add-digits/)**
 > 
 > 题意: TODO
 
@@ -1127,7 +1127,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 334. 递增的三元子序列](https://leetcode-cn.com/problems/increasing-triplet-subsequence/)**
+> [!NOTE] **[LeetCode 334. 递增的三元子序列](https://leetcode.cn/problems/increasing-triplet-subsequence/)**
 > 
 > 题意: TODO
 
@@ -1191,7 +1191,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 414. 第三大的数](https://leetcode-cn.com/problems/third-maximum-number/)**
+> [!NOTE] **[LeetCode 414. 第三大的数](https://leetcode.cn/problems/third-maximum-number/)**
 > 
 > 题意: TODO
 
@@ -1246,7 +1246,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 447. 回旋镖的数量](https://leetcode-cn.com/problems/number-of-boomerangs/)**
+> [!NOTE] **[LeetCode 447. 回旋镖的数量](https://leetcode.cn/problems/number-of-boomerangs/)**
 > 
 > 题意: TODO
 
@@ -1295,7 +1295,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 479. 最大回文数乘积](https://leetcode-cn.com/problems/largest-palindrome-product/)**
+> [!NOTE] **[LeetCode 479. 最大回文数乘积](https://leetcode.cn/problems/largest-palindrome-product/)**
 > 
 > 题意: TODO
 
@@ -1343,7 +1343,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 517. 超级洗衣机](https://leetcode-cn.com/problems/super-washing-machines/)**
+> [!NOTE] **[LeetCode 517. 超级洗衣机](https://leetcode.cn/problems/super-washing-machines/)**
 > 
 > 题意: TODO
 
@@ -1395,7 +1395,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 564. 寻找最近的回文数](https://leetcode-cn.com/problems/find-the-closest-palindrome/)**
+> [!NOTE] **[LeetCode 564. 寻找最近的回文数](https://leetcode.cn/problems/find-the-closest-palindrome/)**
 > 
 > 题意: TODO
 
@@ -1452,7 +1452,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 581. 最短无序连续子数组](https://leetcode-cn.com/problems/shortest-unsorted-continuous-subarray/)**
+> [!NOTE] **[LeetCode 581. 最短无序连续子数组](https://leetcode.cn/problems/shortest-unsorted-continuous-subarray/)**
 > 
 > 题意: TODO
 
@@ -1589,7 +1589,7 @@ class Solution(object):
 
 * * *
 
-> [!NOTE] **[LeetCode 621. 任务调度器](https://leetcode-cn.com/problems/task-scheduler/)**
+> [!NOTE] **[LeetCode 621. 任务调度器](https://leetcode.cn/problems/task-scheduler/)**
 > 
 > 题意: TODO
 
@@ -1657,7 +1657,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 662. 二叉树最大宽度](https://leetcode-cn.com/problems/maximum-width-of-binary-tree/)**
+> [!NOTE] **[LeetCode 662. 二叉树最大宽度](https://leetcode.cn/problems/maximum-width-of-binary-tree/)**
 > 
 > 题意: TODO
 
@@ -1723,7 +1723,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 665. 非递减数列](https://leetcode-cn.com/problems/non-decreasing-array/)**
+> [!NOTE] **[LeetCode 665. 非递减数列](https://leetcode.cn/problems/non-decreasing-array/)**
 > 
 > 题意: TODO
 
@@ -1802,7 +1802,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 717. 1比特与2比特字符](https://leetcode-cn.com/problems/1-bit-and-2-bit-characters/)**
+> [!NOTE] **[LeetCode 717. 1比特与2比特字符](https://leetcode.cn/problems/1-bit-and-2-bit-characters/)**
 > 
 > 题意: TODO
 
@@ -1842,7 +1842,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 738. 单调递增的数字](https://leetcode-cn.com/problems/monotone-increasing-digits/)**
+> [!NOTE] **[LeetCode 738. 单调递增的数字](https://leetcode.cn/problems/monotone-increasing-digits/)**
 > 
 > 题意: TODO
 
@@ -1916,7 +1916,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 768. 最多能完成排序的块 II](https://leetcode-cn.com/problems/max-chunks-to-make-sorted-ii/)**
+> [!NOTE] **[LeetCode 768. 最多能完成排序的块 II](https://leetcode.cn/problems/max-chunks-to-make-sorted-ii/)**
 > 
 > 题意: TODO
 
@@ -1964,7 +1964,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 769. 最多能完成排序的块](https://leetcode-cn.com/problems/max-chunks-to-make-sorted/)**
+> [!NOTE] **[LeetCode 769. 最多能完成排序的块](https://leetcode.cn/problems/max-chunks-to-make-sorted/)**
 > 
 > 题意: TODO
 
@@ -2007,7 +2007,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 777. 在LR字符串中交换相邻字符](https://leetcode-cn.com/problems/swap-adjacent-in-lr-string/)**
+> [!NOTE] **[LeetCode 777. 在LR字符串中交换相邻字符](https://leetcode.cn/problems/swap-adjacent-in-lr-string/)**
 > 
 > 题意: TODO
 
@@ -2202,7 +2202,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 782. 变为棋盘](https://leetcode-cn.com/problems/transform-to-chessboard/)** [TAG]
+> [!NOTE] **[LeetCode 782. 变为棋盘](https://leetcode.cn/problems/transform-to-chessboard/)** [TAG]
 > 
 > 题意: TODO
 
@@ -2267,7 +2267,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 789. 逃脱阻碍者](https://leetcode-cn.com/problems/escape-the-ghosts/)**
+> [!NOTE] **[LeetCode 789. 逃脱阻碍者](https://leetcode.cn/problems/escape-the-ghosts/)**
 > 
 > 题意: TODO
 
@@ -2310,7 +2310,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 792. 匹配子序列的单词数](https://leetcode-cn.com/problems/number-of-matching-subsequences/)**
+> [!NOTE] **[LeetCode 792. 匹配子序列的单词数](https://leetcode.cn/problems/number-of-matching-subsequences/)**
 > 
 > 题意: TODO
 
@@ -2365,7 +2365,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1144. 递减元素使数组呈锯齿状](https://leetcode-cn.com/problems/decrease-elements-to-make-array-zigzag/)**
+> [!NOTE] **[LeetCode 1144. 递减元素使数组呈锯齿状](https://leetcode.cn/problems/decrease-elements-to-make-array-zigzag/)**
 > 
 > 题意: TODO
 
@@ -2414,7 +2414,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1183. 矩阵中 1 的最大数量](https://leetcode-cn.com/problems/maximum-number-of-ones/)** [TAG]
+> [!NOTE] **[LeetCode 1183. 矩阵中 1 的最大数量](https://leetcode.cn/problems/maximum-number-of-ones/)** [TAG]
 > 
 > 题意: TODO
 
@@ -2464,7 +2464,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1191. K 次串联后最大子数组之和](https://leetcode-cn.com/problems/k-concatenation-maximum-sum/)** [TAG]
+> [!NOTE] **[LeetCode 1191. K 次串联后最大子数组之和](https://leetcode.cn/problems/k-concatenation-maximum-sum/)** [TAG]
 > 
 > 题意: TODO
 
@@ -2549,7 +2549,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1247. 交换字符使得字符串相同](https://leetcode-cn.com/problems/minimum-swaps-to-make-strings-equal/)**
+> [!NOTE] **[LeetCode 1247. 交换字符使得字符串相同](https://leetcode.cn/problems/minimum-swaps-to-make-strings-equal/)**
 > 
 > 题意: TODO
 
@@ -2602,7 +2602,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1256. 加密数字](https://leetcode-cn.com/problems/encode-number/)**
+> [!NOTE] **[LeetCode 1256. 加密数字](https://leetcode.cn/problems/encode-number/)**
 > 
 > 题意: TODO
 
@@ -2694,7 +2694,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1328. 破坏回文串](https://leetcode-cn.com/problems/break-a-palindrome/)**
+> [!NOTE] **[LeetCode 1328. 破坏回文串](https://leetcode.cn/problems/break-a-palindrome/)**
 > 
 > 题意: TODO
 
@@ -2745,7 +2745,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1352. 最后 K 个数的乘积](https://leetcode-cn.com/problems/product-of-the-last-k-numbers/)** [TAG]
+> [!NOTE] **[LeetCode 1352. 最后 K 个数的乘积](https://leetcode.cn/problems/product-of-the-last-k-numbers/)** [TAG]
 > 
 > 题意: TODO
 
@@ -2805,7 +2805,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1585. 检查字符串是否可以通过排序子字符串得到另一个字符串](https://leetcode-cn.com/problems/check-if-string-is-transformable-with-substring-sort-operations/)**
+> [!NOTE] **[LeetCode 1585. 检查字符串是否可以通过排序子字符串得到另一个字符串](https://leetcode.cn/problems/check-if-string-is-transformable-with-substring-sort-operations/)**
 > 
 > 题意: TODO
 
@@ -2894,7 +2894,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1702. 修改后的最大二进制字符串](https://leetcode-cn.com/problems/maximum-binary-string-after-change/)** [TAG]
+> [!NOTE] **[LeetCode 1702. 修改后的最大二进制字符串](https://leetcode.cn/problems/maximum-binary-string-after-change/)** [TAG]
 > 
 > 题意: TODO
 
@@ -2947,7 +2947,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1719. 重构一棵树的方案数](https://leetcode-cn.com/problems/number-of-ways-to-reconstruct-a-tree/)** [TAG]
+> [!NOTE] **[LeetCode 1719. 重构一棵树的方案数](https://leetcode.cn/problems/number-of-ways-to-reconstruct-a-tree/)** [TAG]
 > 
 > 题意: TODO
 
@@ -3160,7 +3160,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1733. 需要教语言的最少人数](https://leetcode-cn.com/problems/minimum-number-of-people-to-teach/)** [TAG]
+> [!NOTE] **[LeetCode 1733. 需要教语言的最少人数](https://leetcode.cn/problems/minimum-number-of-people-to-teach/)** [TAG]
 > 
 > 题意: TODO
 
@@ -3226,7 +3226,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1753. 移除石子的最大得分](https://leetcode-cn.com/problems/maximum-score-from-removing-stones/)**
+> [!NOTE] **[LeetCode 1753. 移除石子的最大得分](https://leetcode.cn/problems/maximum-score-from-removing-stones/)**
 > 
 > 题意: TODO
 
@@ -3312,7 +3312,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1775. 通过最少操作次数使数组的和相等](https://leetcode-cn.com/problems/equal-sum-arrays-with-minimum-number-of-operations/)** [TAG]
+> [!NOTE] **[LeetCode 1775. 通过最少操作次数使数组的和相等](https://leetcode.cn/problems/equal-sum-arrays-with-minimum-number-of-operations/)** [TAG]
 > 
 > 题意: TODO
 
@@ -3373,7 +3373,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1802. 有界数组中指定下标处的最大值](https://leetcode-cn.com/problems/maximum-value-at-a-given-index-in-a-bounded-array/)**
+> [!NOTE] **[LeetCode 1802. 有界数组中指定下标处的最大值](https://leetcode.cn/problems/maximum-value-at-a-given-index-in-a-bounded-array/)**
 > 
 > 题意: TODO
 
@@ -3467,7 +3467,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode LCP 33. 蓄水](https://leetcode-cn.com/problems/o8SXZn/)**
+> [!NOTE] **[LeetCode LCP 33. 蓄水](https://leetcode.cn/problems/o8SXZn/)**
 > 
 > 题意: TODO
 
@@ -3527,7 +3527,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1878. 矩阵中最大的三个菱形和](https://leetcode-cn.com/problems/get-biggest-three-rhombus-sums-in-a-grid/)**
+> [!NOTE] **[LeetCode 1878. 矩阵中最大的三个菱形和](https://leetcode.cn/problems/get-biggest-three-rhombus-sums-in-a-grid/)**
 > 
 > 题意: TODO
 
@@ -3657,7 +3657,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1888. 使二进制字符串字符交替的最少反转次数](https://leetcode-cn.com/problems/minimum-number-of-flips-to-make-the-binary-string-alternating/)** [TAG]
+> [!NOTE] **[LeetCode 1888. 使二进制字符串字符交替的最少反转次数](https://leetcode.cn/problems/minimum-number-of-flips-to-make-the-binary-string-alternating/)** [TAG]
 > 
 > 题意: TODO
 
@@ -3891,7 +3891,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1975. 最大方阵和](https://leetcode-cn.com/problems/maximum-matrix-sum/)**
+> [!NOTE] **[LeetCode 1975. 最大方阵和](https://leetcode.cn/problems/maximum-matrix-sum/)**
 > 
 > 题意: TODO
 
@@ -3971,7 +3971,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1996. 游戏中弱角色的数量](https://leetcode-cn.com/problems/the-number-of-weak-characters-in-the-game/)** [TAG]
+> [!NOTE] **[LeetCode 1996. 游戏中弱角色的数量](https://leetcode.cn/problems/the-number-of-weak-characters-in-the-game/)** [TAG]
 > 
 > 题意: TODO
 
@@ -4040,7 +4040,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2009. 使数组连续的最少操作数](https://leetcode-cn.com/problems/minimum-number-of-operations-to-make-array-continuous/)** [TAG]
+> [!NOTE] **[LeetCode 2009. 使数组连续的最少操作数](https://leetcode.cn/problems/minimum-number-of-operations-to-make-array-continuous/)** [TAG]
 > 
 > 题意: TODO
 
@@ -4105,7 +4105,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2025. 分割数组的最多方案数](https://leetcode-cn.com/problems/maximum-number-of-ways-to-partition-an-array/)** [TAG]
+> [!NOTE] **[LeetCode 2025. 分割数组的最多方案数](https://leetcode.cn/problems/maximum-number-of-ways-to-partition-an-array/)** [TAG]
 > 
 > 题意: TODO
 
@@ -4185,7 +4185,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2117. 一个区间内所有数乘积的缩写](https://leetcode-cn.com/problems/abbreviating-the-product-of-a-range/)** [TAG]
+> [!NOTE] **[LeetCode 2117. 一个区间内所有数乘积的缩写](https://leetcode.cn/problems/abbreviating-the-product-of-a-range/)** [TAG]
 > 
 > 题意: TODO
 
@@ -4258,7 +4258,7 @@ class Solution {
 
 * * *
 
-> [!NOTE] **[LeetCode 2202 K 次操作后最大化顶端元素](https://leetcode-cn.com/problems/maximize-the-topmost-element-after-k-moves/)** [TAG]
+> [!NOTE] **[LeetCode 2202 K 次操作后最大化顶端元素](https://leetcode.cn/problems/maximize-the-topmost-element-after-k-moves/)** [TAG]
 > 
 > 题意: TODO
 
@@ -6817,7 +6817,7 @@ public:
 
 ### 动态统计计数题
 
-> [!NOTE] **[LeetCode 1224. 最大相等频率](https://leetcode-cn.com/problems/maximum-equal-frequency/)** [TAG]
+> [!NOTE] **[LeetCode 1224. 最大相等频率](https://leetcode.cn/problems/maximum-equal-frequency/)** [TAG]
 > 
 > 题意: TODO
 
@@ -6825,7 +6825,7 @@ public:
 >
 > `unordered_map + map` 计数动态统计题
 >
-> 类似的还有 Weekly 12 ：[1244. 力扣排行榜](https://leetcode-cn.com/problems/design-a-leaderboard/)
+> 类似的还有 Weekly 12 ：[1244. 力扣排行榜](https://leetcode.cn/problems/design-a-leaderboard/)
 
 <details>
 <summary>详细代码</summary>
@@ -6890,7 +6890,7 @@ public:
 
 ### 剪绳子
 
-> [!NOTE] **[SwordOffer 14- I. 剪绳子](https://leetcode-cn.com/problems/jian-sheng-zi-lcof/)**
+> [!NOTE] **[SwordOffer 14- I. 剪绳子](https://leetcode.cn/problems/jian-sheng-zi-lcof/)**
 > 
 > 题意: TODO
 
@@ -6978,7 +6978,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 343. 整数拆分](https://leetcode-cn.com/problems/integer-break/)**
+> [!NOTE] **[LeetCode 343. 整数拆分](https://leetcode.cn/problems/integer-break/)**
 > 
 > 题意: TODO
 
@@ -7036,7 +7036,7 @@ public:
 
 ### 跳跃游戏
 
-> [!NOTE] **[LeetCode 55. 跳跃游戏](https://leetcode-cn.com/problems/jump-game/)**
+> [!NOTE] **[LeetCode 55. 跳跃游戏](https://leetcode.cn/problems/jump-game/)**
 > 
 > 题意: TODO
 
@@ -7117,7 +7117,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 45. 跳跃游戏 II](https://leetcode-cn.com/problems/jump-game-ii/)**
+> [!NOTE] **[LeetCode 45. 跳跃游戏 II](https://leetcode.cn/problems/jump-game-ii/)**
 > 
 > 题意: TODO
 
@@ -7206,7 +7206,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 1306. 跳跃游戏 III](https://leetcode-cn.com/problems/jump-game-iii/)**
+> [!NOTE] **[LeetCode 1306. 跳跃游戏 III](https://leetcode.cn/problems/jump-game-iii/)**
 > 
 > 题意: 每个位置上可以左右跳 $arr[i]$ 个距离
 
@@ -7260,7 +7260,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1345. 跳跃游戏 IV](https://leetcode-cn.com/problems/jump-game-iv/)** [TAG]
+> [!NOTE] **[LeetCode 1345. 跳跃游戏 IV](https://leetcode.cn/problems/jump-game-iv/)** [TAG]
 > 
 > 题意: TODO
 
@@ -7333,7 +7333,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1340. 跳跃游戏 V](https://leetcode-cn.com/problems/jump-game-v/)**
+> [!NOTE] **[LeetCode 1340. 跳跃游戏 V](https://leetcode.cn/problems/jump-game-v/)**
 > 
 > 题意: TODO
 
@@ -7387,7 +7387,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1871. 跳跃游戏 VII](https://leetcode-cn.com/problems/jump-game-vii/)**
+> [!NOTE] **[LeetCode 1871. 跳跃游戏 VII](https://leetcode.cn/problems/jump-game-vii/)**
 > 
 > 题意: TODO
 
@@ -7479,7 +7479,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 763. 划分字母区间](https://leetcode-cn.com/problems/partition-labels/)**
+> [!NOTE] **[LeetCode 763. 划分字母区间](https://leetcode.cn/problems/partition-labels/)**
 > 
 > 题意: TODO
 
@@ -7544,7 +7544,7 @@ class Solution:
 
 ### 构造连续区间
 
-> [!NOTE] **[LeetCode 330. 按要求补齐数组](https://leetcode-cn.com/problems/patching-array/)**
+> [!NOTE] **[LeetCode 330. 按要求补齐数组](https://leetcode.cn/problems/patching-array/)**
 > 
 > 题意: TODO
 
@@ -7588,7 +7588,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1798. 你能构造出连续值的最大数目](https://leetcode-cn.com/problems/maximum-number-of-consecutive-values-you-can-make/)** [TAG]
+> [!NOTE] **[LeetCode 1798. 你能构造出连续值的最大数目](https://leetcode.cn/problems/maximum-number-of-consecutive-values-you-can-make/)** [TAG]
 > 
 > 题意: TODO
 

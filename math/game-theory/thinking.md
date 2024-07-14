@@ -1,7 +1,7 @@
 ## 习题
 
 
-> [!NOTE] **[LeetCode 1145. 二叉树着色游戏](https://leetcode-cn.com/problems/binary-tree-coloring-game/)**
+> [!NOTE] **[LeetCode 1145. 二叉树着色游戏](https://leetcode.cn/problems/binary-tree-coloring-game/)**
 > 
 > 题意: TODO
 
@@ -77,7 +77,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1728. 猫和老鼠 II](https://leetcode-cn.com/problems/cat-and-mouse-ii/)** [TAG]
+> [!NOTE] **[LeetCode 1728. 猫和老鼠 II](https://leetcode.cn/problems/cat-and-mouse-ii/)** [TAG]
 > 
 > 题意: TODO
 
@@ -158,7 +158,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1927. 求和游戏](https://leetcode-cn.com/problems/sum-game/)**
+> [!NOTE] **[LeetCode 1927. 求和游戏](https://leetcode.cn/problems/sum-game/)**
 > 
 > 题意: TODO
 
@@ -248,7 +248,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2029. 石子游戏 IX](https://leetcode-cn.com/problems/stone-game-ix/)** [TAG]
+> [!NOTE] **[LeetCode 2029. 石子游戏 IX](https://leetcode.cn/problems/stone-game-ix/)** [TAG]
 > 
 > 题意: TODO
 

@@ -2,7 +2,7 @@
 
 ### 重建二叉树
 
-> [!NOTE] **[LeetCode 105. 从前序与中序遍历序列构造二叉树](https://leetcode-cn.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/)**
+> [!NOTE] **[LeetCode 105. 从前序与中序遍历序列构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/)**
 > 
 > **[SwordOffer ...]()**
 > 
@@ -79,7 +79,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 106. 从中序与后序遍历序列构造二叉树](https://leetcode-cn.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/)**
+> [!NOTE] **[LeetCode 106. 从中序与后序遍历序列构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-inorder-and-postorder-traversal/)**
 > 
 > 题意: TODO
 
@@ -156,7 +156,7 @@ class Solution:
 
 ### 转换
 
-> [!NOTE] **[LeetCode 114. 二叉树展开为链表](https://leetcode-cn.com/problems/flatten-binary-tree-to-linked-list/)**
+> [!NOTE] **[LeetCode 114. 二叉树展开为链表](https://leetcode.cn/problems/flatten-binary-tree-to-linked-list/)**
 > 
 > 题意: TODO
 
@@ -230,7 +230,7 @@ class Solution:
 
 ### 序列化
 
-> [!NOTE] **[LeetCode 297. 二叉树的序列化与反序列化](https://leetcode-cn.com/problems/serialize-and-deserialize-binary-tree/)**
+> [!NOTE] **[LeetCode 297. 二叉树的序列化与反序列化](https://leetcode.cn/problems/serialize-and-deserialize-binary-tree/)**
 > 
 > 题意: TODO
 
@@ -397,7 +397,7 @@ class Codec:
 
 * * *
 
-> [!NOTE] **[LeetCode 449. 序列化和反序列化二叉搜索树](https://leetcode-cn.com/problems/serialize-and-deserialize-bst/)**
+> [!NOTE] **[LeetCode 449. 序列化和反序列化二叉搜索树](https://leetcode.cn/problems/serialize-and-deserialize-bst/)**
 > 
 > 题意: TODO
 
@@ -509,7 +509,7 @@ public:
 
 ### 连接节点
 
-> [!NOTE] **[LeetCode 116. 填充每个节点的下一个右侧节点指针](https://leetcode-cn.com/problems/populating-next-right-pointers-in-each-node/)**
+> [!NOTE] **[LeetCode 116. 填充每个节点的下一个右侧节点指针](https://leetcode.cn/problems/populating-next-right-pointers-in-each-node/)**
 > 
 > 题意: TODO
 
@@ -587,7 +587,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 117. 填充每个节点的下一个右侧节点指针 II](https://leetcode-cn.com/problems/populating-next-right-pointers-in-each-node-ii/)**
+> [!NOTE] **[LeetCode 117. 填充每个节点的下一个右侧节点指针 II](https://leetcode.cn/problems/populating-next-right-pointers-in-each-node-ii/)**
 > 
 > 题意: TODO
 
@@ -682,7 +682,7 @@ class Solution:
 
 ### trick
 
-> [!NOTE] **[LeetCode 331. 验证二叉树的前序序列化](https://leetcode-cn.com/problems/verify-preorder-serialization-of-a-binary-tree/)**
+> [!NOTE] **[LeetCode 331. 验证二叉树的前序序列化](https://leetcode.cn/problems/verify-preorder-serialization-of-a-binary-tree/)**
 > 
 > 题意: TODO
 

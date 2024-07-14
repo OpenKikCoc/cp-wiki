@@ -18,7 +18,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// https://leetcode-cn.com/problems/number-of-atoms/
+// https://leetcode.cn/problems/number-of-atoms/
 
 string s;
 int n;
@@ -83,7 +83,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 394. 字符串解码](https://leetcode-cn.com/problems/decode-string/)**
+> [!NOTE] **[LeetCode 394. 字符串解码](https://leetcode.cn/problems/decode-string/)**
 > 
 > 题意: TODO
 
@@ -216,7 +216,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 726. 原子的数量](https://leetcode-cn.com/problems/number-of-atoms/)**
+> [!NOTE] **[LeetCode 726. 原子的数量](https://leetcode.cn/problems/number-of-atoms/)**
 > 
 > 题意: TODO
 
@@ -295,7 +295,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 736. Lisp 语法解析](https://leetcode-cn.com/problems/parse-lisp-expression/)**
+> [!NOTE] **[LeetCode 736. Lisp 语法解析](https://leetcode.cn/problems/parse-lisp-expression/)**
 > 
 > 题意: TODO
 

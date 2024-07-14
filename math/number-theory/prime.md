@@ -567,7 +567,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 1175. 质数排列](https://leetcode-cn.com/problems/prime-arrangements/)**
+> [!NOTE] **[LeetCode 1175. 质数排列](https://leetcode.cn/problems/prime-arrangements/)**
 > 
 > 题意: TODO
 

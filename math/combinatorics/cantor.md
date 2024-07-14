@@ -40,7 +40,7 @@ $21-3\times 3!=3$，$\lfloor\frac {3}{2!}\rfloor=1$，有一个数小于它，�
 
 实际上我们得到了形如 **有两个数小于它** 这一结论，就知道它是当前第 $3$ 个没有被选上的数，这里也可以用线段树维护，时间复杂度为 $O(n\log n)$。
 
-> [!NOTE] **[LeetCode 60. 排列序列](https://leetcode-cn.com/problems/permutation-sequence/)**
+> [!NOTE] **[LeetCode 60. 排列序列](https://leetcode.cn/problems/permutation-sequence/)**
 > 
 > 题意: TODO
 

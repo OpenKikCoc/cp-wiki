@@ -263,7 +263,7 @@ $$
 
 ### 一般前缀和
 
-> [!NOTE] **[LeetCode 303. 区域和检索 - 数组不可变](https://leetcode-cn.com/problems/range-sum-query-immutable/)**
+> [!NOTE] **[LeetCode 303. 区域和检索 - 数组不可变](https://leetcode.cn/problems/range-sum-query-immutable/)**
 > 
 > 题意: TODO
 
@@ -331,7 +331,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 304. 二维区域和检索 - 矩阵不可变](https://leetcode-cn.com/problems/range-sum-query-2d-immutable/)**
+> [!NOTE] **[LeetCode 304. 二维区域和检索 - 矩阵不可变](https://leetcode.cn/problems/range-sum-query-2d-immutable/)**
 > 
 > 题意: TODO
 
@@ -384,7 +384,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 307. 区域和检索 - 数组可修改](https://leetcode-cn.com/problems/range-sum-query-mutable/)**
+> [!NOTE] **[LeetCode 307. 区域和检索 - 数组可修改](https://leetcode.cn/problems/range-sum-query-mutable/)**
 > 
 > 题意: TODO
 
@@ -477,7 +477,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 437. 路径总和 III](https://leetcode-cn.com/problems/path-sum-iii/)**
+> [!NOTE] **[LeetCode 437. 路径总和 III](https://leetcode.cn/problems/path-sum-iii/)**
 > 
 > 题意: TODO
 
@@ -796,7 +796,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 629. K个逆序对数组](https://leetcode-cn.com/problems/k-inverse-pairs-array/)**
+> [!NOTE] **[LeetCode 629. K个逆序对数组](https://leetcode.cn/problems/k-inverse-pairs-array/)**
 > 
 > 题意: TODO
 
@@ -847,7 +847,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1895. 最大的幻方](https://leetcode-cn.com/problems/largest-magic-square/)**
+> [!NOTE] **[LeetCode 1895. 最大的幻方](https://leetcode.cn/problems/largest-magic-square/)**
 > 
 > 题意: TODO
 
@@ -1048,7 +1048,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 363. 矩形区域不超过 K 的最大数值和](https://leetcode-cn.com/problems/max-sum-of-rectangle-no-larger-than-k/)**
+> [!NOTE] **[LeetCode 363. 矩形区域不超过 K 的最大数值和](https://leetcode.cn/problems/max-sum-of-rectangle-no-larger-than-k/)**
 > 
 > 题意: TODO
 
@@ -1165,7 +1165,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1139. 最大的以 1 为边界的正方形](https://leetcode-cn.com/problems/largest-1-bordered-square/)**
+> [!NOTE] **[LeetCode 1139. 最大的以 1 为边界的正方形](https://leetcode.cn/problems/largest-1-bordered-square/)**
 > 
 > 题意: TODO
 
@@ -1236,7 +1236,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1248. 统计「优美子数组」](https://leetcode-cn.com/problems/count-number-of-nice-subarrays/)**
+> [!NOTE] **[LeetCode 1248. 统计「优美子数组」](https://leetcode.cn/problems/count-number-of-nice-subarrays/)**
 > 
 > 题意: TODO
 
@@ -1280,7 +1280,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1658. 将 x 减到 0 的最小操作数](https://leetcode-cn.com/problems/minimum-operations-to-reduce-x-to-zero/)**
+> [!NOTE] **[LeetCode 1658. 将 x 减到 0 的最小操作数](https://leetcode.cn/problems/minimum-operations-to-reduce-x-to-zero/)**
 > 
 > 题意: TODO
 
@@ -1596,7 +1596,7 @@ public:
 
 ### 差分
 
-> [!NOTE] **[LeetCode 1674. 使数组互补的最少操作次数](https://leetcode-cn.com/problems/minimum-moves-to-make-array-complementary/)** [TAG]
+> [!NOTE] **[LeetCode 1674. 使数组互补的最少操作次数](https://leetcode.cn/problems/minimum-moves-to-make-array-complementary/)** [TAG]
 > 
 > 题意: TODO
 
@@ -1650,7 +1650,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2132. 用邮票贴满网格图](https://leetcode-cn.com/problems/stamping-the-grid/)** [TAG]
+> [!NOTE] **[LeetCode 2132. 用邮票贴满网格图](https://leetcode.cn/problems/stamping-the-grid/)** [TAG]
 > 
 > 题意: TODO
 
@@ -1850,7 +1850,7 @@ public:
 
 ### 差分思想 比如用map / 区间 / trick
 
-> [!NOTE] **[LeetCode 731. 我的日程安排表 II](https://leetcode-cn.com/problems/my-calendar-ii/)**
+> [!NOTE] **[LeetCode 731. 我的日程安排表 II](https://leetcode.cn/problems/my-calendar-ii/)**
 > 
 > 题意: TODO
 
@@ -1908,7 +1908,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 732. 我的日程安排表 III](https://leetcode-cn.com/problems/my-calendar-iii/)**
+> [!NOTE] **[LeetCode 732. 我的日程安排表 III](https://leetcode.cn/problems/my-calendar-iii/)**
 > 
 > 题意: TODO
 
@@ -1991,7 +1991,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 798. 得分最高的最小轮调](https://leetcode-cn.com/problems/smallest-rotation-with-highest-score/)**
+> [!NOTE] **[LeetCode 798. 得分最高的最小轮调](https://leetcode.cn/problems/smallest-rotation-with-highest-score/)**
 > 
 > 题意: TODO
 

@@ -1,6 +1,6 @@
 ## 习题
 
-> [!NOTE] **[LeetCode 1156. 单字符重复子串的最大长度](https://leetcode-cn.com/problems/swap-for-longest-repeated-character-substring/)** [TAG]
+> [!NOTE] **[LeetCode 1156. 单字符重复子串的最大长度](https://leetcode.cn/problems/swap-for-longest-repeated-character-substring/)** [TAG]
 > 
 > 题意: TODO
 
@@ -72,7 +72,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1186. 删除一次得到子数组最大和](https://leetcode-cn.com/problems/maximum-subarray-sum-with-one-deletion/)**
+> [!NOTE] **[LeetCode 1186. 删除一次得到子数组最大和](https://leetcode.cn/problems/maximum-subarray-sum-with-one-deletion/)**
 > 
 > 题意: TODO
 
@@ -129,7 +129,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1856. 子数组最小乘积的最大值](https://leetcode-cn.com/problems/maximum-subarray-min-product/)**
+> [!NOTE] **[LeetCode 1856. 子数组最小乘积的最大值](https://leetcode.cn/problems/maximum-subarray-min-product/)**
 > 
 > 题意: TODO
 
@@ -308,7 +308,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1960. 两个回文子字符串长度的最大乘积](https://leetcode-cn.com/problems/maximum-product-of-the-length-of-two-palindromic-substrings/)** [TAG]
+> [!NOTE] **[LeetCode 1960. 两个回文子字符串长度的最大乘积](https://leetcode.cn/problems/maximum-product-of-the-length-of-two-palindromic-substrings/)** [TAG]
 > 
 > 题意: TODO
 
@@ -395,7 +395,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2054. 两个最好的不重叠活动](https://leetcode-cn.com/problems/two-best-non-overlapping-events/)**
+> [!NOTE] **[LeetCode 2054. 两个最好的不重叠活动](https://leetcode.cn/problems/two-best-non-overlapping-events/)**
 > 
 > 题意: TODO
 
@@ -511,7 +511,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2163. 删除元素后和的最小差值](https://leetcode-cn.com/problems/minimum-difference-in-sums-after-removal-of-elements/)** [TAG]
+> [!NOTE] **[LeetCode 2163. 删除元素后和的最小差值](https://leetcode.cn/problems/minimum-difference-in-sums-after-removal-of-elements/)** [TAG]
 > 
 > 题意: TODO
 
@@ -582,7 +582,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2167. 移除所有载有违禁货物车厢所需的最少时间](https://leetcode-cn.com/problems/minimum-time-to-remove-all-cars-containing-illegal-goods/)** [TAG]
+> [!NOTE] **[LeetCode 2167. 移除所有载有违禁货物车厢所需的最少时间](https://leetcode.cn/problems/minimum-time-to-remove-all-cars-containing-illegal-goods/)** [TAG]
 > 
 > 题意: TODO
 
@@ -1278,7 +1278,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 1930. 长度为 3 的不同回文子序列](https://leetcode-cn.com/problems/unique-length-3-palindromic-subsequences/)**
+> [!NOTE] **[LeetCode 1930. 长度为 3 的不同回文子序列](https://leetcode.cn/problems/unique-length-3-palindromic-subsequences/)**
 > 
 > 题意: TODO
 

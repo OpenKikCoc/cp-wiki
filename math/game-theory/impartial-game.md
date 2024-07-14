@@ -397,7 +397,7 @@ int main() {
 
 ### 石子游戏
 
-> [!NOTE] **[LeetCode 1140. 石子游戏 II](https://leetcode-cn.com/problems/stone-game-ii/)**
+> [!NOTE] **[LeetCode 1140. 石子游戏 II](https://leetcode.cn/problems/stone-game-ii/)**
 > 
 > 题意: TODO
 
@@ -464,7 +464,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1406. 石子游戏 III](https://leetcode-cn.com/problems/stone-game-iii/)**
+> [!NOTE] **[LeetCode 1406. 石子游戏 III](https://leetcode.cn/problems/stone-game-iii/)**
 > 
 > 题意: TODO
 
@@ -515,7 +515,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1510. 石子游戏 IV](https://leetcode-cn.com/problems/stone-game-iv/)**
+> [!NOTE] **[LeetCode 1510. 石子游戏 IV](https://leetcode.cn/problems/stone-game-iv/)**
 > 
 > 题意: TODO
 
@@ -557,7 +557,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1686. 石子游戏 VI](https://leetcode-cn.com/problems/stone-game-vi/)**
+> [!NOTE] **[LeetCode 1686. 石子游戏 VI](https://leetcode.cn/problems/stone-game-vi/)**
 > 
 > 题意: TODO
 
@@ -611,7 +611,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1690. 石子游戏 VII](https://leetcode-cn.com/problems/stone-game-vii/)**
+> [!NOTE] **[LeetCode 1690. 石子游戏 VII](https://leetcode.cn/problems/stone-game-vii/)**
 > 
 > 题意: TODO
 
@@ -657,7 +657,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1872. 石子游戏 VIII](https://leetcode-cn.com/problems/stone-game-viii/)** [TAG]
+> [!NOTE] **[LeetCode 1872. 石子游戏 VIII](https://leetcode.cn/problems/stone-game-viii/)** [TAG]
 > 
 > 题意: TODO
 

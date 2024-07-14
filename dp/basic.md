@@ -1000,7 +1000,7 @@ int main() {
 * * *
 
 
-> [!NOTE] **[LeetCode 174. 地下城游戏](https://leetcode-cn.com/problems/dungeon-game/)**
+> [!NOTE] **[LeetCode 174. 地下城游戏](https://leetcode.cn/problems/dungeon-game/)**
 > 
 > 题意: TODO
 
@@ -1132,7 +1132,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 221. 最大正方形](https://leetcode-cn.com/problems/maximal-square/)**
+> [!NOTE] **[LeetCode 221. 最大正方形](https://leetcode.cn/problems/maximal-square/)**
 > 
 > 题意: TODO
 
@@ -1199,13 +1199,13 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 2088. 统计农场中肥沃金字塔的数目](https://leetcode-cn.com/problems/count-fertile-pyramids-in-a-land/)**
+> [!NOTE] **[LeetCode 2088. 统计农场中肥沃金字塔的数目](https://leetcode.cn/problems/count-fertile-pyramids-in-a-land/)**
 > 
 > 题意: TODO
 
 > [!TIP] **思路**
 > 
-> [biweekly-66](https://leetcode-cn.com/contest/biweekly-contest-66/)
+> [biweekly-66](https://leetcode.cn/contest/biweekly-contest-66/)
 > 
 > 简单但经典
 > 
@@ -1313,7 +1313,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1277. 统计全为 1 的正方形子矩阵](https://leetcode-cn.com/problems/count-square-submatrices-with-all-ones/)**
+> [!NOTE] **[LeetCode 1277. 统计全为 1 的正方形子矩阵](https://leetcode.cn/problems/count-square-submatrices-with-all-ones/)**
 > 
 > 题意: TODO
 
@@ -1370,7 +1370,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 514. 自由之路](https://leetcode-cn.com/problems/freedom-trail/)**
+> [!NOTE] **[LeetCode 514. 自由之路](https://leetcode.cn/problems/freedom-trail/)**
 > 
 > 题意: TODO
 
@@ -1458,7 +1458,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 741. 摘樱桃](https://leetcode-cn.com/problems/cherry-pickup/)**
+> [!NOTE] **[LeetCode 741. 摘樱桃](https://leetcode.cn/problems/cherry-pickup/)**
 > 
 > 题意: TODO
 
@@ -1587,7 +1587,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 1463. 摘樱桃 II](https://leetcode-cn.com/problems/cherry-pickup-ii/)**
+> [!NOTE] **[LeetCode 1463. 摘樱桃 II](https://leetcode.cn/problems/cherry-pickup-ii/)**
 > 
 > 题意: TODO
 
@@ -1709,7 +1709,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 1301. 最大得分的路径数目](https://leetcode-cn.com/problems/number-of-paths-with-max-score/)**
+> [!NOTE] **[LeetCode 1301. 最大得分的路径数目](https://leetcode.cn/problems/number-of-paths-with-max-score/)**
 > 
 > 题意: TODO
 
@@ -1876,7 +1876,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 1320. 二指输入的的最小距离](https://leetcode-cn.com/problems/minimum-distance-to-type-a-word-using-two-fingers/)** [TAG]
+> [!NOTE] **[LeetCode 1320. 二指输入的的最小距离](https://leetcode.cn/problems/minimum-distance-to-type-a-word-using-two-fingers/)** [TAG]
 > 
 > 题意: TODO
 
@@ -2434,7 +2434,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 300. 最长上升子序列](https://leetcode-cn.com/problems/longest-increasing-subsequence/)**
+> [!NOTE] **[LeetCode 300. 最长上升子序列](https://leetcode.cn/problems/longest-increasing-subsequence/)**
 > 
 > 题意: TODO
 
@@ -2594,7 +2594,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 354. 俄罗斯套娃信封问题](https://leetcode-cn.com/problems/russian-doll-envelopes/)**
+> [!NOTE] **[LeetCode 354. 俄罗斯套娃信封问题](https://leetcode.cn/problems/russian-doll-envelopes/)**
 > 
 > 题意: TODO
 
@@ -2733,7 +2733,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 1626. 无矛盾的最佳球队](https://leetcode-cn.com/problems/best-team-with-no-conflicts/)**
+> [!NOTE] **[LeetCode 1626. 无矛盾的最佳球队](https://leetcode.cn/problems/best-team-with-no-conflicts/)**
 > 
 > 题意: TODO
 
@@ -2803,7 +2803,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 1671. 得到山形数组的最少删除次数](https://leetcode-cn.com/problems/minimum-number-of-removals-to-make-mountain-array/)**
+> [!NOTE] **[LeetCode 1671. 得到山形数组的最少删除次数](https://leetcode.cn/problems/minimum-number-of-removals-to-make-mountain-array/)**
 > 
 > 题意: TODO
 
@@ -2896,7 +2896,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 1840. 最高建筑高度](https://leetcode-cn.com/problems/maximum-building-height/)**
+> [!NOTE] **[LeetCode 1840. 最高建筑高度](https://leetcode.cn/problems/maximum-building-height/)**
 > 
 > 题意: TODO
 
@@ -3039,7 +3039,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 1964. 找出到每个位置为止最长的有效障碍赛跑路线](https://leetcode-cn.com/problems/find-the-longest-valid-obstacle-course-at-each-position/)**
+> [!NOTE] **[LeetCode 1964. 找出到每个位置为止最长的有效障碍赛跑路线](https://leetcode.cn/problems/find-the-longest-valid-obstacle-course-at-each-position/)**
 > 
 > 题意: TODO
 
@@ -3155,7 +3155,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 2111 使数组 K 递增的最少操作次数](https://leetcode-cn.com/problems/minimum-operations-to-make-the-array-k-increasing/)**
+> [!NOTE] **[LeetCode 2111 使数组 K 递增的最少操作次数](https://leetcode.cn/problems/minimum-operations-to-make-the-array-k-increasing/)**
 > 
 > 题意: TODO
 
@@ -3479,7 +3479,7 @@ int main() {
 
 ### 类 LIS 思想
 
-> [!NOTE] **[LeetCode 368. 最大整除子集](https://leetcode-cn.com/problems/largest-divisible-subset/)**
+> [!NOTE] **[LeetCode 368. 最大整除子集](https://leetcode.cn/problems/largest-divisible-subset/)**
 > 
 > 题意: TODO
 
@@ -3614,7 +3614,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 1218. 最长定差子序列](https://leetcode-cn.com/problems/longest-arithmetic-subsequence-of-given-difference/)**
+> [!NOTE] **[LeetCode 1218. 最长定差子序列](https://leetcode.cn/problems/longest-arithmetic-subsequence-of-given-difference/)**
 > 
 > 题意: TODO
 
@@ -3819,7 +3819,7 @@ int main() {
 
 ### LIS 与 LCS
 
-> [!NOTE] **[LeetCode 1713. 得到子序列的最少操作次数](https://leetcode-cn.com/problems/minimum-operations-to-make-a-subsequence/)**
+> [!NOTE] **[LeetCode 1713. 得到子序列的最少操作次数](https://leetcode.cn/problems/minimum-operations-to-make-a-subsequence/)**
 > 
 > [Weekly-222](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-01-03_Weekly-222)
 > 
@@ -4042,7 +4042,7 @@ if __name__=='__main__':
 
 * * *
 
-> [!NOTE] **[LeetCode 583. 两个字符串的删除操作](https://leetcode-cn.com/problems/delete-operation-for-two-strings/)**
+> [!NOTE] **[LeetCode 583. 两个字符串的删除操作](https://leetcode.cn/problems/delete-operation-for-two-strings/)**
 > 
 > 题意: TODO
 
@@ -4578,7 +4578,7 @@ if __name__ == '__main__':
 
 * * *
 
-> [!NOTE] **[LeetCode 1955. 统计特殊子序列的数目](https://leetcode-cn.com/problems/count-number-of-special-subsequences/)**
+> [!NOTE] **[LeetCode 1955. 统计特殊子序列的数目](https://leetcode.cn/problems/count-number-of-special-subsequences/)**
 > 
 > [weekly-252](https://github.com/OpenKikCoc/LeetCode/tree/master/Contest/2021-08-01_Weekly-252)
 > 
@@ -5069,7 +5069,7 @@ int main() {
 
 * * *
 
-> [!NOTE] **[LeetCode 551. 学生出勤记录 I](https://leetcode-cn.com/problems/student-attendance-record-i/)**
+> [!NOTE] **[LeetCode 551. 学生出勤记录 I](https://leetcode.cn/problems/student-attendance-record-i/)**
 > 
 > 题意: TODO
 
@@ -5126,7 +5126,7 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 552. 学生出勤记录 II](https://leetcode-cn.com/problems/student-attendance-record-ii/)**
+> [!NOTE] **[LeetCode 552. 学生出勤记录 II](https://leetcode.cn/problems/student-attendance-record-ii/)**
 > 
 > 题意: TODO
 
@@ -5307,7 +5307,7 @@ public:
 
 ### trick
 
-> [!NOTE] **[LeetCode 576. 出界的路径数](https://leetcode-cn.com/problems/out-of-boundary-paths/)**
+> [!NOTE] **[LeetCode 576. 出界的路径数](https://leetcode.cn/problems/out-of-boundary-paths/)**
 > 
 > 题意: TODO
 
@@ -5490,7 +5490,7 @@ class Solution:
 
 #### 类似编辑距离的进阶
 
-> [!NOTE] **[LeetCode 2060. 同源字符串检测](https://leetcode-cn.com/problems/check-if-an-original-string-exists-given-two-encoded-strings/)** TAG
+> [!NOTE] **[LeetCode 2060. 同源字符串检测](https://leetcode.cn/problems/check-if-an-original-string-exists-given-two-encoded-strings/)** TAG
 > 
 > 题意: TODO
 
