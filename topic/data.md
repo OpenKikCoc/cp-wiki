@@ -1942,3 +1942,93 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 3082. 求出所有子序列的能量和](https://leetcode.cn/problems/find-the-sum-of-the-power-of-all-subsequences/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然无法枚举 考虑每个数字组合的贡献 两种思路
+> 
+> -   依次考虑每个数字 0-1 背包
+> -   分类所有数字 多重背包
+> 
+> 多重背包需要结合数据范围 分两次统计得到正确的值
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 110, M = 10010, MOD = 1e9 + 7;
+    
+    LL C[N][N];
+    void init() {
+        for (int i = 0; i < N; ++ i )
+            for (int j = 0; j <= i; ++ j )
+                if (!j)
+                    C[i][j] = 1;
+                else
+                    C[i][j] = (C[i - 1][j] + C[i - 1][j - 1]) % MOD;
+    }
+    
+    LL qpow(int a, int b) {
+        LL ret = 1;
+        while (b) {
+            if (b & 1)
+                ret = (ret * a) % MOD;
+            a = LL(a) * a % MOD;
+            b >>= 1;
+        }
+        return ret;
+    }
+    
+    int cnt[M];
+    LL f[N][M];
+    
+    int sumOfPower(vector<int>& nums, int k) {
+        init();
+        
+        memset(cnt, 0, sizeof cnt);
+        for (auto x : nums)
+            cnt[x] ++ ;
+        
+        memset(f, 0, sizeof f);
+        f[0][0] = 1;
+        for (int i = 1; i < N; ++ i ) {     // ATTENTION: N
+            int count = cnt[i];
+            
+            for (int j = 0; j < N; ++ j )   // ATTENTION: N
+                for (int c = 0; c <= count && c * i <= j; ++ c )
+                    f[i][j] = (f[i][j] + f[i - 1][j - c * i] * C[count][c] % MOD * qpow(2, count - c) % MOD) % MOD;
+        }
+        
+        LL res = f[N - 1][k];
+        for (int i = N; i < M; ++ i ) {
+            int count = cnt[i];
+            res = (res * qpow(2, count)) % MOD;
+        }
+
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

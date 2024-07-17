@@ -6995,3 +6995,70 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 3081. 替换字符串中的问号使分数最小](https://leetcode.cn/problems/replace-question-marks-in-string-to-minimize-its-value/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 贪心 推导与证明
+> 
+> 注意 需要满足字典序最小
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 考虑多种字符 每个字符带来的开销只与整个其出现总数相关 所以天然选最小的就可以
+    using PII = pair<int, int>;
+    
+    string minimizeStringValue(string s) {
+        // cnt less, char less
+        priority_queue<PII, vector<PII>, greater<PII>> heap;
+        
+        int cnt[26], tot = 0;
+        for (auto c : s)
+            if (c != '?')
+                cnt[c - 'a'] ++ ;
+            else
+                tot ++ ;
+        
+        for (int i = 0; i < 26; ++ i )
+            heap.push({cnt[i], i});
+        
+        string t;
+        while (tot -- ) {
+            auto [cnt, chr] = heap.top(); heap.pop();
+            t.push_back('a' + chr);
+            heap.push({cnt + 1, chr});
+        }
+        sort(t.begin(), t.end());   // ATTENTION
+        
+        int p = 0;
+        for (auto & c : s)
+            if (c == '?')
+                c = t[p ++ ];
+        
+        return s;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
