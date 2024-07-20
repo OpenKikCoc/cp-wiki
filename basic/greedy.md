@@ -1469,6 +1469,117 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 3085. 成为 K 特殊字符串需要删除的最少字符数](https://leetcode.cn/problems/minimum-deletions-to-make-string-k-special/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 重在理解贪心推导思路
+> 
+> 1. 一个非常显然的思路是直接枚举最终收敛的数值区间
+> 
+> 2. 贪心推理：下界  (而非上界) 必然出现在所有 cnt 中
+> 
+>    思考推理 (因为如果下界处在中间位置，对于更大的区间来说向下收缩是没有意义的)
+> 
+>    进而，在数据范围更大时可以双指针进一步优化 (略)
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ bf**
+
+```cpp
+class Solution {
+public:
+    int minimumDeletions(string word, int k) {
+        int n = word.size();
+        vector<int> xs;
+        {
+            int c[26];
+            memset(c, 0, sizeof c);
+            for (auto x : word)
+                c[x - 'a'] ++ ;
+            
+            for (int i = 0; i < 26; ++ i )
+                if (c[i])
+                    xs.push_back(c[i]);
+            sort(xs.begin(), xs.end());
+        }
+        
+        int m = xs.size();
+        
+        int res = n;
+        for (int i = 1; i <= 1e5 + 1; ++ i ) {
+            int r = i, l = max(0, r - k);
+            
+            int t = 0;
+            for (auto x : xs)
+                if (x < l)
+                    t += x;
+                else if (x > r)
+                    t += x - r;
+            res = min(res, t);
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ gready**
+
+```cpp
+class Solution {
+public:
+    int minimumDeletions(string word, int k) {
+        int n = word.size();
+        vector<int> xs;
+        {
+            int c[26];
+            memset(c, 0, sizeof c);
+            for (auto x : word)
+                c[x - 'a'] ++ ;
+            
+            for (int i = 0; i < 26; ++ i )
+                if (c[i])
+                    xs.push_back(c[i]);
+            sort(xs.begin(), xs.end());
+        }
+        
+        int m = xs.size();
+        
+        int res = n;
+        for (auto x : xs) {
+            int l = x, r = x + k;
+            int t = 0;
+            for (auto v : xs)
+                if (v < l)
+                    t += v;
+                else if (v > r)
+                    t += v - r;
+            res = min(res, t);
+        }
+
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 排序不等式
 
 > [!NOTE] **[AcWing 1395. 产品处理](https://www.acwing.com/problem/content/1397/)**

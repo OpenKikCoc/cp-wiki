@@ -2116,6 +2116,114 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 3093. 最长公共后缀查询](https://leetcode.cn/problems/longest-common-suffix-queries/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然是 trie 核心在于压缩空间
+> 
+> => 要想到 **考虑偏序性质 可以直接在插入时维护**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+const static int N = 1e4 + 10, M = 5e5 + 10;
+int t[N];
+
+struct Node {
+    Node * child[26];
+    int p;
+    Node() {
+        for (int i = 0; i < 26; ++ i )
+            child[i] = nullptr;
+        p = -1;
+    }
+} *root;
+
+Node * rs[M];
+int tot;
+Node * prep(int idx) {
+    rs[idx] = new Node();
+    return rs[idx];
+}
+
+class Solution {
+public:
+    void init() {
+        root = new Node();
+        tot = 0;
+    }
+    void compare(Node * p, int i) {
+        // ATTENTION: 考虑严格偏序性质 可以直接在插入的时候 O(1) 维护... 不需要集合or每次全量sort
+        // 进而压缩空间避免MLE
+        int a = p->p, b = i;
+        if (a == -1 || (ws[a].size() > ws[b].size() || ws[a].size() == ws[b].size() && a > b))
+            p->p = b;
+    }
+    void insert(int i, string & w) {
+        auto p = root;
+        compare(p, i);
+        for (auto c : w) {
+            int u = c - 'a';
+            if (!p->child[u])
+                p->child[u] = prep(tot ++ );
+            p = p->child[u];
+            compare(p, i);  // ATTENTION
+        }
+    }
+    int query(string & w) {
+        auto p = root;
+        for (auto c : w) {
+            int u = c - 'a';
+            if (!p->child[u])
+                break;
+            p = p->child[u];
+        }
+        return p->p;
+    }
+    
+    vector<string> ws;
+    
+    vector<int> stringIndices(vector<string>& wordsContainer, vector<string>& wordsQuery) {
+        init();
+        
+        this->ws = wordsContainer;
+        
+        for (int i = 0; i < ws.size(); ++ i ) {
+            auto & w = ws[i];
+            reverse(w.begin(), w.end());
+            insert(i, w);
+        }
+        
+        vector<int> res;
+        for (auto & w : wordsQuery) {
+            reverse(w.begin(), w.end());
+            res.push_back(query(w));
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 离线 trie
 
 > [!NOTE] **[LeetCode 1707. 与数组中元素的最大异或值](https://leetcode.cn/problems/maximum-xor-with-an-element-from-array/)**

@@ -1247,3 +1247,95 @@ int main() {
 <br>
 
 * * *
+
+### 状态转移方式
+
+> [!NOTE] **[LeetCode 3098. 求出所有子序列的能量和](https://leetcode.cn/problems/find-the-sum-of-subsequence-powers/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 如果将所有差值离散化 统一求复杂度会爆掉 前缀和优化也无效
+> 
+> 考虑随用随算
+
+> 1. 借助 trick 的转移方式实现
+> 
+> 2. 更 general 的前后缀分解，计算过程必须正确消除不可行情况
+> 
+>    解决办法 => 必须包含边界值 => **求差值+初始化(只有边界值=1)**
+> 
+> 重复做
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 长度等于k...
+    // 1. 排序 显然不影响结果
+    // 2. 枚举差值发生的两个下标对 则中间元素都不能被选 且两侧也存在部分不能选(以某个位置为端点 左侧差值不小于x 总共有多少种方案)
+    // 3. 去重.. 两侧区分对待即可 【经典思维】
+    //
+    // 长度恰好为k怎么解决? => 确定性状态 作为dp定义其中一个维度
+    //
+    // 【考虑 结合数据范围】
+    // ls[i][j][k] 左侧到i的位置 长度为j 差值不小于k 的所有方案数
+    //
+    // 【重要：状态转移方式 + 复杂度分析】
+
+    using LL = long long;
+    const static int N = 55, MOD = 1e9 + 7;
+    const int INF = 0x3f3f3f3f;
+    
+    int n;
+    vector<int> ns;
+    
+
+    int sumOfPowers(vector<int>& nums, int k) {
+        this->ns = nums;
+        this->n = ns.size();
+        sort(ns.begin(), ns.end());
+        
+        unordered_map<int, LL> f[N][N]; // k 作为离散 hash
+        
+        for (int i = 1; i <= n; ++ i ) {
+            f[i][1][INF] = 1;
+            for (int j = 2; j <= k; ++ j )
+                // ATTENTION 第三维并非枚举所有差值可能，而是只枚举一定可能出现的，也即枚举前面的数字
+                for (int last = 1; last < i; ++ last ) {
+                    // ATTENTION trick
+                    for (auto & [d, cnt] : f[last][j - 1]) {
+                        LL nd = min(d, ns[i - 1] - ns[last - 1]);  // trick
+                        f[i][j][nd] = (f[i][j][nd] + cnt) % MOD;
+                    }
+                }
+        }
+        
+        LL res = 0;
+        for (int i = 1; i <= n; ++ i )
+            for (auto & [d, cnt] : f[i][k])
+                res = (res + d * cnt % MOD) % MOD;
+        
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
