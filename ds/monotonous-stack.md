@@ -730,6 +730,113 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 3113. 边界元素是最大值的子数组数目](https://leetcode.cn/problems/find-the-number-of-subarrays-where-boundary-elements-are-maximum/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然找到某位置左侧第一个比当前元素大的位置 期间所有相同元素的数量即为所求
+> 
+> 优化: 统计逻辑显然可以在维护单调栈时直接完成
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 子数组: 原数组的一个连续部分
+    //  对于一个合法子数组 中间一定不包含比它大的元素(找到左侧第一个比它大的位置)
+    
+    using LL = long long;
+    const static int N = 1e5 + 10;
+    
+    unordered_map<int, vector<int>> hash;
+    int l[N];
+    
+    int get(vector<int> & xs, int x) {
+        return lower_bound(xs.begin(), xs.end(), x) - xs.begin();
+    }
+
+    long long numberOfSubarrays(vector<int>& nums) {
+        int n = nums.size();
+        
+        {
+            memset(l, -1, sizeof l);
+            stack<int> st;
+            for (int i = n - 1; i >= 0; -- i ) {
+                while (st.size() && nums[st.top()] < nums[i])
+                    l[st.top()] = i, st.pop();
+                st.push(i);
+            }
+            /* 等效逻辑 使用自己习惯的(前面一种)
+            for (int i = 0; i < n; ++ i ) {
+                while (st.size() && nums[st.top()] <= nums[i])
+                    st.pop();
+                if (st.size())
+                    l[i] = st.top();
+                st.push(i);
+            }
+            */
+        }
+        LL res = 0;
+        for (int i = 0; i < n; ++ i ) {
+            int x = nums[i];
+            int idx = get(hash[nums[i]], l[i]);
+            int tot = hash[nums[i]].size();
+            res += tot - idx + 1 /*1 为当前数字本身*/;
+            hash[nums[i]].push_back(i);
+        }
+        
+        return res;
+    }
+};
+```
+
+##### **C++ 优化**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    using PII = pair<int, int>;
+
+    long long numberOfSubarrays(vector<int>& nums) {
+        LL res = 0;
+        
+        stack<PII> st;
+        for (int i = 0; i < nums.size(); ++ i ) {
+            while (st.size() && nums[st.top().first] < nums[i])   // ATTENTION <
+                st.pop();
+            if (st.size() && nums[st.top().first] == nums[i])
+                st.top().second ++ ;
+            else
+                st.push({i, 1});
+            res += st.top().second;
+        }
+        
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 进阶（推导）
 
 > [!NOTE] **[LeetCode 42. 接雨水](https://leetcode.cn/problems/trapping-rain-water/)**

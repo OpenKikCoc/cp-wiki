@@ -2,158 +2,6 @@
 
 ### 数学分析
 
-> [!NOTE] **[Codeforces The Brand New Function](http://codeforces.com/problemset/problem/243/A)**
-> 
-> 题意: TODO
-> 
-> 定义函数 $f(l,r)$ $(1 \le l,r \le n)$ ，表示序列的子串 $[l,r]$ 各项的 `或` 和: 
-> 
-> $f(l,r)=a_l|a_{l+1}|⋯|a_r$
-> 
-> 求整个数组有多少个不同的 `或` 和
-
-> [!TIP] **思路**
-> 
-> **非常经典的暴力优化**
-> 
-> 需要严格数学推导
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-// Problem: A. The Brand New Function
-// Contest: Codeforces - Codeforces Round #150 (Div. 1)
-// URL: https://codeforces.com/problemset/problem/243/A
-// Memory Limit: 256 MB
-// Time Limit: 2000 ms
-
-#include <bits/stdc++.h>
-using namespace std;
-
-const static int N = 1e5 + 10;
-
-int n;
-int a[N];
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    cout.tie(nullptr);
-
-    cin >> n;
-
-    unordered_set<int> S;
-    for (int i = 1, x; i <= n; ++i) {
-        cin >> a[i];
-        S.insert(a[i]);
-        // TRICK: 经过严谨数学证明的剪枝与实现方式
-        for (int j = i - 1; j; --j) {
-            // ATTENTION: trick
-            // if-condition 满足时必然此前已计算过同样值的了，直接break
-            if ((a[j] | a[i]) == a[j])
-                break;
-            // 为什么可以直接或 ？ 更改后是否影响正确性 ？
-            // 1. 区间具有包含性质
-            // 2. 由 1 后续使用的必然包含上一次使用的，正确性不变
-            a[j] |= a[i];
-            S.insert(a[j]);
-        }
-    }
-
-    cout << S.size() << endl;
-
-    return 0;
-}
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
-> [!NOTE] **[LeetCode 898. 子数组按位或操作](https://leetcode.cn/problems/bitwise-ors-of-subarrays/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 和 [Codeforces The Brand New Function](http://codeforces.com/problemset/problem/243/A) 一个意思
-> 
-> 非常经典的通过数学推导优化暴力
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++ 直接统计**
-
-```cpp
-class Solution {
-public:
-    int subarrayBitwiseORs(vector<int>& arr) {
-        unordered_set<int> S;
-        int n = arr.size();
-        for (int i = 0; i < n; ++ i ) {
-            S.insert(arr[i]);
-            for (int j = i - 1; j >= 0; -- j ) {
-                // ATTENTION
-                if ((arr[j] | arr[i]) == arr[j])
-                    break;
-                arr[j] |= arr[i];
-                S.insert(arr[j]);
-            }
-        }
-        return S.size();
-    }
-};
-```
-
-##### **C++ 类 Vector 写法**
-
-```cpp
-class Solution {
-public:
-    int subarrayBitwiseORs(vector<int>& arr) {
-        unordered_set<int> S, pre;
-        for (auto x : arr) {
-            unordered_set<int> next;
-            next.insert(x);
-            for (auto y : pre)
-                next.insert(x | y);
-            for (auto y : next)
-                S.insert(y);
-            pre = next;
-        }
-        return S.size();
-    }
-};
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
 > [!NOTE] **[LeetCode 2791. 树中可以形成回文的路径数](https://leetcode.cn/problems/count-paths-that-can-form-a-palindrome-in-a-tree/)**
 > 
 > 题意: TODO
@@ -614,6 +462,658 @@ public:
             }
         }
         return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 数学 - LogTrick
+
+> [!NOTE] **[Codeforces The Brand New Function](http://codeforces.com/problemset/problem/243/A)**
+> 
+> 题意: TODO
+> 
+> 定义函数 $f(l,r)$ $(1 \le l,r \le n)$ ，表示序列的子串 $[l,r]$ 各项的 `或` 和: 
+> 
+> $f(l,r)=a_l|a_{l+1}|⋯|a_r$
+> 
+> 求整个数组有多少个不同的 `或` 和
+
+> [!TIP] **思路**
+> 
+> **非常经典的暴力优化**
+> 
+> 需要严格数学推导
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// Problem: A. The Brand New Function
+// Contest: Codeforces - Codeforces Round #150 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/243/A
+// Memory Limit: 256 MB
+// Time Limit: 2000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 1e5 + 10;
+
+int n;
+int a[N];
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> n;
+
+    unordered_set<int> S;
+    for (int i = 1, x; i <= n; ++i) {
+        cin >> a[i];
+        S.insert(a[i]);
+        // TRICK: 经过严谨数学证明的剪枝与实现方式
+        for (int j = i - 1; j; --j) {
+            // ATTENTION: trick
+            // if-condition 满足时必然此前已计算过同样值的了，直接break
+            if ((a[j] | a[i]) == a[j])
+                break;
+            // 为什么可以直接或 ？ 更改后是否影响正确性 ？
+            // 1. 区间具有包含性质
+            // 2. 由 1 后续使用的必然包含上一次使用的，正确性不变
+            a[j] |= a[i];
+            S.insert(a[j]);
+        }
+    }
+
+    cout << S.size() << endl;
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 898. 子数组按位或操作](https://leetcode.cn/problems/bitwise-ors-of-subarrays/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 和 [Codeforces The Brand New Function](http://codeforces.com/problemset/problem/243/A) 一个意思
+> 
+> 非常经典的通过数学推导优化暴力
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 直接统计**
+
+```cpp
+class Solution {
+public:
+    int subarrayBitwiseORs(vector<int>& arr) {
+        unordered_set<int> S;
+        int n = arr.size();
+        for (int i = 0; i < n; ++ i ) {
+            S.insert(arr[i]);
+            for (int j = i - 1; j >= 0; -- j ) {
+                // ATTENTION
+                if ((arr[j] | arr[i]) == arr[j])
+                    break;
+                arr[j] |= arr[i];
+                S.insert(arr[j]);
+            }
+        }
+        return S.size();
+    }
+};
+```
+
+##### **C++ 类 Vector 写法**
+
+```cpp
+class Solution {
+public:
+    int subarrayBitwiseORs(vector<int>& arr) {
+        unordered_set<int> S, pre;
+        for (auto x : arr) {
+            unordered_set<int> next;
+            next.insert(x);
+            for (auto y : pre)
+                next.insert(x | y);
+            for (auto y : next)
+                S.insert(y);
+            pre = next;
+        }
+        return S.size();
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 3117. 划分数组得到最小的值之和](https://leetcode.cn/problems/minimum-sum-of-values-by-dividing-array/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 数据结构优化大杂烩
+> 
+> - `[prefix_sum / RMQ] + [BIT / 单调队列]`
+> 
+> - `X + LogTrick`
+> 
+>   LogTrick: **给定一个数组，以某个右端点为结尾的所有子数组，其中不同的 或/与/lcm/gcd 值至多只有 logU 个**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ prefix_sum + BIT**
+
+```cpp
+class Solution {
+public:
+    // 搜索TLE (TODO: revisit 剪枝策略)
+    //
+    // 考虑 dp
+    //  f[i][j] 表示考虑前i个元素切分成j段的最小值和
+    //  => f[i][j] = min(f[x][j-1]) + nums[i]
+    //     其中x需满足一定条件: and[x+1,j] = andVlues[j]
+    //  由与操作性质容易推导 x必然锁定到一个连续区间 接下来就是查询这个区间的最小值
+    // 
+    // 拆解子问题:
+    // 1. 如何计算得到x的区间 => 二分 => 需能快速获取特定区间的 and 值 => 前缀和/rmq
+    // 2. 如何维护区间最小值 => BIT/单调队列(更优)
+    //
+    // 【数据结构优化DP】
+
+    const static int N = 1e4 + 10, M = 11, K = 18, INF = 0x3f3f3f3f;
+
+    // prefix sum
+    int sum[N][K];
+    int get_by_sum(int l, int r) {
+        int ret = 0;
+        for (int j = 0; j < K; ++ j )
+            if (sum[r][j] - sum[l - 1][j] == r - l + 1)
+                ret += 1 << j;
+        return ret;
+    }
+    
+    // BIT
+    // - 区间最值
+    // - 需要nxt数组记录对于第j段下次应当加入bit的位置
+    int w[M][N], tr[M][N], nxt[M];
+    int lowbit(int x) {
+        return x & -x;
+    }
+    void bit_modify(int tr[], int w[], int x, int y) {
+        w[x] = y;
+        for (int i = x; i < N; i += lowbit(i))
+            tr[i] = min(tr[i], y);  // min
+    }
+    int bit_query(int tr[], int w[], int l, int r) {
+        int ret = INF;  // ATTENTION debug
+        for (; l <= r; ) {
+            ret = min(ret, w[r]);
+            for ( -- r ; r >= l + lowbit(r); r -= lowbit(r))
+                ret = min(ret, tr[r]);
+        }
+        return ret;
+    }
+
+    void init() {
+        {
+            memset(sum, 0, sizeof sum);
+            for (int i = 1; i <= n; ++ i )
+                for (int j = 0; j < K; ++ j )
+                    sum[i][j] = sum[i - 1][j] + (nums[i - 1] >> j & 1);
+        }
+        {
+            memset(w, 0x3f, sizeof w);
+            memset(tr, 0x3f, sizeof tr);
+            for (int i = 0; i < M; ++ i )
+                nxt[i] = 1;
+        }
+    }
+
+    int search(int L, int R, int x) {
+        int l = L, r = R + 1;
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+            if (get_by_sum(mid, R) >= x)
+                r = mid;
+            else
+                l = mid + 1;
+        }
+        return l;
+    }
+
+    int f[N][M];
+
+    vector<int> nums;
+    vector<int> avs;
+    int n, m;
+
+    int minimumValueSum(vector<int>& nums, vector<int>& andValues) {
+        this->nums = nums, this->avs = andValues;
+        this->n = nums.size(), this->m = avs.size();
+
+        init();
+
+        memset(f, 0x3f, sizeof f);
+        f[0][0] = 0;
+        for (int i = 1; i <= n; ++ i )
+            for (int j = 1; j <= m; ++ j ) {
+                int target = andValues[j - 1];
+
+                // ATTENTION 减少无效计算
+                if (get_by_sum(1, i) > target)
+                    continue;
+                
+                // ATTENTION: 思考
+                // 找到 第一个 >= target 的位置  &  第一个 > target 的位置
+                //  l,r 本质都是上一个轮次的下标
+                int l = search(1, i, target), r = search(1, i, target + 1);
+                if (l == i + 1 || get_by_sum(l, i) != target)
+                    continue;
+
+                r -- ;  // 实际上 r 的位置刚好比最右侧的分界点大 1
+                
+                auto & local_w = w[j - 1];      // 上一个轮次的
+                auto & local_tr = tr[j - 1];
+                for (; nxt[j - 1] < r; ++ nxt[j - 1]) {
+                    int x = nxt[j - 1], y = f[x][j - 1];
+                    bit_modify(local_tr, local_w, x, y);
+                }
+
+                // ATTENTION l-1: 思考 上一个区间的结束位置自l左侧一个位置开始
+                int min_val = bit_query(local_tr, local_w, max(l - 1, 1), r);
+                if (j == 1 && get_by_sum(1, i) == avs[j - 1])
+                    min_val = 0;
+
+                f[i][j] = min_val + nums[i - 1];
+            }
+        
+        return f[n][m] < INF / 2 ? f[n][m] : -1;
+    }
+};
+```
+
+##### **C++ RMQ(学习记录&的方法) + BIT**
+
+```cpp
+class Solution {
+public:
+    // 搜索TLE (TODO: revisit 剪枝策略)
+    //
+    // 考虑 dp
+    //  f[i][j] 表示考虑前i个元素切分成j段的最小值和
+    //  => f[i][j] = min(f[x][j-1]) + nums[i]
+    //     其中x需满足一定条件: and[x+1,j] = andVlues[j]
+    //  由与操作性质容易推导 x必然锁定到一个连续区间 接下来就是查询这个区间的最小值
+    // 
+    // 拆解子问题:
+    // 1. 如何计算得到x的区间 => 二分 => 需能快速获取特定区间的 and 值 => 前缀和/rmq
+    // 2. 如何维护区间最小值 => BIT/单调队列(更优)
+    //
+    // 【数据结构优化DP】
+
+    const static int N = 1e4 + 10, M = 11, K = 18, INF = 0x3f3f3f3f;
+
+    // [no] prefix sum => RMQ
+    int sum[N][K];
+    int get_by_sum(int l, int r) {
+        int len = r - l + 1;
+        int k = log(len) / log(2);
+        return sum[l][k] & sum[r - (1 << k) + 1][k];
+    }
+    
+    // BIT
+    // - 区间最值
+    // - 需要nxt数组记录对于第j段下次应当加入bit的位置
+    int w[M][N], tr[M][N], nxt[M];
+    int lowbit(int x) {
+        return x & -x;
+    }
+    void bit_modify(int tr[], int w[], int x, int y) {
+        w[x] = y;
+        for (int i = x; i < N; i += lowbit(i))
+            tr[i] = min(tr[i], y);  // min
+    }
+    int bit_query(int tr[], int w[], int l, int r) {
+        int ret = INF;  // ATTENTION debug
+        for (; l <= r; ) {
+            ret = min(ret, w[r]);
+            for ( -- r ; r >= l + lowbit(r); r -= lowbit(r))
+                ret = min(ret, tr[r]);
+        }
+        return ret;
+    }
+
+    void init() {
+        {
+            memset(sum, 0, sizeof sum);
+            // 倍增RMQ
+            for (int j = 0; j < K; ++ j )
+                for (int i = 1; i + (1 << j) - 1 <= n; ++ i )
+                    if (!j)
+                        sum[i][j] = nums[i - 1];
+                    else
+                        // ATTENTION RMQ 维护性质变种
+                        //  下标非常容易写疵...
+                        sum[i][j] = sum[i][j - 1] & sum[i + (1 << j - 1)][j - 1];
+        }
+        {
+            memset(w, 0x3f, sizeof w);
+            memset(tr, 0x3f, sizeof tr);
+            for (int i = 0; i < M; ++ i )
+                nxt[i] = 1;
+        }
+    }
+
+    int search(int L, int R, int x) {
+        int l = L, r = R + 1;
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+            if (get_by_sum(mid, R) >= x)
+                r = mid;
+            else
+                l = mid + 1;
+        }
+        return l;
+    }
+
+    int f[N][M];
+
+    vector<int> nums;
+    vector<int> avs;
+    int n, m;
+
+    int minimumValueSum(vector<int>& nums, vector<int>& andValues) {
+        this->nums = nums, this->avs = andValues;
+        this->n = nums.size(), this->m = avs.size();
+
+        init();
+
+        memset(f, 0x3f, sizeof f);
+        f[0][0] = 0;
+        for (int i = 1; i <= n; ++ i )
+            for (int j = 1; j <= m; ++ j ) {
+                int target = andValues[j - 1];
+
+                // ATTENTION 减少无效计算
+                if (get_by_sum(1, i) > target)
+                    continue;
+                
+                // ATTENTION: 思考
+                // 找到 第一个 >= target 的位置  &  第一个 > target 的位置
+                //  l,r 本质都是上一个轮次的下标
+                int l = search(1, i, target), r = search(1, i, target + 1);
+                if (l == i + 1 || get_by_sum(l, i) != target)
+                    continue;
+
+                r -- ;  // 实际上 r 的位置刚好比最右侧的分界点大 1
+                
+                auto & local_w = w[j - 1];      // 上一个轮次的
+                auto & local_tr = tr[j - 1];
+                for (; nxt[j - 1] < r; ++ nxt[j - 1]) {
+                    int x = nxt[j - 1], y = f[x][j - 1];
+                    bit_modify(local_tr, local_w, x, y);
+                }
+
+                // ATTENTION l-1: 思考 上一个区间的结束位置自l左侧一个位置开始
+                int min_val = bit_query(local_tr, local_w, max(l - 1, 1), r);
+                if (j == 1 && get_by_sum(1, i) == avs[j - 1])
+                    min_val = 0;
+
+                f[i][j] = min_val + nums[i - 1];
+            }
+        
+        return f[n][m] < INF / 2 ? f[n][m] : -1;
+    }
+};
+```
+
+##### **C++ RMQ(前缀和写法略) + 单调队列**
+
+```cpp
+class Solution {
+public:
+    // 搜索TLE (TODO: revisit 剪枝策略)
+    //
+    // 考虑 dp
+    //  f[i][j] 表示考虑前i个元素切分成j段的最小值和
+    //  => f[i][j] = min(f[x][j-1]) + nums[i]
+    //     其中x需满足一定条件: and[x+1,j] = andVlues[j]
+    //  由与操作性质容易推导 x必然锁定到一个连续区间 接下来就是查询这个区间的最小值
+    // 
+    // 拆解子问题:
+    // 1. 如何计算得到x的区间 => 二分 => 需能快速获取特定区间的 and 值 => 前缀和/rmq
+    // 2. 如何维护区间最小值 => BIT/单调队列(更优)
+    //
+    // 【数据结构优化DP】
+
+    const static int N = 1e4 + 10, M = 11, K = 18, INF = 0x3f3f3f3f;
+
+    // [no] prefix sum => RMQ
+    int sum[N][K];
+    int get_by_sum(int l, int r) {
+        int len = r - l + 1;
+        int k = log(len) / log(2);
+        return sum[l][k] & sum[r - (1 << k) + 1][k];
+    }
+    
+    // [no] BIT => deque
+    // - 区间最值
+    // - 需要nxt数组记录对于第j段下次应当加入bit的位置
+    deque<int> q[M];
+    int nxt[M];
+
+    void init() {
+        {
+            memset(sum, 0, sizeof sum);
+            // 倍增RMQ
+            for (int j = 0; j < K; ++ j )
+                for (int i = 1; i + (1 << j) - 1 <= n; ++ i )
+                    if (!j)
+                        sum[i][j] = nums[i - 1];
+                    else
+                        // ATTENTION RMQ 维护性质变种
+                        //  下标非常容易写疵...
+                        sum[i][j] = sum[i][j - 1] & sum[i + (1 << j - 1)][j - 1];
+        }
+        {
+            for (int i = 0; i < M; ++ i )
+                nxt[i] = 1, q[i].clear();
+        }
+    }
+
+    int search(int L, int R, int x) {
+        int l = L, r = R + 1;
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+            if (get_by_sum(mid, R) >= x)
+                r = mid;
+            else
+                l = mid + 1;
+        }
+        return l;
+    }
+
+    int f[N][M];
+
+    vector<int> nums;
+    vector<int> avs;
+    int n, m;
+
+    int minimumValueSum(vector<int>& nums, vector<int>& andValues) {
+        this->nums = nums, this->avs = andValues;
+        this->n = nums.size(), this->m = avs.size();
+
+        init();
+
+        memset(f, 0x3f, sizeof f);
+        f[0][0] = 0;
+        for (int i = 1; i <= n; ++ i )
+            for (int j = 1; j <= m; ++ j ) {
+                int target = andValues[j - 1];
+
+                // ATTENTION 减少无效计算
+                if (get_by_sum(1, i) > target)
+                    continue;
+                
+                // ATTENTION: 思考
+                // 找到 第一个 >= target 的位置  &  第一个 > target 的位置
+                //  l,r 本质都是上一个轮次的下标
+                int l = search(1, i, target), r = search(1, i, target + 1);
+                if (l == i + 1 || get_by_sum(l, i) != target)
+                    continue;
+
+                r -- ;  // 实际上 r 的位置刚好比最右侧的分界点大 1
+                
+                auto & local_q = q[j - 1];      // 上一个轮次的
+
+                for (; nxt[j - 1] < r; ++ nxt[j - 1]) {
+                    while (!local_q.empty() && f[local_q.back()][j -1] >= f[nxt[j - 1]][j - 1])
+                        local_q.pop_back();
+                    local_q.push_back(nxt[j - 1]);
+                }
+                // ATTENTION: 因为前面可能会加进去小于l-1的，所以pop_front要放在后面
+                // ATTENTION l-1: 思考 上一个区间的结束位置自l左侧一个位置开始
+                while (!local_q.empty() && local_q.front() < l - 1)
+                    local_q.pop_front();
+
+                int min_val = INF;
+                if (!local_q.empty())
+                    min_val = f[local_q.front()][j - 1];
+                if (j == 1 && get_by_sum(1, i) == avs[j - 1])
+                    min_val = 0;
+
+                f[i][j] = min_val + nums[i - 1];
+            }
+        
+        return f[n][m] < INF / 2 ? f[n][m] : -1;
+    }
+};
+```
+
+##### **C++ LogTrick (打掉一个log) + 单调队列(BIT略)**
+
+```cpp
+class Solution {
+public:
+    using PII = pair<int, int>;
+
+    template <typename T, typename F = function<T(const T &, const T &)>>
+    struct SparseTable {
+        int n;
+        vector<vector<T>> mat;
+        F func;
+
+        SparseTable() {}    // For vector
+        SparseTable(const vector<T> & a, const F & f) : func(f) {
+            n = a.size();
+            if (n == 0)
+                return;
+            int maxLog = 32 - __builtin_clz(n);
+            mat.resize(maxLog);
+            mat[0] = a;
+            mat[0].insert(mat[0].begin(), 0);
+            for (int j = 1; j < maxLog; ++ j ) {
+                mat[j].resize(n - (1 << j) + 1 + 1);
+                // i = n - (1 << j) + 1, 故申请内存需要再+1
+                for (int i = 1; i + (1 << j) - 1 <= n; ++ i )
+                    mat[j][i] = func(mat[j - 1][i], mat[j - 1][i + (1 << j - 1)]);
+            }
+        }
+        T query(int l, int r) const {
+            assert(0 <= l && l <= r && r <= n - 1);
+            int lg = 31 - __builtin_clz(r - l + 1);
+            return func(mat[lg][l], mat[lg][r - (1 << lg) + 1]);
+        }
+    };
+
+    vector<int> nums;
+    vector<int> avs;
+    int n, m;
+
+    int minimumValueSum(vector<int>& nums, vector<int>& andValues) {
+        this->nums = nums, this->avs = andValues;
+        this->n = nums.size(), this->m = avs.size();
+        
+        const int INF = 0x3f3f3f3f;
+        vector<int> dp(n + 1, INF);
+        dp[0] = 0;
+        for (int parts = 1; parts <= m; ++ parts ) {
+            SparseTable st(dp, [&](int i, int j) {return min(i, j);});
+            vector<int> ndp(n + 1, INF);
+
+            vector<PII> G;  // (and, left endpoint)
+            for (int i = 1; i <= n; ++ i ) {
+                int x = nums[i - 1];
+                G.push_back({x, i});
+                for (auto & g : G)
+                    g.first &= x;
+                G.erase(unique(G.begin(), G.end(), [](const PII & g1, const PII & g2) {
+                    // ATTENTION trick: 对于相同的保留第一个
+                    return g1.first == g2.first;
+                }), G.end());
+
+                // ATTENTION: G.size() <= log(bit_width)
+                for (int j = 0; j < G.size(); ++ j ) {
+                    int l = G[j].second, r = (j == G.size() - 1 ? i : G[j + 1].second - 1);
+                    if (G[j].first == avs[parts - 1])
+                        ndp[i] = min(ndp[i], x + st.query(l, r));
+                }
+            }
+
+            swap(dp, ndp);
+        }
+        
+        return dp[n] >= INF / 2 ? -1 : dp[n];
     }
 };
 ```

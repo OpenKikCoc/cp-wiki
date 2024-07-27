@@ -900,6 +900,101 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 3116. 单面值组合的第 K 小金额](https://leetcode.cn/problems/kth-smallest-amount-with-single-denomination-combination/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 属于 [878. 第 N 个神奇数字](https://leetcode.cn/problems/nth-magical-number/) [1201. 丑数 III](https://leetcode.cn/problems/ugly-number-iii/) 的扩展
+> 
+> 数据范围下模拟显然不现实
+> 
+> 考虑枚举具体的值 => 引入问题: 需要去重 => 结合 **容斥原理** 去重 => 结合数据范围**二进制枚举**所有集合 (子集枚举)
+> 
+> 【容斥原理一般化】
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // k 太大了  显然没办法模拟枚举
+    //
+    // 考虑数据范围：
+    // - 币种类不超过15 且两两不同
+    // - 每个coin的币值不超过25
+    //
+    // => 二分答案 校验函数里子集枚举去重
+    
+    using LL = long long;
+    const static int N = (1 << 15) + 10;
+    
+    vector<int> coins;
+    int n;
+    
+    LL v[N];
+    
+    LL check(LL m) {
+        LL ret = 0;
+        for (int i = 1; i < 1 << n; ++ i ) {
+            int c = __builtin_popcount(i);
+            if (c & 1)
+                ret += m / v[i];
+            else
+                ret -= m / v[i];
+        }
+        return ret;
+    }
+    
+    long long findKthSmallest(vector<int>& coins, int k) {
+        this->coins = coins;
+        this->n = coins.size();
+        
+        {
+            v[0] = 0;
+            for (int i = 1; i < 1 << n; ++ i ) {
+                LL t = 1;
+                vector<int> xs;
+                for (int j = 0; j < n; ++ j )
+                    if (i >> j & 1) {
+                        t = t / __gcd(t, (LL)coins[j]) * coins[j];
+                        xs.push_back(coins[j]);
+                    }
+                v[i] = t;
+            }
+        }
+        
+        LL l = 0, r = 1e15;
+        while (l < r) {
+            LL m = l + (r - l) / 2;
+            if (check(m) < k)
+                l = m + 1;
+            else
+                r = m;
+        }
+        return l;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[LeetCode 1782. 统计点对的数目]()** [TAG]
 > 
 > 题意: TODO

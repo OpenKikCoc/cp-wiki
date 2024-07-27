@@ -339,3 +339,70 @@ $d(L_m) = (|x_1-x_2|^m+|y_1-y_2|^m)^{\frac{1}{m}}$
 ## 参考资料
 
 [^ref1]: [切比雪夫距离 - 维基百科，自由的百科全书](https://zh.wikipedia.org/wiki/%E5%88%87%E6%AF%94%E9%9B%AA%E5%A4%AB%E8%B7%9D%E7%A6%BB)
+
+## 习题
+
+### 曼哈顿距离转切比雪夫距离
+
+> [!NOTE] **[LeetCode 3102. 最小化曼哈顿距离](https://leetcode.cn/problems/minimize-manhattan-distances/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 模版题 曼哈顿距离转切比雪夫距离
+> 
+> 本质: 等式转换 变成只与某个项本身相关的式子 (xi, yi)
+> 
+> TODO: 扩展
+> 
+> - 平面最大曼哈顿距离模版: https://atcoder.jp/contests/abc178/tasks/abc178_e
+> 
+> - 平面单点到点集最大曼哈顿距离: https://codeforces.com/contest/491/problem/B
+> 
+> - 五维空间最大曼哈顿距离: http://poj.org/problem?id=2916
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 曼哈顿距离转切比雪夫距离
+
+    int minimumDistance(vector<vector<int>>& points) {
+        multiset<int> xs, ys;
+        for (auto & p : points)
+            xs.insert(p[0] + p[1]), ys.insert(p[1] - p[0]); // x+y, y-x;
+        
+        int res = INT_MAX;
+        // 枚举移除当前点之后的最大距离
+        for (auto & p : points) {
+            int a = p[0] + p[1], b = p[1] - p[0];
+            xs.erase(xs.find(a)), ys.erase(ys.find(b));     // 各自删除一个
+        
+            int dx = *xs.rbegin() - *xs.begin(), dy = *ys.rbegin() - *ys.begin();
+            res = min(res, max(dx, dy));                    // ATTENTION
+
+            xs.insert(a), ys.insert(b);                     // 恢复
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

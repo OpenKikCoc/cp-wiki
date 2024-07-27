@@ -1912,12 +1912,108 @@ class Solution:
 > [!TIP] **思路**
 > 
 > 迭代优雅写法
+> 
+> 滚瓜烂熟: 递归 + 迭代
 
 <details>
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++**
+##### **C++ 标准 递归**
+
+```cpp
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode * merge(ListNode * l, ListNode * r) {
+        ListNode * dummy = new ListNode(INT_MIN);
+        auto cur = dummy;   // ATTENTION
+        while (l && r)
+            if (l->val <= r->val)
+                cur = cur->next = l, l = l->next;
+            else
+                cur = cur->next = r, r = r->next;
+        // while (l)
+        //     cur = cur->next = l, l = l->next;
+        // while (r)
+        //     cur = cur->next = r, r = r->next;
+        // 也可以省略重复操作
+        cur = cur->next = (l ? l : r);
+        
+        return dummy->next;
+    }
+
+    ListNode* sortList(ListNode* head) {
+        if (head == nullptr || head->next == nullptr)
+            return head;    // ATTENTION head
+        
+        // 这种写法 当循环结束时
+        // - 奇数长度: slow为中点
+        // - 偶数长度: slow为前一段的末尾
+        ListNode * slow = head, * fast = head;
+        while (fast->next && fast->next->next)
+            slow = slow->next, fast = fast->next->next;
+        
+        // p, q 分别为两段的起始
+        ListNode * p = head, * q = slow->next;
+        slow->next = nullptr;   // 截断
+
+        ListNode * left = sortList(p), * right = sortList(q);
+        return merge(left, right);
+    }
+};
+```
+
+##### **C++ 标准 迭代**
+
+```cpp
+class Solution {
+public:
+    ListNode* sortList(ListNode* head) {
+        int n = 0;
+        for (auto p = head; p; p = p->next) n ++ ;
+        
+        ListNode * dummy = new ListNode(INT_MIN);
+        dummy->next = head;
+
+        for (int d = 1; d < n; d <<= 1 ) {
+            auto cur = dummy;
+            for (int i = 1; i + d <= n; i += d * 2) {   // 细节: i本身只用作计数 流程中不会被使用
+                // 前半段的起点 后半段的起点
+                auto p = cur->next, q = p;
+                for (int k = 0; k < d; ++ k ) q = q->next;
+
+                int x = 0, y = 0;
+                while (x < d && y < d && p && q)
+                    if (p->val <= q->val)
+                        cur = cur->next = p, p = p->next, x ++ ;
+                    else
+                        cur = cur->next = q, q = q->next, y ++ ;
+                
+                while (x < d && p)
+                    cur = cur->next = p, p = p->next, x ++ ;
+                while (y < d && q)
+                    cur = cur->next = q, q = q->next, y ++ ;
+                
+                // 结束后 q处于新的一段的起始
+                cur->next = q;
+            }
+        }
+        return dummy->next;
+    }
+};
+```
+
+##### **C++ 迭代 yxc**
 
 ```cpp
 class Solution {
@@ -1949,7 +2045,7 @@ public:
 };
 ```
 
-##### **C++ 分治归并**
+##### **C++ 旧 分治归并**
 
 ```cpp
 class Solution {
