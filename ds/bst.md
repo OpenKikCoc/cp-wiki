@@ -845,6 +845,53 @@ class Solution:
 
 * * *
 
+> [!NOTE] **[LeetCode LCR 152. 验证二叉搜索树的后序遍历序列](https://leetcode.cn/problems/er-cha-sou-suo-shu-de-hou-xu-bian-li-xu-lie-lcof/description/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 单调栈解法 二叉树后序遍历性质
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    bool verifyPostorder(vector<int>& postorder) {
+        int pre = INT_MAX, n = postorder.size();
+        stack<int> st;
+        for (int i = n - 1; i >= 0; -- i ) {
+            if (postorder[i] > pre)
+                return false;
+            while (st.size() && st.top() > postorder[i]) {
+                pre = st.top();
+                st.pop();
+            }
+            st.push(postorder[i]);
+        }
+        return true;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[LeetCode 173. 二叉搜索树迭代器](https://leetcode.cn/problems/binary-search-tree-iterator/)**
 > 
 > 题意: TODO

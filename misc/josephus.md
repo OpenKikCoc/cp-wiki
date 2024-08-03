@@ -84,6 +84,53 @@ $$
 
 ## 习题
 
+> [!NOTE] **[LeetCode LCR 187. 破冰游戏](https://leetcode.cn/problems/yuan-quan-zhong-zui-hou-sheng-xia-de-shu-zi-lcof/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 标准约瑟夫环
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// AcWing
+class Solution {
+public:
+    int lastRemaining(int n, int m) {
+        if (n == 1)
+            return 0;
+        return (lastRemaining(n - 1, m) + m)% n;
+    }
+
+    int lastRemaining2(int n, int m){
+        int res = 0;
+        // 最后一轮剩下2个人，所以从2开始反推
+        for (int i = 2; i <= n; ++ i )
+            res = (res + m) % i;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[LeetCode 390. 消除游戏](https://leetcode.cn/problems/elimination-game/)**
 > 
 > 题意: TODO

@@ -128,3 +128,136 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 1830. 使字符串有序的最少操作次数](https://leetcode.cn/problems/minimum-number-of-operations-to-make-string-sorted/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 逆序观察 操作的过程（与求下一个排列恰好是逆操作）恰好是全排列
+> 
+> 故原题可以转化为求原排列是初始（升序）排列的第几个排列
+> 
+> 显然有 **康托逆展开** 或 **数位DP** ==> TODO 整理
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 康托展开**
+
+```cpp
+// 康托展开
+class Solution {
+public:
+    using LL = long long;
+    const int MOD = 1e9 + 7;
+    
+    LL quick_pow(LL a, LL b, LL m) {
+        LL res = 1;
+        a %= m;
+        while (b) {
+            if (b & 1)
+                res = res * a % m;
+            a = a * a % m;
+            b >>= 1;
+        }
+        return res;
+    }
+    
+    int makeStringSorted(string s) {
+        int n = s.size();
+        LL fact = 1, dup = 1;
+        LL res = 0;
+        vector<int> seen(26, 0);
+        for (int i = n - 1; i >= 0; -- i ) {
+            seen[s[i] - 'a'] ++ ;
+            dup = dup * seen[s[i] - 'a'] % MOD;
+            
+            LL rk = 0;
+            for (int j = 0; j < s[i] - 'a'; ++ j )
+                rk += seen[j];
+            
+            res = (res + rk * fact % MOD * quick_pow(dup, MOD - 2, MOD) % MOD) % MOD;
+            fact = fact * (n - i) % MOD;
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 数位DP**
+
+```cpp
+// 数位DP
+class Solution {
+public:
+    using LL = long long;
+    const int MOD = 1e9 + 7;
+    const static int N = 3010;
+    
+    LL f[N], g[N];
+    
+    LL qmi(LL a, int b) {
+        LL res = 1;
+        while (b) {
+            if (b & 1)
+                res = res * a % MOD;
+            a = a * a % MOD;
+            b >>= 1;
+        }
+        return res;
+    }
+    
+    // 重复排列问题
+    int get(vector<int> & cnt) {
+        int sum = 0;
+        for (int i = 0; i < 26; ++ i )
+            sum += cnt[i];
+        int res = f[sum];
+        for (int i = 0; i < 26; ++ i )
+            res = (LL)res * g[cnt[i]] % MOD;
+        return res;
+    }
+    
+    int makeStringSorted(string s) {
+        f[0] = g[0] = 1;
+        for (int i = 1; i <= s.size(); ++ i ) {
+            f[i] = f[i - 1] * i % MOD;
+            g[i] = qmi(f[i], MOD - 2);
+        }
+        
+        int res = 0;
+        vector<int> cnt(26, 0);
+        for (auto c : s)
+            cnt[c - 'a'] ++ ;
+        for (auto c : s) {
+            int x = c - 'a';
+            for (int i = 0; i < x; ++ i ) {
+                if (!cnt[i])
+                    continue;
+                cnt[i] -- ;
+                res = (res + get(cnt)) % MOD;
+                cnt[i] ++ ;
+            }
+            cnt[x] -- ;
+        }
+        return res;
+    }
+};
+```
+
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

@@ -1645,7 +1645,7 @@ public:
             fast = fast->next->next;
             slow = slow->next;
             if (fast == slow) {
-                // fast 比 slow 多走了一个环的长度
+                // fast 比 slow 多走了 x 个环的长度
                 ret = head;
                 while (ret != slow) {
                     ret = ret->next;

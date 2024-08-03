@@ -1542,7 +1542,7 @@ public:
 
 > [!TIP] **思路**
 > 
-> 
+> 可重集排列问题
 
 <details>
 <summary>详细代码</summary>

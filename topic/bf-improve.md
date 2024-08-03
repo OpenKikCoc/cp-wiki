@@ -1131,6 +1131,168 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 1521. 找到最接近目标值的函数值](https://leetcode.cn/problems/find-a-value-of-a-mysterious-function-closest-to-target/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 可以部分参考 [898. 子数组按位或操作](https://leetcode.cn/problems/bitwise-ors-of-subarrays/)
+> 
+> - 双指针 + 前缀和
+> 
+> - 动态维护 TODO clear => LogTrick
+> 
+> - 模拟退火 TODO clear
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 双指针+前缀和**
+
+```cpp
+class Solution {
+public:
+    // 1e6 数据范围 则最多不超过 20 个不同的值 => 思考
+    const static int N = 1e5 + 10, M = 20;
+
+    int s[N][M];    // 逆序思维: 不记录有没有 1 而是记录某一位有没有 0
+
+    int get_sum(int l, int r) {
+        int res = 0;
+        for (int i = 0; i < M; ++ i )
+            if (s[r][i] - s[l - 1][i] == 0) // 没有 0 存在
+                res += 1 << i;
+        return res;
+    }
+
+    int closestToTarget(vector<int>& arr, int target) {
+        int n = arr.size();
+
+        memset(s, 0, sizeof s);
+        for (int i = 1; i <= n; ++ i )
+            for (int j = 0; j < M; ++ j ) {
+                s[i][j] = s[i - 1][j];
+                if (!(arr[i - 1] >> j & 1))
+                    s[i][j] ++ ;
+            }
+        
+        int res = INT_MAX;
+        for (int l = 1, r = 1; r <= n; ++ r ) {
+            while (l < r && abs(get_sum(l + 1, r)) <= target)
+                l ++ ;
+            res = min(res, abs(get_sum(l, r) - target));
+            if (l < r)
+                res = min(res, abs(get_sum(l + 1, r) - target));
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 动态维护**
+
+```cpp
+class Solution {
+public:
+    int closestToTarget(vector<int>& arr, int target) {
+        int ans = abs(arr[0] - target);
+        vector<int> valid = {arr[0]};
+        for (int num : arr) {
+            vector<int> validNew = {num};
+            ans = min(ans, abs(num - target));
+            for (int prev : valid) {
+                validNew.push_back(prev & num);
+                ans = min(ans, abs((prev & num) - target));
+            }
+            validNew.erase(unique(validNew.begin(), validNew.end()),
+                           validNew.end());
+            valid = validNew;
+        }
+        return ans;
+    }
+};
+```
+
+##### **C++ 模拟退火**
+
+```cpp
+class Solution {
+public:
+    //通过预处理，快速求解arr[L..R]的与值
+    int pre[100001][20] = {0};
+
+    int get(int L, int R, int target) {
+        int val = 0;
+        for (int i = 0, bit = 1; i < 20; i++, bit <<= 1)
+            // 如果第 i 个bit 在 [L,R] 中全为 1，那么与值的该bit也必然为 1。
+            if (pre[R][i] - pre[L - 1][i] == R - L + 1) { val |= bit; }
+        return abs(val - target);
+    }
+
+    // 用模拟退火求解关于 L 的局部最优解
+    int query(int L, int n, int target) {
+        int dir[2] = {-1, 1};  // 两个方向
+        int step = 1000;       // 初始步长
+        int now = L;           // R 的起始位置
+        int best = 100000000;  // 局部最优解
+
+        while (step > 0) {
+            int Lpos = now + step * dir[0];
+            if (Lpos < L) Lpos = L;
+            int Rpos = now + step * dir[1];
+            if (Rpos > n) Rpos = n;
+            // 向左右两个方向各走一步，求值
+            int ldis = get(L, Lpos, target);
+            int rdis = get(L, Rpos, target);
+            int pbest = best;
+
+            //更新位置及最优解
+            if (ldis < best) {
+                now = Lpos;
+                best = ldis;
+            }
+            if (rdis < best) {
+                now = Rpos;
+                best = rdis;
+            }
+
+            //如果没有找到更优解，那就缩小步长
+            if (pbest == best) { step /= 2; }
+        }
+        return best;
+    }
+
+    int closestToTarget(vector<int>& arr, int target) {
+        int anw = 100000000;
+
+        //统计前 i 个数字中，第 j 个bit 为 1 的数量。
+        for (int i = 0; i < arr.size(); i++)
+            for (int j = 0, bit = 1; j < 20; j++, bit <<= 1)
+                pre[i + 1][j] = pre[i][j] + ((bit & arr[i]) ? 1 : 0);
+
+        for (int i = 1; i <= arr.size(); i++)
+            anw = min(anw, query(i, arr.size(), target));
+
+        return anw;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 双指针
 
 > [!NOTE] **[LeetCode 1521. 找到最接近目标值的函数值](https://leetcode.cn/problems/find-a-value-of-a-mysterious-function-closest-to-target/)** [TAG]

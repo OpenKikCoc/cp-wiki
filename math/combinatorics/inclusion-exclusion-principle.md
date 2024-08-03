@@ -995,7 +995,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 1782. 统计点对的数目]()** [TAG]
+> [!NOTE] **[LeetCode 1782. 统计点对的数目](https://leetcode.cn/problems/count-pairs-of-nodes/)** [TAG]
 > 
 > 题意: TODO
 

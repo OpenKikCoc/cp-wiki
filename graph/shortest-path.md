@@ -5,6 +5,8 @@
 > 在函数参数重传了 `int sth[]` 数组的不要在数组内部 `memset(sth, 0x3f, sizeof sth)`
 > 
 > 因为 `sizeof` 拿到的不是真实大小
+> 
+> => 如果是 int 用 `sizeof 4 * N`
 
 ## 定义
 
@@ -1027,6 +1029,100 @@ public:
             }
         }
         return d[end];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 3123. 最短路径中的边](https://leetcode.cn/problems/find-edges-in-shortest-paths/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 标准求【最短路径边】的算法
+> 
+> -   两次 dijkstra 校验每条边左右两侧到起始点的距离和
+> 
+> -   一次 dijkstra + 逆序路径长度判断 (较麻烦 略)
+> 
+> `sizeof 4 * N`
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using PII = pair<int, int>;
+    const static int N = 5e4 + 10, M = 1e5 + 10, INF = 0x3f3f3f3f;
+    
+    int h[N], e[M], w[M], ne[M], idx;
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+    }
+    void add(int a, int b, int c) {
+        e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    int d1[N], d2[N];
+    bool st[N];
+    void dijkstra(int dist[], int s) {
+        memset(dist, 0x3f, sizeof 4 * N);
+        memset(st, 0, sizeof st);
+        priority_queue<PII, vector<PII>, greater<PII>> heap;
+        dist[s] = 0; heap.push({0, s});
+        
+        while (heap.size()) {
+            auto [d, u] = heap.top(); heap.pop();
+            if (st[u])
+                continue;
+            st[u] = true;
+            
+            for (int i = h[u]; ~i; i = ne[i]) {
+                int j = e[i], c = w[i];
+                if (dist[j] > d + c)
+                    heap.push({dist[j] = d + c, j});
+            }
+        }
+    }
+    
+    vector<bool> findAnswer(int n, vector<vector<int>>& edges) {
+        init();
+        for (auto & e : edges) {
+            int a = e[0], b = e[1], c = e[2];
+            add(a, b, c), add(b, a, c);
+        }
+        
+        dijkstra(d1, 0);
+        dijkstra(d2, n - 1);
+        
+        int tot = d1[n - 1];
+        vector<bool> res;
+        for (auto & e : edges) {
+            int a = e[0], b = e[1], c = e[2];
+            if (d1[a] + d2[b] + c == tot || d1[b] + d2[a] + c == tot)
+                res.push_back(true);
+            else
+                res.push_back(false);
+        }
+        return res;
     }
 };
 ```
@@ -3483,6 +3579,8 @@ if __name__ == '__main__':
 > [!TIP] **思路**
 > 
 > 推导 二分 转化为负环判定
+> 
+> SPFA
 
 <details>
 <summary>详细代码</summary>
@@ -4778,7 +4876,6 @@ public:
     }
 };
 ```
-
 
 ##### **Python**
 
