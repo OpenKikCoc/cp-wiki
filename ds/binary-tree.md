@@ -154,6 +154,71 @@ class Solution:
 
 * * *
 
+> [!NOTE] **[LeetCode 889. 根据前序和后序遍历构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-postorder-traversal/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 多种可能 考虑直接按照紧跟左子树的情况
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    unordered_map<int, int> pos;
+
+    TreeNode* build(vector<int> & pre, vector<int> & post, int a, int b, int x, int y) {
+        if (a > b)
+            return nullptr;
+        auto root = new TreeNode(pre[a]);   // post[y];
+        if (a == b)
+            return root;
+        int k = pos[pre[a + 1]];
+        // k-x 左子树长度
+        root->left = build(pre, post, a + 1, a + 1 + (k - x), x, k);
+        root->right = build(pre, post, a + 1 + (k - x) + 1, b, k + 1, y - 1);
+        return root;
+    }
+
+    TreeNode* constructFromPrePost(vector<int>& preorder, vector<int>& postorder) {
+        int n = postorder.size();
+        for (int i = 0; i < n; ++ i )
+            pos[postorder[i]] = i;
+        return build(preorder, postorder, 0, n - 1, 0, n - 1);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 转换
 
 > [!NOTE] **[LeetCode 114. 二叉树展开为链表](https://leetcode.cn/problems/flatten-binary-tree-to-linked-list/)**
