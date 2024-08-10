@@ -820,6 +820,124 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 3154. 到达第 K 级台阶的方案数](https://leetcode.cn/problems/find-number-of-ways-to-reach-the-k-th-stair/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+>
+> 结合题意 [约束]，结合数据范围求解
+>
+> - 暴搜 需要记忆化
+>
+> - 组合数学 trick
+>
+>     实际上，本题相当于在连续的第二种操作中间插入第一种操作。
+>
+>     假设两种操作分别做了 $i$ 次 / $j$ 次，数学分析：
+>
+>     $第二种操作 上升数量\ up1=1+2+...+2^{j-1}=2^j-1$
+>
+>     $第一种操作上升数量\ up2=i\ (0<=i<=j+1)$
+>
+>     $总的上升数量={up1 + up2}$
+>
+>     则 $k-1\ (-1是因为起点为1)$ 必然在此范围内，由此可推导 $j$ 的合法值，随后排列组合计算即可...
+
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 搜索**
+
+```cpp
+class Solution {
+public:
+    // 考虑到第一种操作无法无限使用 假设每次跳都执行一次
+    // 则根据k的数据范围结合第二种操作的限制  最多跳 32*2=64 次
+    
+    int k, res;
+    
+    unordered_map<int, unordered_map<int, unordered_map<int, int>>> mem;
+    
+    int dfs(int u, int p, int j) {
+        if (u > k + 2)
+            return 0;
+        
+        if (mem[u][p].count(j))
+            return mem[u][p][j];
+        
+        int ret = 0;
+        
+        if (u == k)
+            ret ++ ;
+        
+        if (p != 0)
+            ret += dfs(u - 1, 0, j);
+        ret += dfs(u + (1 << j), 1, j + 1);
+        return mem[u][p][j] = ret;
+    }
+    
+    int waysToReachStair(int k) {
+        this->k = k, this->res = 0;
+        return dfs(1, -1, 0);
+    }
+};
+```
+
+##### **C++ 组合数学**
+
+```cpp
+class Solution {
+public:
+    const static int N = 32;
+    
+    int c[N][N];
+    void init() {
+        for (int i = 0; i < N; ++ i )
+            for (int j = 0; j <= i; ++ j )
+                if (!j)
+                    c[i][j] = 1;
+                else
+                    c[i][j] = c[i - 1][j] + c[i - 1][j - 1];
+    }
+    
+    int comb(int a, int b) {
+        return c[a][b];
+    }
+    
+    int waysToReachStair(int k) {
+        init();
+        k -- ;  // ATTENTION 起点偏移一下
+        
+        int res = 0;
+        for (int j = 0; j < 31; ++ j ) {
+            int tot = (1 << j) - 1;
+            if (tot >= k && tot - (j + 1) <= k) {
+                int i = tot - k;
+                // 在 j+1 个缝隙里找到 i 个位置插入
+                res += comb(j + 1, i);
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 组合数应用
 
 > [!NOTE] **[AcWing 889. 满足条件的01序列](https://www.acwing.com/problem/content/891/)**

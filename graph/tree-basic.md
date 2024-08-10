@@ -449,7 +449,6 @@ public:
     }
 };
 
-
 class Solution {
 public:
     vector<int> inorderTraversal(TreeNode* root) {
@@ -462,12 +461,12 @@ public:
                 root = root->left;
             }
 
-            root = stk.top();
-            stk.pop();
-            res.push_back(root->val);
-            root = root->right;
-        }
+            auto t = stk.top();
+            res.push_back(t->val);
 
+            root = stk.top()->right;
+            stk.pop();
+        }
         return res;
     }
 };

@@ -3202,6 +3202,131 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 3161. 物块放置查询](https://leetcode.cn/problems/block-placement-queries/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 本题是有下标限制的查询而非全局查询 显然无法直接使用珂朵莉树
+> 
+> 考虑回归到线段树【思考插点的影响 进而设计树节点定义与维护逻辑】
+> 
+> 重复 理解定义
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 5e4 + 10;
+    
+    struct Node {
+        int l, r;
+        int pre, suf, maxv; // ATTENTION 插点不影响线段本身 某个点插点则这个点前面仍然可用
+    } tr[N << 2];
+    
+    set<int> S; // ATTENTION
+    
+    void pushup(Node & u, Node & l, Node & r) {
+        u.maxv = u.suf = u.pre = 0;
+        {
+            u.pre = max(u.pre, l.pre);
+            // ATTENTION 根据 l.r 是否放了障碍物 确定能否合并连在一起
+            if (l.pre == l.r - l.l + 1 && !S.count(l.r))
+            // if (l.pre == l.r - l.l + 1)  // WA 思考定义方式
+                u.pre = max(u.pre, (l.r - l.l + 1) + r.pre);
+        }
+        {
+            u.suf = max(u.suf, r.suf);
+            if (r.suf == r.r - r.l + 1)
+                u.suf = max(u.suf, l.suf + (r.r - r.l + 1));
+        }
+        u.maxv = max(u.maxv, max(l.maxv, r.maxv));
+        u.maxv = max(u.maxv, l.suf + r.pre);
+    }
+    void pushup(int u) {
+        pushup(tr[u], tr[u << 1], tr[u << 1 | 1]);
+    }
+    
+    void build(int u, int l, int r) {
+        if (l == r)
+            tr[u] = {l, r, 1, 1, 1};    // by default usable, set to 1
+        else {
+            tr[u] = {l, r};
+            int mid = l + r >> 1;
+            build(u << 1, l, mid), build(u << 1 | 1, mid + 1, r);
+            pushup(u);
+        }
+    }
+    void modify(int u, int x, int y) {
+        if (tr[u].l == x && tr[u].r == x)
+            tr[u] = {x, x, 1, 0, 1};    // ATTENTION: 即便只有一个位置 也能放下长度为1的
+                                        /* 如果 0 0 0 且在追加答案时使用 maxv+1
+                                            [[2,1,2]]: should be false, but got true */
+        else {
+            int mid = tr[u].l + tr[u].r >> 1;
+            if (x <= mid)
+                modify(u << 1, x, y);
+            else
+                modify(u << 1 | 1, x, y);
+            pushup(u);
+        }
+    }
+    Node query(int u, int l, int r) {
+        if (tr[u].l >= l && tr[u].r <= r)
+            return tr[u];
+        else {
+            int mid = tr[u].l + tr[u].r >> 1;
+            if (r <= mid)
+                return query(u << 1, l, r);
+            else if (l > mid)
+                return query(u << 1 | 1, l, r);
+            
+            Node ret;
+            auto left = query(u << 1, l, r);
+            auto right = query(u << 1 | 1, l, r);
+            pushup(ret, left, right);
+            return ret;
+        }
+    }
+    
+    vector<bool> getResults(vector<vector<int>>& queries) {
+        build(1, 1, N); // l,r 是值域 无偏移
+        
+        vector<bool> res;
+        for (auto & q : queries)
+            if (q[0] == 1) {
+                int x = q[1];   // 无偏移
+                S.insert(x);
+                modify(1, x, 0);
+            } else {
+                int r = q[1], d = q[2];
+                auto ret = query(1, 1, r);  // ATTENTION 从1开始而非0
+                res.push_back(ret.maxv >= d);
+            }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 二进制拆位线段树
 
 > [!NOTE] **[Codeforces XOR on Segment](http://codeforces.com/problemset/problem/242/E)**

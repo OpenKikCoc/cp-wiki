@@ -4241,7 +4241,7 @@ public:
 };
 ```
 
-##### **C++ 标准**
+##### **C++ 老标准**
 
 ```cpp
 class Solution {
@@ -4273,6 +4273,41 @@ public:
         }
         if (ans == 0x3f3f3f3f) return -1;
         return ans;
+    }
+};
+```
+
+##### **C++ 新标准**
+
+```cpp
+class Solution {
+public:
+    const static int N = 410, INF = 0x3f3f3f3f;
+
+    int din[N];
+    bool g[N][N];
+
+    int minTrioDegree(int n, vector<vector<int>>& edges) {
+        memset(din, 0, sizeof din);
+        for (auto & e : edges) {
+            int a = e[0], b = e[1];
+            // if (a > b)
+            //     swap(a, b);
+            din[a] ++ , din[b] ++ ;
+            g[a][b] = g[b][a] = true;
+        }
+
+        int res = INF;
+        for (int k = 1; k <= n; ++ k )
+            for (int i = 1; i < k; ++ i )
+                for (int j = 1; j < i; ++ j ) {
+                    if (!g[i][j] || !g[j][k] || !g[i][k])
+                        continue;
+                    res = min(res, din[i] + din[j] + din[k] - 6);
+                }
+        if (res == INF)
+            return -1;
+        return res;
     }
 };
 ```

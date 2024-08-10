@@ -5665,6 +5665,8 @@ public:
 
 > [!TIP] **思路**
 > 
+> 经典原理: 两两消耗 (敏感度)
+> 
 > 贪心加思维
 > 
 > 考虑某个最长的任务以及剩下其他所有任务之和
@@ -5714,6 +5716,81 @@ public:
         if (m > sum - m + 1)
             return (sum - m) * 2 + 1;
         return sum;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 3139. 使数组中所有元素相等的最小开销](https://leetcode.cn/problems/minimum-cost-to-equalize-array/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典原理: 两两消耗 (敏感度)
+> 
+> 注意枚举范围
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 显然 每个数都要变成最大数 => 则当最终结束时 每个数字操作的总次数是一定的
+    // => ATTENTION 实际上最终的操作值可能比最大值还要大 思考
+    
+    using LL = long long;
+    const static int MOD = 1e9 + 7;
+    
+    int n;
+    LL maxv, minv, sum, base;
+    
+    LL get(int x, int cost1, int cost2) {
+        LL tot = base + (x - maxv) * n;   // 需要产生修改的总数
+        LL maxd = x - minv;
+        
+        // ATTENTION:
+        // trick 原理 一定可以快速分配
+        // ref: [LeetCode 1953. 你可以工作的最大周数](https://leetcode.cn/problems/maximum-number-of-weeks-for-which-you-can-work/)
+        if (maxd * 2 <= tot)
+            return (tot / 2) * cost2 + (tot % 2) * cost1;
+        // 否则 尽可能多c2, 其余都是c1
+        return (tot - maxd) * cost2 + (maxd * 2 - tot) * cost1;
+    }
+    
+    int minCostToEqualizeArray(vector<int>& nums, int cost1, int cost2) {
+        if (cost2 > 2 * cost1)
+            cost2 = 2 * cost1;
+        
+        this->maxv = 0, this->minv = 1e18, this->sum = 0;   // ATTENTION 初始化
+        for (auto x : nums)
+            maxv = max(maxv, (LL)x), minv = min(minv, (LL)x), sum += x;
+
+        this->n = nums.size();
+        this->base = maxv * n - sum;
+        
+        LL res = 1e18; // ATTENTION 1e16会WA
+        for (int i = maxv; i <= maxv * 2; ++ i ) {  // ATTENTION 枚举所有可能
+            LL t = get(i, cost1, cost2);
+            res = min(res, t);
+        }
+        return res % MOD;
     }
 };
 ```

@@ -224,7 +224,13 @@ int main() {
 
 > [!TIP] **思路**
 > 
+> Andrew
 > 
+> 1. 按 `[x, y]` 排序
+> 
+> 2. 顺序扫上半边: 新的边应当相对栈中边的顺时针方向(叉积<0) 否则(叉积>0)应当弹出
+> 
+> 3. 逆序扫下半边: 新的边应当相对栈中边的顺时针方向(叉积<0) 否则(叉积>0)应当弹出
 
 <details>
 <summary>详细代码</summary>
@@ -237,6 +243,7 @@ class Solution {
 public:
     // 二维叉积
     // ->a X ->b = [->a] X [->b] sin(P1起始到P2的夹角)
+    // ATTENTION: cross 得到叉积恰好是二者三角形面积的两倍 (当然可能是负值)
     int cross(int x1, int y1, int x2, int y2) {
         return x1 * y2 - x2 * y1;
     }

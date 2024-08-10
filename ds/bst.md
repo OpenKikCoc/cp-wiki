@@ -1287,6 +1287,63 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 510. Inorder Successor in BST II](https://leetcode.cn/problems/inorder-successor-in-bst-ii/)**
+> 
+> 题意: 
+> 
+> Given a `node` in a binary search tree, return the `in-order successor of that node in the BST`. If that node has no in-order successor, return `null`.
+
+> [!TIP] **思路**
+> 
+> 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    Node* left;
+    Node* right;
+    Node* parent;
+};
+*/
+
+class Solution {
+public:
+    Node* inorderSuccessor(Node* node) {
+        if (node->right) {
+            node = node->right;
+            while (node->left) node = node->left;
+            return node;
+        }
+        // ATTENTION: 当右子节点不存在
+        // 需要一直找父节点... 且当前节点是 父节点的左子节点 时 break
+        while (node->parent && node == node->parent->right) node = node->parent;
+        return node->parent;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ## TODO(再整理): 拓展 morris各种遍历方式
 
 - 先序

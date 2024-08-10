@@ -152,35 +152,47 @@ public:
 class Solution {
 public:
     using LL = long long;
-    const int MOD = 1e9 + 7;
-    
-    LL quick_pow(LL a, LL b, LL m) {
-        LL res = 1;
-        a %= m;
+    const static int N = 3010, MOD = 1e9 + 7;
+
+    int qpow(int a, int b) {
+        int ret = 1;
         while (b) {
             if (b & 1)
-                res = res * a % m;
-            a = a * a % m;
+                ret = (LL)ret * a % MOD;
+            a = (LL)a * a % MOD;
             b >>= 1;
         }
-        return res;
+        return ret;
     }
-    
+
+    int fac[N], invfac[N];
+    void init() {
+        fac[0] = invfac[0] = 1;
+        for (int i = 1; i < N; ++ i ) {
+            fac[i] = (LL)fac[i - 1] * i % MOD;
+            invfac[i] = (LL)invfac[i - 1] * qpow(i, MOD - 2) % MOD;
+        }
+    }
+
     int makeStringSorted(string s) {
+        init();
+
+        vector<int> cnt(26);
+        for (auto c : s)
+            cnt[c - 'a'] ++ ;
+        
         int n = s.size();
-        LL fact = 1, dup = 1;
         LL res = 0;
-        vector<int> seen(26, 0);
-        for (int i = n - 1; i >= 0; -- i ) {
-            seen[s[i] - 'a'] ++ ;
-            dup = dup * seen[s[i] - 'a'] % MOD;
+        for (int i = 0; i < n; ++ i ) {
+            LL tot = fac[n - 1 - i];    // 后面还有 n-1-i位,随意排放
+            for (int k = 0; k < 26; ++ k )
+                tot = tot * invfac[cnt[k]] % MOD;   // 去重
+            // ATTENTION n-1-i + 1 = sum[cnt[0...25]] 因为n-1-i没考虑当前位置
             
-            LL rk = 0;
             for (int j = 0; j < s[i] - 'a'; ++ j )
-                rk += seen[j];
-            
-            res = (res + rk * fact % MOD * quick_pow(dup, MOD - 2, MOD) % MOD) % MOD;
-            fact = fact * (n - i) % MOD;
+                if (cnt[j])
+                    res = (res + tot * cnt[j] % MOD) % MOD;
+            cnt[s[i] - 'a'] -- ;
         }
         return res;
     }

@@ -2569,6 +2569,87 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 3134. 找出唯一性数组的中位数](https://leetcode.cn/problems/find-the-median-of-the-uniqueness-array/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 思维敏感度 根据题目属性要能快速想到是 `双指针` 区间维护
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 1e5 + 10;
+    
+    LL tot;     // ATTENTION (1e5+1)/2*1e5 > INT_MAX
+    unordered_map<int, int> cnt;
+    
+    // ATTENTION return value LL 否则出错
+    LL check(vector<int> & nums, LL mid) {
+        int n = nums.size();
+        LL ret = 0;
+        // unordered_map<int, int> cnt; // 局部初始化会导致超时
+        cnt.clear();
+        for (int i = 0, j = 0, tot = 0; j < n; ++ j ) {
+            cnt[nums[j]] ++ ;
+            if (cnt[nums[j]] == 1)
+                tot ++ ;
+            
+            while (i <= j && tot > mid) {
+                cnt[nums[i]] -- ;
+                if (cnt[nums[i]] == 0)      // 注意 可能有重复数 需要去重
+                    tot -- ;
+                i ++ ;
+            }
+            LL w = j - i + 1;
+            ret += w;
+        }
+        return ret;
+    }
+    
+    int medianOfUniquenessArray(vector<int>& nums) {
+        tot = 0;
+        int n = nums.size();
+        for (int i = 1; i <= n; ++ i )
+            tot += n - i + 1;
+        
+        LL l = 0, r = 1e8;
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+            if (check(nums, mid) < (tot + 1) / 2)
+                l = mid + 1;
+            else
+                r = mid;
+        }
+        
+        // cout << "  tot = " << tot << " l = " << l << " check = " << check(nums, l) << endl;
+        
+        return l;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 优雅的双指针实现
 
 > [!NOTE] **[LeetCode 2332. 坐上公交的最晚时间](https://leetcode.cn/problems/the-latest-time-to-catch-a-bus/) [TAG]**
