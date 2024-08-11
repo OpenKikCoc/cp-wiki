@@ -1,3 +1,7 @@
+> [!NOTE] **敏感度**
+> 
+> 如果一个题目可以用分治解决，那么这个题目的带修改版本可以用线段树解决
+
 
 线段树是算法竞赛中常用的用来维护 **区间信息** 的数据结构。
 
@@ -3309,6 +3313,121 @@ public:
                 auto ret = query(1, 1, r);  // ATTENTION 从1开始而非0
                 res.push_back(ret.maxv >= d);
             }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 3165. 不包含相邻元素的子序列的最大和](https://leetcode.cn/problems/maximum-sum-of-subsequence-with-non-adjacent-elements/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 如果一个题目可以用分治解决，那么这个题目的带修改版本可以用线段树解决
+> 
+> 线段树维护区间性质
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 题意说明: 选择的子数组可以为空 则本质上是要求尽可能多的不连续的正数的和
+    // 带修改维护会比较麻烦 考虑线段树
+    //
+    // 考虑合并的影响 每一段按照是否包含 首/尾 两个字符做分类 00二进制
+    // f00[u] = max(f01[p] + f00[q], f00[p] + f10[q])
+    // f01[u] = max(f00[p] + f01[q], f00[p] + f11[q], f01[p] + f01[q])
+    // f10[u] = max(f10[p] + f00[q], f10[p] + f10[q], f11[p] + f00[q])
+    // f11[u] = max(f10[p] + f11[q], f11[p] + f01[q])
+    
+    using LL = long long;
+    const static int N = 5e4 + 10, MOD = 1e9 + 7;
+    
+    struct Node {
+        int l, r;
+        LL nlr, nl, nr, lr;    // 没有左右 没左 没右 都有
+    } tr[N << 2];
+    void pushup(Node & u, Node & l, Node & r) {
+        u.nlr = u.nl = u.nr = u.lr = 0;
+        u.nlr = max({0ll, l.nl + r.nlr, l.nlr + r.nr});
+        u.nl = max({0ll, l.nlr + r.nl, l.nlr + r.lr, l.nl + r.nl});
+        u.nr = max({0ll, l.nr + r.nlr, l.nr + r.nr, l.lr + r.nlr});
+        u.lr = max({0ll, l.nr + r.lr, l.lr + r.nl});
+    }
+    void pushup(int u) {
+        pushup(tr[u], tr[u << 1], tr[u << 1 | 1]);
+    }
+    
+    vector<int> w;
+    
+    void build(int u, int l, int r) {
+        if (l == r)
+            tr[u] = {l, r, 0, 0, 0, w[l]};  // ATTENTION
+        else {
+            tr[u] = {l, r};
+            int mid = l + r >> 1;
+            build(u << 1, l, mid), build(u << 1 | 1, mid + 1, r);
+            pushup(u);
+        }
+    }
+    void modify(int u, int x, int y) {
+        if (tr[u].l == x && tr[u].r == x)
+            tr[u] = {x, x, 0, 0, 0, y};
+        else {
+            int mid = tr[u].l + tr[u].r >> 1;
+            if (x <= mid)
+                modify(u << 1, x, y);
+            else
+                modify(u << 1 | 1, x, y);
+            pushup(u);
+        }
+    }
+    Node query(int u, int l, int r) {
+        if (tr[u].l >= l && tr[u].r <= r)
+            return tr[u];
+        else {
+            int mid = tr[u].l + tr[u].r >> 1;
+            if (r <= mid)
+                return query(u << 1, l, r);
+            else if (l > mid)
+                return query(u << 1 | 1, l, r);
+            Node ret;
+            auto left = query(u << 1, l, r);
+            auto right = query(u << 1 | 1, l, r);
+            pushup(ret, left, right);
+            return ret;
+        }
+    }
+    
+    int maximumSumSubsequence(vector<int>& nums, vector<vector<int>>& queries) {
+        this->w = nums;
+        int n = w.size();
+        build(1, 0, n - 1);
+        
+        LL res = 0;
+        for (auto & q : queries) {
+            modify(1, q[0], q[1]);
+            res = (res + max(0ll, query(1, 0, n - 1).lr)) % MOD;
+        }
         return res;
     }
 };

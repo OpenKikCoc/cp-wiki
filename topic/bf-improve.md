@@ -576,7 +576,7 @@ int main() {
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++ 直接统计**
+##### **C++ 标准**
 
 ```cpp
 class Solution {
@@ -587,7 +587,7 @@ public:
         for (int i = 0; i < n; ++ i ) {
             S.insert(arr[i]);
             for (int j = i - 1; j >= 0; -- j ) {
-                // ATTENTION
+                // ATTENTION 注意括号 (x | y) == z
                 if ((arr[j] | arr[i]) == arr[j])
                     break;
                 arr[j] |= arr[i];
@@ -1131,6 +1131,55 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 3171. 找到按位或最接近 K 的子数组](https://leetcode.cn/problems/find-subarray-with-bitwise-or-closest-to-k/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典 LogTrick
+> 
+> 子数组按位 `或`
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int minimumDifference(vector<int>& nums, int k) {
+        int res = 2e9;
+        int n = nums.size();
+        for (int i = 0; i < n; ++ i ) {
+            res = min(res, abs(nums[i] - k));
+            for (int j = i - 1; j >= 0; -- j ) {
+                if ((nums[j] | nums[i]) == nums[j])
+                    break;
+                nums[j] |= nums[i];
+                res = min(res, abs(nums[j] - k));
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[LeetCode 1521. 找到最接近目标值的函数值](https://leetcode.cn/problems/find-a-value-of-a-mysterious-function-closest-to-target/)** [TAG]
 > 
 > 题意: TODO
@@ -1148,6 +1197,52 @@ public:
 <details>
 <summary>详细代码</summary>
 <!-- tabs:start -->
+
+##### **C++ 标准**
+
+```cpp
+class Solution {
+public:
+    int closestToTarget(vector<int>& arr, int target) {
+        int res = 1e9;
+        int n = arr.size();
+        for (int i = 0; i < arr.size(); ++ i ) {
+            res = min(res, abs(arr[i] - target));
+            for (int j = i - 1; j >= 0; -- j ) {
+                if ((arr[j] & arr[i]) == arr[j])
+                    break;
+                arr[j] &= arr[i];
+                res = min(res, abs(arr[j] - target));
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 动态维护 非原地修改**
+
+```cpp
+class Solution {
+public:
+    int closestToTarget(vector<int>& arr, int target) {
+        int ans = abs(arr[0] - target);
+        vector<int> valid = {arr[0]};
+        for (int num : arr) {
+            vector<int> validNew = {num};
+            ans = min(ans, abs(num - target));
+            for (int prev : valid) {
+                validNew.push_back(prev & num);
+                ans = min(ans, abs((prev & num) - target));
+            }
+            validNew.erase(unique(validNew.begin(), validNew.end()),
+                           validNew.end());
+            valid = validNew;
+        }
+        return ans;
+    }
+};
+```
 
 ##### **C++ 双指针+前缀和**
 
@@ -1187,30 +1282,6 @@ public:
                 res = min(res, abs(get_sum(l + 1, r) - target));
         }
         return res;
-    }
-};
-```
-
-##### **C++ 动态维护**
-
-```cpp
-class Solution {
-public:
-    int closestToTarget(vector<int>& arr, int target) {
-        int ans = abs(arr[0] - target);
-        vector<int> valid = {arr[0]};
-        for (int num : arr) {
-            vector<int> validNew = {num};
-            ans = min(ans, abs(num - target));
-            for (int prev : valid) {
-                validNew.push_back(prev & num);
-                ans = min(ans, abs((prev & num) - target));
-            }
-            validNew.erase(unique(validNew.begin(), validNew.end()),
-                           validNew.end());
-            valid = validNew;
-        }
-        return ans;
     }
 };
 ```
