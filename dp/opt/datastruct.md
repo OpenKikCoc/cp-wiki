@@ -759,3 +759,68 @@ public:
 <br>
 
 * * *
+
+### bitset 优化
+
+> [!NOTE] **[LeetCode 3181. 执行操作可获得的最大总奖励 II](https://leetcode.cn/problems/maximum-total-reward-using-operations-ii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 根据题意及数据范围推导 值一定不超过 1e5 => 想到 bitset
+> 
+> 消除 bitset 部分 0 的姿势
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 根据题意理解及数据范围 总和一定不会超过 max(rewardValues)*2 => 思考
+    // 可以用 bitset 快速维护
+    const static int N = 5e4 + 10, M = 1e5 + 10;
+    
+    bitset<M> f;
+    
+    int maxTotalReward(vector<int>& rewardValues) {
+        int n = rewardValues.size();
+        sort(rewardValues.begin(), rewardValues.end());
+        
+        f[0] = 1;
+        for (int i = 0; i < n; ++ i ) {
+            int x = rewardValues[i];
+            // ATTENTION 重点在于 约束只看较低的 x 位
+            // for (int j = 0; j < x; ++ j )
+            //     f[j + x] = f[j + x] || f[j];
+            
+            // ATTENTION: trick
+            // 先左移 d 消除前面的 0, 再右移 d 恢复, 最后左移 x 实现状态转移
+            int d = M - x;
+            // f |= f << d >> d << x;
+        }
+        
+        for (int j = M - 1; j >= 0; -- j )
+            if (f[j])
+                return j;
+        return -1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

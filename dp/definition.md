@@ -1445,3 +1445,228 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 629. K个逆序对数组](https://leetcode.cn/problems/k-inverse-pairs-array/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 状态定义思想 **我们假定每次放的都是最大的一个**
+> 
+> ==》和某次周赛的假定操作一致
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const int mod = 1e9 + 7;
+    int kInversePairs(int n, int k) {
+        // 用了前i个数字 产生了j个逆序对的方案数
+        vector<vector<int>> f(n + 1, vector<int>(k + 1));
+        f[1][0] = 1;
+        // f[i][j] = f[i-1][j] + f[i-1][j-1] + ... + f[i-1][j-(i-1)]
+        for (int i = 2; i <= n; ++ i ) {
+            long long s = 0;
+            for (int j = 0; j <= k; ++ j ) {
+                s += f[i - 1][j];
+                if (j - i >= 0) s -= f[i - 1][j - i];
+                f[i][j] = s % mod;
+            }
+        }
+        return (f[n][k] + mod) % mod;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 3193. 统计逆序对的数目](https://leetcode.cn/problems/count-the-number-of-inversions/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 状态定义与转移
+> 
+> 与 629 本质相同，唯一变化的点是增加了对状态转移的约束
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 310, M = 410, MOD = 1e9 + 7;
+    
+    int f[N][M];    // 假设用了前i个数 当前产生了j个逆序对的方案数
+    // f[i][j] = f[i - 1][j] + f[i - 1][j - 1] + ... + f[i - 1][j - (i - 1)];
+    // 唯一的问题在于 某些f[i-1][j] 取不到 (该位置有限制)
+    
+    int numberOfPermutations(int n, vector<vector<int>>& requirements) {
+        memset(f, 0, sizeof f);
+        unordered_map<int, int> r;
+        for (auto & req : requirements) {
+            int idx = req[0], val = req[1];
+            r[idx] = val;
+        }
+        
+        if (r.count(0) && r[0] != 0)
+            return 0;
+        
+        f[1][0] = 1;
+        for (int i = 2; i <= n; ++ i ) {
+            if (r.count(i - 1)) {
+                int j = r[i - 1];
+                LL s = 0;
+                for (int k = max(0, j - (i - 1)); k <= j; ++ k )
+                    s += f[i - 1][k];
+                f[i][j] = s % MOD;
+            } else {
+                LL s = 0;
+                for (int j = 0; j < M; ++ j ) {
+                    s += f[i - 1][j];
+                    if (j - i >= 0)
+                        s -= f[i - 1][j - i];
+                    f[i][j] = s % MOD;
+                }
+            }
+        }
+        
+        int res = 0;
+        for (int i = 0; i < M; ++ i )
+            res = max(res, f[n][i]);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 3196. 最大化子数组的总成本](https://leetcode.cn/problems/maximize-total-cost-of-alternating-subarrays/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 加快速度 脑袋理清楚
+> 
+> - 最初比较糙的思路: 本质上相对于所有的段长度都分为 1/2，则状态定义为 `第 i 个位置是否与前面相连`
+> 
+> - 简化：定义 `第 i 个位置是否取负数`
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 最初版本**
+
+```cpp
+class Solution {
+public:
+    // 考虑 一个数取正 取负 仅仅与该数是否与前一个相连有关...
+    // f[i][j]  第i个数为结尾 其中第i是否与前面相连的 最大cost
+    // f[i][0] = max(f[i-1][0], f[i-1][1]) + nums[i]
+    // f[i][1] = max(f[i-2][0], f[i-2][1]) + nums[i-1] + -1*nums[i]
+    
+    using LL = long long;
+    const static int N = 1e5 + 10, INF = 0x3f3f3f3f;
+    
+    LL f[N][2];
+    
+    long long maximumTotalCost(vector<int>& nums) {
+        
+        for (int i = 0; i < N; ++ i )
+            f[i][0] = f[i][1] = -INF;
+        f[0][0] = 0;
+        
+        int n = nums.size();
+        for (int i = 1; i <= n; ++ i ) {
+            int x = nums[i - 1];
+            
+            f[i][0] = max(f[i - 1][0], f[i - 1][1]) + x;
+            if (i - 1)
+                f[i][1] = max(f[i - 2][0], f[i - 2][1]) + nums[i - 1 - 1] + -1 * x;
+            // cout << " i = " << i << " f = " << f[i][0] << " " << f[i][1] << endl;
+        }
+        return max(f[n][0], f[n][1]);
+    }
+};
+```
+
+##### **C++ 简化 标准**
+
+```cpp
+class Solution {
+public:
+    // 考虑 一个数取正 取负 仅仅与该数是否与前一个相连有关...
+    // f[i][j]  第i个数为结尾 其中第i 取正/负 的最大cost
+    // f[i][0] = max(f[i-1][0], f[i-1][1]) + nums[i]
+    // f[i][1] = max(f[i-1][0]) - nums[i]
+    
+    using LL = long long;
+    const static int N = 1e5 + 10, INF = 0x3f3f3f3f;
+    
+    LL f[N][2];
+    
+    long long maximumTotalCost(vector<int>& nums) {
+        
+        for (int i = 0; i < N; ++ i )
+            f[i][0] = f[i][1] = -INF + -INF;
+        f[0][1] = 0;    // 对于第一个数来说 只能取正
+        
+        int n = nums.size();
+        for (int i = 1; i <= n; ++ i ) {
+            int x = nums[i - 1];
+            
+            f[i][0] = max(f[i - 1][0], f[i - 1][1]) + x;
+            f[i][1] = f[i - 1][0] - x;
+        }
+        return max(f[n][0], f[n][1]);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
