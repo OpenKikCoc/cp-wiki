@@ -1364,6 +1364,61 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 3209. 子数组按位与值为 K 的数目](https://leetcode.cn/problems/number-of-subarrays-with-and-value-of-k/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> LogTrick 综合应用 (不只是求值域集合 还有求数量)
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    
+    long long countSubarrays(vector<int>& nums, int k) {
+        int n = nums.size();
+        LL res = 0;
+        for (int i = 0, l = 0, r = 0; i < n; ++ i ) {
+            int x = nums[i];
+            for (int j = i - 1; j >= 0; -- j ) {
+                if ((nums[j] & x)/*ATTENTION 括号*/ == nums[j])
+                    break;
+                nums[j] &= x;
+            }
+            res += lower_bound(nums.begin(), nums.begin() + i + 1, k + 1) -
+                   lower_bound(nums.begin(), nums.begin() + i + 1, k);
+            // while (l <= i && nums[l] < k)
+            //     l ++ ;
+            // while (r <= i && nums[r] <= k)
+            //     r ++ ;
+            // res += r - l;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 双指针
 
 > [!NOTE] **[LeetCode 1521. 找到最接近目标值的函数值](https://leetcode.cn/problems/find-a-value-of-a-mysterious-function-closest-to-target/)** [TAG]

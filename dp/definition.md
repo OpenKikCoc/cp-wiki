@@ -1670,3 +1670,99 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 3202. 找出有效子序列的最大长度 II](https://leetcode.cn/problems/find-the-maximum-length-of-valid-subsequence-ii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 初版代码较难理清楚
+> 
+> 考虑新的状态定义方式: 本质上不关心具体的数 只关心最终取模 定义为 `截止当前最后两项模 k 分别为 x,y 的子序列` => trick
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 初版**
+
+```cpp
+// 1. all is same
+// 2. x, y, x, y, x, y, ... 
+const static int N = 1010;
+
+int f[N][N + N];
+// 考虑前i个数 与前面的差值为j 的最长长度
+// f[i][mod][j] = f[i-1][mod][j] + 1;
+// f[i][mod][t] = f[i-1][last][-t] + 1;          last+t=mod => last=mod-t
+
+class Solution {
+public:
+    
+    int maximumLength(vector<int>& nums, int k) {
+        memset(f, 0, sizeof f);
+        int n = nums.size();
+        
+        static int g[N + N];
+        for (int i = 1; i <= n; ++ i ) {
+            int x = nums[i - 1] % k;
+            
+            for (int j = -k; j <= k; ++ j ) {
+                int last = (x - j + k) % k;
+                g[j + N] = f[last][-j + N] + 1;
+            }
+            for (int j = -k; j <= k; ++ j )
+                f[x][j + N] = max(f[x][j + N], g[j + N]);
+        }
+        int res = 0;
+        for (int x = 0; x < k; ++ x )
+            for (int j = -k; j <= k; ++ j )
+                res = max(res, f[x][j + N]);
+        return res;
+    }
+};
+```
+
+##### **C++ 状态设计优化**
+
+```cpp
+// 1. all is same
+// 2. x, y, x, y, x, y, ... 
+const static int N = 1010;
+
+int f[N][N];
+// 本质上 可以记录最后两项模k分别为x,y的子序列
+// f[y][x] = f[x][y] + 1 (x=nums[i]%k)      => trick
+
+class Solution {
+public:
+    int maximumLength(vector<int>& nums, int k) {
+        memset(f, 0, sizeof f);
+        int n = nums.size();
+        for (int i = 0; i < n; ++ i ) {
+            int x = nums[i] % k;
+            for (int y = 0; y < k; ++ y )
+                f[y][x] = f[x][y] + 1;  // 思考 递推顺序 为什么不会有问题
+        }
+        int res = 0;
+        for (int x = 0; x < k; ++ x )
+            for (int y = 0; y < k; ++ y )
+                res = max(res, f[x][y]);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

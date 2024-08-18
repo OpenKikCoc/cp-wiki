@@ -14,6 +14,12 @@
 >
 >    **缺点**：只能求一个树的直径的长度，其他的求不出
 
+> [!TIP] **经典结论**
+> 
+> 两棵树合并后，新直径的两个端点，一定是原来两棵树直径的四个端点里的其中两个
+> 
+> => $max({(d1 + 1) / 2 + (d2 + 1) / 2 + 1, d1, d2})$
+
 图中所有最短路径的最大值即为「直径」，可以用两次 DFS 或者树形 DP 的方法在 O(n) 时间求出树的直径。
 
 前置知识：[树基础](./tree-basic.md)。
@@ -615,3 +621,230 @@ class Solution:
 </details>
 
 <br>
+
+> [!NOTE] **[LeetCode 3203. 合并两棵树后的最小直径](https://leetcode.cn/problems/find-minimum-diameter-after-merging-two-trees/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典结论：两棵树合并后，新直径的两个端点，一定是原来两棵树直径的四个端点里的其中两个
+> 
+> => $max({(d1 + 1) / 2 + (d2 + 1) / 2 + 1, d1, d2})$
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // ATTENTION: connect one node from the first tree with another node from the second tree [with an edge].
+    const static int N = 1e5 + 10, M = 4e5 + 10, INF = 0x3f3f3f3f;
+    
+    int h1[N], h2[N], e[M], ne[M], idx;
+    void init() {
+        memset(h1, -1, sizeof h1), memset(h2, -1, sizeof h2);
+        idx = 0;
+    }
+    void add(int h[], int a, int b) {
+        e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    int ret;
+    int d1[N], d2[N];
+    
+    void dfs(int h[], int u, int pa) {
+        d1[u] = d2[u] = 1;
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (j == pa)
+                continue;
+            dfs(h, j, u);
+            if (d1[j] + 1 >= d1[u])
+                d2[u] = d1[u], d1[u] = d1[j] + 1;
+            else if (d1[j] + 1 > d2[u])
+                d2[u] = d1[j] + 1;
+        }
+        ret = max(ret, d1[u] + d2[u] - 1);
+    }
+    
+    int calc(int h[], int n) {
+        this->ret = 0;
+        memset(d1, 0, sizeof d1), memset(d2, 0, sizeof d2);
+        dfs(h, 0, -1);
+        return ret - 1; // 减一求的边的长度而非点的数量
+    }
+    
+    int minimumDiameterAfterMerge(vector<vector<int>>& edges1, vector<vector<int>>& edges2) {
+        init();
+        
+        for (auto & e : edges1) {
+            int a = e[0], b = e[1];
+            add(h1, a, b), add(h1, b, a);
+        }
+        for (auto & e : edges2) {
+            int a = e[0], b = e[1];
+            add(h2, a, b), add(h2, b, a);
+        }
+        
+        int d1 = calc(h1, edges1.size() + 1), d2 = calc(h2, edges2.size() + 1);
+        
+        // ATTENTION
+        // 直接返回 d1+d2+1 是错误的，因为可能比原来tr1的直径还小，所以需要推导
+        // =>   如果新直径不经过合并边，那么它就是原来两个直径中的较大值
+        //      如果新直径经过合并边，考虑合并边的某个端点 u 以及原来这棵树直径的两个端点 [x, y]
+        //          要最小化 [u, x] 与 [u, y] 显然需要在直径中点 及 (d + 1) / 2
+        return max({(d1 + 1) / 2 + (d2 + 1) / 2 + 1/*额外增加的一条边*/, d1, d2});
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[Codeforces Civilization](http://codeforces.com/problemset/problem/455/C)**
+> 
+> 题意: 
+> 
+> 给你有 $n$ 个点的森林，然后你需要支持两种操作：
+> 
+> - 询问某个点所在的树的直径
+> 
+> - 合并两棵树，同时使合并后的树的直径最小
+
+> [!TIP] **思路**
+> 
+> 并查集结合树直径： **不需要关心中心，只需要关注直径即可**
+> 
+> 以及一些推导易知的结论
+> 
+> $tot = max((l1+1)/2 + (l2+1)/2 + 1, l1, l2)$
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+TLE 121 快读也没用
+
+```cpp
+// Problem: C. Civilization
+// Contest: Codeforces - Codeforces Round #260 (Div. 1)
+// URL: https://codeforces.com/problemset/problem/455/C
+// Memory Limit: 256 MB
+// Time Limit: 1000 ms
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const static int N = 3e5 + 10, M = N << 1;
+
+int h[N], e[M], ne[M], idx;
+void init() {
+    memset(h, -1, sizeof h);
+    idx = 0;
+}
+void add(int a, int b) { e[idx] = b, ne[idx] = h[a], h[a] = idx++; }
+
+int pa[N];
+int find(int x) {
+    if (x != pa[x])
+        pa[x] = find(pa[x]);
+    return pa[x];
+}
+
+int n, m, q;
+
+bool st[N];
+int id, length[N];
+int d1[N], d2[N];
+
+// 求直径
+void dfs(int u, int fa) {
+    pa[u] = id;
+    d1[u] = d2[u] = 0;
+    for (int i = h[u]; ~i; i = ne[i]) {
+        int j = e[i];
+        if (j == fa)
+            continue;
+        dfs(j, u);
+        int t = d1[j] + 1;
+        if (t > d1[u])
+            d2[u] = d1[u], d1[u] = t;
+        else if (t > d2[u])
+            d2[u] = t;
+    }
+    length[id] = max(length[id], d1[u] + d2[u]);
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    init();
+
+    cin >> n >> m >> q;
+    for (int i = 0; i < m; ++i) {
+        int a, b;
+        cin >> a >> b;
+        add(a, b), add(b, a);
+    }
+
+    memset(st, 0, sizeof st);
+    // for (int i = 1; i <= n; ++i)
+    // pa[i] = i;
+    for (int i = 1; i <= n; ++i)
+        if (!st[i]) {
+            id = i, length[id] = 0;
+            dfs(i, -1);
+        }
+
+    while (q--) {
+        int type, x, y;
+        cin >> type;
+        if (type == 1) {
+            cin >> x;
+            cout << length[find(x)] << '\n';
+        } else {
+            cin >> x >> y;
+            int a = find(x), b = find(y);
+            if (a != b) {
+                pa[a] = b;
+                int l1 = length[a], l2 = length[b];
+                // 向上取整
+                length[b] = max((l1 + 1) / 2 + (l2 + 1) / 2 + 1, max(l1, l2));
+            }
+        }
+    }
+
+    return 0;
+}
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
