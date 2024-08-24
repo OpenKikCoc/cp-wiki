@@ -558,3 +558,110 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 3213. 最小代价构造字符串](https://leetcode.cn/problems/construct-string-with-minimum-cost/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 容易想到字符串哈希 string hash
+> 
+> 但即使用了字符串哈希，上述做法仍然是 O(n^2) 的
+> 
+> 关键在于，枚举的子串 t 的长度，如果压根就不出现在 words 中，那么无需枚举这样的 j，或者说长度。
+> 
+> 注意到，**设 L 是 words 中所有字符串的长度之和，那么 words 中至多有 O(sqrt(L)) 个长度不同的字符串** => trick
+> 
+> (考虑长度和 1+2+3+⋯≤L)
+> 
+> 所以我们只需要枚举这 O(sqrt(L)) 个长度，而不是枚举 O(n) 个 j
+> 
+> [计算复杂度分析]
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // f[i] = 填充target前i个字母的最小cost
+    // f[i] = f[j] + cost(j + 1, i); 问题在于这是O(n^2)的
+    //  => 维护所有可行的j + string hash
+    
+    // ATTENTION:
+    // 但即使用了字符串哈希，上述做法仍然是 O(n^2) 的
+    // 关键在于，枚举的子串 t 的长度，如果压根就不出现在 words 中，那么无需枚举这样的 j，或者说长度。
+    // 注意到，设 L 是 words 中所有字符串的长度之和，那么 words 中至多有 O(sqrt(L)) 个长度不同的字符串 => trick
+    // （考虑长度和 1+2+3+⋯≤L）
+    // 所以我们只需要枚举这 O(sqrt(L)) 个长度，而不是枚举 O(n) 个 j
+    
+    using ULL = unsigned long long;
+    const static int N = 5e4 + 10, P = 131, INF = 0x3f3f3f3f;
+    
+    ULL h[N], p[N];
+    void init(string s) {
+        int n = s.size();
+        h[0] = 0, p[0] = 1;
+        for (int i = 1; i <= n; ++ i )
+            h[i] = h[i - 1] * P + s[i - 1], p[i] = p[i - 1] * P;    // ATTENTION P
+    }
+    ULL get(int l, int r) {
+        return h[r] - h[l - 1] * p[r - l + 1];
+    }
+    
+    int f[N];
+    map<int, unordered_map<ULL, int>> min_cost; // ATTENTION map<int, unordered_map<...>>
+    
+    int minimumCost(string target, vector<string>& words, vector<int>& costs) {
+        init(target);
+        
+        {
+            int m = words.size();
+            for (int i = 0; i < words.size(); ++ i ) {
+                auto & w = words[i];
+                int len = w.size();
+                ULL hash = 0;
+                for (int i = 1; i <= len; ++ i )
+                    hash = hash * P + w[i - 1];
+                if (min_cost[len].count(hash))
+                    min_cost[len][hash] = min(min_cost[len][hash], costs[i]);
+                else
+                    min_cost[len][hash] = costs[i];
+            }
+        }
+        
+        int n = target.size();
+        memset(f, 0x3f, sizeof f);
+        f[0] = 0;
+        
+        for (int i = 1; i <= n; ++ i ) {
+            for (auto & [len, cs] : min_cost) {   // O(sqrt(L)), 注意引用
+                if (len > i)
+                    break;
+                int last = i - len;
+                ULL hash = get(last + 1, i);
+                if (cs.count(hash))
+                    f[i] = min(f[i], f[last] + cs[hash]);
+            }
+        }
+        return f[n] >= INF / 2 ? -1 : f[n];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

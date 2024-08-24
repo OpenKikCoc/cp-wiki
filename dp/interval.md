@@ -1954,6 +1954,113 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 3219. 切蛋糕的最小总开销 II](https://leetcode.cn/problems/minimum-cost-for-cutting-cake-ii/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+>
+> -  对于数据范围较小的情况可以直接使用 `棋盘分割` 思路，DP 求解
+>
+> -  对于数据范围较大的情况，考虑 **贪心**
+>
+>    重点在于贪心的思路证明
+>    
+>    > 每条水平线和垂直线，最终都要全部切完
+>    >
+>    > - 横切 hc[i] 的贡献等于此前 `竖切的次数 +1`
+>    > - 竖切 vc[i] 的贡献等于此前 `横切的次数 +1`
+>    >
+>    > 因为对于某一个具体的 i，是否 `一切到底` 对数值统计没有影响，故假定都是一切到底
+>    >
+>    > 考虑 `相邻交换` 易知 **优先切开销更大的**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ DP**
+
+```cpp
+class Solution {
+public:
+    using PII = pair<int, int>;
+    using LL = long long;
+    
+    int m, n;
+    vector<int> hc, vc;
+    
+    map<PII, LL> mem;
+    
+    LL dp(int u, int d, int l, int r) {
+        if (u == d && l == r )
+            return 0;
+        
+        auto pi = PII{u * 2e3 + d, l * 2e3 + r};
+        if (mem.count(pi))
+            return mem[pi];
+        
+        LL ret = 1e15;
+        
+        for (int i = u; i < d; ++ i )
+            ret = min(ret, dp(u, i, l, r) + dp(i + 1, d, l, r) + hc[i]);
+        for (int i = l; i < r; ++ i )
+            ret = min(ret, dp(u, d, l, i) + dp(u, d, i + 1, r) + vc[i]);
+        return mem[pi] = ret;
+    }
+    
+    int minimumCost(int m, int n, vector<int>& horizontalCut, vector<int>& verticalCut) {
+        this->m = m, this->n = n;
+        this->hc = horizontalCut, this->vc = verticalCut;
+        
+        this->mem.clear();
+        return dp(0, m - 1, 0, n - 1);
+    }
+};
+```
+
+##### **C++ 贪心**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    
+    long long minimumCost(int m, int n, vector<int>& horizontalCut, vector<int>& verticalCut) {
+        sort(horizontalCut.begin(), horizontalCut.end(), greater<int>());
+        sort(verticalCut.begin(), verticalCut.end(), greater<int>());
+        
+        LL res = 0;
+        int i = 0, j = 0;
+        while (i < m - 1 && j < n - 1)  // ATTENTION 判断条件 < len-1
+            if (horizontalCut[i] > verticalCut[j])
+                res += (LL)(j + 1) * horizontalCut[i], i ++ ;
+            else
+                res += (LL)(i + 1) * verticalCut[j], j ++ ;
+        
+        while (i < m - 1)
+            res += (LL)(j + 1) * horizontalCut[i], i ++ ;
+        while (j < n - 1)
+            res += (LL)(i + 1) * verticalCut[j], j ++ ;
+        
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 进阶
 
 > [!NOTE] **[LeetCode 2019. 解出数学表达式的学生分数](https://leetcode.cn/problems/the-score-of-students-solving-math-expression/)**
