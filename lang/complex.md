@@ -14,3 +14,8 @@
 >
 > $O(n!)$ 的算法能解决的数据范围在 $n < 11$
 
+* * *
+
+一般考察 $O(nlogn)$ 算法的数据范围都是 $1e5$ 或者 $2e5$ 的，当数据范围比较奇怪 (如 $4e4$) 的时候就要考虑 $O(n**1.5)$ 了
+
+=> 结合具体实现证明时间复杂度 一般都会比 $O(n^2)$ 小 (如 [LeetCode 3234. 统计 1 显著的字符串的数量](https://leetcode.cn/problems/count-the-number-of-substrings-with-dominant-ones/))

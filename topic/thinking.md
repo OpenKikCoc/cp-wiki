@@ -665,3 +665,74 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 3234. 统计 1 显著的字符串的数量](https://leetcode.cn/problems/count-the-number-of-substrings-with-dominant-ones/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 时间复杂度证明
+> 
+> 以及 计算逻辑细节
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 类似题目 考虑枚举右端点 计算合法左端点的数量
+    //
+    // 感觉像是 O(n^2) 的做法...
+    // => 实际上 0 的数量不会超过 log(len)
+    //  考虑枚举 0 的数量，总的时间复杂度为 O(n*log(n))
+    
+    int numberOfSubstrings(string s) {
+        int n = s.size();
+        int res = 0;
+        vector<int> zeros;
+        zeros.push_back(0); // 哨兵
+        for (int i = 1; i <= n; ++ i ) {
+            int t = s[i - 1] - '0';
+            if (t)  // 当前位置为 1
+                res += i - zeros.back();    // ATTENTION 1. 不包含任何0的情况
+            else
+                zeros.push_back(i);
+            
+            // ATTENTION 2. 包含至少 1 个 0 的情况
+            //
+            // m-j 用来优化复杂度 避免无意义的遍历 k*k <= num_of_ones = i-m
+            int m = zeros.size();
+            for (int j = m - 1; j > 0 /*ATTENTION > 0*/ && (m - j) <= (i - (m - 1)) / (m - j); -- j ) {
+                // 该区间内 0,1 的数量
+                int c0 = m - j;
+                int c1 = (i - zeros[j] + 1/*总长度 ATTENTION: +1*/) - c0;
+                
+                // 在 zeros[j] 左侧还有一段1 数量为 tot = zeros[j]-zeros[j-1]-1
+                // 问题在于这些1 有一部分是已经不得不消耗的 具体为 cost = c0*c0-c1
+                //      剩下的 比较灵活 即为 tot - cost + 1
+                //                  zeros[j]-zeros[j-1] -1 - cost +1
+                res += max(0, zeros[j] - zeros[j - 1] - max(0, c0 * c0 - c1));
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

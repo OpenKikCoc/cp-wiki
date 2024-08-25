@@ -976,6 +976,112 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 3229. 使数组等于目标数组所需的最少操作次数](https://leetcode.cn/problems/minimum-operations-to-make-array-equal-to-target/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 1. 题意分析 + 枚举复用 + 分情况讨论
+> 
+> 2. 另一种类似思路，考虑 diff 的同向连续区间
+> 
+> 属于 前面 1526 进阶
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 1**
+
+```cpp
+class Solution {
+public:
+    // 区间操作类问题显然考虑 差分 (差分用英语怎么说?)
+    //
+    // 从前向后扫描
+    // 当: 当前位置的差分值不同时 显然需要以当前位置为起点产生修改
+    //      问题在于 结束点在哪里?
+    //      => 考虑【从前向后枚举 看能否复用此前的操作】 => 注意维护逻辑分情况讨论
+    
+    using LL = long long;
+    
+    long long minimumOperations(vector<int>& nums, vector<int>& target) {
+        int n = nums.size();
+        
+        LL res = 0, last = 0;
+        for (int i = 0; i < n; ++ i ) {
+            int diff = target[i] - nums[i];
+            
+            if (diff >= 0) {
+                if (last >= diff)
+                    last = diff;
+                else
+                    res += diff - max(last, 0ll), last = diff;
+            } else {
+                if (last <= diff)
+                    last = diff;
+                else
+                    res += min(last, 0ll) - diff, last = diff;
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 2**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    
+    int get_d(int x) {
+        if (x == 0)
+            return 0;
+        return x > 0 ? 1 : -1;
+    }
+    
+    long long minimumOperations(vector<int>& nums, vector<int>& target) {
+        int n = nums.size();
+        
+        LL res = 0;
+        for (int i = 0; i < n; ++ i ) {
+            // 找到相同向的连续区间, 该区间内操作的最大次数即为偏离的最大值
+            int d = get_d(target[i] - nums[i]);
+            int j = i;
+            while (j < n && get_d(target[j] - nums[j]) == d)  // ATTENTION 需要识别 -1/0/+1 三种情况
+                j ++ ;
+            
+            // 1526 子问题
+            for (int k = i, last = 0; k < j; ++ k ) {
+                int diff = abs(target[k] - nums[k]);
+                if (diff > last)
+                    res += diff - last;
+                last = diff;
+            }
+            
+            i = j - 1;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[Luogu [NOIP2018 提高组] 铺设道路](https://www.luogu.com.cn/problem/P5019)**
 > 
 > 题意: TODO

@@ -535,3 +535,47 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 3227. 字符串元音游戏](https://leetcode.cn/problems/vowels-game-in-a-string/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 较为简单 推导需要加速
+> 
+> - 分情况讨论 只要存在元音 (vowels) 则必胜
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    unordered_set<char> S = {'a', 'e', 'i', 'o', 'u'};
+    
+    bool doesAliceWin(string s) {
+        int cnt = 0;
+        for (auto c : s)
+            if (S.count(c))
+                cnt ++ ;
+        return cnt;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
