@@ -1033,6 +1033,111 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 3244. 新增道路查询后的最短距离 II](https://leetcode.cn/problems/shortest-distance-after-road-addition-queries-ii/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> - 不太 general 的做法
+> 
+> - 区间并查集 (快速找到右侧的 root)
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ not general**
+
+```cpp
+class Solution {
+public:
+    // 相对于上题 增加约束条件: 两个 query 要么包含、要么互斥，不会交叉
+    // => 推导可知 最优路径一定是唯一的 节省的长度为最长的区间覆盖
+    // => 有大的区间一定用大的区间
+    // 问题在于...怎么动态维护 => 贪心 维护中间的【区间边】
+    
+    using PII = pair<int, int>;
+    
+    vector<int> shortestDistanceAfterQueries(int n, vector<vector<int>>& queries) {
+        set<PII> S;
+        for (int i = 0; i < n - 1; ++ i )
+            S.insert({i, i + 1});
+        
+        vector<int> res;
+        for (auto & qs : queries) {
+            int l = qs[0], r = qs[1];
+            auto it = S.lower_bound({l, -1});
+            if (it != S.end() && it->first == l && it->second < r) {
+                // 有更小的区间 踢掉加入当前
+                while (it != S.end() && it->first < r)
+                    it = S.erase(it);   // ATTENTION [l, r)
+                S.insert({l, r});
+            } // else 当前的不需要加入
+            res.push_back(S.size());    // ATTENTION
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 并查集**
+
+```cpp
+class Solution {
+public:
+    // 相对于上题 增加约束条件: 两个 query 要么包含、要么互斥，不会交叉
+    // => 推导可知 最优路径一定是唯一的 节省的长度为最长的区间覆盖
+    // => 有大的区间一定用大的区间
+    // 问题在于...怎么动态维护
+    // => 本质可以结合并查集 维护联通分量个数
+    
+    const static int N = 1e5 + 10;
+    
+    int pa[N];
+    void init() {
+        for (int i = 0; i < N; ++ i )
+            pa[i] = i;
+    }
+    int find(int x) {
+        if (pa[x] != x)
+            pa[x] = find(pa[x]);
+        return pa[x];
+    }
+    
+    vector<int> shortestDistanceAfterQueries(int n, vector<vector<int>>& queries) {
+        init();
+        
+        vector<int> res;
+        int tot = n - 1;    // 联通分量个数
+        for (auto & qs : queries) {
+            int l = qs[0], r = qs[1];
+            int pa_r = find(r - 1); // ATTENTION r-1
+            for (int i = find(l); i < r - 1;) {
+                pa[i] = pa_r;
+                tot -- ;
+                i = find(i + 1);
+            }
+            res.push_back(tot);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### trick 带权并查集维护连通性
 
 > [!NOTE] **[LeetCode 2421. 好路径的数目](https://leetcode.cn/problems/number-of-good-paths/)** [TAG]

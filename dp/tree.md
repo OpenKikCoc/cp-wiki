@@ -3137,6 +3137,108 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 3241. 标记所有节点需要的时间](https://leetcode.cn/problems/time-taken-to-mark-all-nodes/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 标准换根 注意 **dfs_u 初始化操作**
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 题目要求以每一个node为root的开销 显然是换根dp
+    // 当发生换根时 边权可能发生变化(受指向的终点影响)
+    // 求解属性为 分支max
+    
+    const static int N = 1e5 + 10, M = 2e5 + 10;
+    
+    int h[N], e[M], ne[M], idx;
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+    }
+    void add(int a, int b) {
+        e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    int f[N], g[N];
+    int d1[N], d2[N], p[N];
+    
+    void dfs_d(int u, int pa) {
+        f[u] = 0;
+        d1[u] = d2[u] = 0, p[u] = -1;
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i], cost = j & 1 ? 1 : 2;
+            if (j == pa)
+                continue;
+            dfs_d(j, u);
+            int dep = f[j] + cost;
+            
+            if (dep > d1[u]) {
+                d2[u] = d1[u], d1[u] = dep;
+                p[u] = j;
+            } else if (dep > d2[u])
+                d2[u] = dep;
+        }
+        f[u] = d1[u];   // f 其实可以省略
+    }
+    void dfs_u(int u, int pa) {
+        // ATTENTION 这里不能初始化 g 因为本质是在外层初始化的
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i], cost = u & 1 ? 1 : 2; // 逆向 cost
+            if (j == pa)
+                continue;
+            
+            if (p[u] == j)
+                g[j] = max(g[u], d2[u]) + cost;
+            else
+                g[j] = max(g[u], d1[u]) + cost;
+            
+            dfs_u(j, u);
+        }
+    }
+    
+    vector<int> timeTaken(vector<vector<int>>& edges) {
+        init();
+        for (auto & e : edges) {
+            int a = e[0], b = e[1];
+            add(a, b), add(b, a);
+        }
+        
+        dfs_d(0, -1);
+        
+        g[0] = 0;
+        dfs_u(0, -1);
+        
+        vector<int> res;
+        for (int i = 0; i < edges.size() + 1; ++ i )
+            res.push_back(max(f[i], g[i]));
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 进阶：树DP状态设计
 
 > [!NOTE] **[AcWing 323. 战略游戏](https://www.acwing.com/problem/content/description/325/)**

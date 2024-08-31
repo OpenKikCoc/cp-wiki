@@ -1181,6 +1181,129 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 3251. 单调数组对的数目 II](https://leetcode.cn/problems/find-the-count-of-monotonic-pairs-ii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 将数组拆解，每个数分成两个数字分散在不同数组，且一个递增一个递减，求所有可能方案
+> 
+> - 标准的前缀和优化
+> 
+> - TODO: revisit 整理组合数学做法
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ DP 前缀和优化**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 2010, M = 1010, MOD = 1e9 + 7;
+    
+    int f[N][M];
+    // 假设对于第i个位置 分配给第一个数组的数值大小为j 则第二个数组为 s_i - j
+    // f[i][j] = sum{f[i - 1][k]}  j>=k && (s_i-1 - k >= s_i - j)
+    //                      => k <= j && k <= s_i-1 - s_i + j
+    //                      伴随着j的枚举 和是单调递增的...
+    
+    void mod_add(int & a, int b) {
+        a = ((LL)a + b) % MOD;
+    }
+    
+    int countOfPairs(vector<int>& nums) {
+        int n = nums.size();
+        
+        memset(f, 0, sizeof f);
+        for (int j = 0; j <= nums[0]; ++ j )
+            f[1][j] = 1;
+        
+        for (int i = 2; i <= n; ++ i ) {
+            int s = nums[i - 1], s_last = nums[i - 2];
+            
+            // 枚举当前选择的 j
+            int sum = 0, gap = max(0, s - s_last);
+            for (int j = 0; j <= s; ++ j ) {
+                // k <= j && k <= s_last - s + j
+                // 那么对于一个具体的 j 来说，可以取的范围是 [0, min(j, j+s_last-s)]
+                // 差值的 gap 是 s-s_last
+                if (j - gap >= 0)
+                    mod_add(sum, f[i - 1][j - gap]);
+                f[i][j] = sum;
+            }
+        }
+        
+        int res = 0;
+        for (int j = 0; j < M; ++ j )
+            mod_add(res, f[n][j]);
+        return res;
+    }
+};
+```
+
+##### **C++ 组合数学**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 3010, MOD = 1e9 + 7;
+    
+    LL f[N], g[N];
+    
+    LL qpow(LL x, int y) {
+        LL ret = 1;
+        while (y) {
+            if (y & 1)
+                ret = ret * x % MOD;
+            x = x * x % MOD;
+            y >>= 1;
+        }
+        return ret;
+    }
+    
+    void init() {
+        f[0] = g[0] = 1;
+        for (int i = 1; i < N; ++ i ) {
+            f[i] = f[i - 1] * i % MOD;
+            g[i] = g[i - 1] * qpow(i, MOD - 2) % MOD;
+        }
+    }
+    LL C(int n, int m) {
+        return f[n] * g[m] % MOD * g[n - m] % MOD;
+    }
+    
+    int countOfPairs(vector<int>& nums) {
+        init();
+        
+        int n = nums.size(), m = nums.back();   // ATTENTION m
+        for (int i = 1; i < n; ++ i ) {
+            m -= max(0, nums[i] - nums[i - 1]); // 减掉必须往上走的强制约束
+            if (m < 0)
+                return 0;
+        }
+        return C(n + m, n); // 总共可以自由走 n+m 步
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 综合应用
 
 > [!NOTE] **[Luogu [NOIP2016 提高组] 组合数问题](https://www.luogu.com.cn/problem/P2822)**

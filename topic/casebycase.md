@@ -1301,3 +1301,76 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 3240. 最少翻转次数使二进制矩阵回文 II ](https://leetcode.cn/problems/minimum-number-of-flips-to-make-binary-grid-palindromic-ii/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 分情况讨论 注意条件判断和实现细节
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 本题要求 row&col palindromic => 四个位置完全相同
+    // 以及: 1 的总数可以被 4 整除
+    int minFlips(vector<vector<int>>& grid) {
+        int m = grid.size(), n = grid[0].size();
+        
+        int res = 0;
+        // ATTENTION 遍历的细节实现 (直接枚举 i,j 容易出问题 需要理清楚)
+        // 下面直接枚举 i,j
+        for (int i = 0; i < m / 2; ++ i )
+            for (int j = 0; j < n / 2; ++ j ) {
+                int c1 = grid[i][j] + grid[i][n - 1 - j] + grid[m - 1 - i][j] + grid[m - 1 - i][n - 1 - j];
+                res += min(c1, 4 - c1);
+            }
+        // 对于中间点 必须为0
+        if ((m & 1) && (n & 1))
+            res += grid[m / 2][n / 2] == 1;
+        
+        // 考虑中间行/列 【分情况讨论】
+        // 1. one*2 是 4 的倍数，则可以把 diff 全变成 0             => cost = diff
+        // 2. one*2 不是 4 的倍数，由于其必定为偶数 必定差2个
+        //    -> 如果 diff>0 则可以将任意一对 01 变成 11，开销同样是  => cost = diff
+        //    -> 如果 diff=0 则需要将11变为00 或00变为11
+        //                  (后者00可能不存在 不妨11变00)          => cost = diff + 2 = 2
+        int one = 0, diff = 0;
+        if (m & 1) {
+            for (int j = 0, k = n - 1; j < k; ++ j , -- k )
+                if (grid[m / 2][j] == grid[m / 2][k])
+                    one += grid[m / 2][j] == 1;
+                else
+                    diff ++ ;
+        }
+        if (n & 1) {
+            for (int i = 0, k = m - 1; i < k; ++ i , -- k )
+                if (grid[i][n / 2] == grid[k][n / 2])
+                    one += grid[i][n / 2] == 1;
+                else
+                    diff ++ ;
+        }
+        return res + (diff ? diff : (one & 1) * 2);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

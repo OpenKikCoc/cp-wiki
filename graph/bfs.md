@@ -571,6 +571,91 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 3243. 新增道路查询后的最短距离 I](https://leetcode.cn/problems/shortest-distance-after-road-addition-queries-i/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> **unidirectional** : 单向 uni
+> 
+> 每次加边后 BFS 而非其他最短路 (敏感度)
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 题目求的永远都是从 0 到 n-1 的距离
+    // 考虑每次加边 [u, v] 的影响: 由于【单向边】左侧的点集 距离[可能]变小
+    
+    const static int N = 510, M = 1010;
+    
+    int h[N], e[M], ne[M], idx;
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+    }
+    void add(int a, int b) {
+        e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+    
+    vector<int> shortestDistanceAfterQueries(int n, vector<vector<int>>& queries) {
+        init();
+        for (int i = 0; i < n - 1; ++ i )
+            add(i, i + 1);
+        
+        vector<int> res;
+        for (auto & qs : queries) {
+            int u = qs[0], v = qs[1];
+            add(u, v);
+            
+            static int d[N];
+            static bool st[N];
+            memset(d, 0x3f, sizeof d);
+            memset(st, 0, sizeof st);   // ATTENTION
+            queue<int> q;
+            q.push(0); d[0] = 0;
+            
+            // 每次执行 bfs，而非 bellman ford OR floyd
+            while (q.size()) {
+                int u = q.front(); q.pop();
+                if (st[u])
+                    continue;
+                st[u] = true;
+                for (int i = h[u]; ~i; i = ne[i]) {
+                    int j = e[i];
+                    if (d[j] > d[u] + 1) {
+                        d[j] = d[u] + 1;
+                        q.push(j);
+                    }
+                }
+            }
+            
+            res.push_back(d[n - 1]);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### trick bfs
 
 > [!NOTE] **[LeetCode 675. 为高尔夫比赛砍树](https://leetcode.cn/problems/cut-off-trees-for-golf-event/)**
