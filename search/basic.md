@@ -2343,6 +2343,98 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 3260. 找出最大的 N 位 K 回文数](https://leetcode.cn/problems/find-the-largest-palindrome-divisible-by-k/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> - 找规律 比较麻烦不适用
+> 
+> - 字典序搜索 结合pow预处理和贪心剪枝
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // n digits... => 很长 显然没有办法枚举回文串
+    // 考虑从 k 入手, 其范围数据 [1, 9]
+    // - 1: 999...999
+    // - 2: 899...998
+    // - 3: 999...999
+    // - 4: 899.8.998 ?
+    //
+    // => 转为搜索
+    
+    const static int N = 1e5 + 10;
+    
+    int n, m, k;
+    
+    int p[N];   // 10^x % k 的余数
+    void init() {
+        p[0] = 1;   // ATTENTION 特殊值
+        for (int i = 1; i < N; ++ i )
+            p[i] = p[i - 1] * 10 % k;
+    }
+    
+    bool st[N][10];
+    string res;
+    
+    // 从前往后填充到第i个位置 当前的模数为j (没填充的都按0...)
+    bool dfs(int i, int j) {
+        if (i == m)
+            return j == 0;  // 需要整除
+        
+        st[i][j] = true;
+        // 贪心: 倒序填充
+        for (int d = 9; d >= 0; -- d ) {
+            int j2;
+            if (n % 2 && i == m - 1)
+                // 奇数长度的中间位置
+                j2 = (j + d * p[i]) % k;
+            else
+                // 其他位置 前后下标对称
+                j2 = (j + d * (p[i] + p[n - 1 - i])) % k;
+            
+            if (!st[i + 1][j2] && dfs(i + 1, j2)) {
+                // ATTENTION 细节 不访问之前访问过的点 (因为之前已经贪心有序)
+                res[i] = res[n - 1 - i] = '0' + d;
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    string largestPalindrome(int n, int k) {
+        this->n = n, this->m = (n + 1) / 2, this->k = k;
+        this->res = string(n, '0');
+        init();
+        
+        memset(st, 0, sizeof st);
+        dfs(0, 0);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### dfs 回溯
 
 > [!NOTE] **[LeetCode 51. N 皇后](https://leetcode.cn/problems/n-queens/)**

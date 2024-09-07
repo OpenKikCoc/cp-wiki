@@ -2067,6 +2067,74 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 3261. 统计满足 K 约束的子字符串数量 II](https://leetcode.cn/problems/count-substrings-that-satisfy-k-constraint-ii/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 分析问题的思路
+> 
+> 计算拆解 (两部分: 右侧 + 左侧)
+> 
+> 本题二分分界点可过 => 可以双指针进一步优化
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 核心: 想到对于每一个位置i 记录其左侧最长延伸距离
+    
+    using LL = long long;
+    const static int N = 1e5 + 10;
+    
+    int left[N];
+    LL sum[N];
+    
+    vector<long long> countKConstraintSubstrings(string s, int k, vector<vector<int>>& queries) {
+        int n = s.size();
+        
+        memset(left, 0, sizeof left), memset(sum, 0, sizeof sum);
+        unordered_map<char, int> h;
+        for (int i = 1, j = 1; j <= n; ++ j ) {
+            h[s[j - 1]] ++ ;
+            while (i < j && (h['0'] > k && h['1'] > k))
+                h[s[i - 1]] -- , i ++ ;
+            left[j] = i;
+            sum[j] = sum[j - 1] + j - i + 1;
+        }
+        
+        vector<LL> res;
+        for (auto & q : queries) {
+            int l = q[0] + 1, r = q[1] + 1;
+            // ATTENTION 思考 left 的单调性质: 找到第一个 left[x] >= l 的 x
+            int t = lower_bound(left + l, left + r + 1, l) - left;
+            // 右侧的部分 + 左侧必然合法的部分
+            res.push_back((sum[r] - sum[t/*ATTENTION*/ - 1]) + (LL)(t - l + 1) * (t - l) / 2);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 边遍历边维护
 
 > [!NOTE] **[LeetCode 2763. 所有子数组中不平衡数字之和](https://leetcode.cn/problems/sum-of-imbalance-numbers-of-all-subarrays/)**

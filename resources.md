@@ -8,6 +8,8 @@
 
 [算法学习笔记（目录） by Pecco](https://zhuanlan.zhihu.com/p/105467597)
 
+[LeetCode Rating & Training](https://huxulm.github.io/lc-rating/zen)
+
 [leetcode-problems-rating](https://zerotrac.github.io/leetcode_problem_rating/#/)
 
 [更详细的 lc-rating](https://huxulm.github.io/lc-rating/)
