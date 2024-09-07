@@ -1,3 +1,136 @@
+> [!TIP] **关于找中点**
+>
+> | 函数 | 主逻辑                                                       | intput<br>nullptr             | input<br>0              | input<br/>0 1           | input<br/>0 1 2         | input<br/>0 1 2 3       | input<br/>0 1 2 3 4     |
+> | ---- | ------------------------------------------------------------ | ----------------------------- | ----------------------- | ----------------------- | ----------------------- | ----------------------- | ----------------------- |
+> | f1   | Node * slow = head, * fast = head;<br>while (fast && fast->next) | slow = nullptr fast = nullptr | slow = 0 fast = 0       | slow = 1 fast = nullptr | slow = 1 fast = 2       | slow = 2 fast = nullptr | slow = 2 fast = 4       |
+> | f2   | Node * slow = dummy, * fast = dummy;<br/>while (fast && fast->next) | slow = -1 fast = -1           | slow = 0 fast = nullptr | slow = 0 fast = 1       | slow = 1 fast = nullptr | slow = 1 fast = 3       | slow = 2 fast = nullptr |
+> | f3   | 特判 nullptr<br>Node * slow = head, * fast = head;<br/>while (fast->next && fast->next->next) | empty                         | slow = 0 fast = 0       | slow = 0 fast = 0       | slow = 1 fast = 2       | slow = 1 fast = 2       | slow = 2 fast = 4       |
+> | f4   | 有 dummy 不需要特判<br>Node * slow = dummy, * fast = dummy;<br/>while (fast->next && fast->next->next) | slow = -1 fast = -1           | slow = -1 fast = -1     | slow = 0 fast = 1       | slow = 0 fast = 1       | slow = 1 fast = 3       | slow = 1 fast = 3       |
+>
+> =>
+>
+> -   避免特判，倾向于 f1, f2
+>
+> -   重要特性与区别
+>     -   当奇数长度时，f1 f2 都能恰好找到中点
+>     -   当偶数长度时，f1 恰好找到后半部分起点，f2 恰好找到前半部分末尾
+>     -   对于 f1: fast = nullptr 意味着偶数长度
+>     -   对于 f2: fast = nullptr 意味着奇数长度
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Node {
+    int val;
+    Node * next;
+    Node(int _val) : val(_val) {
+        // val = _val;
+        next = nullptr;
+    }
+};
+
+string printNode(Node * u) {
+    if (!u)
+        return "nullptr";
+    return to_string(u->val);
+}
+
+void f1(Node * head) {
+    Node * slow = head, * fast = head;
+    while (fast && fast->next) {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+    cout << " f1 " << " slow = " << printNode(slow) << " fast = " << printNode(fast) << endl;
+}
+
+void f2(Node * head) {
+    Node * dummy = new Node(-1);
+    dummy->next = head;
+    Node * slow = dummy, * fast = dummy;
+    while (fast && fast->next) {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+    cout << " f2 " << " slow = " << printNode(slow) << " fast = " << printNode(fast) << endl;
+}
+
+void f3(Node * head) {
+    // ATTENTION 需要特判 否则 runtime error
+    if (!head) {
+        cout << " f3 empty" << endl;
+        return;
+    }
+    
+    Node * slow = head, * fast = head;
+    while (fast->next && fast->next->next) {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+    cout << " f3 " << " slow = " << printNode(slow) << " fast = " << printNode(fast) << endl;
+}
+
+void f4(Node * head) {
+    // ATTENTION 存在 dummy 节点可以不特判
+    
+    Node * dummy = new Node(-1);
+    dummy->next = head;
+    Node * slow = dummy, * fast = dummy;
+    while (fast->next && fast->next->next) {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+    cout << " f4 " << " slow = " << printNode(slow) << " fast = " << printNode(fast) << endl;
+}
+
+Node * make_lists(vector<int> xs) {
+    Node * dummy = new Node(-1);
+    Node * pre = dummy;
+    for (auto x : xs) {
+        pre->next = new Node(x);
+        pre = pre->next;
+    }
+    return dummy->next;
+}
+
+int main() {
+    auto lists = vector<Node*>{
+        make_lists({}),
+        make_lists({0}),
+        make_lists({0, 1}),
+        make_lists({0, 1, 2}),
+        make_lists({0, 1, 2, 3}),
+        make_lists({0, 1, 2, 3, 4}),
+    };
+
+    for (auto l : lists) {
+        cout << " now we got: ";
+        for (Node * t = l; t; t = t->next)
+            cout << t->val << ' ';
+        cout << endl;
+        for (auto f : {f1, f2, f3, f4})
+            f(l);
+        cout << endl;
+    }
+    
+    return 0;
+}
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ## 简介
 
 链表是一种用于存储数据的数据结构，通过如链条一般的指针来连接元素。它的特点是插入与删除数据十分方便，但寻找与读取数据的表现欠佳。
@@ -600,7 +733,7 @@ if __name__ == '__main__':
 
 > [!TIP] **思路**
 > 
-> 
+> 注意细节: dummy + fast->next
 
 <details>
 <summary>详细代码</summary>
@@ -739,7 +872,11 @@ class Solution:
 
 > [!TIP] **思路**
 > 
+> heap 自定义比较优先级
 > 
+> - lambda + decltype
+> 
+> - struct `bool operator()`
 
 <details>
 <summary>详细代码</summary>
@@ -753,31 +890,33 @@ class Solution:
  * struct ListNode {
  *     int val;
  *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
  * };
  */
 class Solution {
 public:
-
-    struct Cmp {    // ATTENTION
-        bool operator() (ListNode* a, ListNode* b) {
-            return a->val > b->val;
-        }
-    };
-
     ListNode* mergeKLists(vector<ListNode*>& lists) {
-        priority_queue<ListNode*, vector<ListNode*>, Cmp> heap;
-        auto dummy = new ListNode(-1), tail = dummy;
-        for (auto l : lists) if (l) heap.push(l);
+        auto cmp = [](const ListNode * a, const ListNode * b) {
+            return a->val > b->val; // 最小堆
+        };
 
+        priority_queue<ListNode*, vector<ListNode*>, decltype(cmp)> heap;
+
+        for (auto head : lists)
+            if (head)   // ATTENTION
+                heap.push(head);
+        
+        auto dummy = new ListNode(-1);
+        auto pre = dummy;
         while (heap.size()) {
-            auto t = heap.top();
-            heap.pop();
-
-            tail = tail->next = t;
-            if (t->next) heap.push(t->next);
+            auto t = heap.top(); heap.pop();
+            pre->next = t;
+            pre = t;
+            if (t->next)
+                heap.push(t->next);
         }
-
         return dummy->next;
     }
 };
@@ -960,7 +1099,9 @@ class Solution:
 
 > [!TIP] **思路**
 > 
+> 细节
 > 
+> - while 中: 使用 `计数` / `指针` 判断的区分
 
 <details>
 <summary>详细代码</summary>
@@ -1109,7 +1250,7 @@ public:
         int tot = 0;
         while (t) t = t->next, ++ tot ;
         // if (!tot || tot == 1 || tot%k == 0) return head;
-        if (tot <= 1 || k%tot == 0) return head;
+        if (tot <= 1 || k % tot == 0) return head;
         k %= tot;
         ListNode *slow = head, *fast = head;
         while (k -- ) fast = fast->next;
@@ -1368,7 +1509,7 @@ class Solution:
 
 > [!TIP] **思路**
 > 
-> 
+> 数量细节
 
 <details>
 <summary>详细代码</summary>
@@ -1483,7 +1624,7 @@ class Solution:
 
 > [!TIP] **思路**
 > 
-> 
+> p = p->next->next
 
 <details>
 <summary>详细代码</summary>
@@ -1620,7 +1761,7 @@ class Solution:
 
 > [!TIP] **思路**
 > 
-> 
+> a + b + c 分段拆解，推导
 
 <details>
 <summary>详细代码</summary>
@@ -1685,13 +1826,164 @@ class Solution:
 
 * * *
 
+> [!NOTE] **[LeetCode 876. 链表的中间结点](https://leetcode.cn/problems/middle-of-the-linked-list/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 参考本页起始关于链表中点的讨论
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* middleNode(ListNode* head) {
+        auto dummy = new ListNode(-1);
+        dummy->next = head;
+
+        auto slow = dummy, fast = dummy;
+        while (fast && fast->next)
+            slow = slow->next, fast = fast->next->next;
+        // return slow;
+
+        // 特殊处理 如果有两个中间节点 返回第二个中间节点
+        // 如何区分？本质就是偶数长度 => fast != nullptr
+        if (fast)
+            return slow->next;
+        return slow;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 2095. 删除链表的中间节点](https://leetcode.cn/problems/delete-the-middle-node-of-a-linked-list/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 坑 本题是中间靠右且要找中间的前一个
+> 
+> 注意逻辑细节 记录 slow 前面的一个位置
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 标准**
+
+```cpp
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* deleteMiddle(ListNode* head) {
+        auto dummy = new ListNode(-1);
+        dummy->next = head;
+
+        auto slow = dummy, fast = dummy;
+        ListNode *pslow = nullptr; // ATTENTION
+        while (fast && fast->next)
+            pslow = slow, slow = slow->next, fast = fast->next->next;
+        
+        // slow 是中间或左侧末尾
+        if (fast == nullptr) {
+            // 中间
+            // if (pslow->next)
+                pslow->next = pslow->next->next;
+        } else {
+            // if (slow->next)
+                slow->next = slow->next->next;
+        }
+        return dummy->next;
+    }
+};
+```
+
+##### **C++ 老代码**
+
+```cpp
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* deleteMiddle(ListNode* head) {
+        ListNode * dummy = new ListNode(-1);
+        dummy->next = head;
+        auto slow = dummy, fast = dummy;
+        while (fast->next && fast->next->next)
+            fast = fast->next->next, slow = slow->next;
+        if (slow->next)
+            slow->next = slow->next->next;
+        return dummy->next;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[LeetCode 143. 重排链表](https://leetcode.cn/problems/reorder-list/)**
 > 
 > 题意: TODO
 
 > [!TIP] **思路**
 > 
-> 
+> 中点应用
 
 <details>
 <summary>详细代码</summary>
@@ -2806,63 +3098,6 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2095. 删除链表的中间节点](https://leetcode.cn/problems/delete-the-middle-node-of-a-linked-list/)**
-> 
-> 题意: TODO
-
-> [!TIP] **思路**
-> 
-> 坑
-> 
-> - 本题是中间靠右且要找中间的前一个 所以 `while (fast->next && fast->next->next)`
-> 
-> - dummy->next
-
-<details>
-<summary>详细代码</summary>
-<!-- tabs:start -->
-
-##### **C++**
-
-```cpp
-/**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode() : val(0), next(nullptr) {}
- *     ListNode(int x) : val(x), next(nullptr) {}
- *     ListNode(int x, ListNode *next) : val(x), next(next) {}
- * };
- */
-class Solution {
-public:
-    ListNode* deleteMiddle(ListNode* head) {
-        ListNode * dummy = new ListNode(-1);
-        dummy->next = head;
-        auto slow = dummy, fast = dummy;
-        while (fast->next && fast->next->next)
-            fast = fast->next->next, slow = slow->next;
-        if (slow->next)
-            slow->next = slow->next->next;
-        return dummy->next;
-    }
-};
-```
-
-##### **Python**
-
-```python
-
-```
-
-<!-- tabs:end -->
-</details>
-
-<br>
-
-* * *
-
 > [!NOTE] **[LeetCode 708. 循环有序列表的插入](https://leetcode.cn/problems/insert-into-a-sorted-circular-linked-list/)** [TAG]
 > 
 > 题意: TODO
@@ -2948,7 +3183,7 @@ public:
 
 > [!TIP] **思路**
 > 
-> 
+> 梳理细节 标准做法
 
 <details>
 <summary>详细代码</summary>
@@ -2976,20 +3211,27 @@ public:
     }
 
     vector<Node*> dfs(Node* head) {
-        if (!head) return {NULL, NULL};
+        if (!head) return {nullptr, nullptr};
+
+        // Node *dummy = new Node{-1, nullptr, nullptr, nullptr};
+        // dummy->next = head;
         auto cur = head, tail = head;
+
         while (cur) {
-            tail = cur;
             if (cur->child) {
                 auto t = dfs(cur->child);
-                cur->child = NULL;
+                cur->child = nullptr;
+
+                // set next
                 t[1]->next = cur->next;
                 if (cur->next) cur->next->prev = t[1];
                 cur->next = t[0];
-                t[0]->prev = cur;
-                cur = t[1]->next;
+                t[0]->prev = cur;   // 可以保证 t[0] != nullptr
+
                 tail = t[1];
+                cur = t[1]->next;
             } else {
+                tail = cur;     // ATTENTION
                 cur = cur->next;
             }
         }

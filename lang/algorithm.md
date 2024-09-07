@@ -636,3 +636,29 @@ public:
 <br>
 
 * * *
+
+### 自定义比较优先级
+
+> [!TIP] **在 STL 中使用自定义比较优先级**
+>
+> Eg: heap 自定义比较优先级
+>
+> - lambda + decltype
+>
+> - struct `bool operator()`
+>
+> ```c++
+> // 1.
+> auto cmp = [](const ListNode * a, const ListNode * b) {
+>     return a->val > b->val; // 最小堆
+> };
+> priority_queue<ListNode*, vector<ListNode*>, decltype(cmp)> heap;
+> 
+> // 2.
+> struct cmp {
+>     bool operator()(ListNode* a, ListNode* b) {
+>         return a->val > b->val;
+>     }
+> };
+> priority_queue<ListNode*, vector<ListNode*>, cmp> heap;
+> ```
