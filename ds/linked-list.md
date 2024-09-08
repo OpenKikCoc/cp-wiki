@@ -1107,7 +1107,56 @@ class Solution:
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++**
+##### **C++ 标准**
+
+```cpp
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* reverseKGroup(ListNode* head, int k) {
+        auto dummy = new ListNode(-1);
+        dummy->next = head;
+
+        for (auto pre = dummy;;) {
+            auto p = pre;
+            for (int i = 0; i < k; ++ i ) {
+                p = p->next;
+                // ATTENTION 注意判断顺序 放在 p->next 之后
+                if (!p)
+                    return dummy->next;
+            }
+            // now p is the last one
+            auto start = pre->next;
+            auto next_start = p->next;
+            {
+                // 反转 & 连结
+                // 设置 r_pre 方便直接把第一个和下面一段连接起来
+                auto r_cur = pre->next, r_pre = next_start;
+                while (r_cur != next_start) {   // ATTENTION
+                    auto next = r_cur->next;
+                    r_cur->next = r_pre;
+                    r_pre = r_cur, r_cur = next;
+                }
+                // 连结
+                pre->next = r_pre;
+            }
+            pre = start;    // ATTENTION 细节
+        }
+        return dummy->next;
+    }
+};
+```
+
+##### **C++ 旧**
 
 ```cpp
 class Solution {
@@ -1762,6 +1811,8 @@ class Solution:
 > [!TIP] **思路**
 > 
 > a + b + c 分段拆解，推导
+> 
+> https://www.bilibili.com/video/BV1KG4y1G7cu
 
 <details>
 <summary>详细代码</summary>
@@ -1988,6 +2039,59 @@ public:
 <details>
 <summary>详细代码</summary>
 <!-- tabs:start -->
+
+##### **C++ 标准**
+
+```cpp
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    void print(ListNode * head) {
+        auto p = head;
+        while (p) {
+            cout << p->val << ' ';
+            p = p->next;
+        }
+        cout << endl;
+    }
+
+    void reorderList(ListNode* head) {
+        auto dummy = new ListNode(-1);
+        dummy->next = head;
+
+        auto slow = dummy, fast = dummy;
+        while (fast && fast->next)
+            slow = slow->next, fast = fast->next->next;
+        // slow 恰好为中点 或前半段末尾
+
+        ListNode * pre = nullptr, * cur = slow->next;
+        while (cur) {
+            auto next = cur->next;
+            cur->next = pre;
+            pre = cur, cur = next;
+        }
+        slow->next = nullptr;   // reset 前一段连接处
+
+        auto l1 = dummy->next, l2 = pre;
+        pre = dummy;
+        while (l1 || l2) {
+            pre = pre->next = l1, l1 = l1->next;
+            if (l2)
+                pre = pre->next = l2, l2 = l2->next;
+        }
+        pre->next = nullptr;
+    }
+};
+```
 
 ##### **C++ 1**
 
