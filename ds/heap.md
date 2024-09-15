@@ -1332,3 +1332,97 @@ public:
 <br>
 
 * * *
+
+### 理论推导 -> 简化堆模拟
+
+> [!NOTE] **[LeetCode 3266. K 次乘运算后的最终数组 II](https://leetcode.cn/problems/final-array-state-after-k-multiplication-operations-ii/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 如果模拟 操作次数可能达到 1e9
+> 
+> 考虑结合其特性，在完成部分模拟操作后直接 break 以简化计算
+> 
+> 【套路题】
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // After the k operations, apply modulo 109 + 7 to every value in nums.
+    // => 在此之前 堆内元素都是 LL
+    //
+    // 【套路题】
+    // 首先用最小堆手动模拟操作，直到原数组的最大值 mx 成为这 n 个数的最小值
+    // 随后不需要手动模拟 假设此时还剩下k次操作 则
+    //  - 对于前 k mod n 小的数字 还可以操作 k/n + 1 次
+    //  - 其余元素 操作 k/n 次
+    
+    using LL = long long;
+    using PLI = pair<LL, int>;
+    const static int MOD = 1e9 + 7;
+    
+    LL qpow(LL a, LL b) {
+        LL ret = 1;
+        while (b) {
+            if (b & 1)
+                ret = ret * a % MOD;
+            a = a * a % MOD;
+            b >>= 1;    // ATTENTION
+        }
+        return ret;
+    }
+    
+    vector<int> getFinalState(vector<int>& nums, int k, int multiplier) {
+        if (multiplier == 1)
+            return nums;
+        
+        int n = nums.size();
+        
+        // greater<>()
+        priority_queue<PLI, vector<PLI>, greater<>> heap;
+        for (int i = 0; i < n; ++ i )
+            heap.push({nums[i], i});
+        
+        LL maxv = ranges::max(nums);    // ATTENTION trick
+        // ATTENTION: k 消耗完 || 堆顶是 maxv
+        for ( ; k && heap.top().first < maxv; -- k ) {
+            auto [v, idx] = heap.top(); heap.pop(); // 不能 &
+            heap.push({v * multiplier, idx});
+        }
+        
+        // 剩余的直接用公式算
+        vector<PLI> xs;
+        while (heap.size())
+            xs.push_back(heap.top()), heap.pop();
+        sort(xs.begin(), xs.end());
+        
+        vector<int> res(n);
+        for (int i = 0; i < n; ++ i ) {
+            auto & [v, idx] = xs[i];
+            res[idx] = v % MOD * qpow(multiplier, k / n + (i < k % n)) % MOD;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

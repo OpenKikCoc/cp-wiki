@@ -985,6 +985,10 @@ class BSTIterator:
 > 题意: TODO
 
 > [!TIP] **思路**
+> 
+> 1. in-order 遍历以及具体推导过程
+> 
+> 2. morris
 >
 > > morris遍历利用的是树的叶节点左右孩子为空（树的大量空闲指针）
 > >
@@ -1012,7 +1016,7 @@ class BSTIterator:
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++**
+##### **C++ morris**
 
 ```cpp
 /**
@@ -1053,6 +1057,82 @@ public:
             cur = cur->right;
         }
         swap(p1->val, p2->val);
+    }
+};
+```
+
+##### **C++ in-order**
+
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode * first, * second;
+    TreeNode * pre;
+
+    void init() {
+        first = nullptr, second = nullptr;
+        pre = nullptr;
+    }
+
+    void iteration(TreeNode * root) {
+        stack<TreeNode*> stk;
+        while (root || stk.size()) {
+            while (root) {
+                stk.push(root);
+                root = root->left;
+            }
+
+            auto cur = stk.top(); stk.pop();
+            {
+                if (pre /*ATTENTION*/ && pre->val > cur->val) {
+                    if (first == nullptr)
+                        first = pre, second = cur;  // ATTENTION 取两个的前一个
+                    else
+                        second = cur;               // ATTENTION 取两个的后一个
+                    
+                    // OR
+                    // if (first == nullptr)
+                    //     first = pre;
+                    // second = cur;
+                }
+                pre = cur;  // reset
+            }
+            root = cur->right;
+        }
+    }
+
+    void recursion(TreeNode * root) {
+        if (!root)
+            return;
+        
+        recursion(root->left);
+        if (pre && pre->val > root->val) {
+            if (first == nullptr)
+                first = pre;
+            second = root;
+        }
+        pre = root;
+        recursion(root->right);
+    }
+
+    void recoverTree(TreeNode* root) {
+        init();
+        if (rand() & 1)
+            iteration(root);
+        else
+            recursion(root);
+        swap(first->val, second->val);
     }
 };
 ```

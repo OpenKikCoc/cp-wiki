@@ -16,6 +16,8 @@
 >     -   当偶数长度时，f1 恰好找到后半部分起点，f2 恰好找到前半部分末尾
 >     -   对于 f1: fast = nullptr 意味着偶数长度
 >     -   对于 f2: fast = nullptr 意味着奇数长度
+> 
+> -   链表 **归并排序** 需要 f2，因为 f1 在偶数长度 (len=2) 时会陷入 **无限循环**
 
 <details>
 <summary>详细代码</summary>
@@ -2352,13 +2354,15 @@ public:
         if (head == nullptr || head->next == nullptr)
             return head;    // ATTENTION head
         
-        // 这种写法 当循环结束时
-        // - 奇数长度: slow为中点
-        // - 偶数长度: slow为前一段的末尾
-        ListNode * slow = head, * fast = head;
-        while (fast->next && fast->next->next)
+        // 这种写法 当循环结束时 slow位于前半段
+        // ATTENTION: 如果不加 dummy 会导致无限循环...
+        auto dummy = new ListNode(-1);
+        dummy->next = head;
+
+        ListNode * slow = dummy, * fast = dummy;
+        while (fast && fast->next)
             slow = slow->next, fast = fast->next->next;
-        
+
         // p, q 分别为两段的起始
         ListNode * p = head, * q = slow->next;
         slow->next = nullptr;   // 截断

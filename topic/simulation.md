@@ -4557,6 +4557,171 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 3267. 统计近似相等数对 II](https://leetcode.cn/problems/count-almost-equal-pairs-ii/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 整体思路较为直观: 对于两个数对 暴力枚举其中一个发生交换的下标即可
+> 
+> 问题在于 3 -> 30 的转换 (无中生有)
+> 
+> 考虑【转换枚举顺序】按长度递增枚举即可 => 按值递增即可
+> 
+> ATTENTION: 转换技巧以简单实现
+> 
+> PS:
+> 
+> -   静态数组 digits 加速 (N 8->7 否则 TLE)
+> 
+> -   vector 比 set 快
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    bool get(int a, int b) {
+        if (a == b)
+            return true;
+        string s = to_string(a);
+        int m = s.size();
+        for (int i = 0; i < m; ++ i )
+            for (int j = i + 1; j < m; ++ j ) {
+                swap(s[i], s[j]);
+                int t = stoi(s);
+                if (t == b)
+                    return true;
+                swap(s[i], s[j]);
+            }
+        return false;
+    }
+    
+    int countPairs(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        
+        int n = nums.size(), res = 0;
+        unordered_map<int, int> hash;
+        for (int i = 0; i < n; ++ i ) {
+            unordered_set<int> S;
+            S.insert(nums[i]);
+            
+            string s = to_string(nums[i]);
+            int m = s.size();
+            for (int x = 0; x < m; ++ x )
+                for (int y = x + 1; y < m; ++ y ) {
+                    swap(s[x], s[y]);
+                    S.insert(stoi(s));
+                    for (int a = 0; a < m; ++ a )
+                        for (int b = a + 1; b < m; ++ b ) {
+                            swap(s[a], s[b]);
+                            S.insert(stoi(s));
+                            swap(s[a], s[b]);
+                        }
+                    swap(s[x], s[y]);
+                }
+            
+            for (auto x : S)
+                res += hash[x];
+            
+            hash[nums[i]] ++ ;
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 复杂写法**
+
+为了解决无法针对 3 生成 30 的情况，枚举所有 N 个数位
+
+-   静态数组 digits 加速 (N 8->7 否则 TLE)
+-   vector 比 set 快
+
+```cpp
+class Solution {
+public:
+    const static int N = 7; // 8超时
+    
+    int digits[N];
+    
+    void parse(int value) {
+        for (int i = 0, x = value; i < N; ++ i , x /= 10)
+            digits[i] = x % 10;
+    }
+
+    int get() {
+        int ret = 0;
+        for (int i = N - 1; i >= 0; -- i )
+            ret = ret * 10 + digits[i];
+        return ret;
+    }
+    
+    int countPairs(vector<int>& nums) {
+        int n = nums.size(), res = 0;
+        unordered_map<int, int> hash;
+        // 枚举被交换的数字
+        for (int i = 0; i < n; ++ i ) {
+            // unordered_set<int> S;
+            // S.insert(nums[i]);  // 不产生修改
+            
+            vector<int> t;
+            t.push_back(nums[i]);
+            
+            // 为了能够让 3 产生 30，枚举最大数位
+            parse(nums[i]);
+            
+            // (7*4)^2 => 900
+            for (int x = 0; x < N; ++ x )
+                for (int y = x + 1; y < N; ++ y ) {
+                    swap(digits[x], digits[y]);
+                    // ATTENTION 也可以只交换一次 这里也要 insert
+                    // S.insert(get());
+                    t.push_back(get());
+                    for (int a = 0; a < N; ++ a )
+                        for (int b = a + 1; b < N; ++ b ) {
+                            swap(digits[a], digits[b]);
+                            // S.insert(get());
+                            t.push_back(get());
+                            swap(digits[a], digits[b]);
+                        }
+                    swap(digits[x], digits[y]);
+                }
+            
+            // for (auto x : S)
+            //     res += hash[x];
+            
+            sort(t.begin(), t.end());
+            t.resize(unique(t.begin(), t.end()) - t.begin());
+            
+            for (auto x : t)
+                res += hash[x];
+            
+            hash[nums[i]] ++ ;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### STL 简化模拟
 
 > [!NOTE] **[LeetCode 2122. 还原原数组](https://leetcode.cn/problems/recover-the-original-array/)** [TAG]
