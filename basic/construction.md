@@ -1924,6 +1924,113 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 3272. 统计好整数的数目](https://leetcode.cn/problems/find-the-count-of-good-integers/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典 回文数生成+组合数学
+> 
+> 枚举生成回文串：
+> 
+> -   对于不同串需要去重 (sort + unsorted_set)
+> 
+> -   对于特定串需要排除 0 前缀 (`(n-c[0])*p[n-1]` 随后累除 `p[c[i]]` 实现可重集去重)
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+
+    LL p[11];
+    void init() {
+        p[0] = 1;
+        for (int i = 1; i < 11; ++ i )
+            p[i] = p[i - 1] * i;
+    }
+    
+    bool check(LL x, int k) {
+        if (x % k)
+            return false;
+        return true;
+        // string s = to_string(x);
+        // for (int i = 0, j = s.size() - 1; i < j; ++ i , -- j )
+        //     if (s[i] != s[j]) {
+        //         cout << " bingo" << endl;
+        //         return false;
+        //     }
+        // return true;
+    }
+
+    LL calc(string & s) {
+        static int c[10];
+        memset(c, 0, sizeof c);
+        for (auto x : s)
+            c[x - '0'] ++ ;
+        
+        // 不能以0作为开头 剩下的全排列
+        int n = s.size();
+        LL ret = (n - c[0]) * p[n - 1];
+        // 去重
+        for (int i = 0; i < 10; ++ i )
+            ret = ret / p[c[i]];    // ATTENTION: c[i]
+        return ret;
+    }
+
+    long long countGoodIntegers(int n, int k) {
+        // WA
+        // if (n == 1)
+        //     return 10 / k;
+        init();
+        
+        int base = pow(10, (n - 1) / 2);
+        int op = (n & 1) ? 10 : 1;
+        LL r = pow(10, n);
+        
+        LL res = 0;
+        unordered_set<string> S;
+        for (LL i = base; i < r; ++ i ) {
+            LL t = i / op;
+            LL conbined = i;
+            while (t)
+                conbined = conbined * 10 + t % 10, t /= 10;
+            
+            if (conbined >= r)
+                break;
+            if (check(conbined, k)) {
+                string str = to_string(conbined);
+                sort(str.begin(), str.end());
+                if (S.count(str))
+                    continue;
+                res += calc(str);
+                S.insert(str);
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 进制数 思想
 
 > [!NOTE] **[Codeforces Pashmak and Buses](http://codeforces.com/problemset/problem/459/C)** [TAG]

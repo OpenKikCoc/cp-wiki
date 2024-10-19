@@ -3985,6 +3985,73 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 3273. 对 Bob 造成的最少伤害](https://leetcode.cn/problems/minimum-amount-of-damage-dealt-to-bob/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典 贪心排序 => 相邻交换法
+> 
+> 加快推导速度
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    // using PII = pair<int, int>;
+    using PDII = tuple<double, int, int>;
+    
+    long long minDamage(int power, vector<int>& damage, vector<int>& health) {
+        int n = damage.size();
+        vector<PDII> xs;
+        for (int i = 0; i < n; ++ i ) {
+            int d = damage[i], t = (health[i] + power - 1) / power;
+            double f = (double)d / t;
+            xs.push_back({f, d, t});
+        }
+        sort(xs.begin(), xs.end(), [](const PDII & a, const PDII & b) {
+            // ATTENTION 并非直接按照 damage 的降序排序
+            // 实际上，需要考虑影响时间。对于下面的 case 显然先选择第二个是最优的
+            // 62
+            // [80,79]
+            // [86,13] => [2, 1] (按照时间算)
+            //
+            // a1/a2 >= b1/b2
+            // a1*b2 >= b1*a2
+            // return (LL)a.first * b.second >= (LL)b.first * a.second;
+            return get<0>(a) > get<0>(b);
+        });
+        
+        LL res = 0, sum = 0;
+        for (auto [_, d, t] : xs) {
+            sum += t;
+            res += sum * d;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 堆 + 后悔
 
 > [!NOTE] **[Luogu [JSOI2007]建筑抢修](https://www.luogu.com.cn/problem/P4053)**
