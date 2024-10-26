@@ -50,6 +50,12 @@
 
 [A-Programmers-Guide-to-English](https://github.com/yujiangshui/A-Programmers-Guide-to-English)
 
+[Oxford English Level Test](https://www.oxfordonlineenglish.com/english-level-test/vocabulary)
+
+> duolingo 95 - 119 120 - 129
+> 
+> Rosetta Stone b2/c1
+
 ## Quant
 
 Heard on the Street: Quantitative Questions from Wall Street Job Interviews
