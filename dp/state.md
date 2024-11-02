@@ -2524,6 +2524,92 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 3276. 选择矩阵中单元格的最大得分](https://leetcode.cn/problems/select-cells-in-grid-with-maximum-score/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 重点在于思路拆解
+> 
+> 分析题意
+> 
+> -   选取元素不同行
+> -   选取元素值不同
+> 
+> 显然可以按值统计 对行状压
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 显然无法贪心 考虑暴搜或DP
+    //
+    // DP 无非两种
+    // 1. 考虑到第i行 已经选了哪些元素 复杂度 O(n 2^(nm) nm)
+    // 2. 考虑到第i个元素 已经用了哪些行 O(nm 2^n n)          => choosed
+    //
+    // [行数和值都不能重复，行数的大小明显小于值，所以对行数进行状态压缩，统计每个值所在的行]
+    
+    const static int N = 110, M = (1 << 10) + 1;
+    
+    int f[N][M];    // 考虑前i个数字 目前选取行数的状压表示为j的情况下 的最大值
+    
+    int maxScore(vector<vector<int>>& grid) {
+        // 1. 将行状压 记录每个数字所在的行(可能多个行)
+        unordered_map<int, int> pos;
+        int n = grid.size();
+        for (int i = 0; i < n; ++ i )
+            for (int x : grid[i])
+                pos[x] |= 1 << i;
+        
+        vector<int> all_nums;
+        for (auto & [k, _] : pos)
+            all_nums.push_back(k);
+        
+        int m = all_nums.size();
+        int cap = 1 << n;
+        
+        memset(f, 0, sizeof f);
+        
+        for (int i = 1; i <= m; ++ i ) {
+            int x = all_nums[i - 1];    // 当前数字为 x
+            for (int j = 0; j < cap; ++ j ) {
+                // 不选x
+                f[i][j] = f[i - 1][j];
+                // 选x 则之前的行不能冲突 (因为已经按数值做了聚合 可以保证数字一定不重复)
+                for (int k = 0; k < n; ++ k )
+                    if ((pos[x] >> k & 1) && (j >> k & 1) == 0)
+                        f[i][j] = max(f[i][j], f[i - 1][j ^ (1 << k)] + x);
+            }
+        }
+        
+        int res = 0;
+        for (int j = 0; j < cap; ++ j )
+            res = max(res, f[m][j]);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 进阶
 
 > [!NOTE] **[AcWing 524. 愤怒的小鸟](https://www.acwing.com/problem/content/526/)**

@@ -1693,6 +1693,87 @@ class Solution:
 
 * * *
 
+> [!NOTE] **[LeetCode 3277. 查询子数组最大异或值](https://leetcode.cn/problems/maximum-xor-score-subarray-queries/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 分析拆解过程
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // [a,b,c]      -> [ab,bc]      -> [ab^2c]
+    // [a,b,c,d]    -> [ab,bc,cd]   -> [ab^2c,bc^2d]    -> [ab^3c^3d] = [abc,bcd]
+    //    =>
+    // 假设 f[i][j] 表示下标 [i,j] 的子数组的 数组异或值 则有
+    //      f[i][j] = f[i][j - 1] ^ f[i + 1][j]
+    //
+    // 设 [i,j] 之间所有子数组的 f 的最大值为 g[i][j] 则有
+    //      g[i][j] = max(f[i][j], g[i][j - 1], g[i + 1][j])
+    // 查询时直接访问 g 数组即可
+    //
+    // => 区间DP套区间DP
+    
+    const static int N = 2010;
+    
+    int f[N][N], g[N][N];
+    
+    void init() {
+        memset(f, 0, sizeof f);
+        memset(g, 0, sizeof g);
+    }
+    
+    vector<int> maximumSubarrayXor(vector<int>& nums, vector<vector<int>>& queries) {
+        int n = nums.size();
+        init();
+        
+        for (int i = 1; i <= n; ++ i )
+            f[i][i] = nums[i - 1];  // 初始化
+        for (int w = 2; w <= n; ++ w )
+            for (int l = 1; l + w - 1 <= n; ++ l ) {
+                int r = l + w - 1;
+                f[l][r] = f[l][r - 1] ^ f[l + 1][r];
+            }
+        
+        for (int i = 1; i <= n; ++ i )
+            g[i][i] = nums[i - 1];
+        for (int w = 2; w <= n; ++ w )
+            for (int l = 1; l + w - 1 <= n; ++ l ) {
+                int r = l + w - 1;
+                g[l][r] = max(f[l][r], max(g[l][r - 1], g[l + 1][r]));
+            }
+        
+        vector<int> res;
+        for (auto & q : queries) {
+            int l = q[0], r = q[1];
+            res.push_back(g[l + 1][r + 1]);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 二维
 
 > [!NOTE] **[AcWing 321. 棋盘分割](https://www.acwing.com/problem/content/description/323/)**
