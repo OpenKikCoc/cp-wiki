@@ -6815,6 +6815,60 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 3282. 到达数组末尾的最大得分](https://leetcode.cn/problems/reach-end-of-array-with-max-score/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 脑筋急转弯 / trick
+> 
+> 显然能取最大取最大即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    
+    //      f[i] = max{f[j] + nums[i] * (j - i)}
+    // =>        = max{f[j] + nums[i] * j} - nums[i] * i;
+    // =>          从后向前遍历时 如果f[j_l] < f[j_r]则没有必要使用 (必然更差) => TLE
+    //
+    // => 脑筋急转弯 每走一步的开销是nums[i] 则一定尽量按最大的nums[i]来走...
+    
+    long long findMaximumScore(vector<int>& nums) {
+        int n = nums.size();
+        
+        LL res = 0;
+        for (int i = 1, step = nums[0]; i < n; ++ i ) {
+            res += step;
+            step = max(step, nums[i]);
+        }
+        
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 动态统计计数题
 
 > [!NOTE] **[LeetCode 1224. 最大相等频率](https://leetcode.cn/problems/maximum-equal-frequency/)** [TAG]

@@ -851,6 +851,113 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 3283. 吃掉所有兵需要的最多移动次数](https://leetcode.cn/problems/maximum-number-of-moves-to-kill-all-pawns/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然可以状压枚举
+> 
+> 注意优雅的实现处理细节
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 看到 position.length <= 15 考虑状压枚举
+    // f[i][j] 当前已经访问过的兵二进制状态为i 当前在第j个兵 的总距离
+    // 其中 由i的bit数量可以推断是 alice/bob 操作，并影响其转移来源取 max/min
+    //
+    using PII = pair<int, int>;
+    const static int N = 50, M = 16;    // M = 15+1 把起始点也作为一个兵
+    
+    int dx[8] = {-1, -2, -2, -1, 1, 2, 2, 1}, dy[8] = {-2, -1, 1, 2, 2, 1, -1, -2};
+    int dis[M][N][N];   // 记录每个兵到任意位置到距离
+    
+    vector<vector<int>> ps;
+    int n;
+    
+    void calc_dis() {
+        memset(dis, -1, sizeof dis);
+        
+        auto bfs = [&](int s) {
+            queue<PII> q;
+            q.push({ps[s][0], ps[s][1]});
+            dis[s][ps[s][0]][ps[s][1]] = 0;
+            while (!q.empty()) {
+                auto [x, y] = q.front();
+                q.pop();
+                for (int i = 0; i < 8; ++ i ) {
+                    int nx = x + dx[i], ny = y + dy[i];
+                    if (nx < 0 || nx >= 50 || ny < 0 || ny >= 50)
+                        continue;
+                    if (dis[s][nx][ny] != -1)
+                        continue;
+                    dis[s][nx][ny] = dis[s][x][y] + 1;
+                    q.push({nx, ny});
+                }
+            }
+        };
+        for (int i = 0; i < n; ++ i )
+            bfs(i);
+    }
+    
+    int f[1 << M][M];   // 状态定义
+    
+    int dp(int st, int last) {
+        if (st == (1 << n) - 1)
+            return 0;
+        
+        if (f[st][last] != -1)
+            return f[st][last];
+        
+        // 奇数alice先走,求最大(初始化最小)
+        int bit_count = __builtin_popcount(st);
+        int ret = (bit_count & 1) ? -1e9 : 1e9;
+        
+        // 枚举下一位往哪里去
+        // ATTENTION: 如果要枚举上一位从哪里来 初始化状态会更为复杂
+        for (int i = 0; i < n; ++ i ) {
+            if (st >> i & 1)
+                continue;
+            int t = dp(st | 1 << i, i) + dis[last][ps[i][0]][ps[i][1]];
+            ret = (bit_count & 1) ? max(ret, t) : min(ret, t);
+        }
+        return f[st][last] = ret;
+    }
+    
+    int maxMoves(int kx, int ky, vector<vector<int>>& positions) {
+        positions.push_back({kx, ky});  // ATTENTION: 加入起始点 简化后续流程
+        this->ps = positions;
+        this->n = ps.size();
+        
+        calc_dis();
+        
+        memset(f, -1, sizeof f);
+        return dp(1 << (n - 1), n - 1);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 递推计算
 
 > [!NOTE] **[AcWing 291. 蒙德里安的梦想](https://www.acwing.com/problem/content/293/)**
