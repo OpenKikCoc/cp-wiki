@@ -1583,7 +1583,7 @@ public:
 
 * * *
 
-> [!NOTE] **[LeetCode 2831. 找出最长等值子数组](https://leetcode.cn/problems/find-the-longest-equal-subarray/)**
+> [!NOTE] **[LeetCode 2831. 找出最长等值子数组](https://leetcode.cn/problems/find-the-longest-equal-subarray/)** [TAG]
 > 
 > 题意: TODO
 
@@ -1592,6 +1592,8 @@ public:
 > 经典暴力优化
 > 
 > 按数值对下标分类 随后同向双指针
+> 
+> 【分组(相同元素) + 同向双指针】
 
 <details>
 <summary>详细代码</summary>

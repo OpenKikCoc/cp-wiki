@@ -367,13 +367,15 @@ class Solution:
 
 * * *
 
-> [!NOTE] **[LeetCode 395. 至少有K个重复字符的最长子串](https://leetcode.cn/problems/longest-substring-with-at-least-k-repeating-characters/)**
+> [!NOTE] **[LeetCode 395. 至少有K个重复字符的最长子串](https://leetcode.cn/problems/longest-substring-with-at-least-k-repeating-characters/)** [TAG]
 > 
 > 题意: TODO
 
 > [!TIP] **思路**
 > 
 > trick + 滑动窗口
+> 
+> 【想到 先枚举字符种类 再双指针】 类似的 [LeetCode 1763. 最长的美好子字符串](https://leetcode.cn/problems/longest-nice-substring/)
 
 <details>
 <summary>详细代码</summary>
