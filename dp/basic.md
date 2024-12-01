@@ -3477,6 +3477,96 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 3288. 最长上升路径的长度](https://leetcode.cn/problems/length-of-the-longest-increasing-path/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 1. 分割点思想: 容易想到 显然可以将 `k` 位置作为分界点 分别计算 `k` 之前/之后的 LIS
+> 
+> 2. 细节: 求后面部分是需要 reverse value
+> 
+> 3. 排序: 初始化排序时 第二维度比较关系需要反转 避免 `x` 相同的干扰
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 1. 分割点思想: 容易想到 显然可以将k位置作为分界点 分别计算k之前/之后的LIS
+    // 2. 细节: 求后面部分是需要 reverse value
+    // 3. 排序: 初始化排序时 第二维度比较关系需要反转 避免x相同的干扰
+    using PIII = tuple<int, int, int>;
+    
+    int get_lis(vector<int> & xs) {
+        int last_val = xs.back();
+        vector<int> t;
+        for (auto x : xs)
+            if (t.empty() || t.back() < x)  // 互不相同
+                t.push_back(x);
+            else
+                *lower_bound(t.begin(), t.end(), x) = x;
+        
+        for (int i = 0; i < t.size(); ++ i )
+            if (t[i] == last_val)
+                return i + 1;
+        return 0;
+    }
+    
+    int maxPathLength(vector<vector<int>>& coordinates, int k) {
+        int n = coordinates.size();
+        vector<PIII> xs;
+        for (int i = 0; i < n; ++ i )
+            xs.push_back({coordinates[i][0], coordinates[i][1], i});
+        sort(xs.begin(), xs.end(), [](const PIII & a, const PIII & b) {
+            if (get<0>(a) != get<0>(b))
+                return get<0>(a) < get<0>(b);
+            return get<1>(a) > get<1>(b);   // ATTENTION 避免x相同、y不同的情况下，后续逻辑发生干扰
+        });
+        // 现在x天然有序 y待排序
+        int p = -1;
+        for (int i = 0; i < n; ++ i )
+            if (get<2>(xs[i]) == k)
+                p = i;
+        
+        int res = 0;
+        {
+            // 从左往右
+            vector<int> t;
+            for (int i = 0; i <= p; ++ i )
+                t.push_back(get<1>(xs[i]));
+            res += get_lis(t);
+        }
+        {
+            vector<int> t;
+            for (int i = n - 1; i >= p; -- i )
+                t.push_back(-get<1>(xs[i]));    // ATTENTION reverse value
+            res += get_lis(t);
+        }
+        
+        return res - 1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 类 LIS 思想
 
 > [!NOTE] **[LeetCode 368. 最大整除子集](https://leetcode.cn/problems/largest-divisible-subset/)**

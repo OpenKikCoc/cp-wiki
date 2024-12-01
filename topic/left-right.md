@@ -1870,3 +1870,98 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 3287. 求出数组中最大序列值](https://leetcode.cn/problems/find-the-maximum-sequence-value-of-array/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 标准前后缀分解
+> 
+> 结合数据范围 直接暴力枚举
+> 
+> 注意状态转移的计算推导逻辑
+> 
+> > 加快速度
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // ...[子序列]
+    // 题意: 将原数组分成左右两侧, 左侧选k个[或] 右侧选k个[或]
+    //      求如何选使得二者[异或]最大
+    //
+    // 考虑 f[i][j][x] 表示左侧i个数 已经选了j个 凑出状态x是否合法
+    //      400*200*(1 << 7) = 80000*64 = 5e6
+    //
+    // ATTENTION 状态转移实现 (当前往下一个位置计算)
+    
+    const static int N = 410, M = 1 << 7;
+    
+    bool l[N][N / 2][M], r[N][N / 2][M];
+    
+    int maxValue(vector<int>& nums, int k) {
+        memset(l, 0, sizeof l), memset(r, 0, sizeof r);
+        int n = nums.size();
+        
+        {
+            // 左边
+            l[0][0][0] = true;
+            // 考虑前i个位置 选了j个 状态为x
+            // ATTENTION: 状态推导时 从当前计算下一个更简单 (如果根据前一个计算当前 状态比较难处理)
+            for (int i = 0; i < n; ++ i )
+                for (int j = 0; j <= k; ++ j )
+                    for (int x = 0; x < M; ++ x ) {
+                        // 不选当前
+                        l[i + 1][j][x] |= l[i][j][x];
+                        // 选当前
+                        if (j < k)
+                            l[i + 1][j + 1][x | nums[i]] |= l[i][j][x];
+                    }
+        }
+        {
+            // 右边
+            r[n + 1][0][0] = true;
+            // 考虑前i个位置 选了j个 状态为x
+            for (int i = n + 1; i > 1; -- i )
+                for (int j = 0; j <= k; ++ j )
+                    for (int x = 0; x < M; ++ x ) {
+                        // 不选当前
+                        r[i - 1][j][x] |= r[i][j][x];
+                        // 选当前
+                        if (j < k)
+                            r[i - 1][j + 1][x | nums[i - 1 - 1]] |= r[i][j][x];
+                    }
+        }
+        
+        int res = 0;
+        for (int i = k; i + k <= n; ++ i )  // 枚举分界点
+            for (int x = 0; x < M; ++ x )
+                for (int y = 0; y < M; ++ y )
+                    if (l[i][k][x] && r[i + 1][k][y])
+                        res = max(res, x ^ y);
+        
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
