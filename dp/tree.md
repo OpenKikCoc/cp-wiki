@@ -3239,6 +3239,157 @@ public:
 
 * * *
 
+> [!NOTE] **[3786. Total Sum of Interaction Cost in Tree Groups](https://leetcode.cn/problems/total-sum-of-interaction-cost-in-tree-groups/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 直观想到的是，没增加一颗子树，就统计增加这颗子树所带来的增益，计算时需要理清楚细节
+> 
+> 另一个更简单的思路是，思考某一条树边的贡献，则贡献只与这个树边两侧的同个组的节点数量相关，计算更简单
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 1**
+
+```cpp
+// 放里面 TLE
+using LL = long long;
+const static int N = 1e5 + 10, M = 2e5 + 10, K = 21;
+
+int h[N], e[M], ne[M], idx;
+void init() {
+    memset(h, -1, sizeof h);
+    idx = 0;
+}
+void add(int a, int b) {
+    e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+}
+
+LL s[K];
+LL sz[N][K], d[N][K];
+
+class Solution {
+public:
+    vector<int> gs;
+
+    void dfs(int u, int fa) {
+        int g = gs[u];
+        sz[u][g] = 1, d[u][g] = 0;
+        LL sum = 0;
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (j == fa)
+                continue;
+
+            dfs(j, u);
+
+            // 考虑清楚，新增一颗子树时带来的增量，分两个部分单独统计，然后叠加一条边长的数量
+            // 两侧分别认为是独立的多条带权线
+            for (int k = 0; k < K; ++ k )
+                sum += sz[u][k] * d[j][k] + sz[j][k] * d[u][k] + sz[u][k] * sz[j][k];
+
+            for (int k = 0; k < K; ++ k )
+                sz[u][k] += sz[j][k], d[u][k] += sz[j][k] + d[j][k];    // overflow, use LL
+        }
+        s[g] += sum;
+    }
+    
+    long long interactionCosts(int n, vector<vector<int>>& edges, vector<int>& group) {
+        init();
+        for (auto & e : edges)
+            add(e[0], e[1]), add(e[1], e[0]);
+
+        this->gs = group;
+
+        memset(s, 0, sizeof s);
+        memset(sz, 0, sizeof sz), memset(d, 0, sizeof d);
+        dfs(0, -1);
+
+        LL res = 0;
+        for (int i = 0; i < K; ++ i )
+            res += s[i];
+        return res;
+    }
+};
+```
+
+##### **C++ 2**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    const static int N = 1e5 + 10, M = 2e5 + 10, K = 21;
+
+    int h[N], e[M], ne[M], idx;
+    void init() {
+        memset(h, -1, sizeof h);
+        idx = 0;
+    }
+    void add(int a, int b) {
+        e[idx] = b, ne[idx] = h[a], h[a] = idx ++ ;
+    }
+
+    vector<int> gs;
+    unordered_map<int, int> tot;
+
+    int cnt[N][K];
+    LL res;
+
+    void dfs(int u, int fa) {
+        int g = gs[u];
+        cnt[u][g] = 1;
+        for (int i = h[u]; ~i; i = ne[i]) {
+            int j = e[i];
+            if (j == fa)
+                continue;
+
+            dfs(j, u);
+
+            for (int k = 0; k < K; ++ k ) {
+                // 计算 u->j 这一条边的贡献 【包括从这一条边向上的路径，所以需要提前计算总量tot】
+                res += 1ll * cnt[j][k] * (tot[k] - cnt[j][k]);
+                cnt[u][k] += cnt[j][k];
+            }
+        }
+    }
+    
+    long long interactionCosts(int n, vector<vector<int>>& edges, vector<int>& group) {
+        init();
+        for (auto & e : edges)
+            add(e[0], e[1]), add(e[1], e[0]);
+
+        this->gs = group;
+        tot.clear();
+        for (auto x : gs)
+            tot[x] ++ ;
+
+        memset(cnt, 0, sizeof cnt);
+        res = 0;
+
+        dfs(0, -1);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 进阶：树DP状态设计
 
 > [!NOTE] **[AcWing 323. 战略游戏](https://www.acwing.com/problem/content/description/325/)**

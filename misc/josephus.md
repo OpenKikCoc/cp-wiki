@@ -190,3 +190,78 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[3782. Last Remaining Integer After Alternating Deletion Operations](https://leetcode.cn/problems/last-remaining-integer-after-alternating-deletion-operations/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 同 390. 消除游戏 https://leetcode.cn/problems/elimination-game/
+> 
+> 考虑约瑟夫环变种 重点在推理过程 (不是像前面说的那样看最后留下的数字 而是看子过程)
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 同 390. 消除游戏 https://leetcode.cn/problems/elimination-game/
+    // 考虑约瑟夫环变种
+    //
+    // 用 f(n) 表示将 [1,n] 【从左到右遍历】最后剩下来的数字
+    // 用 b(n) 表示将 [1,n] 【从右到左遍历】最后剩下来的数字
+    //
+    // 对于 [1, 2, 3, 4, 5, 6, 7, 8]
+    // n = 8
+    //      f(n) = [1, 3, 5, 7] => [3, 7] => [3]
+    //      b(n) = [2, 4, 6, 8] => [2, 6] => [6]
+    // 对于 [1, 2, 3, 4, 5, 6, 7]
+    // n = 7
+    //      f(n) = [1, 3, 5, 7] => [3, 7] => [3] ---> [1,2,3,4]*2-1 => b((n+1)/2)*2-1
+    //      b(n) = [1, 3, 5, 7] => [1, 5] => [1]
+    //
+    // 对于 [1, 2, 3, 4]
+    // n = 4
+    //      f(n) = [1, 3] => [3]
+    //      b(n) = [2, 4] => [2]
+    // 对于 [1, 2, 3]
+    // n = 3
+    //      f(n) = [1, 3] => [3]
+    //      b(n) = [1, 3] => [1]
+    
+    // 则
+    //  f(1) = 1, b(1) = 1
+    //  f(n) + b(n) = n + 1 永远成立 => b(n) = n + 1 - f(n)
+    //  if n % 2 == 0
+    //     f(n) = f(n - 1)
+    //  else
+    //     f(n) = b((n+1)/2)*2-1 带入前面恒成立的式子
+    //          = (n+1) + 2 - f((n+1)/2) - 1
+    //          = n + 2 - f((n+1)/2)
+    long long lastInteger(long long n) {
+        if (n == 1)
+            return 1;
+        if (n & 1)
+            return n + 2 - 2 * lastInteger((n + 1) / 2);
+        return lastInteger(n - 1);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

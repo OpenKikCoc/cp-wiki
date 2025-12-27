@@ -5875,6 +5875,89 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 3785. 避免禁用值的最小交换次数](https://leetcode.cn/problems/minimum-swaps-to-avoid-forbidden-values/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 经典两两消耗
+> 
+> 类似题目
+> 
+> - [LeetCode 2141. 同时运行 N 台电脑的最长时间](https://leetcode.cn/problems/maximum-running-time-of-n-computers/)
+> 
+> - leetcode 2335. 装满杯子需要的最短总时长
+> 
+> - leetcode 3139. 使数组中所有元素相等的最小开销
+> 
+> - leetcode 3495. 使数组元素都变为零的最少操作次数
+> 
+> - leetcode 3664. 两个字母卡牌游戏 
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+// 类似题目
+//  leetcode 2141. 同时运行 N 台电脑的最长时间
+//  leetcode 2335. 装满杯子需要的最短总时长
+//  leetcode 3139. 使数组中所有元素相等的最小开销
+//  leetcode 3495. 使数组元素都变为零的最少操作次数
+//  leetcode 3664. 两个字母卡牌游戏
+
+class Solution {
+public:
+    int minSwaps(vector<int>& nums, vector<int>& forbidden) {
+        int n = nums.size();
+
+        // 考虑无解情况
+        // 假定排列为 2xn 矩阵，如果某个数字上下出现总次数超过 n 则必定有一列重复，则无解
+        unordered_map<int, int> tot;
+        for (auto x : nums)
+            tot[x] ++ ;
+        for (auto x : forbidden) {
+            tot[x] ++ ;
+            if (tot[x] > n)
+                return -1;
+        }
+        
+        // 接下来考虑通过交换来消除重复列
+        // 1. 对于不同的两个重复列，交换一次可以将两列变为非重复列
+        // 2. 对于单个重复列，必然需要上下行都不等于它的另外一个列交换【必然存在，反证】
+        //
+        // 将重复列以其数字表示，模型转化为：
+        // 给定数组 xs，每次最多删除其中两个元素，求总删除次数
+        // res = max((len + 1) / 2, max_count)
+        unordered_map<int, int> cnt;
+        int len = 0, max_count = 0;
+        for (int i = 0; i < n; ++ i ) {
+            if (nums[i] != forbidden[i])
+                continue;
+            len ++ ;
+            max_count = max(max_count, ++ cnt[nums[i]]);
+        }
+        return max((len + 1) / 2, max_count);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[LeetCode 2071. 你可以安排的最多任务数目](https://leetcode.cn/problems/maximum-number-of-tasks-you-can-assign/)** TAG
 > 
 > 题意: TODO

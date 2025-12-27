@@ -2528,6 +2528,129 @@ int main() {
 
 * * *
 
+> [!NOTE] **[3777. Minimum Deletions to Make Alternating Substring](https://leetcode.cn/problems/minimum-deletions-to-make-alternating-substring/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 对于 LeetCode Class 不同的测试用例会复用同一内存
+> 
+> ATTENTION: pushup 函数用到了 `l` & `r` 如果不清理会干扰计算
+> 
+> 也可以用 BIT，理清楚细节，翻转时只影响相邻两个位置即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 考虑查询操作 遍历肯定不行 复杂度O(n^2)会爆
+    // 显然连续不同的是一个区间 每次修改单点会引发区间变化
+    // 给定查询 这个区间内的连续段
+    // => 可以珂朵莉树，但是这个东西适合区间修改，单点可以直接简化用线段树
+    //
+    // 'A' = 0, 'B' = 1
+    // 考虑线段树节点维护的信息
+    // l, r, w总数 开头是0的最小代价 开头是1的最小改动代价
+    //
+    // 但是题目求的是 删除代价... 改下pushup即可
+
+    const static int N = 1e5 + 10;
+
+    struct Node {
+        int l, r;
+        int s0, s1;
+    } tr[N << 2];
+    void pushup(Node & u, Node & l, Node & r) {
+        u.l = l.l, u.r = r.r;   // ATTENTION
+        u.s0 = u.s1 = 0;
+        int w = l.r - l.l + 1;
+        u.s0 = l.s0 + ((w - l.s0) & 1 ? r.s1 : r.s0);
+        u.s1 = l.s1 + ((w - l.s1) & 1 ? r.s0 : r.s1);
+    }
+    void pushup(int u) {
+        pushup(tr[u], tr[u << 1], tr[u << 1 | 1]);
+    }
+
+    string s;
+
+    void build(int u, int l, int r) {
+        if (l == r) {
+            tr[u] = {l, r, 0, 0};
+            tr[u].s0 = s[l] == 'B', tr[u].s1 = s[l] == 'A';
+        } else {
+            tr[u] = {l, r};
+            int mid = l + r >> 1;
+            build(u << 1, l, mid), build(u << 1 | 1, mid + 1, r);
+            pushup(u);
+        }
+    }
+    void modify(int u, int x) {
+        if (tr[u].l == x && tr[u].r == x)
+            swap(tr[u].s0, tr[u].s1);
+        else {
+            int mid = tr[u].l + tr[u].r >> 1;
+            if (x <= mid)
+                modify(u << 1, x);
+            else
+                modify(u << 1 | 1, x);
+            pushup(u);
+        }
+    }
+    Node query(int u, int l, int r) {
+        if (tr[u].l >= l && tr[u].r <= r)
+            return tr[u];
+        else {
+            int mid = tr[u].l + tr[u].r >> 1;
+            if (r <= mid)
+                return query(u << 1, l, r);
+            else if (l > mid)
+                return query(u << 1 | 1, l, r);
+            Node ret;
+            auto left = query(u << 1, l, r);
+            auto right = query(u << 1 | 1, l, r);
+            pushup(ret, left, right);
+            return ret;
+        }
+    }
+    
+    
+    vector<int> minDeletions(string s, vector<vector<int>>& queries) {
+        this->s = s;
+        build(1, 0, s.size() - 1);
+
+        vector<int> res;
+        for (auto & q : queries) {
+            if (q[0] == 1)
+                modify(1, q[1]);
+            else {
+                auto ret = query(1, q[1], q[2]);
+                res.push_back(min(ret.s0, ret.s1));
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 进阶应用
 
 > [!NOTE] **[LeetCode 1505. 最多 K 次交换相邻数位后得到的最小整数](https://leetcode.cn/problems/minimum-possible-integer-after-at-most-k-adjacent-swaps-on-digits/)** [TAG] 模版题

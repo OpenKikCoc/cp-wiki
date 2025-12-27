@@ -1,3 +1,29 @@
+> [!NOTE] **边界问题**
+>
+> 使用 const 定义大边界时，必须 `primes[j] < (N - 1) / i` 而不能 `primes[j] < N / i` *(原 `primes[j] <= n / i`)
+>
+> ```c++
+> const static int N = 5e5 + 10;
+> 
+> vector<int> primes;
+> bool st[N];
+> 
+> void init() {
+>     if (primes.size())
+>         return;
+>     memset(st, 0, sizeof st);
+>     for (int i = 2; i < N; ++ i ) {
+>         if (!st[i])
+>             primes.push_back(i);
+>         for (int j = 0; primes[j] <= (N - 1) / i/*ATTENTION 不能是N/i 会计算出错少算*/; ++ j ) {
+>             st[i * primes[j]] = true;
+>             if (i % primes[j] == 0)
+>                 break;
+>         }
+>     }
+> }
+> ```
+
 ## 素数筛法
 
 ### 埃拉托斯特尼筛法
