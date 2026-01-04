@@ -2136,6 +2136,203 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 3791. Number of Balanced Integers in a Range](https://leetcode.cn/problems/number-of-balanced-integers-in-a-range/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 典型数位 DP
+> 
+> 理清楚 +/- 的细节   增强熟练度
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+using LL = long long;
+const static int N = 20, M = 300, D = 150;
+
+LL f[N][M];
+bool flag = false;
+void init() {
+    if (flag)
+        return;
+    flag = true;  // 只做一次
+
+    memset(f, 0, sizeof f);
+
+    // ATTENTION 题目要求 【左边开始的数字位置为 1】
+    // 那么对于 f 统计来说 可能是根据具体的数位值反过来的
+
+    f[0][D] = 1;
+    // 枚举数位 (奇数-偶数)
+    for (int i = 1; i < N; ++ i )
+        for (int j = 0; j <= 9; ++ j )      // 枚举当前数位 作为【第一位】
+            for (int k = 0; k < M; ++ k ) { // 枚举当前和
+                int last = j - (k - D);     // 上一个的贡献应该是啥 k-D=j + -last
+                last += D;
+                if (last >= 0 && last < M)
+                    f[i][k] += f[i - 1][last];
+            }
+}
+
+class Solution {
+public:
+    // 显然 闭区间问题可以转化为区间减法
+    // 进而 对于 calc 函数只要计算所有不超过 x 的平衡整数的数量即可
+    //
+    // 接下来的问题是 如何求
+    // 由于有明确的上限 最能想到的解法是数位 dp
+    // 考虑状态定义
+    //  f[i][j] 长度为i 且其中 偶数位置数位和-奇数位置数位和=j 的方案的数量 => 算奇数减偶数更好算
+    //   => f[N][M]  N=15+1, M = (9*15)*2 < 300 包含负数到正数的偏移量
+
+    LL calc(LL x) {
+        init();
+
+        vector<int> xs;
+        while (x)
+            xs.push_back(x % 10), x /= 10;
+        reverse(xs.begin(), xs.end());
+        int n = xs.size();
+
+        LL res = 0;
+        {
+            // ATTENTION: 所有位数小于 n 的平衡数 => 忘掉了
+            for (int len = 2; len < n; ++ len )
+                for (int i = 1; i <= 9; ++ i )
+                    // 首位为 i 后面的贡献为 -i, 又因为反向所以为 i+D
+                    res += f[len - 1][i + D];
+        }
+
+        // 位数相同的情况
+        for (int i = 1, diff = 0; i <= n; ++ i ) {
+            int x = xs[i - 1];
+
+            int len = n - i;
+            for (int j = (i == 1)/*ATTENTION*/; j < x; ++ j ) {
+                // 如果当前选 j 且目前的差值为 diff
+                // 那么新的和为 diff + (i & 1 ? j : -j);        => 这里判断成 i%2==0 WA
+                int t_diff = diff + (i & 1 ? j : -j);
+                // 后面应该贡献 -t_diff, 如果当前为奇数 则后面要反过来 就是 t_diff
+                int next = (i & 1 ? t_diff : -t_diff);
+                next += D;
+                if (next >= 0 && next < M)
+                    res += f[len][next];
+            }
+            // 否则 选x
+            diff = diff + (i & 1 ? x : -x);
+            if (i == n && diff == 0)
+                res ++ ;
+        }
+        return res;
+    }
+    
+    long long countBalanced(long long low, long long high) {
+        return calc(high) - calc(low - 1);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 3747. Count Distinct Integers After Removing Zeros](https://leetcode.cn/problems/count-distinct-integers-after-removing-zeros/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 数位 DP
+> 
+> 很好的理解数位 DP 树形求解本质
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+using LL = long long;
+const static int N = 16;
+
+LL p[N];
+bool flag;
+void init() {
+    if (flag)
+        return;
+    flag = true;
+    memset(p, 0, sizeof p);
+    p[0] = 1;
+    for (int i = 1; i < N; ++ i )
+        p[i] = p[i - 1] * 9;
+}
+
+class Solution {
+public:
+    // 对于一个数x 移除所有的表示之后 就是 1~9的排列组合
+    //   只要这个排列组合不超过 n 方案都是合法的
+    long long countDistinct(long long n) {
+        string s = to_string(n);
+        init();
+
+        LL res = 0;
+        {
+            for (int w = 1; w < s.size(); ++ w )
+                res += p[w];
+        }
+        {
+            // 所有位不为0 WA => 可能存在某些位为0
+            //  遇到 0 就跳出来【深度理解数位 DP 基于树分叉的思想】
+            LL add = 0;
+            for (int i = 0; i < s.size(); ++ i ) {
+                int x = s[i] - '0';
+                if (x == 0)
+                    break;
+                
+                int len = s.size() - i - 1;
+                for (int j = 1; j < x; ++ j )
+                    add += p[len];
+
+                if (i == s.size() - 1)
+                    add ++ ;
+            }
+            // cout << " res = " << res << " add = " << add << endl;
+            res += add;
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### TODO 汇总
 
 #### 拓展 n以内所有数字 每个数字在各个数位出现多少次
@@ -2445,6 +2642,151 @@ public:
         this->K = k;    // 必须在 init 之前
         init();
         return get(high) - get(low - 1);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 3753. Total Waviness of Numbers in Range II](https://leetcode.cn/problems/total-waviness-of-numbers-in-range-ii/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 显然是数位 DP
+> 
+> 复杂点在于理清楚【状态定义】 搞明白某个位置变为波峰波谷后对后续其他数字的影响
+> 
+> => 需要同时记录 波动值 & 方案数
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+/**
+ * 【算法核心原理：数位 DP 之贡献合并 (Contribution Summation)】
+ * * 1. 为什么定义 Node {cnt, sum}?
+ *   - 我们要求的是“波动值之和”。对于一个前缀，后面可以接 cnt 种不同的后缀。
+ *   - 如果当前位产生了 1 点波动，那么这 1 点波动会被“克隆”到所有 cnt 个数字中。
+ *   - 总和变化 = 原有后缀波动和 + (当前位波动 * 后缀方案数)。
+ * * 2. 状态定义 f[len][pre][p_pre] 的意义：
+ *   - 这是“邻域依赖”问题的标准解法。波动值判定需要：左邻居(p_pre)、自己(pre)、右邻居(d)。
+ *     - len: 剩余待填位数。
+ *     - pre: 当前正在填写的数字。
+ *     - p_pre: 当前数字的左邻居。
+ *   - 10 的妙用：作为“真空”占位符，表示左侧没有数字（处理边界，如数字开头）。
+ * * 3. 贡献的三个来源 (Why Sum = next.sum + cur + prefix)?
+ *     - prefix_waviness: 已经完全确定的主干路径上产生的波动点。
+ *     - cur_waviness: 当前枚举的位 d 与左侧 pre、p_pre 结合瞬间产生的波动点。
+ *     - next.sum: 预处理好的、未来剩余 len 位自己折腾出来的波动总和。
+ *   - 核心公式：res += next.sum + (prefix + cur) * next.cnt
+ */
+
+using namespace std;
+const static int N = 16, M = 11;
+using LL = long long;
+
+struct Node {
+    LL cnt = 0; // 方案数
+    LL sum = 0; // 波动值之和
+};
+
+// f[len][pre][p_pre] 
+// len: 剩余待填位数
+// pre: 当前正要填入的这一位
+// p_pre: pre 左边的那个数字
+Node f[N][M][M];
+bool initialized = false;
+
+bool is_wavy(int p_pre, int pre, int cur) {
+    // 哨兵值处理：如果 p_pre 为 10，说明 pre 是第一位，直接返回 0
+    // 一般来说 cur 是枚举得来的  必定满足要求
+    if (p_pre > 9 || pre > 9 || cur > 9) return 0;
+    // 峰：严格大于两侧；谷：严格小于两侧
+    return ((pre > p_pre && pre > cur) || (pre < p_pre && pre < cur));
+}
+
+void init() {
+    if (initialized) return;
+    initialized = true;
+
+    // 状态初始化：len=0 表示填完了，不再产生任何波动
+    // ATTENTION 10 的设置
+    for (int j = 0; j <= 10; ++j)
+        for (int k = 0; k <= 10; ++k)
+            f[0][j][k] = {1, 0};
+
+    // 核心递推
+    for (int len = 1; len < N; ++ len )
+        for (int pre = 0; pre <= 9; ++ pre )
+            for (int p_pre = 0; p_pre <= 10/*ATTENTION 简化技巧*/; ++ p_pre )
+                for (int d = 0; d <= 9; ++d) {
+                    // 关键逻辑：当我们填下 d (右邻居) 时，pre (当前位) 的身份被确定
+                    // p_pre == 10 表示 pre 是第一位，不能算峰谷
+                    int waviness = is_wavy(p_pre, pre, d);
+                    
+                    Node& next = f[len - 1][d][pre];
+                    f[len][pre][p_pre].cnt += next.cnt;
+                    // ATTENTION: 当前位产生的波动贡献 = waviness * 后面所有的组合数
+                    // => 如果 pre 在这里成为了波峰或波谷
+                    //    那么后面所有的填法【方案cnt】都会因为这个数值变化而增加 1 点波动值
+                    f[len][pre][p_pre].sum += next.sum + (LL)waviness * next.cnt;
+                }
+}
+
+LL calc(LL x) {
+    init();
+    string s = to_string(x);
+    int n = s.size();
+    LL res = 0;
+    // 1. 处理位数比 x 短的数字 (例如 x 是 1000，这里算 100-999)
+    for (int len = 3; len < n; ++ len )
+        for (int first = 1; first <= 9; ++ first )
+            res += f[len - 1][first][10].sum;
+
+    // 2. 处理位数等于 n 且小于 x 的数字
+    for (int i = 0, pre = 10, p_pre = 10, prefix_waviness/*记录当前已经确定的前缀里有多少个峰谷*/ = 0; i < n; ++ i ) {
+        int value = s[i] - '0';
+        
+        int len = n - 1 - i; // 当前位置右侧的长度 不包括当前
+        for (int j = (i == 0); j < value; ++ j ) {
+            int cur_waviness = is_wavy(p_pre, pre, j);
+            Node& next = f[len][j][pre];
+            // res = 1. 后续位自发产生的波动 (next.sum)
+            //       2. 当前位 pre 刚形成的波动 (cur_waviness * next.cnt)
+            //       3. 之前路径上已经确定的波动 (prefix_waviness * next.cnt)
+            res += next.sum + (LL)cur_waviness * next.cnt + (LL)prefix_waviness * next.cnt;
+        }
+
+        // 更新前缀波动数：当确定这一位填 value 时，前一位 pre 的峰谷属性就确定了
+        prefix_waviness += is_wavy(p_pre, pre, value);
+        p_pre = pre, pre = value;
+        // 如果到了最后一位，prefix_waviness 已经包含了数字 x 全部的波动值
+        if (i == n - 1)
+            res += prefix_waviness;
+    }
+    return res;
+}
+
+class Solution {
+public:
+    long long totalWaviness(long long num1, long long num2) {
+        return calc(num2) - calc(num1 - 1);
     }
 };
 ```

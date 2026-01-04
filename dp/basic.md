@@ -3039,6 +3039,83 @@ class Solution:
 
 * * *
 
+> [!NOTE] **[LeetCode 3796. Find Maximum Value in a Constrained Sequence](https://leetcode.cn/problems/find-maximum-value-in-a-constrained-sequence/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 类似 [LeetCode 1840. 最高建筑高度](https://leetcode.cn/problems/maximum-building-height/)
+> 
+> 从左从右各扫一遍
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+const static int N = 1e5 + 10, INF = 0x3f3f3f3f;
+
+int l[N], r[N]; // 每个位置的上下界
+
+void init() {
+    // memset(l, 0xcf, sizeof l);
+    memset(l, 0, sizeof l); // 题目要求非负整数
+    memset(r, 0x3f, sizeof r);
+    l[0] = r[0] = 0;
+}
+
+class Solution {
+public:
+    
+    int findMaxVal(int n, vector<vector<int>>& restrictions, vector<int>& diff) {
+        init();
+        for (auto & restriction : restrictions) {
+            int idx = restriction[0], maxVal = restriction[1];
+            r[idx] = min(r[idx], maxVal);
+        }
+        // diff 算得是 diff[i] >= abs(a[i] - a[i+1]) 当前位置和后面的差值      [0, n - 1]
+        //   本质也是当前位置与前面位置的差值 diff[i] >= abs(a[i] - a[i - 1]),  [1, n]
+
+        // 第一轮 每个位置都满足左侧位置的约束
+        for (int i = 1; i < n; ++ i ) {
+            int last_l = l[i - 1], last_r = r[i - 1];
+            int gap = diff[i - 1];
+            int cur_l = last_l - gap, cur_r = last_r + gap;
+            l[i] = max(l[i], cur_l), r[i] = min(r[i], cur_r);
+            // cout << " i = " << i << " d = " << gap << " l = " << l[i] << " r = " << r[i] << endl;
+        }
+        // 第二轮 每个位置都满足右侧位置的约束
+        for (int i = n - 2; i >= 0; -- i ) {
+            int next_l = l[i + 1], next_r = r[i + 1];
+            int gap = diff[i];
+            int cur_l = next_l - gap, cur_r = next_r + gap;
+            l[i] = max(l[i], cur_l), r[i] = min(r[i], cur_r);
+        }
+
+        int res = -INF;
+        for (int i = 0; i < n; ++ i )
+            res = max(res, r[i]);
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[LeetCode 1964. 找出到每个位置为止最长的有效障碍赛跑路线](https://leetcode.cn/problems/find-the-longest-valid-obstacle-course-at-each-position/)**
 > 
 > 题意: TODO

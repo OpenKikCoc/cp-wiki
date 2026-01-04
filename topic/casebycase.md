@@ -1374,3 +1374,170 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 3800. Minimum Cost to Make Two Binary Strings Equal](https://leetcode.cn/problems/minimum-cost-to-make-two-binary-strings-equal/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 00/11/01/10 典型分情况讨论 理清楚细节即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    // 分别统计 00,11,01,10 的数量
+    //   对于一个具体的不同的下标
+    //     01:  找10跟它换一次 或者翻转
+    //            如果有 10, 直接用   如果没有 是否需要cross?来让01变成10
+    //     10:  找01跟它换一次 或者翻转
+    //            如果有 01, 直接用   如果没有 是否需要cross?来让10变成01
+    // 直接推结论好像不好推 考虑枚举翻转的数量? 则剩下的都要通过 交换or先cross再交换
+    // 
+    // 再试一下推结论 理论上三种操作的的代价 翻转 ? 交换 < cross+交换
+    //    如果 翻转*2 <= 交换, 理论上都翻转
+    //    如果 翻转*2 >  交换, 得先交换, 剩下的(全10/01)再看是否更适合翻转
+    using LL = long long;
+    
+    long long minimumCost(string s, string t, int flipCost, int swapCost, int crossCost) {
+        int n = s.size(), x = 0, y = 0;
+        for (int i = 0; i < n; ++ i )
+            if (s[i] != t[i]) {
+                if (s[i] == '0')
+                    x ++ ; // 01
+                if (s[i] == '1')
+                    y ++ ; // 10
+            }
+
+        if (flipCost * 2 <= swapCost)
+            return LL(x + y) * flipCost;
+
+        // 尽量先交换
+        LL res = (LL)min(x, y) * swapCost;
+        int v = abs(x - y);
+        // cout << " x = " << x <<" y = " << y << " res = " << res << endl;
+        // 全是 01 or 10
+        if (flipCost * 2 >= swapCost + crossCost) {
+            // 尽量先cross+swap
+            int use = v - (v & 1);
+            res += (LL)v / 2 * (swapCost + crossCost);
+            v = v & 1;
+        }
+        res += (LL)v * flipCost;
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 3748. Count Stable Subarrays](https://leetcode.cn/problems/count-stable-subarrays/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 【需要先明确需要什么数据，再计算这些数据，否则南辕北辙引入不必要的复杂度】
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+using LL = long long;
+using PII = pair<int, int>;
+
+const static int N = 1e5 + 10;
+
+int l[N], r[N];
+LL s[N];
+
+class Solution {
+public:
+    // 考虑 对于稳定子数组 没有逆序对 等价于 其排序前后相对位置不变
+    //   则 尝试将其排序 (需要二维偏序 即值相同的情况下原本靠后的仍然靠后)   => 【实际上不需要】
+    // 对于查询区间 如果子区间也为稳定数组 则其中元素在全局排序后 相对顺序一定不变
+    //   问题转化为 已知每个下标的新顺序 判断区间内的顺序值是否全局递增... 
+    //   假设 [l, r] 内部有 k 个最长上升子段 则计数 C[k1,2] + C[k2,2] + ... + C[kk,2]
+    // 枚举复杂度不可接受 显然没有单纯借助数据结构优化的空间
+    //
+    // 考虑已知区间进行离线处理 滑动窗口维护 => NO 区间可能反而会扩张
+    // 
+    // 重新考虑使用数据预处理维护
+    //   先按排序后的下标对原始数组分段 => 【WA 实际上应该直接基于原始数组分段】
+    // 则对于特定查询 必然为 第一段+其余段
+    //   考虑为每个下标记录其左侧蔓延的距离 右侧蔓延的距离  然后再维护连续段的前缀和
+    //
+    // 【需要先明确需要什么数据，再计算这些数据，否则南辕北辙引入不必要的复杂度】
+    
+    vector<long long> countStableSubarrays(vector<int>& nums, vector<vector<int>>& queries) {
+        int n = nums.size(), m = queries.size();
+
+        {
+            // 1. 直接分段 (l, r 保存的下标包含偏移量)
+            for (int i = 1; i <= n; ++ i )
+                if (i > 1 && nums[i - 1] >= nums[i - 1 - 1])
+                    l[i] = l[i - 1];
+                else
+                    l[i] = i;
+            for (int i = n; i >= 1; -- i )
+                r[i] = (i < n && nums[i - 1] <= nums[i + 1 - 1]) ? r[i + 1] : i;
+        }
+        {
+            // 2. 不需要对 l/r 做离散化   实际上可以直接计算原始下标对前缀和
+            s[0] = 0;
+            for (int i = 1; i <= n; ++ i ) {
+                LL len = i - l[i] + 1;
+                s[i] = s[i - 1] + len;
+            }
+        }
+
+        vector<LL> res;
+        for (auto & q : queries) {
+            int l_idx = q[0] + 1, r_idx = q[1] + 1;
+            // 先裸加第一段
+            LL left_end = min(r[l_idx], r_idx), left_len = left_end - l_idx + 1;
+            LL ret = (LL)left_len * (left_len + 1) / 2;
+
+            // 如果后面还有 直接累加 
+            if (left_len < r_idx)
+                ret += s[r_idx] - s[left_end];
+            
+            res.push_back(ret);
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

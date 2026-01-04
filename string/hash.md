@@ -3,6 +3,7 @@
 Hash 的核心思想在于，将输入映射到一个值域较小、可以方便比较的范围。
 
 > [!WARNING]
+> 
 > 这里的“值域较小”在不同情况下意义不同。
 > 
 > 在 [哈希表](ds/hash.md) 中，值域需要小到能够接受线性的空间与时间复杂度。
@@ -10,6 +11,11 @@ Hash 的核心思想在于，将输入映射到一个值域较小、可以方便
 > 在字符串哈希中，值域需要小到能够快速比较（$10^9$、$10^{18}$ 都是可以快速比较的）。
 > 
 > 同时，为了降低哈希冲突率，值域也不能太小。
+
+
+> [!NOTE]
+> 
+> 多项式哈希
 
 
 ## Hash 的实现
@@ -1072,6 +1078,159 @@ int main() {
 
     return 0;
 }
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### 多项式哈希
+
+> [!NOTE] **[LeetCode 3756. Concatenate Non-Zero Digits and Multiply by Sum II](https://leetcode.cn/problems/concatenate-non-zero-digits-and-multiply-by-sum-ii/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 题目求特定区间内，由非 0 数字构成的串与和，有较显然的思路是使用线段树维护，注意直接维护取模结果的细节即可。
+> 
+> 标准解法 【多项式哈希】 简单直接的获取特定区间的非零数字连接的结果
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++ 线段树**
+
+```cpp
+using LL = long long;
+const static int N = 1e5 + 10, MOD = 1e9 + 7;
+
+LL f[N];
+void init() {
+    f[0] = 1 % MOD;
+    for (int i = 1; i < N; ++ i )
+        f[i] = f[i - 1] * 10 % MOD;
+}
+
+struct Node {
+    int l, r;
+    int cnt; // ATTENTION 非0数字个数
+    LL x;    // 秦九韶算法 不记录原串 直接取模
+    LL sum;
+} tr[N << 2];
+
+string str;
+
+void pushup(Node & u, Node & l, Node & r) {
+    u.x = (l.x * f[r.cnt] /*ATTENTION*/ % MOD + r.x) % MOD;
+    u.sum = (l.sum + r.sum) % MOD;
+    u.cnt = l.cnt + r.cnt;
+}
+void pushup(int u) {
+    pushup(tr[u], tr[u << 1], tr[u << 1 | 1]);
+}
+void build(int u, int l, int r) {
+    if (l == r) {
+        int x = str[l - 1] - '0';
+        tr[u] = {l, r, x != 0, x % MOD, x % MOD};
+    } else {
+        tr[u] = {l, r, 0, 0, 0}; // ATTENTION 因为要用到子节点属性 必须初始化0
+        int mid = l + (r - l) / 2;
+        build(u << 1, l, mid), build(u << 1 | 1, mid + 1, r);
+        pushup(u);
+    }
+}
+Node query(int u, int l, int r) {
+    if (tr[u].l >= l && tr[u].r <= r)
+        return tr[u];
+    else {
+        // no need pushdown, no modification
+        int mid = tr[u].l + tr[u].r >> 1;
+        Node ret = {0, 0, 0, 0, 0}, left = {0, 0, 0, 0, 0}, right = {0, 0, 0, 0, 0}; // ATTENTION 因为要用到子节点属性 必须初始化0
+        if (l <= mid)
+            left = query(u << 1, l, r);
+        if (r > mid)
+            right = query(u << 1 | 1, l, r);
+        pushup(ret, left, right);
+        return ret;
+    }
+}
+
+class Solution {
+public:
+    vector<int> sumAndMultiply(string s, vector<vector<int>>& queries) {
+        init();
+        
+        str = s;
+        int n = str.size();
+        build(1, 1, n);
+
+        vector<int> res;
+        for (auto & q : queries) {
+            int l = q[0] + 1, r = q[1] + 1;
+            auto ret = query(1, l, r);
+            res.push_back(ret.x * ret.sum % MOD);
+        }
+        return res;
+    }
+};
+```
+
+##### **C++ 多项式哈希**
+
+```cpp
+using LL = long long;
+const static int N = 1e5 + 10, MOD = 1e9 + 7;
+
+LL f[N];
+void init() {
+    f[0] = 1 % MOD;
+    for (int i = 1; i < N; ++ i )
+        f[i] = f[i - 1] * 10 % MOD;
+}
+
+class Solution {
+public:
+    int sum[N], cnt[N]; // s 前缀 i 的数字和, c 前缀 i 的非零元素总数
+    LL hash[N];
+
+    vector<int> sumAndMultiply(string s, vector<vector<int>>& queries) {
+        init();
+        int n = s.size();
+
+        sum[0] = cnt[0] = hash[0] = 0;
+        for (int i = 1; i <= n; ++ i ) {
+            int x = s[i - 1] - '0';
+            sum[i] = sum[i - 1] + x, cnt[i] = cnt[i - 1] + (x ? 1 : 0);
+            // ATTENTION 相当于如果为 0 直接跳过
+            // 重要原理: 为什么可以取模的推导
+            if (x)
+                hash[i] = (hash[i - 1] * 10 + x) % MOD;
+            else
+                hash[i] = hash[i - 1];
+        }
+        
+        vector<int> res;
+        for (auto & q : queries) {
+            int l = q[0] + 1, r = q[1] + 1;
+            int width = cnt[r] - cnt[l - 1];    // 总共的有效数字数量
+            LL t_x = (hash[r] - hash[l - 1] * f[width] % MOD + MOD) % MOD;   // 数字
+            LL t_sum = sum[r] - sum[l - 1];                                  // 数量和
+            res.push_back(t_x * t_sum % MOD);
+        }
+        return res;
+    }
+};
 ```
 
 ##### **Python**

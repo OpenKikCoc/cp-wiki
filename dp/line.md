@@ -5236,6 +5236,103 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 3797. Count Routes to Climb a Rectangular Grid](https://leetcode.cn/problems/count-routes-to-climb-a-rectangular-grid/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 看清楚题意
+> 
+> 理清楚状态转移方程 推导及实现细节(顺序依赖)
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+using LL = long long;
+const static int N = 760, MOD = 1e9 + 7;
+
+LL f[N][N][2], s[2][N], lr[N];
+
+void init() {
+    memset(f, 0, sizeof f);
+    memset(s, 0, sizeof s), memset(lr, 0, sizeof lr);
+}
+
+LL mod_add(LL a, LL b) {
+    return ((a + b) % MOD + MOD) % MOD;
+}
+
+class Solution {
+public:
+    // ATTENTION 【先读明白题意...】
+    // 每条路径必须从最后一行（第 n - 1 行）的任何一个格子开始，并在第一行（第 0 行）结束
+    //
+    // 考虑线形递推型DP f[i][j][0/1] 表示当前位置为[i,j]且上次是横着/竖着走的方案数
+    //    转移时存在约束
+    //       横着走  f[i][j][0] = sum_of f[i][y][1] 其中 y [j-d,j+d] 只依赖
+    //       竖着走  f[i][j][1] = sum_of f[i+1][y][0]+f[i+1][y][1] 其中 y sqrt 满足一定约束
+    //         为了避免干扰 显然先算竖着走再算横着走
+    //
+    // 复杂度 n^3 考虑优化 显然可以记录后缀和
+    //         f[i][j][0] = lr[j - d] - lr[j + d + 1] 只需要关注本行的树型方案即可即可
+    //         f[i][j][1] = s[i+1][j-x] - s[i+1][j+x] 其中 x [i+1,i+d] 因为只能从一个方向过来 无论是横着来的还是竖着来的
+    // 下标偏移方便计算
+    
+    int numberOfRoutes(vector<string>& grid, int d) {
+        init();
+        int n = grid.size(), m = grid[0].size();
+        int dis = sqrt(d * d - 1);
+
+        for (int i = n; i; -- i ) {
+            // 先算f[i][j][1] 竖着走过来的方案数
+            for (int j = m; j; -- j ) {
+                LL v = 0;
+                if (grid[i - 1][j - 1] == '.') {
+                    if (i == n) {
+                        v = 1; // 只有 出发行 可能竖着过来
+                    } else {
+                        int left = max(1, j - dis), right = min(m, j + dis);
+                        v = mod_add(s[(i + 1) & 1][left], -s[(i + 1) & 1][right + 1]);
+                    }
+                }
+                f[i][j][1] = v;
+                lr[j] = mod_add(lr[j + 1], v);
+            }
+            // 再算 f[i][j][0] 横着走过来的方案数
+            for (int j = m; j; -- j ) {
+                LL v = 0;
+                if (grid[i - 1][j - 1] == '.') {
+                    int left = max(1, j - d), right = min(m, j + d);
+                    v = mod_add(lr[left], -lr[right + 1]);
+                    v = mod_add(v, -f[i][j][1]); // 移除原地不动的情况
+                }
+                f[i][j][0] = v;
+                s[i & 1][j] = mod_add(s[i & 1][j + 1], mod_add(f[i][j][0], f[i][j][1]));
+            }
+        }
+        return s[1 & 1][1];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 复杂递推
 
 #### 数学递推 dp

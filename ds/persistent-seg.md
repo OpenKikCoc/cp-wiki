@@ -262,12 +262,109 @@ int main() {
 > 根据题目数据范围，可以用 vector 维护某个值出现过的所有位置，随后二分得到某个区间内的个数
 > 
 > 另有 **摩尔投票** 做法 ==> 已经 TLE 无法通过，但可以关注思维
+> 
+> 标准: 可持久化线段树
 
 <details>
 <summary>详细代码</summary>
 <!-- tabs:start -->
 
-##### **C++**
+##### **C++ 标准**
+
+```cpp
+const static int N = 2e4 + 10;
+
+struct Node {
+    int l, r;   // 叶子结点指针 不是值域
+    int cnt;    // 值域线段树 保存当前区间数值那的数值的个数
+} tr[N * 4 + N * 15];   // 2^15 > 2e4
+
+int root[N], idx;
+
+void init() {
+    idx = 0;
+}
+
+int build(int l, int r) {
+    int p = ++ idx;
+    tr[p] = {0, 0, 0};
+    if (l == r) {
+        // tr[p].cnt = 0;
+        return p;
+    } else {
+        int mid = l + (r - l) / 2;
+        tr[p].l = build(l, mid), tr[p].r = build(mid + 1, r);
+        // tr[p].cnt = 0;
+        return p;
+    }
+}
+
+int insert(int p, int l, int r, int x) {
+    int q = ++ idx;
+    tr[q] = tr[p];
+    if (l == r) {
+        tr[q].cnt ++ ;
+        return q;
+    } else {
+        int mid = l + (r - l) / 2;
+        if (x <= mid)
+            tr[q].l = insert(tr[p].l, l, mid, x);
+        else
+            tr[q].r = insert(tr[p].r, mid + 1, r, x);
+        // pushup
+        tr[q].cnt = tr[tr[q].l].cnt + tr[tr[q].r].cnt;
+        return q;
+    }
+}
+
+int queryX(int q, int p, int l, int r, int k) {
+    if (l == r) {
+        if (tr[q].cnt - tr[p].cnt >= k)
+            return r;
+        return -1;
+    } else {
+        // ATTENTION: 在这因为 threshold > half 所以不需要先递归查询左侧再回溯
+        // 如果这个条件无法被满足 则当前只关心左侧总数量 但是总数量够多不意味着最多元素在左侧
+        int left_cnt = tr[tr[q].l].cnt - tr[tr[p].l].cnt;
+        int mid = l + (r - l) / 2;
+        if (k <= left_cnt)
+            return queryX(tr[q].l, tr[p].l, l, mid, k);
+        else
+            return queryX(tr[q].r, tr[p].r, mid + 1, r, k);
+    }
+}
+
+class MajorityChecker {
+public:
+    // 分析题意
+    // 2 * threshold > right - left + 1 则众数最多只有一个 且一定是【中位数】
+    // 考虑区间查询 使用持久化线段树即可
+    int n;
+    MajorityChecker(vector<int>& arr) {
+        init();
+        this->n = arr.size();
+        root[0] = build(0, N - 1/*ATTENTION*/);
+        for (int i = 1; i <= n; ++ i ) {
+            int x = arr[i - 1];
+            // ATTENTION 可以不需要离散化 直接插入原数值
+            root[i] = insert(root[i - 1], 0, N - 1, x);
+        }
+    }
+    
+    int query(int left, int right, int threshold) {
+        // ATTENTION 思考 这里的 threshold 已经不是 第k大 的含义了
+        return queryX(root[right + 1], root[left + 1 - 1], 0, N - 1, threshold);
+    }
+};
+
+/**
+ * Your MajorityChecker object will be instantiated and called as such:
+ * MajorityChecker* obj = new MajorityChecker(arr);
+ * int param_1 = obj->query(left,right,threshold);
+ */
+```
+
+##### **C++ 废弃**
 
 ```cpp
 class MajorityChecker {
@@ -357,6 +454,191 @@ public:
  * MajorityChecker* obj = new MajorityChecker(arr);
  * int param_1 = obj->query(left,right,threshold);
  */
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 3762. Minimum Operations to Equalize Subarrays](https://leetcode.cn/problems/minimum-operations-to-equalize-subarrays/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 中位数原理 + 标准可持久化线段树
+>
+> 注意细节
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+using LL = long long;
+using PIL = pair<int, LL>;
+const static int N = 4e4 + 10; // 节点数量=操作数量
+
+// 可持久化线段树 - 主席树
+struct Node {
+    int l, r;
+    int cnt;           // 值域线段树 保存当前区间数值内的数值的个数/数量
+    LL sum;            // ATTENTION 本题特殊
+} tr[N * 4 + N * 17];  // N*4 单个树节点总数   M*log(N)持久化树新增节点总数
+
+int root[N], idx;      // 操作数量 新节点下标
+
+// 离散化
+vector<int> xs;
+int get(int x) {
+    return lower_bound(xs.begin(), xs.end(), x) - xs.begin();
+}
+
+// 可持久化线段树
+int build(int l, int r) {
+    int p = ++ idx;
+    // WA  这里的 l r 是叶子结点指针 不是值域 为了避免静态数据干扰 必须显示设置为 0
+    tr[p] = {0, 0, 0, 0};
+    if (l == r) {
+        // tr[p].l = tr[p].r = 0;
+        tr[p].cnt = tr[p].sum = 0;            // ATTENTION 对于 LeetCode 会多次访问 需要初始化
+        return p;
+    } else {
+        int mid = l + r >> 1;
+        tr[p].l = build(l, mid), tr[p].r = build(mid + 1, r); // ATTENTION 赋值 覆盖左右子节点
+        tr[p].cnt = tr[p].sum = 0;            // ATTENTION 对于 LeetCode 会多次访问 需要初始化
+        return p;
+    }
+}
+int insert(int p, int l, int r, int x) {
+    int q = ++ idx;
+    tr[q] = tr[p]; // 初始化相同节点
+    if (l == r) {
+        tr[q].cnt ++ ;
+        tr[q].sum += xs[x]; // ATTENTION 本题特殊 维护值域总和
+        return q;
+    } else {
+        int mid = l + r >> 1;
+        if (x <= mid)
+            tr[q].l = insert(tr[p].l, l, mid, x);      // ATTENTION 赋值 覆盖左右子节点
+        else
+            tr[q].r = insert(tr[p].r, mid + 1, r, x);  // ATTENTION 赋值 覆盖左右子节点
+        // pushup
+        tr[q].cnt = tr[tr[q].l].cnt + tr[tr[q].r].cnt;
+        tr[q].sum = tr[tr[q].l].sum + tr[tr[q].r].sum; // ATTENTION 本题特殊 维护值域总和
+        return q;
+    }
+}
+int query(int q, int p, int l, int r, int k) {
+    if (l == r)
+        return r;
+    else {
+        int left_cnt = tr[tr[q].l].cnt - tr[tr[p].l].cnt; // 从版本p到版本q, p < q
+        int mid = l + r >> 1;
+        if (k <= left_cnt)
+            return query(tr[q].l, tr[p].l, l, mid, k);
+        else
+            return query(tr[q].r, tr[p].r, mid + 1, r, k - left_cnt);
+    }
+}
+PIL queryX(int q, int p, int l, int r, int k) {
+    if (l == r)
+        return {k, (LL)k * xs[l]};
+    else {
+        int mid = l + r >> 1;
+        int left_cnt = tr[tr[q].l].cnt - tr[tr[p].l].cnt;
+        if (k <= left_cnt)
+            return queryX(tr[q].l, tr[p].l, l, mid, k);
+        else {
+            PIL ret = queryX(tr[q].r, tr[p].r, mid + 1, r, k - left_cnt);
+            // 左边的全部要加上
+            ret.first += left_cnt, ret.second += (tr[tr[q].l].sum - tr[tr[p].l].sum);
+            return ret;
+        }
+    }
+}
+
+void init() {
+    xs.clear();
+    memset(root, 0, sizeof root);
+    idx = 0;
+}
+
+class Solution {
+public:
+    // 首先 无解意味着这段区间的gcd无法被k整除 => 线段树
+    // 其次 如果有解 解为区间和与【中位数】差值 即较小元素的和 较大元素的和
+    //  问题在于 中位数动态变化 没法确定
+    //  考虑 任意区间查找第K大 => 主席树/可持久化线段树
+    
+    vector<long long> minOperations(vector<int>& nums, int k, vector<vector<int>>& queries) {
+        // 1. 先检查无解的情况 (区间内不同余)
+        int n = nums.size();
+        vector<int> left(n); // 从当前位置向左同余的最远位置 如果查询区间的left(l)!=left(r) 则无解
+        for (int i = 1; i < n; ++ i ) {
+            int now = (nums[i] % k + k) % k, last = (nums[i - 1] % k + k) % k;
+            left[i] = now == last ? left[i - 1] : i;
+        }
+
+        // 2. 对于有解的情况 为了找到[l,r]区间中位数 需要借助可持久化线段树 将原数值离散化后插入树中
+        init();
+
+        // 2.1 离散化
+        xs = nums;
+        sort(xs.begin(), xs.end());
+        xs.erase(unique(xs.begin(), xs.end()), xs.end());
+        int m = xs.size();
+
+        // 2.2 构建可持久化线段树
+        root[0] = build(0, m - 1); // [0, maxv]
+        for (int i = 1; i <= n; ++ i ) {
+            int idx = get(nums[i - 1]);
+            root[i] = insert(root[i - 1], 0, m - 1, idx);
+        }
+
+        vector<LL> res;
+        for (auto & q : queries) {
+            int l = q[0], r = q[1];
+            if (left[r] > l) { // 无解
+                res.push_back(-1);
+                continue;
+            }
+
+            int len = r - l + 1;
+            int kth = len / 2 + 1; // 中位数，等于0起始的下标+1
+
+            // 区间 [l, r] 对应第 r+1, l+1 颗线段树
+            r ++ ;
+            int idx = query(root[r], root[l], 0, m - 1, kth);
+            // ATTENTION:
+            //   root[R+1] 和 root[L] 决定了“哪些数”被统计
+            //   而 0 到 m-1 决定了这些数的“取值范围”
+            // 不能 query(root[r], root[l], l, r, kth)
+            // => 因为操作次数与数值区间不对应, 并非第l次操作加入了第i大的值
+
+            int value = xs[idx]; // 离散化前 中位数的原始值
+            
+            // 接下来找到 这个区间里 比中位数小的数字的 [总数&总和], 反之得到大于的 [总数&总和]
+            LL total = tr[root[r]].sum - tr[root[l]].sum;
+            auto [left_cnt, left_sum] = queryX(root[r], root[l], 0, m - 1, kth);
+            LL sum = (LL)value * left_cnt - left_sum +                   // 左侧
+                     (total - left_sum) - (LL)value * (len - left_cnt);  // 右侧
+            res.push_back(sum / k);
+        }
+        return res;
+    }
+};
 ```
 
 ##### **Python**

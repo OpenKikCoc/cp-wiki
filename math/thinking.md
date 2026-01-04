@@ -2807,3 +2807,180 @@ public:
 <br>
 
 * * *
+
+> [!NOTE] **[LeetCode 3790. Smallest All-Ones Multiple](https://leetcode.cn/problems/smallest-all-ones-multiple/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 自己想到的是模拟的做法 (大数乘法) 能过
+> 
+> 标准解法为 同余 【推理过程】
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    int f1(int k) {
+        // 取模性质 枚举x个1 如果出现重复数字则无解 否则有解
+        unordered_set<int> S;
+        for (int x = 1 % k; x; ) {
+            if (S.count(x))
+                return -1;
+            S.insert(x);
+            x = (x * 10 + 1) % k;
+        }
+        return S.size() + 1;
+    }
+    int f2(int k) {
+        // 抽屉原理 取模的值域不会超过 k
+        for (int i = 1, x = 0; i <= k; ++ i ) {
+            x = (x * 10 + 1) % k;
+            if (x == 0)
+                return i;
+        }
+        return -1;
+    }
+
+    int minAllOneMultiple(int k) {
+        if (rand() & 1)
+            return f1(k);
+        return f2(k);
+    }
+};
+```
+
+##### **C++ 大数乘法**
+
+```cpp
+class Solution {
+public:
+    // 只包含数字1 也即 每次 x = x*10+1
+    //
+    // 如果是 k 的倍数 则必然是 k 的每一个[质因子^次数]的倍数 次数+1+2+3...
+    // 如果反向思考 对w个111做质因数分解 然后判断k质因子次数是否满足要求
+    // => 没什么用...
+    // 
+    // 换个思路
+    //
+    // 如果k为偶数 显然无解
+    // 如果k为奇数 则必然有办法通过不断累加 使得后面的位变为1
+    // => 大数乘法 只不过每次每个数位乘的数字都不一样 需要枚举
+    using LL = long long;
+    const static int N = 1e5; // 假定位次非常大
+
+    LL xs[N];
+    
+    int minAllOneMultiple(int k) {
+        if (k % 2 == 0)
+            return -1;
+
+        memset(xs, 0, sizeof xs);
+        int p = 0, v = k;
+        while (v)
+            xs[p ++ ] = v % 10, v /= 10;
+        // 从左到右 位数从低到高
+        // 开始模拟 每次都加自己 使得当前位为1
+        LL add = 0;
+        int res = 0;
+        for (int i = 0; i < p || add; ++ i ) {
+            if (i < p)
+                add += xs[i];
+            LL mod = add % 10;
+            // 加多少个自己
+            int t = -1;
+            for (int j = 0; j < 10; ++ j ) {
+                LL delta = (LL)k * j % 10;
+                if ((mod + delta) % 10 == 1) {
+                    t = j;
+                    break;
+                }
+            }
+            if (t == -1)
+                return -1;
+            // add 再加上 delta 能够使得当前位为1
+            add += (LL)k * t;
+            xs[i] = add % 10;
+            add /= 10;
+            // 记录最大有值的下标
+            if (xs[i])
+                res = i;
+        }
+        return res + 1;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+> [!NOTE] **[LeetCode 3752. Lexicographically Smallest Negated Permutation that Sums to Target](https://leetcode.cn/problems/lexicographically-smallest-negated-permutation-that-sums-to-target/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> `[1, n]` 的数字最大构造 `t = (1 + n) * n / 2`
+> 
+> 每取反一个数 x 总和减少 2x, 则 `[-t, t]` 之间且奇偶相同的数字可以凑出来
+> 
+> 假设相比 t 总共小了 2y, 则需要凑出总和为 y 的数字作为负数, 从大到小遍历即可
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    using LL = long long;
+    vector<int> lexSmallestNegatedPerm(int n, long long target) {
+        vector<int> res;
+        target = -target;
+        for (int x = n; x; -- x ) {
+            LL left = LL(x - 1 + 1) * (x - 1) / 2;
+            // 考虑当前数位 能选负数就选负数
+            LL flag = (target - x >= -left) ? -1 : 1;
+            // cout << " target = " << target << " x = " << x << " left = " << left << " flag = " << flag << endl;
+            res.push_back(flag * x);
+            target += flag * x;
+        }
+        if (target)
+            return {};
+        // 注意要排序 保证字典序最小
+        sort(res.begin(), res.end());
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *

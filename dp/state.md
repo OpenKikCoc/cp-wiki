@@ -4850,6 +4850,121 @@ public:
 
 * * *
 
+> [!NOTE] **[LeetCode 3801. Minimum Cost to Merge Sorted Lists](https://leetcode.cn/problems/minimum-cost-to-merge-sorted-lists/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 加快速度
+> 
+> 增加熟练度 理清细节 不要漏掉
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+using LL = long long;
+const static int N = 12, M = 1 << N;
+
+LL l[M], m[M];
+LL f[M];
+
+void init() {
+    memset(l, 0, sizeof l), memset(m, 0, sizeof m);
+    memset(f, 0x3f, sizeof f); // INF
+}
+
+
+
+class Solution {
+public:
+    // 这里原数组所在下标没有任何意义 本质就是枚举顺序对答案有影响
+    // 12! ~= 5e8 规模很大 但是显然子状态可以复用
+    // 状态压缩 枚举当前状态的数组集合 最后一次操作是将哪两个子集合合并而来
+    //   显然，需要预处理每个子集合并数组后 median 的值
+    //   可以在每个数组中执行二分
+
+    vector<vector<int>> ls;
+    int n;
+
+    LL calc(int st, LL v) {
+        LL cnt = 0;
+        for (int i = 0; i < n; ++ i )
+            if (st >> i & 1) {
+                auto & t = ls[i];
+                cnt += upper_bound(t.begin(), t.end(), v) - t.begin();
+            }
+        // 如果数组元素数量为偶数，则取左侧中间元素 => 至少满足一半
+        return cnt;
+    }
+    
+    void find(int st) {
+        if (st == 0) {
+            l[0] = m[0] = 0;
+            return;
+        }
+        LL tot = 0;
+        for (int i = 0; i < n; ++ i )
+            if (st >> i & 1)
+                tot += ls[i].size();
+        
+        LL L = -(1e9 + 10), R = 1e9 + 10; // ATTENTIO 可能有负数
+        while (L < R) {
+            LL mid = L + (R - L) / 2;
+            if (calc(st, mid) >= (tot + 1) / 2)
+                R = mid;
+            else
+                L = mid + 1;
+        }
+        l[st] = tot, m[st] = L;
+    }
+    
+    
+    long long minMergeCost(vector<vector<int>>& lists) {
+        this->ls = lists;
+        this->n = ls.size();
+        int limit = 1 << n;
+
+        init();
+        // 先预处理计算
+        for (int i = 1; i < limit; ++ i ) {
+            int lowbit = i & -i;
+            find(i);
+        }
+
+        f[0] = 0;
+        for (int i = 0; i < n; ++ i )
+            f[1 << i] = 0; // ATTENTION
+        
+        for (int i = 1; i < limit; ++ i ) {
+            int t = i & (i - 1); // 理清楚 与前面的 f[1 << i] 初始化对应
+            for (int j = t; j; j = (j - 1) & i)
+                // 注意要累加 f[j], f[i^j]
+                // 【漏掉+f[j]本身 浪费很多时间】
+                f[i] = min(f[i], f[i ^ j] + f[j] + l[j] + l[i ^ j] + abs(m[j] - m[i ^ j]));
+        }
+        return f[(1 << n) - 1];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 状压 + meet in the middle
 
 > [!NOTE] **[LeetCode 2035. 将数组分成两个数组并最小化数组和的差](https://leetcode.cn/problems/partition-array-into-two-arrays-to-minimize-sum-difference/)**
@@ -5485,6 +5600,162 @@ public:
         }
         
         return f[(1 << n) - 1];
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
+### SOS (Sum Over Subsets) DP
+
+> [!NOTE] **[LeetCode 3757. Number of Effective Subsequences](https://leetcode.cn/problems/number-of-effective-subsequences/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 新知识
+> 
+> SOS DP + 容斥
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+/**
+ * 【算法深度解析】
+ * * 1. 问题转化 (Complementary Counting)
+ *     - 有效子序列定义：移除后，剩余数组 OR 和 < 总强度 S。
+ *     - 无效子序列定义：移除后，剩余数组 OR 和 == 总强度 S。
+ *     - 目标方案数 = 总子序列数 (2^n - 1) - 无效非空子序列数。
+ *
+ *   逻辑挑战：如何数出“剩余部分 OR 和恰好为 S”？
+ *     直接数很难，因为 1 | 2 | 3 = 3，1 | 3 = 3，有很多种组合都能得到 S。
+ *     我们可以利用“容斥原理”：
+ *       - 方案 A：剩余元素 OR 结果是 S 的子集（容易算：只要选出的每个数都是 S 的子集即可）。
+ *       - 方案 B：剩余元素 OR 结果是 (S 缺少某一位) 的子集。
+ *     通过 A - B + C ... 的加减法，就能精准定位到“OR 结果【恰好】是 S”的情况。
+ *   =>
+ * * 2. 容斥原理 (Inclusion-Exclusion Principle)
+ *     - 直接计算“OR 和恰好等于 S”比较困难，我们利用 “OR 和为 mask 子集” 的方案数 G(mask) 进行容斥。
+ *       - 定义 f(mask) 为数组中满足 (x & mask == x) 的元素个数。
+ *       - 则 G(mask) = 2^f(mask)  => 代表：只从这些元素中选，构成的子集 OR 和必定 ⊆ mask。
+ *     - 根据容斥原理，OR 和【恰好】等于 S 的方案数 res 为：
+ *           res = Σ [(-1)^(|S| - |mask|) * G(mask)]  (其中 mask ⊆ S)
+ *       系数解释：当 mask 缺少 S 中的奇数个位时减去，缺少偶数个位时加上，最终抵消掉所有不完全覆盖 S 的方案。
+ * * 3. SOS DP (Sum Over Subsets)
+ *     - 为了高效求出所有 mask 的 f(mask)，我们不使用 O(2^W * n) 的暴力，而使用 O(W * 2^W) 的高维前缀和。
+ *       - 状态转移：f[mask] = Σ f[submask]。
+ *       - 逻辑：按位迭代，若当前 mask 包含第 i 位，则 mask 的子集计数应累加“不包含第 i 位”的对应状态。
+ * * 4. 边界与抵消
+ *     - res 计算的是“剩余数组 OR == S”的方案数（包含移除空集的情况，此时剩余原数组）。
+ *     - 有效子序列 = (2^n - 1) - (res - 1) = 2^n - res。
+ */
+
+using LL = long long;
+// 10^6 略小于 2^20，故 N 取 20 即可覆盖所有可能的 bit 位
+const static int N = 20, M = 1 << N, MOD = 1e9 + 7;
+
+int f[M];       // f[mask] 用于存储数组中数值为 mask 子集的元素个数
+int p[M];       // p[i] 预处理存储 2^i % MOD
+
+// 预处理 2 的幂次数组
+void init() {
+    if (p[0] == 1) return; // 避免重复计算
+    p[0] = 1;
+    for (int i = 1; i < M; ++i)
+        p[i] = (p[i - 1] * 2) % MOD;
+}
+
+class Solution {
+public:
+    int countEffective(vector<int>& nums) {
+        init();
+        int st = 0, n = nums.size();
+
+        // 1. 计算总强度 S (变量 st)
+        for (auto x : nums)
+            st |= x;
+        // 特判：如果总强度为 0，任何移除操作都不会使强度“严格减少” (0 < 0 不成立)
+        if (st == 0)
+            return 0;
+
+        // 2. 确定最高位 W，优化 SOS DP 范围 => 【ATTENTION 必须 否则TLE】
+        int w = 32 - __builtin_clz(st);
+        int limit = 1 << w;
+
+        // 3. SOS DP 预处理：统计 f[mask]
+        // 首先清空当前位宽内的 f 数组（避免使用 memset 清空整个 M 导致 TLE）
+        memset(f, 0, sizeof f);
+        for (auto x : nums)
+            f[x] ++ ;
+        // 高维前缀和 (SOS DP)：计算每个 mask 包含多少个数组中的元素作为其子集
+        // 时间复杂度: O(W * 2^W)
+        // 【ATTENTION 循环顺序不能遍 本质是吧每一个比特位视为一个独立维度 外围表示第i轮】
+        // 这里本质是 SOS DP 压掉了第一维的存储
+        // 
+        // for (int i = 0; i < w; ++ i )
+        //     for (int mask = 0; mask < limit; ++ mask )
+        //         if (mask >> i & 1)
+        //             f[mask] = (f[mask] + f[mask ^ (1 << i)]);
+        //
+        // 可以转化为
+        for (int i = 0; i < w; ++ i ) {
+            // 优化 1: 如果 st 的第 i 位本身就是 0，容斥枚举 st 子集时永远用不到该维度的累加
+            if (!((st >> i) & 1)) continue; 
+            int bit = 1 << i;
+            for (int s = 0; s < limit; ++s) {
+                // 优化 2: 步进跳转
+                // 当 s 的第 i 位为 0 时，执行 s |= bit 会使其跳到对应的“1”状态
+                // 这样内层循环实际上只处理了 mask >> i & 1 为真的情况
+                s |= bit;  // ATTENTION 不会重复计算
+                f[s] = (f[s] + f[s ^ bit]);
+            }
+        }
+
+        // 4. 容斥原理计算
+        // 目标：计算满足 OR(剩余元素) == st 的方案数 res
+        // 这里的 res 包含了“移除空集”的情况（即剩余部分就是原数组本身）
+        LL res = 0;
+        int target_popcount = __builtin_popcount(st);
+
+        // 高效枚举 st 的所有二进制子集: O(2^popcount(st))
+        for (int mask = st; ; mask = (mask - 1) & st) {
+            int current_popcount = __builtin_popcount(mask);
+            int diff = target_popcount - current_popcount;
+            // term = 2^(f[mask])，代表仅从 mask 的子集元素中选择，
+            // 能够构成的所有剩余数组组合（其 OR 结果必定 ⊆ mask）
+            LL term = p[f[mask]];
+            // 容斥系数：(-1)^(集合大小差)
+            if (diff & 1)
+                res = (res - term + MOD) % MOD;
+            else
+                res = (res + term) % MOD;
+            if (mask == 0) break;
+        }
+
+        /**
+         * 5. 最终计算
+         * res = 剩余部分 OR == st 的方案数（包含移除空集）
+         * 总非空子序列方案 = p[n] - 1
+         * 无效非空子序列方案 = res - 1 (减去移除空集那个方案)
+         * 有效子序列方案 = (p[n] - 1) - (res - 1) = p[n] - res
+         */
+        return (p[n] - res + MOD) % MOD;
     }
 };
 ```

@@ -1963,6 +1963,103 @@ int main() {
 
 * * *
 
+> [!NOTE] **[LeetCode 3768. Minimum Inversion Count in Subarrays of Fixed Length](https://leetcode.cn/problems/minimum-inversion-count-in-subarrays-of-fixed-length/)**
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> 滑动窗口 + BIT
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+const static int N = 1e5 + 10;
+int tr[N];
+void init() {
+    memset(tr, 0, sizeof tr);
+}
+int lowbit(int x) {
+    return x & -x;
+}
+void add(int x, int c) {
+    for (int i = x; i < N; i += lowbit(i))
+        tr[i] += c;
+}
+int sum(int x) {
+    if (x <= 0) // 特判下
+        return 0;
+    int ret = 0;
+    for (int i = x; i; i -= lowbit(i))
+        ret += tr[i];
+    return ret;
+}
+
+class Solution {
+public:
+    using LL = long long;
+    
+    vector<int> xs;
+    int get(int x) {
+        return lower_bound(xs.begin(), xs.end(), x) - xs.begin() + 1;
+    }
+
+    long long minInversionCount(vector<int>& nums, int k) {
+        if (k == 1)
+            return 0;
+
+        // 离散化
+        {
+            for (auto x : nums)
+                xs.push_back(x);
+            sort(xs.begin(), xs.end());
+            xs.erase(unique(xs.begin(), xs.end()), xs.end());
+        }
+
+        LL res = 1e12;
+        {
+            init();
+            int n = nums.size();
+            LL tot = 0;
+            for (int i = 0, j = 0; i < n; ++ i ) {
+                int x = get(nums[i]);
+                // 先读再写
+                if (i - j + 1 > k) {
+                    int y = get(nums[j]);
+                    j ++ ;
+                    tot -= sum(y - 1);
+                    add(y, -1);
+                }
+                tot += sum(N - 1) - sum(x);
+                add(x, 1);
+                if (i - j + 1 == k) {
+                    // cout << " i = " << i << " j = " << j << " tot = " << tot << endl;
+                    res = min(res, tot);
+                }
+            }
+        }
+        return res;
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 ### 进阶应用
 
 > [!NOTE] **[LeetCode 1505. 最多 K 次交换相邻数位后得到的最小整数](https://leetcode.cn/problems/minimum-possible-integer-after-at-most-k-adjacent-swaps-on-digits/)** [TAG] 模版题
