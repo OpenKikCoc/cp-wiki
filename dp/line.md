@@ -3615,6 +3615,98 @@ class Solution:
 
 * * *
 
+> [!NOTE] **[LeetCode 3743. Maximize Cyclic Partition Score](https://leetcode.cn/problems/maximize-cyclic-partition-score/)** [TAG]
+> 
+> 题意: TODO
+
+> [!TIP] **思路**
+> 
+> LL 数组初始化
+> 
+> 最优解必然出现在最值左右的严格推导
+> 
+> DP 思维: 抽象为股票买卖模型
+
+<details>
+<summary>详细代码</summary>
+<!-- tabs:start -->
+
+##### **C++**
+
+```cpp
+class Solution {
+public:
+    const static int N = 1010;
+    using LL = long long;
+
+    vector<int> ns;
+    int n, k;
+
+    LL calc(int l, int r) {
+        static LL f[N][3];
+
+        // memset(f, 0xcf, sizeof f);
+        // const static LL NEG_INF = 0xcfcfcfcfcfcfcfcfLL;
+
+        // 定义一个在 JavaScript 安全范围内的极小值 (2^53 - 1 约为 9e15)
+        const static LL NEG_INF = -1e15; 
+        // 使用 std::fill 进行初始化
+        // fill(&f[0][0], &f[0][0] + sizeof(f) / sizeof(LL), NEG_INF);
+        // OR
+        fill(&f[0][0], &f[0][0] + N * 3, NEG_INF);
+
+        // f[i][j] 前 i 个下标已经操作了 j 次
+        // f[i][j][0] => 当前状态为 不持有任何数字
+        //      = max{f[i - 1][j][0], f[i - 1][j][1] + x, f[i - 1][j][2] - x}
+        // f[i][j][1] => 当前选择了一个数字作为最小值 (买入)
+        //      = max{f[i - 1][j][1], f[i - 1][j - 1][0] - x}
+        // f[i][j][2] => 当前选择了一个数字作为最大值 (卖空)
+        //      = max{f[i - 1][j][2], f[i - 1][j - 1][0] + x}
+        // 因为只与上一个位置的状态有关 第一个维度可以压掉 内层循环逆序
+
+        f[0][0] = 0;
+        
+        for (int i = l; i < r; ++ i ) {
+            int x = ns[i % n];
+            for (int j = k; j > 0; -- j ) {
+                f[j][0] = max(f[j][0], max(f[j][1] + x, f[j][2] - x));
+                f[j][1] = max(f[j][1], f[j - 1][0] - x);
+                f[j][2] = max(f[j][2], f[j - 1][0] + x);
+            }
+        }
+
+        LL ret = 0;
+        for (int j = 1; j <= k; ++ j )
+            ret = max(ret, f[j][0]);
+        return ret;
+    }
+
+    long long maximumScore(vector<int>& nums, int k) {
+        this->ns = nums;
+        this->n = ns.size(), this->k = k;
+        // ATTENTION 推理简化 消除一维复杂度
+        // 考虑 整个数组的最小值 一定可以作为某个子数组的边界 且向左/右对答案无影响
+        // 则 枚举其为左边界的情况+右边界的情况
+        int max_idx = ranges::max_element(ns) - ns.begin();
+        LL t1 = calc(max_idx, max_idx + n), t2 = calc(max_idx + 1, max_idx + n + 1);
+        return max(t1, t2);
+    }
+};
+```
+
+##### **Python**
+
+```python
+
+```
+
+<!-- tabs:end -->
+</details>
+
+<br>
+
+* * *
+
 > [!NOTE] **[LeetCode 714. 买卖股票的最佳时机含手续费](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/)**
 > 
 > 题意: TODO
