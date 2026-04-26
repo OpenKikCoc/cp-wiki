@@ -10,7 +10,7 @@
 
 [LeetCode Rating & Training](https://huxulm.github.io/lc-rating/zen)
 
-[leetcode-problems-rating](https://zerotrac.github.io/leetcode_problem_rating/#/)
+[leetcode-problems-rating](https://zerotrac.github.io/leetcode_problem_rating/#/) | [entranthub](https://entranthub.com/)
 
 [更详细的 lc-rating](https://huxulm.github.io/lc-rating/)
 
