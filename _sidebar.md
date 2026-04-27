@@ -380,3 +380,4 @@
   * [Contest Log](training/contest-log.md)
   * [Workflow](training/workflow.md)
   * [Context（接续指引）](training/CONTEXT.md)
+  * [LC 评分规则](training/lc-rating-rules.md)
