@@ -1,6 +1,6 @@
 # 训练 Dashboard
 
-> 最近一次生成：**2026-04-25**　·　[训练计划](plan.md)　·　[比赛 Log](contest-log.md)
+> 最近一次生成：**2026-05-09**　·　[训练计划](plan.md)　·　[比赛 Log](contest-log.md)
 
 > [!NOTE] **此页面由 `make dashboard` 自动生成**
 >
@@ -12,15 +12,15 @@
 |---|---|---|
 | LC rating | **?** | ≥2200 / 2300 / 2500 / **2700–2800** |
 | CF rating | **--** | 1700 / 1900 / 2000 / 2200+ |
-| 已打 contest | 1（LC 1 · CF 0 · AC 0 · vp 0）| ~120 总（每周 ≥2 场）|
-| Plan 题完成 | **0 / 149** (0.0%) | 全部 |
+| 已打 contest | 2（LC 2 · CF 0 · AC 0 · vp 0）| ~120 总（每周 ≥2 场）|
+| Plan 题完成 | **3 / 149** (2.0%) | 全部 |
 
 ## 月度专题进度
 
 | 月 | 完成 / 计划 | 进度 |
 |---|---|---|
 | M1 | 0 / 0 | `—（无专题题单）` |
-| M2 | 0 / 12 | `░░░░░░░░░░░░░░░░░░░░ 0%` |
+| M2 | 3 / 12 | `█████░░░░░░░░░░░░░░░ 25%` |
 | M3 | 0 / 18 | `░░░░░░░░░░░░░░░░░░░░ 0%` |
 | M4 | 0 / 8 | `░░░░░░░░░░░░░░░░░░░░ 0%` |
 | M5 | 0 / 18 | `░░░░░░░░░░░░░░░░░░░░ 0%` |
@@ -54,7 +54,8 @@
 
 | Date | Type | Round | Rating | Solved | 关键 trick |
 |---|---|---|---|---|---|
-| 2026-04-25 | LCW | weekly-499 | ? | 4/4 | -- |
+| 2026-05-09 | LCW | weekly-501 | ? | 4/4 | -- |
+| 2026-04-25 | LCW | weekly-499 | 1780 | 4/4 | -- |
 
 ## 久未触碰的 wiki 主题（L2 月度回顾推荐）
 
@@ -62,14 +63,14 @@
 
 | 文件 | 上次修改 |
 |---|---|
-| [basic/basic-sort.md](../basic/basic-sort.md) | 511 天前 |
-| [basic/binary-lifting.md](../basic/binary-lifting.md) | 511 天前 |
-| [basic/binary.md](../basic/binary.md) | 511 天前 |
-| [basic/construction.md](../basic/construction.md) | 511 天前 |
-| [basic/deduction.md](../basic/deduction.md) | 511 天前 |
-| [basic/divide-and-conquer.md](../basic/divide-and-conquer.md) | 511 天前 |
-| [basic/prefix-sum.md](../basic/prefix-sum.md) | 511 天前 |
-| [basic/sort.md](../basic/sort.md) | 511 天前 |
+| [basic/basic-sort.md](../basic/basic-sort.md) | 525 天前 |
+| [basic/binary-lifting.md](../basic/binary-lifting.md) | 525 天前 |
+| [basic/binary.md](../basic/binary.md) | 525 天前 |
+| [basic/construction.md](../basic/construction.md) | 525 天前 |
+| [basic/deduction.md](../basic/deduction.md) | 525 天前 |
+| [basic/divide-and-conquer.md](../basic/divide-and-conquer.md) | 525 天前 |
+| [basic/prefix-sum.md](../basic/prefix-sum.md) | 525 天前 |
+| [basic/sort.md](../basic/sort.md) | 525 天前 |
 
 ## 工作流
 
